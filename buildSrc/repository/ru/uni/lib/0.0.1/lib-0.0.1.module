@@ -1,0 +1,94 @@
+{
+  "formatVersion": "1.1",
+  "component": {
+    "url": "../../lib/0.0.1/lib-0.0.1.module",
+    "group": "ru.uni",
+    "module": "lib",
+    "version": "0.0.1",
+    "attributes": {
+      "org.gradle.status": "release"
+    }
+  },
+  "createdBy": {
+    "gradle": {
+      "version": "6.4",
+      "buildId": "uowfwh6r7nhedef3kbmpfzjyai"
+    }
+  },
+  "variants": [
+    {
+      "name": "jvm-api",
+      "attributes": {
+        "org.gradle.libraryelements": "jar",
+        "org.gradle.usage": "java-api",
+        "org.jetbrains.kotlin.platform.type": "jvm"
+      },
+      "files": [
+        {
+          "name": "lib-jvm-0.0.1.jar",
+          "url": "lib-0.0.1.jar",
+          "size": 63735,
+          "sha512": "9a500a929d6f2d846083da0ce3d6fc5f081a964b44997d25ca394375ca38bb2562eacc6e238f9aaab0c0ac13880538e1972904298b99ce03db88751df62afc63",
+          "sha256": "67a1046842b4f02d280510cacc56b1b5a5a13bf18c26e4c9d0a197fc49e25423",
+          "sha1": "7aa07f8fc215a2d0349916cb0e7cca78273b5979",
+          "md5": "2acf77c6c1a2ad1a8f87a4430a5de207"
+        }
+      ]
+    },
+    {
+      "name": "jvm-runtime",
+      "attributes": {
+        "org.gradle.libraryelements": "jar",
+        "org.gradle.usage": "java-runtime",
+        "org.jetbrains.kotlin.platform.type": "jvm"
+      },
+      "dependencies": [
+        {
+          "group": "org.jetbrains.kotlin",
+          "module": "kotlin-stdlib",
+          "version": {
+            "requires": "1.3.72"
+          }
+        },
+        {
+          "group": "org.jetbrains.kotlinx",
+          "module": "kotlinx-coroutines-core",
+          "version": {
+            "requires": "1.3.3"
+          }
+        },
+        {
+          "group": "org.jetbrains.kotlin",
+          "module": "kotlin-stdlib-common",
+          "version": {
+            "requires": "1.3.72"
+          }
+        }
+      ],
+      "files": [
+        {
+          "name": "lib-jvm-0.0.1.jar",
+          "url": "lib-0.0.1.jar",
+          "size": 63735,
+          "sha512": "9a500a929d6f2d846083da0ce3d6fc5f081a964b44997d25ca394375ca38bb2562eacc6e238f9aaab0c0ac13880538e1972904298b99ce03db88751df62afc63",
+          "sha256": "67a1046842b4f02d280510cacc56b1b5a5a13bf18c26e4c9d0a197fc49e25423",
+          "sha1": "7aa07f8fc215a2d0349916cb0e7cca78273b5979",
+          "md5": "2acf77c6c1a2ad1a8f87a4430a5de207"
+        }
+      ]
+    },
+    {
+      "name": "metadata-api",
+      "attributes": {
+        "org.gradle.usage": "kotlin-api",
+        "org.jetbrains.kotlin.platform.type": "common"
+      },
+      "available-at": {
+        "url": "../../lib-metadata/0.0.1/lib-metadata-0.0.1.module",
+        "group": "ru.uni",
+        "module": "lib-metadata",
+        "version": "0.0.1"
+      }
+    }
+  ]
+}

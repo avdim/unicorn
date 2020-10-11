@@ -1,0 +1,8 @@
+В Линуксе можно переназначить горячие клавиши “Next Change” и “Previous Change”. По умолчанию Ctrl+Alt+Shift + Вниз/Вверх
+
+Setup idea running jdk:
+Search "Switch Boot JDK"
+~/.IntelliJIdea2018.1/config/idea.jdk
+with content: /usr/lib/jvm/java-8-oracle   (without quotes)
+If file doesn't exist - default is bundled jdk in idea folder
+Additional info: https://intellij-support.jetbrains.com/hc/en-us/articles/206544879-Selecting-the-JDK-version-the-IDE-will-run-under

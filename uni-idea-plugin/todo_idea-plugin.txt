@@ -1,0 +1,30 @@
+команда для навигации из терминала к файловому менеджеру
+open git dir in github
+закрывать uni-files
+Сделать упрощенный коммит без проверки на warning
+
+Settings:
+Appearance & Behavior -> Scopes (?)
+set project JDK 1.8
+
+сделать hotkey для reimport gradle project
+
+(Search) Open Results in New Tab
+action without indexing
+is not available while indexing
+import gradle project//todo in new window
+открывать gradle панель
+
+show hints for:
+(action id = "ToggleInlineHintsAction") Preference->General->Code Cmpletion->Show the documentation popup in ..
+(action id="ProjectView.HideEmptyMiddlePackages") (middle packages)
+
+Ctrl+E -> Cmd+E
+MainMenu -> View -> Appearance [Toolbar on], [Navigation Bar off]
+
+
+Alt + F1 in manjaro linux
+Event log -> clear all
+swith CamelHumps Words
+"compact middle packages" in project view settings
+Don't show tips (Tip of the day)

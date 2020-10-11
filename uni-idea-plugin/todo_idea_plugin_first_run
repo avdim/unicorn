@@ -1,0 +1,19 @@
+Dmitriy Avdeev  23 days ago
+Which extension point or listener is called upon the first launch or install of My plugin?
+I trying to use:
+<applicationListeners>
+    <listener class="MyListener" topic="com.intellij.ide.plugins.DynamicPluginListener"/>
+    <listener class="MyListener" topic="com.intellij.ide.plugins.PluginStateListener"/>
+</applicationListeners>
+but it don't handle my plugin,
+Also I try to check:
+InstalledPluginsState.getInstance().installedPlugins
+But it don't contains my plugin.
+I want to execute some startup script only once - then IDE install my plugin, or plugin run first time (edited)
+
+Imran Settuba  6 days ago
+The earliest phase, where one can do something computationally interesting regarding the environment  is com.intellij.ide.ApplicationInitializedListener#componentsInitialized it get’s called right after all the depending plugins of your Ide plugin are loaded and their services and component’s.
+There are also PreloadingActivities , ApplicationListener , depending on the lifecycle  phase you’re trying to target.
+
+Imran Settuba  6 days ago
+If registering those doesn’t work in the plugin.xml. I would suggest registering a Listener early enough to register the corresponding Topic to the MessageBus.

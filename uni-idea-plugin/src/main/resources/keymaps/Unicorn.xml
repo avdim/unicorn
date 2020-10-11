@@ -1,0 +1,146 @@
+<keymap version="1" name="Unicorn" parent="$default" disable-mnemonics="false">
+  <action id="$Copy">
+    <keyboard-shortcut first-keystroke="ctrl c"/>
+    <keyboard-shortcut first-keystroke="meta c"/>
+  </action>
+  <action id="$Cut">
+    <keyboard-shortcut first-keystroke="ctrl x"/>
+    <keyboard-shortcut first-keystroke="shift delete"/>
+    <keyboard-shortcut first-keystroke="meta x"/>
+  </action>
+  <action id="$Paste">
+    <keyboard-shortcut first-keystroke="ctrl v"/>
+    <keyboard-shortcut first-keystroke="meta v"/>
+  </action>
+  <action id="$Redo">
+    <keyboard-shortcut first-keystroke="shift ctrl z"/>
+    <keyboard-shortcut first-keystroke="shift alt back_space"/>
+    <keyboard-shortcut first-keystroke="shift meta z"/>
+  </action>
+  <action id="$Undo">
+    <keyboard-shortcut first-keystroke="ctrl z"/>
+    <keyboard-shortcut first-keystroke="alt back_space"/>
+    <keyboard-shortcut first-keystroke="meta z"/>
+  </action>
+  <action id="$SelectAll">
+    <keyboard-shortcut first-keystroke="ctrl a" />
+    <keyboard-shortcut first-keystroke="meta a" />
+  </action>
+  <action id="ActivateDebugToolWindow">
+    <keyboard-shortcut first-keystroke="alt 5"/>
+    <keyboard-shortcut first-keystroke="meta 5"/>
+  </action>
+  <action id="ActivateFavoritesToolWindow">
+    <keyboard-shortcut first-keystroke="alt 2"/>
+    <keyboard-shortcut first-keystroke="meta 2"/>
+  </action>
+  <action id="ActivateFindToolWindow">
+    <keyboard-shortcut first-keystroke="alt 3"/>
+    <keyboard-shortcut first-keystroke="meta 3"/>
+  </action>
+  <action id="ActivateProjectToolWindow">
+    <keyboard-shortcut first-keystroke="alt 1"/>
+    <keyboard-shortcut first-keystroke="meta 1"/>
+  </action>
+  <action id="ActivateRunToolWindow">
+    <keyboard-shortcut first-keystroke="alt 4"/>
+    <keyboard-shortcut first-keystroke="meta 4"/>
+  </action>
+  <action id="ActivateServicesToolWindow">
+    <keyboard-shortcut first-keystroke="alt 8"/>
+    <keyboard-shortcut first-keystroke="meta 8"/>
+  </action>
+  <action id="ActivateStructureToolWindow">
+    <keyboard-shortcut first-keystroke="alt 7"/>
+    <keyboard-shortcut first-keystroke="meta 7"/>
+  </action>
+  <action id="ActivateTODOToolWindow">
+    <keyboard-shortcut first-keystroke="alt 6"/>
+    <keyboard-shortcut first-keystroke="meta 6"/>
+  </action>
+  <action id="ActivateVersionControlToolWindow">
+    <keyboard-shortcut first-keystroke="alt 9"/>
+    <keyboard-shortcut first-keystroke="meta 9"/>
+  </action>
+  <action id="CheckinProject">
+    <keyboard-shortcut first-keystroke="ctrl k"/>
+    <keyboard-shortcut first-keystroke="meta k"/>
+  </action>
+  <action id="CommentByBlockComment">
+    <keyboard-shortcut first-keystroke="shift ctrl slash"/>
+    <keyboard-shortcut first-keystroke="shift ctrl divide"/>
+    <keyboard-shortcut first-keystroke="shift meta slash"/>
+  </action>
+  <action id="CommentByLineComment">
+    <keyboard-shortcut first-keystroke="ctrl slash"/>
+    <keyboard-shortcut first-keystroke="ctrl divide"/>
+    <keyboard-shortcut first-keystroke="meta slash"/>
+  </action>
+  <action id="ContextHelp"/>
+  <action id="Editor Copy">
+    <keyboard-shortcut first-keystroke="meta c"/>
+  </action>
+  <action id="Editor Cut">
+    <keyboard-shortcut first-keystroke="meta x"/>
+  </action>
+  <action id="Editor Paste">
+    <keyboard-shortcut first-keystroke="meta v"/>
+  </action>
+  <action id="Editor Redo">
+    <keyboard-shortcut first-keystroke="shift meta z"/>
+  </action>
+  <action id="Editor Undo">
+    <keyboard-shortcut first-keystroke="meta z"/>
+  </action>
+  <action id="Generate">
+    <keyboard-shortcut first-keystroke="meta n"/>
+  </action>
+  <action id="GotoAction">
+    <keyboard-shortcut first-keystroke="shift ctrl a"/>
+    <keyboard-shortcut first-keystroke="shift meta a"/>
+  </action>
+  <action id="MoveStatementDown">
+    <keyboard-shortcut first-keystroke="shift ctrl down"/>
+    <keyboard-shortcut first-keystroke="shift meta down"/>
+  </action>
+  <action id="MoveStatementUp">
+    <keyboard-shortcut first-keystroke="shift ctrl up"/>
+    <keyboard-shortcut first-keystroke="shift meta up"/>
+  </action>
+  <action id="NewElementSamePlace">
+    <keyboard-shortcut first-keystroke="meta n"/>
+  </action>
+  <action id="ResizeToolWindowDown">
+    <keyboard-shortcut first-keystroke="shift ctrl down"/>
+    <keyboard-shortcut first-keystroke="shift meta down"/>
+  </action>
+  <action id="ResizeToolWindowLeft">
+    <keyboard-shortcut first-keystroke="shift ctrl left"/>
+    <keyboard-shortcut first-keystroke="shift meta left"/>
+  </action>
+  <action id="ResizeToolWindowRight">
+    <keyboard-shortcut first-keystroke="shift ctrl right"/>
+    <keyboard-shortcut first-keystroke="shift meta right"/>
+  </action>
+  <action id="ResizeToolWindowUp">
+    <keyboard-shortcut first-keystroke="shift ctrl up"/>
+    <keyboard-shortcut first-keystroke="shift meta up"/>
+  </action>
+  <action id="Find">
+    <keyboard-shortcut first-keystroke="ctrl f" />
+    <keyboard-shortcut first-keystroke="alt f3" />
+    <keyboard-shortcut first-keystroke="meta f" />
+  </action>
+  <action id="FindInPath">
+    <keyboard-shortcut first-keystroke="shift ctrl f" />
+    <keyboard-shortcut first-keystroke="shift meta f" />
+  </action>
+  <action id="Vcs.UpdateProject">
+    <keyboard-shortcut first-keystroke="ctrl t" />
+    <keyboard-shortcut first-keystroke="meta t" />
+  </action>
+  <action id="Vcs.Push">
+    <keyboard-shortcut first-keystroke="shift ctrl k" />
+    <keyboard-shortcut first-keystroke="shift meta k" />
+  </action>
+</keymap>

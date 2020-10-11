@@ -1,0 +1,176 @@
+<idea-plugin require-restart="false" allow-bundled-update="true" >
+  <id>ru.tutu.idea.file</id>
+  <name>UniCorn</name>
+  <vendor>github.com/avdim</vendor>
+  <description><![CDATA[
+    Unicorn plugin:
+    <ol>
+      <li>File manager inside Intellij IDEA and other utils</li>
+    </ol>
+    ]]></description>
+
+  <!--    <idea-version since-build="192"/>-->
+  <!--    <idea-version since-build="193.2723"/>-->
+<!--  <idea-version since-build="193.5233.102"/>-->
+<!--  <idea-version since-build="201.4515.24"/>--><!--old stable-->
+  <idea-version since-build="201.6668.121" />
+<!--  <idea-version since-build="202.6948.69"/>&lt;!&ndash;Release 2020.2.1&ndash;&gt;-->
+  <depends>com.intellij.modules.platform</depends>
+
+  <applicationListeners>
+    <listener class="com.unicorn.plugin.UniDynamicListener" topic="com.intellij.ide.plugins.DynamicPluginListener"/>
+  </applicationListeners>
+
+  <applicationListeners>
+    <listener class="com.unicorn.plugin.LifeListener" topic="com.intellij.ide.AppLifecycleListener"/>
+  </applicationListeners>
+
+
+  <depends>org.jetbrains.plugins.terminal</depends>
+  <extensions defaultExtensionNs="com.intellij">
+    <!--suppress PluginXmlValidity todo remove -->
+    <toolWindow id="uni-tool-window" anchor="right" secondary="false" factoryClass="com.unicorn.plugin.ui.UniToolWindow"
+                icon="/icons/unicorn.svg"/>
+    <!--suppress PluginXmlValidity todo remove -->
+    <toolWindow id="logs" anchor="right" secondary="false" factoryClass="com.unicorn.plugin.log.LogWindow"
+                icon="/icons/unicorn.svg"/>
+    <bundledKeymap file="Unicorn.xml"/>
+    <treeStructureProvider implementation="todo.MyTreeStructureProvider"/>
+  </extensions>
+  <actions>
+    <group id="my-group" text="MyGrp" description="TodoDesc">
+      <add-to-group group-id="MainMenu" anchor="after" relative-to-action="HelpMenu"/>
+      <action id="TutuPlugin.ActionUniversal" class="com.unicorn.plugin.action.UniversalAction" text="Universal Action"
+              description="Universal action">
+        <add-to-group group-id="MainMenu" anchor="last"/>
+        <keyboard-shortcut first-keystroke="alt F2" keymap="$default"/>
+        <keyboard-shortcut first-keystroke="alt Z" keymap="$default"/>
+      </action>
+      <!--            <separator/>-->
+      <!--            <group id="inner" text="Inner" popup="true">-->
+      <!--                <action class="SampleAction1" id="a3" text="A3"/>-->
+      <!--                <action class="SampleAction2" id="a4" text="A4"/>-->
+      <!--            </group>-->
+    </group>
+  </actions>
+
+  <!--todo:-->
+  <extensions defaultExtensionNs="com.intellij">
+    <toolWindow id="uni-file-manager" anchor="right" secondary="false"
+                factoryClass="ru.tutu.idea.file.TutuProjectViewToolWindowFactory"/>
+    <appStarter implementation="todo.AppStarter"/>
+  </extensions>
+
+  <actions>
+    <action id="Terminal.MoveToEditor2" class="com.unicorn.plugin.action.terminal.CopyTerminalTabToFile">
+      <add-to-group group-id="ToolWindowContextMenu" anchor="last"/>
+    </action>
+  </actions>
+
+  <actions>
+<!--    todo сделать свой Action-->
+    <action id="bootRuntime2.main.ChooseBootRuntimeAction" class="bootRuntime2.main.ChooseBootRuntimeAction"
+            text="Choose Runtime..."/>
+  </actions>
+
+  <!--  repo-->
+  <depends>com.intellij.modules.json</depends>
+  <depends>Git4Idea</depends>
+  <extensions defaultExtensionNs="com.intellij">
+    <codeInsight.lineMarkerProvider language="JSON" implementationClass="ru.tutu.repo.RepoGutter"/>
+    <localInspection language="JSON" shortName="JsonDuplicatePropertyKeys2"
+                     bundle="messages.JsonBundle" key="inspection.duplicate.keys.name" groupKey="json.inspection.group"
+                     enabledByDefault="true" level="WARNING"
+                     implementationClass="ru.tutu.repo.JsonRepoInspection"/>
+<!--    <fileEditorProvider implementation="ru.tutu.repo.RepoJsonEditorProvider"/>-->
+    <editorNotificationProvider implementation="ru.tutu.repo.RepoFileNotificationProvider"/>
+<!--    <completion.contributor language="JSON" id="JsonRepoCompletionContributor" order="last" implementationClass="ru.tutu.repo.JsonRepoCompletion"/>-->
+    <completion.contributor language="JSON" implementationClass="ru.tutu.repo.JsonRepoCompletion"/>
+  </extensions>
+
+<!--  TODO uncomment: -->
+  <!--
+  &lt;!&ndash;   Presentation assistant  https://github.com/chashnikov/IntelliJ-presentation-assistant  &ndash;&gt;
+  <applicationListeners>
+    <listener class="org.nik.presentationAssistant2.PresentationAssistantListenerRegistrar"
+              topic="com.intellij.ide.AppLifecycleListener"/>
+    <listener class="org.nik.presentationAssistant2.PresentationAssistantListenerRegistrar"
+              topic="com.intellij.ide.plugins.DynamicPluginListener"/>
+  </applicationListeners>
+  <extensions defaultExtensionNs="com.intellij">
+    <applicationService serviceImplementation="org.nik.presentationAssistant2.PresentationAssistant"/>
+    <applicationConfigurable groupId="appearance" groupWeight="-15"
+                             instance="org.nik.presentationAssistant2.PresentationAssistantConfigurable"/>
+  </extensions>
+  <actions>
+    <action class="org.nik.presentationAssistant2.ShowActionDescriptionsToggleAction"
+            id="org.nik.presentationAssistant2.ShowActionDescriptions">
+      <add-to-group group-id="UIToggleActions" anchor="last"/>
+      <keyboard-shortcut first-keystroke="alt shift d" keymap="$default"/>
+    </action>
+  </actions>
+
+  &lt;!&ndash;    IntelliJ-Key-Promoter-X&ndash;&gt;
+  <application-components>
+    <component>
+      <implementation-class>de.halirutan.keypromoterx2.KeyPromoter</implementation-class>
+    </component>
+  </application-components>
+  &lt;!&ndash; Mark the plugin as compatible with RubyMine and other products based on the IntelliJ platform &ndash;&gt;
+  <depends>com.intellij.modules.lang</depends>
+  <extensions defaultExtensionNs="com.intellij">
+    <postStartupActivity implementation="de.halirutan.keypromoterx2.tips.KPXStartupNotification"/>
+    <applicationService serviceImplementation="de.halirutan.keypromoterx2.statistic.KeyPromoterStatistics"/>
+    <applicationService serviceImplementation="de.halirutan.keypromoterx2.KeyPromoterSettings"/>
+    &lt;!&ndash;suppress PluginXmlValidity todo remove &ndash;&gt;
+    <toolWindow id="Key Promoter X" anchor="right" icon="/de/halirutan/keypromoterx2/icons/kpxToolwindow.svg"
+                factoryClass="de.halirutan.keypromoterx2.KeyPromoterToolWindowFactory"/>
+    <applicationConfigurable id="keyPromoterConfiguration" displayName="Key Promoter X"
+                             instance="de.halirutan.keypromoterx2.KeyPromoterConfiguration" groupId="tools"/>
+  </extensions>
+
+
+&lt;!&ndash;  github actions logs plugin: https://github.com/Otanikotani/view-github-actions-idea-plugin&ndash;&gt;
+&lt;!&ndash;  <depends>org.jetbrains.plugins.github</depends>&ndash;&gt;
+&lt;!&ndash;  <extensions defaultExtensionNs="com.intellij">&ndash;&gt;
+&lt;!&ndash;    <projectService serviceImplementation="org.github.otanikotani.workflow.GitHubWorkflowRunManager"/>&ndash;&gt;
+&lt;!&ndash;  </extensions>&ndash;&gt;
+&lt;!&ndash;  ... &ndash;&gt;
+
+
+&lt;!&ndash;  FrameSwitcher https://github.com/krasa/FrameSwitcher &ndash;&gt;
+  <application-components>
+    &lt;!&ndash; Add your application components here &ndash;&gt;
+    <component>
+      <implementation-class>krasa.frameswitcher.FrameSwitcherApplicationComponent</implementation-class>
+    </component>
+  </application-components>
+  <project-components>
+    &lt;!&ndash; Add your project components here &ndash;&gt;
+    <component>
+      <implementation-class>krasa.frameswitcher.FrameSwitcherProjectComponent</implementation-class>
+    </component>
+  </project-components>
+  <actions>
+    <action id="FrameSwitchAction" class="krasa.frameswitcher.FrameSwitchAction" text="Switch Frame"
+            description="Switch or reopen project">
+      <add-to-group group-id="WindowMenu" anchor="first"/>
+&lt;!&ndash;      <keyboard-shortcut keymap="$default" first-keystroke="alt F2"/>&ndash;&gt;
+    </action>
+    <action id="CloseProjectsAction" class="krasa.frameswitcher.CloseProjectsAction" text="Close Projects"
+            description="Close projects - closes selected projects">
+      <add-to-group group-id="WindowMenu" anchor="first"/>
+&lt;!&ndash;      <keyboard-shortcut keymap="$default" first-keystroke="ctrl alt F2"/>&ndash;&gt;
+    </action>
+    <action id="DiagnosticAction" class="krasa.frameswitcher.networking.DiagnosticAction"
+            text="FrameSwitcher Remoting Diagnostic Action"
+            description="FrameSwitcher remoting diagnostic action">
+      &lt;!&ndash;<add-to-group group-id="MainToolBar" anchor="last"/>&ndash;&gt;
+    </action>
+  </actions>
+  <extensions defaultExtensionNs="com.intellij">
+    <applicationConfigurable instance="krasa.frameswitcher.MyConfigurable" id="FrameSwitcher"
+                             displayName="Frame Switcher"/>
+  </extensions>-->
+
+</idea-plugin>

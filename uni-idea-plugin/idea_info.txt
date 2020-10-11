@@ -1,0 +1,38 @@
+можно переиспользовать Alt+Up and Alt+Down NOT NEED to quickly move between methods in the editor
+//region name1
+//endregion name1
+
+Ctrl+Shift+I - Quick Definition
+Ctrl+Shift+P - Type info
+
+Ctrl+F12 - быстрая навигация по текущему файлу + Ctrl Q
+
+Ctrl+Shift+F7 - подсвечивание переменной (Для перемещения F3, Shift+F3, Ctrl+L, Ctrl+Shift+L)
+Ctrl+Shift+B - go to type declaration
+Ctrl+Enter - перенос содержимого на следующую строку, оставляя курсор на этой строке
+
+Ctrl Shift Space - smart completion (USE TWICE)
+Ctrl+Shift+Enter complete current statement
+
+Ctrl+` switch
+Ctrl+Shift+` branches
+Ctrl+Alt+T surround with
+Alt+F1 select in
+Cmd+N (Alt+Insert) generate
+
+Alt+Shift+F9/F10 Debug/Run
+
+ob.me == object.method()
+Productivity Guide
+
+Context in terminal Alt + Left, Alt+Right, Alt + DOWN
+Alt+Shift+Mouse - add multi cursor
+
+Ctrl+Alt  + '['  ']' - Next/Previous Project Window
+
+Ctrl+Alt+Shift+L - Reformat dialog
+
+Shift click to breakpoint
+Alt click to breakpoint
+
+Alt+Shift+C Recent changes

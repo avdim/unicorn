@@ -1,0 +1,81 @@
+{
+  "formatVersion": "1.1",
+  "component": {
+    "group": "ru.uni",
+    "module": "lib-gradle",
+    "version": "0.0.2",
+    "attributes": {
+      "org.gradle.status": "release"
+    }
+  },
+  "createdBy": {
+    "gradle": {
+      "version": "6.5.1",
+      "buildId": "brpwmwlk45d3jcgyqej7geklea"
+    }
+  },
+  "variants": [
+    {
+      "name": "apiElements",
+      "attributes": {
+        "org.gradle.category": "library",
+        "org.gradle.dependency.bundling": "external",
+        "org.gradle.jvm.version": 8,
+        "org.gradle.libraryelements": "jar",
+        "org.gradle.usage": "java-api",
+        "org.jetbrains.kotlin.localToProject": "public",
+        "org.jetbrains.kotlin.platform.type": "jvm"
+      },
+      "files": [
+        {
+          "name": "lib-gradle-0.0.2.jar",
+          "url": "lib-gradle-0.0.2.jar",
+          "size": 1961,
+          "sha512": "2d9bafab45a6a8857f41cf4f3272906d43f584914c1c414a1b123b5fa1254ced40ca630d833a08db3035c2b2665cb6c5da77395935da5b74468064fcf7dc03f0",
+          "sha256": "6a06b01c64bfadaeb095a2486ac4036b9e0ca5310e77961de7d9b55ee967e02e",
+          "sha1": "1ee29ff05b67dbcf83a7273716789366832d1b56",
+          "md5": "c46db061a314453b65c59e8ee10721cb"
+        }
+      ]
+    },
+    {
+      "name": "runtimeElements",
+      "attributes": {
+        "org.gradle.category": "library",
+        "org.gradle.dependency.bundling": "external",
+        "org.gradle.jvm.version": 8,
+        "org.gradle.libraryelements": "jar",
+        "org.gradle.usage": "java-runtime",
+        "org.jetbrains.kotlin.localToProject": "public",
+        "org.jetbrains.kotlin.platform.type": "jvm"
+      },
+      "dependencies": [
+        {
+          "group": "org.jetbrains.kotlin",
+          "module": "kotlin-stdlib",
+          "version": {
+            "requires": "1.3.72"
+          }
+        },
+        {
+          "group": "ru.uni",
+          "module": "lib",
+          "version": {
+            "requires": "0.0.2"
+          }
+        }
+      ],
+      "files": [
+        {
+          "name": "lib-gradle-0.0.2.jar",
+          "url": "lib-gradle-0.0.2.jar",
+          "size": 1961,
+          "sha512": "2d9bafab45a6a8857f41cf4f3272906d43f584914c1c414a1b123b5fa1254ced40ca630d833a08db3035c2b2665cb6c5da77395935da5b74468064fcf7dc03f0",
+          "sha256": "6a06b01c64bfadaeb095a2486ac4036b9e0ca5310e77961de7d9b55ee967e02e",
+          "sha1": "1ee29ff05b67dbcf83a7273716789366832d1b56",
+          "md5": "c46db061a314453b65c59e8ee10721cb"
+        }
+      ]
+    }
+  ]
+}
