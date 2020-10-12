@@ -34,7 +34,7 @@ java {
 }
 
 group = "com.domain.plugin"
-version = "0.10.5"
+version = "0.11.0"
 
 repositories {
   mavenCentral()
