@@ -34,7 +34,7 @@ java {
 }
 
 group = "com.domain.plugin"
-version = "0.10.4"
+version = "0.10.5"
 
 repositories {
   mavenCentral()
@@ -138,6 +138,12 @@ tasks.withType<org.jetbrains.intellij.tasks.RunIdeTask> {
 tasks.withType<org.jetbrains.kotlin.gradle.tasks.KotlinCompile> {
   kotlinOptions.jvmTarget = "1.8"
   kotlinOptions.freeCompilerArgs += listOf("-Xjvm-default=enable")
+}
+
+tasks {
+  publishPlugin {
+    token(System.getenv("PUBLISH_TOKEN"))
+  }
 }
 
 //plugins {
