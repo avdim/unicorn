@@ -1,5 +1,5 @@
 <idea-plugin require-restart="false" allow-bundled-update="true" >
-  <id>ru.tutu.idea.file</id>
+  <id>ru.avdim.unicorn</id>
   <name>UniCorn</name>
   <vendor>github.com/avdim</vendor>
   <description><![CDATA[
