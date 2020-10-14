@@ -31,4 +31,5 @@ pluginManagement {
 rootProject.name = "unicorn"
 
 include("uni-idea-plugin")
+include("update-plugin")
 include("repo")
