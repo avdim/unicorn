@@ -18,7 +18,7 @@ import com.intellij.testFramework.TestActionEvent
 import com.unicorn.git4idea2.branch.GitBranchPopup
 import com.unicorn.plugin.ui.IPopupAction
 import com.unicorn.plugin.ui.chooseActionInPopup
-import com.unicorn.plugin.showPanelDialog
+import com.unicorn.plugin.ui.showPanelDialog
 import com.unicorn.git4idea2.branch.GitBranchUtil
 import git4idea.repo.GitRepository
 import java.awt.event.MouseEvent

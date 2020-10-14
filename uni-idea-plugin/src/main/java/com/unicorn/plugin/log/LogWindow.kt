@@ -11,7 +11,7 @@ import com.unicorn.Uni
 import com.unicorn.log.recent.RecentLog
 import com.unicorn.plugin.ActionSubscription
 import com.unicorn.plugin.showMessage
-import com.unicorn.plugin.showPanelDialog
+import com.unicorn.plugin.ui.showPanelDialog
 
 class LogWindow : ToolWindowFactory, DumbAware {
   override fun createToolWindowContent(project: Project, toolWindow: ToolWindow) {

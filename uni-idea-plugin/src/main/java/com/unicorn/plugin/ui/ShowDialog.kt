@@ -1,4 +1,4 @@
-package com.unicorn.plugin
+package com.unicorn.plugin.ui
 
 import com.intellij.openapi.ui.DialogWrapper
 import com.intellij.ui.layout.panel

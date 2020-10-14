@@ -5,7 +5,7 @@ import com.intellij.openapi.actionSystem.ActionManager
 import com.intellij.openapi.actionSystem.AnActionEvent
 import com.unicorn.plugin.action.UniversalAction
 import com.unicorn.plugin.action.cmd.Command
-import com.unicorn.plugin.showDialog
+import com.unicorn.plugin.ui.showDialog
 import com.unicorn.plugin.toolWindowAction
 import ru.tutu.idea.file.ConfUniFiles
 
