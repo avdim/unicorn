@@ -47,6 +47,13 @@ repositories {
 
 dependencies {
   implementation(kotlin("stdlib-jdk8"))
+  implementation(LOG_MAVEN_ARTIFACT)
+  implementation("io.ktor:ktor-server-netty:$KTOR_VERSION")
+  implementation("io.ktor:ktor-server-cio:$KTOR_VERSION")
+  implementation("io.ktor:ktor-client-core:$KTOR_VERSION")
+  implementation("io.ktor:ktor-client-apache:$KTOR_VERSION")
+  implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:$COROUTINE_VERSION")
+  implementation("org.jetbrains.kotlinx:kotlinx-coroutines-swing:$COROUTINE_VERSION")
   testImplementation("junit:junit:4.12")
 }
 

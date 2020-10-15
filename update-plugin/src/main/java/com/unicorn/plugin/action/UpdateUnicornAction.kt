@@ -10,6 +10,10 @@ import com.intellij.openapi.progress.ProgressManager
 import com.intellij.openapi.project.DumbAware
 import com.intellij.openapi.ui.DialogWrapper
 import com.intellij.ui.layout.panel
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.async
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.runBlocking
 import java.io.File
 import javax.swing.JComponent
 
@@ -49,9 +53,11 @@ class UpdateUnicornAction : AnAction(), DumbAware {
         button("progress") {
           ProgressManager.getInstance().runProcess(
             {
-              repeat(10) {
-                println(it)
-                Thread.sleep(200)
+              runBlocking {
+                repeat(10) {
+                  println(it)
+                  delay(200)
+                }
               }
             },
             ProgressIndicatorProvider.getGlobalProgressIndicator()//DaemonProgressIndicator()
