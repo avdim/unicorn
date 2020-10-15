@@ -1,0 +1,25 @@
+<idea-plugin require-restart="false" allow-bundled-update="true" >
+  <id>ru.avdim.unicorn</id>
+  <name>UniCornUpdate</name>
+  <vendor>github.com/avdim</vendor>
+  <description><![CDATA[
+    Unicorn plugin update:
+    <ol>
+      <li>Help with update main unicorn plugin</li>
+    </ol>
+    ]]></description>
+
+  <idea-version since-build="202.5428.22" />
+  <depends>com.intellij.modules.platform</depends>
+  <actions>
+    <group id="my-group2" text="MyGrp2" description="TodoDesc">
+      <add-to-group group-id="MainMenu" anchor="after" relative-to-action="HelpMenu"/>
+      <action id="TutuPlugin.ActionUpdateUnicorn" class="com.unicorn.plugin.action.UpdateUnicornAction" text="Update Unicorn"
+              description="Update unicorn plugin">
+        <add-to-group group-id="MainMenu" anchor="last"/>
+      </action>
+    </group>
+  </actions>
+
+
+</idea-plugin>

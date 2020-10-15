@@ -1,7 +1,7 @@
 name: 'build'
 on:
-  push:
-    tags: "build*"
+  pull_request:
+    
 jobs:
   Build-deploy:
     runs-on: ubuntu-18.04

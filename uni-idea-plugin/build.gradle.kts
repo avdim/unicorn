@@ -34,7 +34,7 @@ java {
 }
 
 group = "com.domain.plugin"
-version = "0.11.1"
+version = "0.11.2"
 
 repositories {
   mavenCentral()
@@ -48,13 +48,14 @@ repositories {
 dependencies {
   implementation(kotlin("stdlib-jdk8"))
   implementation(LOG_MAVEN_ARTIFACT)
+  implementation("org.jgroups:jgroups:4.0.0.Final")//todo
   implementation("io.ktor:ktor-server-netty:$KTOR_VERSION")
   implementation("io.ktor:ktor-server-cio:$KTOR_VERSION")
   implementation("io.ktor:ktor-client-core:$KTOR_VERSION")
   implementation("io.ktor:ktor-client-apache:$KTOR_VERSION")
-  implementation("org.jgroups:jgroups:4.0.0.Final")
   implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:$COROUTINE_VERSION")
   implementation("org.jetbrains.kotlinx:kotlinx-coroutines-swing:$COROUTINE_VERSION")
+  implementation(project(":share-plugin"))
   implementation(project(":repo"))
   testImplementation("junit:junit:4.12")
 }

@@ -83,10 +83,10 @@ private fun _createUniFilesComponent(
 
   ApplicationManager.getApplication().assertIsDispatchThread()
   val viewPane = object : AbstractProjectViewPSIPane(project) {
-    val component: JComponent = createComponent().also {
+    val component: JComponent = createComponent().also { container: JComponent ->
 //      UIUtil.removeScrollBorder(it)
-      ScrollPaneFactory.createScrollPane(it, false)
-      it
+      ScrollPaneFactory.createScrollPane(container, false)
+      container
     }
 
     override fun getSelectionPaths(): Array<TreePath>? {
