@@ -1,6 +1,5 @@
 package com.unicorn.plugin.action
 
-import com.intellij.codeInsight.daemon.impl.DaemonProgressIndicator
 import com.intellij.ide.plugins.PluginDescriptorLoader
 import com.intellij.ide.plugins.PluginInstaller
 import com.intellij.openapi.actionSystem.AnAction
@@ -10,8 +9,7 @@ import com.intellij.openapi.progress.ProgressManager
 import com.intellij.openapi.project.DumbAware
 import com.intellij.openapi.ui.DialogWrapper
 import com.intellij.ui.layout.panel
-import kotlinx.coroutines.GlobalScope
-import kotlinx.coroutines.async
+import com.unicorn.plugin.ui.showDialog2
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.runBlocking
 import java.io.File
@@ -68,27 +66,4 @@ class UpdateUnicornAction : AnAction(), DumbAware {
     showDialog2(panelComponent)
   }
 
-}
-
-fun showDialog(viewComponent: JComponent) {
-  val dialog = object : DialogWrapper(
-    null,
-    null,
-    true,
-    IdeModalityType.MODELESS
-  ) {
-    init {
-      init()
-    }
-
-    override fun createCenterPanel(): JComponent {
-      return viewComponent
-    }
-
-    override fun getPreferredFocusedComponent(): JComponent? {
-      return super.getPreferredFocusedComponent()//todo
-    }
-  }
-  dialog.setModal(false)
-  dialog.show()
 }

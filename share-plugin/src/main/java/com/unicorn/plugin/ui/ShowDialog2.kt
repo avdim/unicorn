@@ -1,4 +1,4 @@
-package com.unicorn.plugin.action
+package com.unicorn.plugin.ui
 
 import com.intellij.openapi.ui.DialogWrapper
 import javax.swing.JComponent
@@ -24,4 +24,12 @@ fun showDialog2(viewComponent: JComponent) {
   }
   dialog.setModal(false)
   dialog.show()
+}
+
+fun showModalDialog(viewComponent: JComponent): Boolean {
+  TODO("showAndGet")
+//  dialog.setModal(true)//true allready set by default
+//  val showAndGet = dialog.showAndGet()
+//  dialog.close(23)
+//  return showAndGet
 }
