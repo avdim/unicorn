@@ -32,4 +32,5 @@ rootProject.name = "unicorn"
 
 include("uni-idea-plugin")
 include("update-plugin")
+include("share-plugin")
 include("repo")

@@ -65,7 +65,7 @@ class UpdateUnicornAction : AnAction(), DumbAware {
         }
       }
     }
-    showDialog(panelComponent)
+    showDialog2(panelComponent)
   }
 
 }
