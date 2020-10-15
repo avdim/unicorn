@@ -31,7 +31,7 @@ import com.intellij.psi.PsiDirectory
 import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiElementVisitor
 import com.intellij.psi.PsiFile
-import com.unicorn.plugin.showPanelDialog
+import com.unicorn.plugin.ui.showPanelDialog
 import org.jdesktop.swingx.combobox.ListComboBoxModel
 import ru.tutu.git.*
 import java.io.File

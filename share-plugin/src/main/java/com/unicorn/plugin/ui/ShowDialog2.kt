@@ -1,10 +1,9 @@
-package com.unicorn.plugin
+package com.unicorn.plugin.ui
 
 import com.intellij.openapi.ui.DialogWrapper
-import com.intellij.ui.layout.panel
 import javax.swing.JComponent
 
-fun showDialog(viewComponent: JComponent) {
+fun showDialog2(viewComponent: JComponent) {
   val dialog = object : DialogWrapper(
     null,
     null,
@@ -34,12 +33,3 @@ fun showModalDialog(viewComponent: JComponent): Boolean {
 //  dialog.close(23)
 //  return showAndGet
 }
-
-//todo coroutine scope life when dialog is open
-fun showPanelDialog(lambda: com.intellij.ui.layout.LayoutBuilder.() -> kotlin.Unit) =
-  showDialog(
-    panel {
-      lambda()
-    }
-  )
-
