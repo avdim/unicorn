@@ -1,13 +1,16 @@
 package com.unicorn.plugin.action
 
+import com.intellij.codeInsight.daemon.impl.DaemonProgressIndicator
 import com.intellij.ide.plugins.PluginDescriptorLoader
 import com.intellij.ide.plugins.PluginInstaller
 import com.intellij.openapi.actionSystem.AnAction
 import com.intellij.openapi.actionSystem.AnActionEvent
+import com.intellij.openapi.progress.ProgressIndicatorProvider
+import com.intellij.openapi.progress.ProgressManager
 import com.intellij.openapi.project.DumbAware
-import java.io.File
 import com.intellij.openapi.ui.DialogWrapper
 import com.intellij.ui.layout.panel
+import java.io.File
 import javax.swing.JComponent
 
 class UpdateUnicornAction : AnAction(), DumbAware {
@@ -18,7 +21,7 @@ class UpdateUnicornAction : AnAction(), DumbAware {
   }
 
   override fun actionPerformed(event: AnActionEvent) {
-    
+
     val file = File("/Users/dim/Desktop/unicorn-0.11.0.zip")
     val descriptor = PluginDescriptorLoader.loadDescriptorFromArtifact(file.toPath(), null)
 
@@ -39,6 +42,19 @@ class UpdateUnicornAction : AnAction(), DumbAware {
             panelComponent,
             descriptor,
             true
+          )
+        }
+      }
+      row {
+        button("progress") {
+          ProgressManager.getInstance().runProcess(
+            {
+              repeat(10) {
+                println(it)
+                Thread.sleep(200)
+              }
+            },
+            ProgressIndicatorProvider.getGlobalProgressIndicator()//DaemonProgressIndicator()
           )
         }
       }

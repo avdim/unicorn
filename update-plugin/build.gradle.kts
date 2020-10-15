@@ -52,7 +52,6 @@ dependencies {
 
 intellij {
   // See https://github.com/JetBrains/gradle-intellij-plugin/
-//  version = "2020.2.3"
   version = "203.4818-EAP-CANDIDATE-SNAPSHOT"//2020.3-eap
   type = "IC"
   pluginName = "unicorn-update"
