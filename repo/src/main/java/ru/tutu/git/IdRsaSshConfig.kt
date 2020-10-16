@@ -20,7 +20,6 @@ class IdRsaSshConfig(val idRsaPassphrase: String? = null) : TutuGit.Config {
     override fun configure(host: OpenSshConfig.Host, session: Session) {
       session.setConfig("StrictHostKeyChecking", "false")
 
-
       session.userInfo = object : UserInfo {
         override fun getPassphrase() = idRsaPassphrase
         override fun getPassword() = null

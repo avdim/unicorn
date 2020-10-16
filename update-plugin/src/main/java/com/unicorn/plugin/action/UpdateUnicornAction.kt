@@ -7,13 +7,25 @@ import com.intellij.openapi.actionSystem.AnActionEvent
 import com.intellij.openapi.progress.ProgressIndicatorProvider
 import com.intellij.openapi.progress.ProgressManager
 import com.intellij.openapi.project.DumbAware
-import com.intellij.openapi.ui.DialogWrapper
 import com.intellij.ui.layout.panel
+import com.sample.getGithubMail
+import com.unicorn.plugin.ui.render.stateFlowView
 import com.unicorn.plugin.ui.showDialog2
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.runBlocking
+import ru.avdim.mvi.APP_SCOPE
+import ru.avdim.mvi.createStore
+import ru.avdim.mvi.createStoreWithSideEffect
 import java.io.File
 import javax.swing.JComponent
+
+data class State(
+  val counter: Int = 0
+)
+
+sealed class Action {
+  object Increment:Action()
+}
 
 class UpdateUnicornAction : AnAction(), DumbAware {
 
@@ -27,8 +39,25 @@ class UpdateUnicornAction : AnAction(), DumbAware {
     val file = File("/Users/dim/Desktop/unicorn-0.11.0.zip")
     val descriptor = PluginDescriptorLoader.loadDescriptorFromArtifact(file.toPath(), null)
 
+    val store = createStore/*todo WithSideEffect*/(State()) { s, a: Action ->
+      when(a) {
+        is Action.Increment-> {
+          s.copy(
+            counter = s.counter + 1
+          )
+        }
+      }
+    }
+
     var panelComponent: JComponent? = null
     panelComponent = panel {
+      APP_SCOPE.stateFlowView(this, store.stateFlow) { state->
+        row {
+          button("counter ${state.counter}") {
+            store.send(Action.Increment)
+          }
+        }
+      }
       row {
         button("install") {
           PluginInstaller.installAndLoadDynamicPlugin(
@@ -60,6 +89,13 @@ class UpdateUnicornAction : AnAction(), DumbAware {
             },
             ProgressIndicatorProvider.getGlobalProgressIndicator()//DaemonProgressIndicator()
           )
+        }
+      }
+      row {
+        button("github mail") {
+          getGithubMail() { mail ->
+            println(mail)
+          }
         }
       }
     }

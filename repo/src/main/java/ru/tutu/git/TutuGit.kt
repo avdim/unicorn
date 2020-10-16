@@ -6,14 +6,16 @@ import org.eclipse.jgit.transport.SshSessionFactory
 import ru.tutu.log.TutuLog
 import java.io.File
 
-class TutuGit(sshConfig: Config) {
+class TutuGit(sshConfig: Config? = null) {
 
   interface Config {
     val configSessionFactory: JschConfigSessionFactory
   }
 
   init {
-    SshSessionFactory.setInstance(sshConfig.configSessionFactory)
+    if (sshConfig != null) {
+      SshSessionFactory.setInstance(sshConfig.configSessionFactory)
+    }
   }
 
   fun openExistingGitDir(dir: File) = GitDir(dir).also {

@@ -2,7 +2,6 @@ package com.unicorn.plugin.ui
 
 import com.intellij.openapi.project.DumbAware
 import com.intellij.openapi.project.Project
-import com.intellij.openapi.project.ProjectManager
 import com.intellij.openapi.wm.ToolWindow
 import com.intellij.openapi.wm.ToolWindowFactory
 import com.intellij.ui.content.ContentFactory
@@ -24,7 +23,7 @@ class UniToolWindow : ToolWindowFactory, DumbAware {
             stateFlowView(this, mviStore.stateFlow) {
               fileManager(this, it, project) {
                 launch {
-                  mviStore.intent(it)
+                  mviStore.send(it)
                 }
               }
             }
