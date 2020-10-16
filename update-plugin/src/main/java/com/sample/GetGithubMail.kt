@@ -16,13 +16,6 @@ import kotlinx.coroutines.launch
 
 const val GITHUB_CLIENT_ID="decb926d870e0a6ca0d0"
 
-/**
- * Тут страшный код, написанный на скорую руку.
- * Смысл такой:
- * Открываем браузер на Github авторизации,
- * ждём когда на localhost прилетит авторизационный код,
- * получаем почту через GitHub Api, и закрываем браузер.
- */
 @OptIn(EngineAPI::class)
 fun getGithubMail(
     port: Int = 55555,
@@ -45,7 +38,6 @@ fun getGithubMail(
             get("/") {
                 val githubAuthCode = context.parameters["code"]
                 if (githubAuthCode != null) {
-                    println("githubAuthCode: $githubAuthCode")
                     val client: HttpClient = HttpClient(Apache)
                     val tokenResponse: String = client.post("https://github.com/login/oauth/access_token") {
                         body = TextContent(
@@ -85,20 +77,6 @@ fun getGithubMail(
             closable.close()
         }
     }
-}
-
-suspend fun HttpClient.getGithubMail(token: String): String {
-    val json = request<String>(
-        url = Url("https://api.github.com/user/emails")
-    ) {
-        method = HttpMethod.Get
-        header("Authorization", "bearer $token")
-        header("Accept", "*/*")
-//        contentType(/**/)
-    }
-    val jsonToGithubMails = json.jsonToGithubMails()
-    val mail: String = jsonToGithubMails.firstOrNull()?.email ?: "no visible mails"
-    return mail
 }
 
 /**
