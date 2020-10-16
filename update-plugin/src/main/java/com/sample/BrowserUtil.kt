@@ -6,6 +6,7 @@ import com.intellij.openapi.wm.impl.IdeFrameImpl
 import com.intellij.ui.jcef.JBCefApp
 import com.intellij.ui.jcef.JBCefBrowser
 import java.awt.BorderLayout
+import java.awt.Rectangle
 import java.awt.event.ActionEvent
 import java.awt.event.WindowAdapter
 import java.awt.event.WindowEvent
@@ -29,8 +30,10 @@ fun openBrowserJBCeffOrDefault(url: String): IClosable {
         }
 
         if (safeJBCeffSupported()) {
-            val activeFrame = IdeFrameImpl.getActiveFrame() ?: throw Error("missing frame")
-            val bounds = activeFrame.graphicsConfiguration.bounds
+            val bounds =
+                IdeFrameImpl.getActiveFrame()?.graphicsConfiguration?.bounds
+                    ?: Rectangle(0, 0, 1000, 1000)
+
             val frame: JFrame = IdeFrameImpl()
             frame.title = "Web Browser - JCEF"
             frame.defaultCloseOperation = WindowConstants.DISPOSE_ON_CLOSE

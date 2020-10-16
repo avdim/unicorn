@@ -9,6 +9,7 @@ import com.intellij.openapi.progress.ProgressManager
 import com.intellij.openapi.project.DumbAware
 import com.intellij.openapi.ui.DialogWrapper
 import com.intellij.ui.layout.panel
+import com.sample.getGithubMail
 import com.unicorn.plugin.ui.showDialog2
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.runBlocking
@@ -60,6 +61,13 @@ class UpdateUnicornAction : AnAction(), DumbAware {
             },
             ProgressIndicatorProvider.getGlobalProgressIndicator()//DaemonProgressIndicator()
           )
+        }
+      }
+      row {
+        button("github mail") {
+          getGithubMail() { mail ->
+            println(mail)
+          }
         }
       }
     }
