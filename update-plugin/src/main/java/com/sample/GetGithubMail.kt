@@ -58,8 +58,9 @@ fun getGithubMail(
                         key to value
                     }
 
-                    val token = resultParams.get("access_token")
-                    if (token != null) {
+                    val tokenStr = resultParams.get("access_token")
+                    if (tokenStr != null) {
+                        val token = Token<MyPermission>(tokenStr)
                         val mail = client.getGithubMail(token)
                         mutableCallbackPipe(mail)
                     }
