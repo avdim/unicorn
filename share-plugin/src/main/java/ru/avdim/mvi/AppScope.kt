@@ -1,11 +1,8 @@
 package ru.avdim.mvi
 
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.SupervisorJob
-import kotlinx.coroutines.launch
-import kotlinx.coroutines.newSingleThreadContext
+import kotlinx.coroutines.*
 
-internal inline fun getAppScope(): CoroutineScope =
+internal inline fun getAppScope(): CoroutineScope = //MainScope() + job
     CoroutineScope(SupervisorJob() + newSingleThreadContext("mySingleThreadContext"))
 
 val APP_SCOPE by lazy { getAppScope() }

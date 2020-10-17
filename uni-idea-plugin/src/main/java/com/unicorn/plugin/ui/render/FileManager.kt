@@ -4,7 +4,6 @@ import com.intellij.openapi.project.Project
 import com.intellij.openapi.vfs.LocalFileSystem
 import com.intellij.openapi.vfs.VirtualFile
 import com.intellij.ui.layout.LayoutBuilder
-import com.unicorn.Uni
 import com.unicorn.plugin.performActionById
 import ru.tutu.idea.file.uniFiles
 import com.unicorn.plugin.mvi.Column
