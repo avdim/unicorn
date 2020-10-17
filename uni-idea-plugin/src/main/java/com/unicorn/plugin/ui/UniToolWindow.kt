@@ -23,7 +23,7 @@ class UniToolWindow : ToolWindowFactory, DumbAware {
             stateFlowView(this, mviStore.stateFlow) {
               fileManager(this, it, project) {
                 launch {
-                  mviStore.intent(it)
+                  mviStore.send(it)
                 }
               }
             }

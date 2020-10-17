@@ -1,4 +1,4 @@
-name: 'build'
+name: 'pr'
 on:
   pull_request:
     
@@ -9,8 +9,8 @@ jobs:
       - uses: actions/checkout@v1
       - uses: actions/setup-java@v1
         with: {java-version: 1.8}
-      - name: build
-        run: ./gradlew uni-idea-plugin:buildPlugin
+      - run: ./gradlew test
+      - run: ./gradlew uni-idea-plugin:buildPlugin
       - name: upload plugin to github release page
         uses: avdim/upload-to-github-release@v1
         env:

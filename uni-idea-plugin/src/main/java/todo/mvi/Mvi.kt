@@ -6,6 +6,8 @@ import com.unicorn.plugin.mvi.UniWindowState
 import kotlinx.coroutines.channels.*
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
+import ru.avdim.mvi.Store
+import ru.avdim.mvi.createStore
 import ru.tutu.idea.file.ConfUniFiles
 
 inline fun <T> Collection<T>.transformI(index: Int, lambda: (T) -> T): List<T> =
@@ -22,23 +24,17 @@ class FileManagerMviStore(
   val intent: suspend (Intent) -> Unit
 )
 
-//todo migrate to mvi store
-fun CoroutineScope.createFileManagerMviStore(): FileManagerMviStore {
-  val mutableStateFlow = MutableStateFlow(
+fun CoroutineScope.createFileManagerMviStore(): Store<UniWindowState, Intent> {
+  val mviStore = createStore(
     UniWindowState(
       columns = listOf(
         Column(paths = ConfUniFiles.DEFAULT_PATHS),
         Column(paths = listOf("/"))
       )
     )
-  )
-  val intents = actor<Intent> {
-    channel.consumeEach {
-      mutableStateFlow.value = reduce(mutableStateFlow.value, it)
-    }
+  ) { s, a:Intent->
+    reduce(s, a)
   }
-  return FileManagerMviStore(mutableStateFlow) {
-    intents.send(it)//can use without channel: ```mutableStateFlow.value = reduce(mutableStateFlow.value, it)```
-  }
+  return mviStore
 
 }
