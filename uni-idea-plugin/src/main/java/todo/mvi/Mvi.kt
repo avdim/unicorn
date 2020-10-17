@@ -22,6 +22,7 @@ class FileManagerMviStore(
   val intent: suspend (Intent) -> Unit
 )
 
+//todo migrate to mvi store
 fun CoroutineScope.createFileManagerMviStore(): FileManagerMviStore {
   val mutableStateFlow = MutableStateFlow(
     UniWindowState(

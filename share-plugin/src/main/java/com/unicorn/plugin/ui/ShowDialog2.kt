@@ -1,6 +1,7 @@
 package com.unicorn.plugin.ui
 
 import com.intellij.openapi.ui.DialogWrapper
+import com.intellij.ui.layout.panel
 import javax.swing.JComponent
 
 fun showDialog2(viewComponent: JComponent) {
@@ -25,6 +26,14 @@ fun showDialog2(viewComponent: JComponent) {
   dialog.setModal(false)
   dialog.show()
 }
+
+//todo coroutine scope life when dialog is open. Сделать уничтожение scope при закрытии диалога
+fun showPanelDialog(lambda: com.intellij.ui.layout.LayoutBuilder.() -> kotlin.Unit) =
+  showDialog2(
+    panel {
+      lambda()
+    }
+  )
 
 fun showModalDialog(viewComponent: JComponent): Boolean {
   TODO("showAndGet")
