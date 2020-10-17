@@ -62,6 +62,9 @@ fun getGithubMail(
                     if (tokenStr != null) {
                         val token = Token<MyPermission>(tokenStr)
                         val mail = client.getGithubMail(token)
+                        val releases = client.getGithubRepoReleases("avdim", "unicorn")
+                        releases.flatMap { it.assets }.map { it.browser_download_url }
+                        println("releases: $releases")
                         mutableCallbackPipe(mail)
                     }
                 }

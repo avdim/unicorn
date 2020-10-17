@@ -7,6 +7,22 @@ import kotlinx.serialization.Serializable
 import kotlinx.serialization.decodeFromString
 import kotlinx.serialization.json.Json
 
+val jsonParser = Json {
+    ignoreUnknownKeys = true
+}
+
+@Serializable
+data class Release(
+    val url: String,
+    val html_url: String,
+    val assets: List<ReleaseAsset>,
+)
+
+@Serializable
+data class ReleaseAsset(
+    val browser_download_url:String
+)
+
 @Serializable
 class GitHubMail(
     val email: String?,
@@ -24,10 +40,22 @@ suspend fun HttpClient.getGithubMail(token: Token<Permission.Mail>): String {
         header("Accept", "*/*")
 //        contentType(/**/)
     }
-    val result: List<GitHubMail> = Json.decodeFromString(json)
+    val result: List<GitHubMail> = jsonParser.decodeFromString(json)
 
     val mail: String = result.firstOrNull()?.email ?: "no visible mails"
     return mail
+}
+
+suspend fun HttpClient.getGithubRepoReleases(owner: String, repo: String): List<Release> {
+    val jsonStr = request<String>(
+        url = Url("https://api.github.com/repos/$owner/$repo/releases")
+    ) {
+        method = HttpMethod.Get
+        header("Accept", "application/vnd.github.v3+json")
+//        contentType(/**/)
+    }
+    val result: List<Release> = jsonParser.decodeFromString(jsonStr)
+    return result
 }
 
 class Token<out T : Permission>(val tokenString: String)
