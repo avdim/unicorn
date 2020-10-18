@@ -11,7 +11,7 @@ class RepoTest {
 
   @Before
   fun setUp() {
-    git = TutuGit(sshConfig = IdRsaSshConfig())
+    git = TutuGit()
   }
 
   @Test
