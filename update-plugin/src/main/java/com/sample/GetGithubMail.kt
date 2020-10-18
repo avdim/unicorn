@@ -14,8 +14,6 @@ import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.MainScope
 import kotlinx.coroutines.launch
 
-const val GITHUB_CLIENT_ID="decb926d870e0a6ca0d0"
-
 @OptIn(EngineAPI::class)
 fun getGithubMail(
     port: Int = 55555,

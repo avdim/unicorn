@@ -25,8 +25,19 @@ buildConfigKotlin {
     packageName = "com.unicorn.update"
     buildConfig(name = "BUILD_TIME", value = BUILD_TIME_STR)
     buildConfig(name = "OPEN_FILE_MANAGER_AT_START", value = safeArgument("openFilesAtStart") == "true")
-    buildConfig(name = "GITHUB_CLIENT_SECRET", value = getLocalProperty("GITHUB_CLIENT_SECRET"))
+
     buildConfig(name = "GITHUB_CLIENT_ID", value = getLocalProperty("GITHUB_CLIENT_ID"))
+    //todo не комплилировать секреты в jar-ник на CI/CD. Тут нужен request на доверенный сервер.
+    buildConfig(name = "GITHUB_CLIENT_SECRET", value = getLocalProperty("GITHUB_CLIENT_SECRET"))
+//    val AUTH_TOKEN_URL = "https://tutu-ci.herokuapp.com/github_token_localhost"
+//    requestStr(
+//      AUTH_TOKEN_URL,
+//      mapOf(
+//        "client_id" to CLIENT_ID,
+//        "code" to effect.tempCode
+//      )
+//    )
+
   }
 }
 
