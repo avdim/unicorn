@@ -4,10 +4,18 @@ import org.junit.Assert
 import org.junit.Before
 import org.junit.Test
 import org.sample.*
+import java.io.File
 
 class RepoTest {
 
   lateinit var git: TutuGit
+
+  fun tempDir(prefix: String): File =
+    if (true) {
+      File(".").resolve("build").resolve("$prefix-${Math.random()}")
+    } else {
+      createTempDir(prefix, "")
+    }
 
   @Before
   fun setUp() {
@@ -16,7 +24,7 @@ class RepoTest {
 
   @Test
   fun testCreateBranchAndRepoUpdate() {
-    val dir = createTempDir("clone_create_branch", "").also {
+    val dir = tempDir("clone_create_branch").also {
       println("temp dir: ${it.absolutePath}")
     }
     val gd: GitDir = git.cloneRepo(
@@ -36,7 +44,7 @@ class RepoTest {
 
   @Test
   fun testUncomittedChanges() {
-    val dir = createTempDir("clone_create_branch", "").also {
+    val dir = tempDir("clone_create_branch").also {
       println("temp dir: ${it.absolutePath}")
     }
     val gd: GitDir = git.cloneRepo(
@@ -55,7 +63,7 @@ class RepoTest {
 
   @Test
   fun testNoChanges() {
-    val dir = createTempDir("clone_create_branch", "").also {
+    val dir = tempDir("clone_create_branch").also {
       println("temp dir: ${it.absolutePath}")
     }
     val gd: GitDir = git.cloneRepo(
@@ -73,7 +81,7 @@ class RepoTest {
 
   @Test
   fun testCreateTag() {
-    val dir = createTempDir("create_tag", "").also {
+    val dir = tempDir("create_tag").also {
       println("temp dir: ${it.absolutePath}")
     }
     val gd: GitDir = git.cloneRepo(
