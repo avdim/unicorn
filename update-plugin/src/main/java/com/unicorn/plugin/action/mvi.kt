@@ -6,9 +6,8 @@ import com.sample.Release
 import com.sample.getGithubRepoReleases
 import io.ktor.client.*
 import io.ktor.client.engine.apache.*
-import io.ktor.client.request.request
-import io.ktor.client.statement.*
 import io.ktor.http.*
+import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
 import ru.avdim.mvi.APP_SCOPE
 import ru.avdim.mvi.ReducerResult
@@ -21,7 +20,7 @@ data class InstalledPlugin(
 )
 
 data class Loading(
-    val description:String
+    val info:String
 )
 
 data class Loaded(
@@ -43,6 +42,7 @@ sealed class Action {
     class Install(val parentComponent: JComponent) : Action()
     class Remove(val parentComponent: JComponent) : Action()
     class Loaded(val path: String):Action()
+    class LoadingInfo(val info:String) : Action()
     object LoadReleases:Action()
 }
 
@@ -83,14 +83,31 @@ fun createUpdateStore() = createStoreWithSideEffect(State(),
                     APP_SCOPE.launch {
                         println("start loading $downloadUrl")
                         val url = Url(downloadUrl)
-                        val statement = client.request<HttpStatement>(url)
-                        val response = statement.execute()
+//                        val statement = client.request<HttpStatement>(url)
+//                        val response = statement.execute()
+//                        response.content
                         val name = url.encodedPath.split("/").last()
                         val file = createTempDir("plugin").resolve(name)
                         file.createNewFile()
                         println("download to file ${file.absolutePath}")
-                        file.writeBytes(response.readBytes())
-                        store.send(Action.Loaded(file.absolutePath))
+                        client.downloadFile(file, url).collect { download ->
+                            when(download) {
+                                is DownloadResult.Error -> {
+                                    store.send(
+                                        Action.LoadingInfo(download.message)
+                                    )
+                                }
+                                is DownloadResult.Progress -> {
+                                    store.send(
+                                        Action.LoadingInfo("progress: ${download.progress}")
+                                    )
+                                }
+                                is DownloadResult.Success -> {
+                                    store.send(Action.Loaded(file.absolutePath))
+
+                                }
+                            }
+                        }
                     }
                 }
             }
@@ -134,7 +151,7 @@ fun createUpdateStore() = createStoreWithSideEffect(State(),
             ReducerResult(
                 s.copy(
                     loading = Loading(
-                        description = "loading ${a.release.url}"
+                        info = "loading ${a.release.url}"
                     )
                 ),
                 listOf(Effect.DownloadPlugin(a.release))
@@ -171,6 +188,13 @@ fun createUpdateStore() = createStoreWithSideEffect(State(),
 
                 ),
                 listOf(Effect.RemovePlugin(a.parentComponent))
+            )
+        }
+        is Action.LoadingInfo -> {
+            ReducerResult(
+                s.copy(
+                    loading = Loading(a.info)
+                )
             )
         }
     }

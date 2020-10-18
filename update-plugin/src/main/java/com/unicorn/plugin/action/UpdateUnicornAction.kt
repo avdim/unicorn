@@ -1,23 +1,13 @@
 package com.unicorn.plugin.action
 
 import com.intellij.ide.plugins.PluginDescriptorLoader
-import com.intellij.ide.plugins.PluginInstaller
 import com.intellij.openapi.actionSystem.AnAction
 import com.intellij.openapi.actionSystem.AnActionEvent
-import com.intellij.openapi.progress.ProgressIndicatorProvider
-import com.intellij.openapi.progress.ProgressManager
 import com.intellij.openapi.project.DumbAware
 import com.intellij.ui.layout.panel
-import com.sample.Release
-import com.sample.getGithubMail
 import com.unicorn.plugin.ui.render.stateFlowView
 import com.unicorn.plugin.ui.showDialog2
-import kotlinx.coroutines.delay
-import kotlinx.coroutines.runBlocking
 import ru.avdim.mvi.APP_SCOPE
-import ru.avdim.mvi.ReducerResult
-import ru.avdim.mvi.createStore
-import ru.avdim.mvi.createStoreWithSideEffect
 import java.io.File
 import javax.swing.JComponent
 
@@ -47,11 +37,16 @@ class UpdateUnicornAction : AnAction(), DumbAware {
             }
           }
         }
-        state.loaded?.let {loaded: Loaded ->
+        state.loaded?.let { loaded: Loaded ->
           row {
             button("install ${loaded.path}") {
               store.send(Action.Install(panelComponent!!))
             }
+          }
+        }
+        state.loading?.let { loading ->
+          row {
+            label(loading.info)
           }
         }
         row {
