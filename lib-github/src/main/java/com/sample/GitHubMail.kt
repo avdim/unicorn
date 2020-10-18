@@ -47,6 +47,7 @@ suspend fun HttpClient.getGithubMail(token: Token<Permission.Mail>): String {
 }
 
 suspend fun HttpClient.getGithubRepoReleases(owner: String, repo: String): List<Release> {
+    //https://docs.github.com/en/free-pro-team@latest/rest/reference/repos#list-releases
     val jsonStr = request<String>(
         url = Url("https://api.github.com/repos/$owner/$repo/releases")
     ) {
