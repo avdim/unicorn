@@ -4,19 +4,29 @@ import org.junit.Assert
 import org.junit.Before
 import org.junit.Test
 import org.sample.*
+import java.io.File
 
 class RepoTest {
 
   lateinit var git: TutuGit
 
+  fun tempDir(prefix: String): File =
+    if (true) {
+      File(".").resolve("build").resolve("$prefix-${Math.random()}")
+    } else {
+      createTempDir(prefix, "")
+    }
+
+  val sshConfig = SshAgentConfig()
+
   @Before
   fun setUp() {
-    git = TutuGit(sshConfig = IdRsaSshConfig())
+    git = TutuGit(sshConfig = sshConfig)
   }
 
   @Test
   fun testCreateBranchAndRepoUpdate() {
-    val dir = createTempDir("clone_create_branch", "").also {
+    val dir = tempDir("clone_create_branch").also {
       println("temp dir: ${it.absolutePath}")
     }
     val gd: GitDir = git.cloneRepo(
@@ -24,19 +34,19 @@ class RepoTest {
       dir = dir
     )
     val repoData: RepoJson = parseJsonToRepoJson(dir.resolve("repo.json").readText())
-    repoData.update(dir, IdRsaSshConfig())
+    repoData.update(dir, sshConfig)
 
     val TEMP_BRANCH = "temp"
     val libGitDir = GitDir(dir.resolve("lib1_repo"))
     libGitDir.newBranch(TEMP_BRANCH)
     libGitDir.contentDir.resolve("new_file.txt").writeText("new file content")
-    repoData.update(dir, IdRsaSshConfig())
+    repoData.update(dir, sshConfig)
     Assert.assertTrue(libGitDir.branches().contains(TEMP_BRANCH))
   }
 
   @Test
   fun testUncomittedChanges() {
-    val dir = createTempDir("clone_create_branch", "").also {
+    val dir = tempDir("clone_create_branch").also {
       println("temp dir: ${it.absolutePath}")
     }
     val gd: GitDir = git.cloneRepo(
@@ -44,18 +54,18 @@ class RepoTest {
       dir = dir
     )
     val repoData: RepoJson = parseJsonToRepoJson(dir.resolve("repo.json").readText())
-    repoData.update(dir, IdRsaSshConfig())
+    repoData.update(dir, sshConfig)
     println(dir.listFiles().toList().map { it.name }.joinToString("\n"))
     val libGitDir = GitDir(dir.resolve("lib1_repo"))
     libGitDir.contentDir.resolve("new_file.txt").writeText("new file content")
 //    libGitDir.commit("new_file")
-    repoData.update(dir, IdRsaSshConfig())
+    repoData.update(dir, sshConfig)
     Assert.assertTrue(libGitDir.branches().any { it.contains("repo_auto_commit") })
   }
 
   @Test
   fun testNoChanges() {
-    val dir = createTempDir("clone_create_branch", "").also {
+    val dir = tempDir("clone_create_branch").also {
       println("temp dir: ${it.absolutePath}")
     }
     val gd: GitDir = git.cloneRepo(
@@ -63,17 +73,17 @@ class RepoTest {
       dir = dir
     )
     val repoData: RepoJson = parseJsonToRepoJson(dir.resolve("repo.json").readText())
-    repoData.update(dir, IdRsaSshConfig())
+    repoData.update(dir, sshConfig)
     val libGitDir = GitDir(dir.resolve("lib1_repo"))
 //    libGitDir.commit("new_file")
-    repoData.update(dir, IdRsaSshConfig())
+    repoData.update(dir, sshConfig)
     println(libGitDir.branches())
     Assert.assertFalse(libGitDir.branches().any { it.contains("repo_auto_commit") })
   }
 
   @Test
   fun testCreateTag() {
-    val dir = createTempDir("create_tag", "").also {
+    val dir = tempDir("create_tag").also {
       println("temp dir: ${it.absolutePath}")
     }
     val gd: GitDir = git.cloneRepo(

@@ -25,6 +25,8 @@ buildConfigKotlin {
     packageName = "com.unicorn.update"
     buildConfig(name = "BUILD_TIME", value = BUILD_TIME_STR)
     buildConfig(name = "OPEN_FILE_MANAGER_AT_START", value = safeArgument("openFilesAtStart") == "true")
+    buildConfig(name = "GITHUB_CLIENT_SECRET", value = getLocalProperty("GITHUB_CLIENT_SECRET"))
+    buildConfig(name = "GITHUB_CLIENT_ID", value = getLocalProperty("GITHUB_CLIENT_ID"))
   }
 }
 
@@ -55,11 +57,13 @@ dependencies {
   implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:$COROUTINE_VERSION")
   implementation("org.jetbrains.kotlinx:kotlinx-coroutines-swing:$COROUTINE_VERSION")
   implementation(project(":share-plugin"))
+  implementation(project(":lib-github"))
   testImplementation("junit:junit:4.12")
 }
 
 intellij {
   // See https://github.com/JetBrains/gradle-intellij-plugin/
+//  version = "2020.2.3"
   version = "203.4818-EAP-CANDIDATE-SNAPSHOT"//2020.3-eap
   type = "IC"
   pluginName = "unicorn-update"
@@ -79,6 +83,7 @@ tasks.withType<org.jetbrains.intellij.tasks.PatchPluginXmlTask>() {
 }
 
 tasks.withType<org.jetbrains.intellij.tasks.RunIdeTask> {
+  systemProperties["ide.browser.jcef.enabled"] = true
   jvmArgs("-Xmx2000m", "-Xms128m")
 }
 

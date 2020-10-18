@@ -1,11 +1,9 @@
 package todo.mvi
 
-import kotlinx.coroutines.CoroutineScope
 import com.unicorn.plugin.mvi.Column
 import com.unicorn.plugin.mvi.UniWindowState
-import kotlinx.coroutines.channels.*
-import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.StateFlow
+import ru.avdim.mvi.Store
+import ru.avdim.mvi.createStore
 import ru.tutu.idea.file.ConfUniFiles
 
 inline fun <T> Collection<T>.transformI(index: Int, lambda: (T) -> T): List<T> =
@@ -17,27 +15,51 @@ inline fun <T> Collection<T>.transformI(index: Int, lambda: (T) -> T): List<T> =
     }
   }
 
-class FileManagerMviStore(
-  val stateFlow: StateFlow<UniWindowState>,
-  val intent: suspend (Intent) -> Unit
-)
-
-fun CoroutineScope.createFileManagerMviStore(): FileManagerMviStore {
-  val mutableStateFlow = MutableStateFlow(
+fun createFileManagerMviStore(): Store<UniWindowState, Intent> {
+  val mviStore = createStore(
     UniWindowState(
       columns = listOf(
         Column(paths = ConfUniFiles.DEFAULT_PATHS),
         Column(paths = listOf("/"))
       )
     )
-  )
-  val intents = actor<Intent> {
-    channel.consumeEach {
-      mutableStateFlow.value = reduce(mutableStateFlow.value, it)
+  ) { s, a:Intent->
+    when (a) {
+      is Intent.EditPath -> s.copy(
+        columns = s.columns.transformI(a.col) {
+          it.copy(paths = it.paths.transformI(a.row) { a.path })
+        }
+      )
+      is Intent.AddPath -> s.copy(
+        columns = s.columns.transformI(a.col) {
+          it.copy(paths = it.paths + ConfUniFiles.DEFAULT_NEW_PATH)
+        }
+      )
+      is Intent.RemovePath -> s.copy(
+        columns = s.columns.transformI(a.col) {
+          it.copy(paths = it.paths.dropIndex(a.row))
+        }
+      )
+      is Intent.AddColumn -> s.copy(
+        columns = s.columns + Column(paths = ConfUniFiles.DEFAULT_PATHS)
+      )
+      is Intent.RemoveColumn -> {
+        s.copy(
+          columns = s.columns.dropIndex(a.col)
+        )
+      }
+      is Intent.RenderFiles -> {
+        s.copy(
+          renderFiles = true
+        )
+      }
+      is Intent.Update -> {
+        s.copy(
+          forceUpdate = s.forceUpdate + 1
+        )
+      }
     }
   }
-  return FileManagerMviStore(mutableStateFlow) {
-    intents.send(it)//can use without channel: ```mutableStateFlow.value = reduce(mutableStateFlow.value, it)```
-  }
+  return mviStore
 
 }

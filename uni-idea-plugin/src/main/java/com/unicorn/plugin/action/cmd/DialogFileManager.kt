@@ -21,7 +21,7 @@ fun openDialogFileManager() {
       stateFlowView(this, mviStore.stateFlow) { state ->
         fileManager(this, state, ProjectManager.getInstance().defaultProject) {
           launch {
-            mviStore.intent(it)
+            mviStore.send(it)
           }
         }
       }
