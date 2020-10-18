@@ -19,7 +19,7 @@ class RepoTest {
 
   @Before
   fun setUp() {
-    git = TutuGit()
+    git = TutuGit(sshConfig = SshAgentConfig())
   }
 
   @Test
