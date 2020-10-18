@@ -17,9 +17,11 @@ class RepoTest {
       createTempDir(prefix, "")
     }
 
+  val sshConfig = SshAgentConfig()
+
   @Before
   fun setUp() {
-    git = TutuGit(sshConfig = SshAgentConfig())
+    git = TutuGit(sshConfig = sshConfig)
   }
 
   @Test
@@ -32,13 +34,13 @@ class RepoTest {
       dir = dir
     )
     val repoData: RepoJson = parseJsonToRepoJson(dir.resolve("repo.json").readText())
-    repoData.update(dir, IdRsaSshConfig())
+    repoData.update(dir, sshConfig)
 
     val TEMP_BRANCH = "temp"
     val libGitDir = GitDir(dir.resolve("lib1_repo"))
     libGitDir.newBranch(TEMP_BRANCH)
     libGitDir.contentDir.resolve("new_file.txt").writeText("new file content")
-    repoData.update(dir, IdRsaSshConfig())
+    repoData.update(dir, sshConfig)
     Assert.assertTrue(libGitDir.branches().contains(TEMP_BRANCH))
   }
 
@@ -52,12 +54,12 @@ class RepoTest {
       dir = dir
     )
     val repoData: RepoJson = parseJsonToRepoJson(dir.resolve("repo.json").readText())
-    repoData.update(dir, IdRsaSshConfig())
+    repoData.update(dir, sshConfig)
     println(dir.listFiles().toList().map { it.name }.joinToString("\n"))
     val libGitDir = GitDir(dir.resolve("lib1_repo"))
     libGitDir.contentDir.resolve("new_file.txt").writeText("new file content")
 //    libGitDir.commit("new_file")
-    repoData.update(dir, IdRsaSshConfig())
+    repoData.update(dir, sshConfig)
     Assert.assertTrue(libGitDir.branches().any { it.contains("repo_auto_commit") })
   }
 
@@ -71,10 +73,10 @@ class RepoTest {
       dir = dir
     )
     val repoData: RepoJson = parseJsonToRepoJson(dir.resolve("repo.json").readText())
-    repoData.update(dir, IdRsaSshConfig())
+    repoData.update(dir, sshConfig)
     val libGitDir = GitDir(dir.resolve("lib1_repo"))
 //    libGitDir.commit("new_file")
-    repoData.update(dir, IdRsaSshConfig())
+    repoData.update(dir, sshConfig)
     println(libGitDir.branches())
     Assert.assertFalse(libGitDir.branches().any { it.contains("repo_auto_commit") })
   }
