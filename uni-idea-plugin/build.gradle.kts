@@ -6,6 +6,9 @@ buildscript {//todo workaround https://github.com/JetBrains/gradle-intellij-plug
   }
 }
 
+group = "com.domain.plugin"
+version = "0.11.4"
+
 plugins {
   java
   kotlin("jvm")
@@ -32,9 +35,6 @@ java {
   sourceCompatibility = JavaVersion.VERSION_1_8
   targetCompatibility = JavaVersion.VERSION_1_8
 }
-
-group = "com.domain.plugin"
-version = "0.11.3"
 
 repositories {
   mavenCentral()
