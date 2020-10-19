@@ -4,6 +4,7 @@ import com.intellij.ide.plugins.PluginDescriptorLoader
 import com.intellij.ide.plugins.PluginInstaller
 import com.sample.Release
 import com.sample.getGithubRepoReleases
+import com.unicorn.update.BuildConfig
 import io.ktor.client.*
 import io.ktor.client.engine.apache.*
 import io.ktor.http.*
@@ -15,6 +16,7 @@ import ru.avdim.mvi.APP_SCOPE
 import ru.avdim.mvi.ReducerResult
 import ru.avdim.mvi.createStoreWithSideEffect
 import java.io.File
+import java.io.FileFilter
 import javax.swing.JComponent
 
 data class InstalledPlugin(
@@ -34,6 +36,7 @@ data class State(
     val selection: Release? = null,
     val current: InstalledPlugin? = null,
     val loading: Loading? = null,
+    val buildDirZipFiles: List<String> = emptyList(),
     val loaded: Loaded? = null
 )
 
@@ -41,24 +44,37 @@ sealed class Action {
     class SetReleases(val list: List<Release>) : Action()
     class SetCurrent(val currentInfo: String) : Action()
     class StartLoading(val release: Release) : Action()
-    class Install(val parentComponent: JComponent) : Action()
+    class Install(val zipFilePath: String, val parentComponent: JComponent) : Action()
     class Remove(val parentComponent: JComponent) : Action()
-    class Loaded(val path: String):Action()
-    class LoadingInfo(val info:String) : Action()
-    object LoadReleases:Action()
+    class Loaded(val path: String) : Action()
+    class LoadingInfo(val info: String) : Action()
+    class SetBuildDirFiles(val zipFiles: List<String>) : Action()
+    object Init : Action()
 }
 
 sealed class Effect {
     object CheckCurrent : Effect()
+    object CheckBuildDir : Effect()
     object LoadReleases : Effect()
     class DownloadPlugin(val release:Release):Effect()
     class InstallPlugin(val path: String, val parentComponent: JComponent?) : Effect()
     class RemovePlugin(val parentComponent: JComponent?) : Effect()
 }
 
-fun createUpdateStore() = createStoreWithSideEffect(State(),
+fun createUpdateStore() = createStoreWithSideEffect(
+    State(),
     { store, effect: Effect ->
         when (effect) {
+            is Effect.CheckBuildDir -> {
+                val distDir = File(BuildConfig.UNI_ZIP_BUILD_DIST)
+                println("distDir: ${distDir.absolutePath}")
+                if (distDir.exists()) {
+                    val zipFiles = distDir
+                        .listFiles(FileFilter { it.extension == "zip" })
+                        .map { it.absolutePath }
+                    store.send(Action.SetBuildDirFiles(zipFiles))
+                }
+            }
             is Effect.CheckCurrent -> {
                 //todo
             }
@@ -95,23 +111,24 @@ fun createUpdateStore() = createStoreWithSideEffect(State(),
                         client.downloadFile(file, url)
                             .flowOn(Dispatchers.IO)
                             .collect { download ->
-                            when(download) {
-                                is DownloadResult.Error -> {
-                                    store.send(
-                                        Action.LoadingInfo(download.message)
-                                    )
-                                }
-                                is DownloadResult.Progress -> {
-                                    store.send(
-                                        Action.LoadingInfo("progress: ${download.progress}")
-                                    )
-                                }
-                                is DownloadResult.Success -> {
-                                    store.send(Action.Loaded(file.absolutePath))
-
+                                when (download) {
+                                    is DownloadResult.Error -> {
+                                        store.send(
+                                            Action.LoadingInfo(download.message)
+                                        )
+                                    }
+                                    is DownloadResult.Progress -> {
+                                        store.send(
+                                            Action.LoadingInfo("progress: ${download.progress}")
+                                        )
+                                    }
+                                    is DownloadResult.Success -> {
+                                        store.send(
+                                            Action.Loaded(file.absolutePath)
+                                        )
+                                    }
                                 }
                             }
-                        }
                     }
                 }
             }
@@ -138,10 +155,14 @@ fun createUpdateStore() = createStoreWithSideEffect(State(),
         }
     }) { s, a: Action ->
     when (a) {
-        is Action.LoadReleases -> {
+        is Action.Init -> {
             ReducerResult(
                 s.copy(),
-                listOf(Effect.LoadReleases)
+                listOf(
+                    Effect.LoadReleases,
+                    Effect.CheckCurrent,
+                    Effect.CheckBuildDir
+                )
             )
         }
         is Action.SetReleases -> {
@@ -171,12 +192,9 @@ fun createUpdateStore() = createStoreWithSideEffect(State(),
         is Action.Install -> {
             ReducerResult(
                 s.copy(),
-                if(s.loaded != null) {
-                    listOf(Effect.InstallPlugin(s.loaded.path, a.parentComponent))
-                } else {
-                    listOf()
-                }
-
+                listOf(
+                    Effect.InstallPlugin(a.zipFilePath, a.parentComponent)
+                )
             )
         }
         is Action.SetCurrent -> {
@@ -201,5 +219,14 @@ fun createUpdateStore() = createStoreWithSideEffect(State(),
                 )
             )
         }
+        is Action.SetBuildDirFiles -> {
+            ReducerResult(
+                s.copy(
+                    buildDirZipFiles = a.zipFiles
+                )
+            )
+        }
     }
+}.apply {
+    send(Action.Init)
 }

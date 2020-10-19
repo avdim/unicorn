@@ -23,9 +23,10 @@ idea {
 buildConfigKotlin {
   sourceSet("main") {
     packageName = "com.unicorn.update"
-    buildConfig(name = "BUILD_TIME", value = BUILD_TIME_STR)
-    buildConfig(name = "OPEN_FILE_MANAGER_AT_START", value = safeArgument("openFilesAtStart") == "true")
-
+    buildConfig(
+      name = "UNI_ZIP_BUILD_DIST",
+      value = rootProject.file("uni-idea-plugin/build/distributions").absolutePath
+    )
     buildConfig(name = "GITHUB_CLIENT_ID", value = getLocalProperty("GITHUB_CLIENT_ID"))
     //todo не комплилировать секреты в jar-ник на CI/CD. Тут нужен request на доверенный сервер.
     buildConfig(name = "GITHUB_CLIENT_SECRET", value = getLocalProperty("GITHUB_CLIENT_SECRET"))
