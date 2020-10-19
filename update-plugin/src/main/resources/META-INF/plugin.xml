@@ -21,5 +21,9 @@
     </group>
   </actions>
 
+  <applicationListeners>
+    <listener class="com.unicorn.plugin.update.LifeListener" topic="com.intellij.ide.AppLifecycleListener"/>
+  </applicationListeners>
+
 
 </idea-plugin>

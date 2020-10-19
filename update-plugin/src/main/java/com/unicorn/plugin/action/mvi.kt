@@ -7,7 +7,9 @@ import com.sample.getGithubRepoReleases
 import io.ktor.client.*
 import io.ktor.client.engine.apache.*
 import io.ktor.http.*
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.launch
 import ru.avdim.mvi.APP_SCOPE
 import ru.avdim.mvi.ReducerResult
@@ -90,7 +92,9 @@ fun createUpdateStore() = createStoreWithSideEffect(State(),
                         val file = createTempDir("plugin").resolve(name)
                         file.createNewFile()
                         println("download to file ${file.absolutePath}")
-                        client.downloadFile(file, url).collect { download ->
+                        client.downloadFile(file, url)
+                            .flowOn(Dispatchers.IO)
+                            .collect { download ->
                             when(download) {
                                 is DownloadResult.Error -> {
                                     store.send(
