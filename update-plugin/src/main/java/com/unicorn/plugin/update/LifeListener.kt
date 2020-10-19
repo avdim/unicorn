@@ -12,7 +12,6 @@ class LifeListener : com.intellij.ide.AppLifecycleListener {
   }
 
   override fun appStarting(projectFromCommandLine: Project?) {
-    //todo fix Directory index can only be queried after project initialization
     APP_SCOPE.launch {
       openUpdateUnicornDialog()
     }

@@ -1,10 +1,12 @@
 package com.unicorn.plugin.ui.render
 
 import com.intellij.openapi.project.ProjectManager
+import com.intellij.ui.TextFieldWithAutoCompletion
 import com.intellij.ui.layout.LayoutBuilder
 import com.intellij.ui.layout.panel
 import com.intellij.ui.tabs.TabInfo
 import com.intellij.ui.tabs.impl.JBTabsImpl
+import com.unicorn.plugin.onTextChange
 import kotlinx.coroutines.*
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.collectLatest
@@ -30,37 +32,20 @@ fun <T> CoroutineScope.stateFlowView(
           panel {
             renderState(state)
 
-            hideableRow("") {
+            hideableRow("") {//todo workaround to mvi repaint good
               cell {
-                textFieldCompletion(//todo workaround to repaint
-                  project = ProjectManager.getInstance().defaultProject,
-                  label = null,
-                  currentValue = "",
-                  autoCompletionVariants = listOf("a", "b")
-                ) {
+                TextFieldWithAutoCompletion(
+                  null,
+                  TextFieldWithAutoCompletion.StringsCompletionProvider(
+                    listOf(), null
+                  ),
+                  false,
+                  ""
+                ).invoke()
 
-                }
-                button("update inside Dialog") {
-                  //todo try fix previous workaround. Need Find parent Dialog and repaint
-                  parentPanel.findParent<JBTabsImpl>()?.let { tabs ->
-                    val oldSelection = tabs.selectedInfo
-                    if (oldSelection != null) {
-                      GlobalScope.launch {
-                        withContext(Dispatchers.Main) {
-                          val tempTab = TabInfo(com.intellij.ui.layout.panel {}).setText("temp")
-                          tabs.addTab(tempTab)
-                          tabs.select(tempTab, true)
-                          delay(100)
-                          tabs.select(oldSelection, true)
-                        }
-                      }
-                    }
-                  }
 //              parentPanel.revalidate()
 //              parentPanel.validate()
 //              parentPanel.repaint()
-                  //dialog.repaint
-                }
               }
             }//hideableRow
 
