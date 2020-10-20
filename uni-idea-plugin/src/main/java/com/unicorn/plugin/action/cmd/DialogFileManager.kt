@@ -1,6 +1,7 @@
 package com.unicorn.plugin.action.cmd
 
 import com.intellij.openapi.project.ProjectManager
+import com.intellij.openapi.ui.DialogWrapper
 import com.unicorn.Uni
 import com.unicorn.plugin.ui.showPanelDialog
 import com.unicorn.plugin.ui.render.fileManager
@@ -14,17 +15,15 @@ class DialogFileManager : Command {
   }
 }
 
-fun openDialogFileManager() {
-  Uni.scope.launch {
+fun openDialogFileManager(): DialogWrapper {
+//  Uni.scope.launch {
     val mviStore = createFileManagerMviStore()
-    showPanelDialog {
-      stateFlowView(this, mviStore.stateFlow) { state ->
-        fileManager(this, state, ProjectManager.getInstance().defaultProject) {
-          launch {
-            mviStore.send(it)
-          }
+    return showPanelDialog { close ->
+      Uni.scope.stateFlowView(this, mviStore.stateFlow) { state ->
+        fileManager(this, state, ProjectManager.getInstance().defaultProject, close) {
+          mviStore.send(it)
         }
       }
     }
-  }
+//  }
 }

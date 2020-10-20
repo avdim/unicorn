@@ -4,7 +4,7 @@ import com.intellij.openapi.ui.DialogWrapper
 import com.intellij.ui.layout.panel
 import javax.swing.JComponent
 
-fun showDialog2(viewComponent: JComponent) {
+fun showDialog2(viewComponent: JComponent, modal:Boolean = false): DialogWrapper {
   val dialog = object : DialogWrapper(
     null,
     null,
@@ -23,17 +23,21 @@ fun showDialog2(viewComponent: JComponent) {
       return super.getPreferredFocusedComponent()//todo
     }
   }
-  dialog.setModal(false)
+  dialog.setModal(modal)
   dialog.show()
+  return dialog
 }
 
 //todo coroutine scope life when dialog is open. Сделать уничтожение scope при закрытии диалога
-fun showPanelDialog(lambda: com.intellij.ui.layout.LayoutBuilder.() -> kotlin.Unit) =
-  showDialog2(
+fun showPanelDialog(lambda: com.intellij.ui.layout.LayoutBuilder.(close:()->Unit) -> kotlin.Unit): DialogWrapper {
+  var dialog: DialogWrapper?=null
+  dialog = showDialog2(
     panel {
-      lambda()
+      lambda({ dialog?.close(DialogWrapper.CLOSE_EXIT_CODE) })
     }
   )
+  return dialog
+}
 
 fun showModalDialog(viewComponent: JComponent): Boolean {
   TODO("showAndGet")

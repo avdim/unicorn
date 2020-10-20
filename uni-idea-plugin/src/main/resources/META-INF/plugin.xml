@@ -52,6 +52,8 @@
       <!--                <action class="SampleAction2" id="a4" text="A4"/>-->
       <!--            </group>-->
     </group>
+    <action id="UniIntegrationTestAction" class="com.unicorn.plugin.action.UniIntegrationTestAction"
+            text="UniIntegrationTestAction"/>
   </actions>
 
   <!--todo:-->

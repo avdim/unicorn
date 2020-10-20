@@ -1,10 +1,10 @@
 package com.unicorn.plugin.action
 
-import com.intellij.ide.plugins.PluginDescriptorLoader
-import com.intellij.ide.plugins.PluginInstaller
 import com.sample.Release
 import com.sample.getGithubRepoReleases
-import com.unicorn.update.BuildConfig
+import com.unicorn.plugin.buildDistPlugins
+import com.unicorn.plugin.installPlugin
+import com.unicorn.plugin.removeUniPlugin
 import io.ktor.client.*
 import io.ktor.client.engine.apache.*
 import io.ktor.http.*
@@ -16,7 +16,6 @@ import ru.avdim.mvi.APP_SCOPE
 import ru.avdim.mvi.ReducerResult
 import ru.avdim.mvi.createStoreWithSideEffect
 import java.io.File
-import java.io.FileFilter
 import javax.swing.JComponent
 
 data class InstalledPlugin(
@@ -66,14 +65,11 @@ fun createUpdateStore() = createStoreWithSideEffect(
     { store, effect: Effect ->
         when (effect) {
             is Effect.CheckBuildDir -> {
-                val distDir = File(BuildConfig.UNI_ZIP_BUILD_DIST)
-                println("distDir: ${distDir.absolutePath}")
-                if (distDir.exists()) {
-                    val zipFiles = distDir
-                        .listFiles(FileFilter { it.extension == "zip" })
-                        .map { it.absolutePath }
-                    store.send(Action.SetBuildDirFiles(zipFiles))
-                }
+                store.send(
+                    Action.SetBuildDirFiles(
+                        buildDistPlugins()
+                    )
+                )
             }
             is Effect.CheckCurrent -> {
                 //todo
@@ -134,23 +130,12 @@ fun createUpdateStore() = createStoreWithSideEffect(
             }
             is Effect.InstallPlugin -> {
                 val file = File(effect.path)
-                val descriptor = PluginDescriptorLoader.loadDescriptorFromArtifact(file.toPath(), null)
-                @Suppress("MissingRecentApi")//todo suppress
-                PluginInstaller.installAndLoadDynamicPlugin(
-                    file.toPath(),
-                    effect.parentComponent,
-                    descriptor
-                )
+                val parentComponent = effect.parentComponent
+                installPlugin(file, parentComponent)
             }
             is Effect.RemovePlugin -> {
-                //todo get descriptor from Idea
-                val file = File("/Users/dim/Desktop/unicorn-0.11.0.zip")
-                val descriptor = PluginDescriptorLoader.loadDescriptorFromArtifact(file.toPath(), null)
-                PluginInstaller.uninstallDynamicPlugin(
-                    effect.parentComponent,
-                    descriptor,
-                    true
-                )
+                val parentComponent = effect.parentComponent
+                removeUniPlugin(parentComponent)
             }
         }
     }) { s, a: Action ->
@@ -230,3 +215,4 @@ fun createUpdateStore() = createStoreWithSideEffect(
 }.apply {
     send(Action.Init)
 }
+

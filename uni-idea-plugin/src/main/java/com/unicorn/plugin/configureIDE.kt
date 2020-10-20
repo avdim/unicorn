@@ -43,8 +43,10 @@ suspend fun configureIDE() {
     DaemonCodeAnalyzerSettings.getInstance().SHOW_METHOD_SEPARATORS = true
   }
 
-  KeymapManagerEx.getInstanceEx().activeKeymap =
-    KeymapManagerEx.getInstanceEx().getKeymap(UNICORN_KEYMAP) ?: Uni.log.fatalError { "keymap not found $UNICORN_KEYMAP" }
+  val keymap = KeymapManagerEx.getInstanceEx().getKeymap(UNICORN_KEYMAP)
+  if(keymap != null) {//?: Uni.log.fatalError { "keymap not found $UNICORN_KEYMAP" }
+    KeymapManagerEx.getInstanceEx().activeKeymap = keymap
+  }
 
   UISettings.instance.smoothScrolling//=false todo val //UI: smooth scrolling
   UISettings.instance.showTreeIndentGuides = true

@@ -1,14 +1,12 @@
 package com.unicorn.plugin.action.cmd.misc
 
 import com.google.common.base.CaseFormat
-import com.intellij.openapi.actionSystem.ActionManager
 import com.intellij.openapi.project.ProjectManager
 import com.intellij.openapi.util.Disposer
 import com.intellij.ui.components.dialog
 import com.intellij.ui.tabs.JBTabsFactory
 import com.intellij.ui.tabs.TabInfo
 import com.unicorn.plugin.action.cmd.Command
-import com.unicorn.plugin.perform
 import javax.swing.JPanel
 import kotlin.reflect.jvm.kotlinFunction
 
