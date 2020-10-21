@@ -3,22 +3,63 @@ package com.unicorn.plugin
 import com.intellij.codeInsight.daemon.DaemonCodeAnalyzerSettings
 import com.intellij.ide.GeneralSettings
 import com.intellij.ide.actions.ViewInplaceCommentsAction
+import com.intellij.ide.plugins.DynamicPluginListener
+import com.intellij.ide.plugins.IdeaPluginDescriptor
 import com.intellij.ide.ui.UISettings
+import com.intellij.openapi.application.ApplicationManager
 import com.intellij.openapi.editor.EditorFactory
 import com.intellij.openapi.editor.ex.EditorSettingsExternalizable
 import com.intellij.openapi.keymap.ex.KeymapManagerEx
+import com.intellij.openapi.project.ProjectManager
+import com.intellij.openapi.util.Disposer
 import com.intellij.openapi.util.registry.Registry
 import com.intellij.openapi.wm.impl.IdeBackgroundUtil
+import com.unicorn.BuildConfig
 import com.unicorn.Uni
+import com.unicorn.plugin.action.cmd.openDialogFileManager
+import kotlinx.coroutines.*
 import org.jetbrains.plugins.terminal.TerminalOptionsProvider
+import ru.avdim.mvi.APP_SCOPE
+import ru.tutu.idea.file.ConfUniFiles
 import javax.swing.SwingConstants
 
 private val UNICORN_KEYMAP = "Unicorn"
 
+val dynamicPluginListener: DynamicPluginListener = object : DynamicPluginListener{
+  override fun beforePluginLoaded(pluginDescriptor: IdeaPluginDescriptor) {
+    Uni.log.debug { "UniDynamicListener.beforePluginLoaded 1" }
+  }
+
+  override fun pluginLoaded(pluginDescriptor: IdeaPluginDescriptor) {
+    Uni.log.debug { "UniDynamicListener.pluginLoaded 2" }
+  }
+
+  override fun checkUnloadPlugin(pluginDescriptor: IdeaPluginDescriptor) {
+    Uni.log.debug { "UniDynamicListener.checkUnloadPlugin 1" }
+  }
+
+  override fun beforePluginUnload(pluginDescriptor: IdeaPluginDescriptor, isUpdate: Boolean) {
+    Uni.log.debug { "UniDynamicListener.beforePluginUnload 2" }
+    Uni.log.debug { "pluginDescriptor.name: ${pluginDescriptor.name}" }
+    if (pluginDescriptor.name == Uni.PLUGIN_NAME) {
+      Disposer.dispose(Uni)
+      //todo dynamic plugin can't unload when tool window is open
+    }
+  }
+
+  override fun pluginUnloaded(pluginDescriptor: IdeaPluginDescriptor, isUpdate: Boolean) {
+    Uni.log.debug { "UniDynamicListener.pluginUnloaded start 3" }
+    Uni.log.debug { "UniDynamicListener.pluginUnloaded finish 3" }
+  }
+}
+
 suspend fun configureIDE() {
   Uni.log.info { "configureIDE" }
+  ApplicationManager.getApplication().messageBus.connect(Uni)
+  .subscribe(DynamicPluginListener.TOPIC, dynamicPluginListener)
+
   // Upload plugin timeout
-  Registry.get("ide.plugins.unload.timeout").setValue(15_000)
+  Registry.get("ide.plugins.unload.timeout").setValue(8_000)
   // Terminal settings
   val previousTerminalLines: Int = Registry.intValue("terminal.buffer.max.lines.count")
   Registry.get("terminal.buffer.max.lines.count").setValue(100_000)
@@ -44,8 +85,10 @@ suspend fun configureIDE() {
   }
 
   val keymap = KeymapManagerEx.getInstanceEx().getKeymap(UNICORN_KEYMAP)
-  if(keymap != null) {//?: Uni.log.fatalError { "keymap not found $UNICORN_KEYMAP" }
+  if (keymap != null) {//?: Uni.log.fatalError { "keymap not found $UNICORN_KEYMAP" }
     KeymapManagerEx.getInstanceEx().activeKeymap = keymap
+  } else {
+    Uni.log.error { "keymap $UNICORN_KEYMAP not found" }
   }
 
   UISettings.instance.smoothScrolling//=false todo val //UI: smooth scrolling
@@ -77,4 +120,10 @@ suspend fun configureIDE() {
 
   UISettings.instance.fireUISettingsChanged()
   EditorFactory.getInstance().refreshAllEditors()
+
+  if (Uni.buildConfig.OPEN_FILE_MANAGER_AT_START) {
+    delay(500)
+    openDialogFileManager()
+  }
+
 }

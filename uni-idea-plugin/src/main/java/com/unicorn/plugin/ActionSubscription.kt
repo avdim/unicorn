@@ -72,7 +72,6 @@ object ActionSubscription {
     }
   }
 
-  @Synchronized
   fun stopSubscription() {
     Uni.log.debug { "stopSubscription" }
     if (Conf.ACTION_LISTENER) {

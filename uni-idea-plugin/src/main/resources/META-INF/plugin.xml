@@ -17,9 +17,9 @@
 <!--  <idea-version since-build="202.6948.69"/>&lt;!&ndash;Release 2020.2.1&ndash;&gt;-->
   <depends>com.intellij.modules.platform</depends>
 
-  <applicationListeners>
-    <listener class="com.unicorn.plugin.UniDynamicListener" topic="com.intellij.ide.plugins.DynamicPluginListener"/>
-  </applicationListeners>
+<!--  <applicationListeners>-->
+<!--    <listener class="com.unicorn.plugin.UniDynamicListener" topic="com.intellij.ide.plugins.DynamicPluginListener"/>-->
+<!--  </applicationListeners>-->
 
   <applicationListeners>
     <listener class="com.unicorn.plugin.LifeListener" topic="com.intellij.ide.AppLifecycleListener"/>
@@ -38,6 +38,12 @@
     <treeStructureProvider implementation="todo.MyTreeStructureProvider"/>
   </extensions>
   <actions>
+<!--    <action id="TutuPlugin.ActionUniversal" class="com.unicorn.plugin.action.UniversalAction" text="Universal Action"-->
+<!--            description="Universal action">-->
+<!--      <add-to-group group-id="MainMenu" anchor="last"/>-->
+<!--      <keyboard-shortcut first-keystroke="alt F2" keymap="$default"/>-->
+<!--      <keyboard-shortcut first-keystroke="alt Z" keymap="$default"/>-->
+<!--    </action>-->
     <group id="my-group" text="MyGrp" description="TodoDesc">
       <add-to-group group-id="MainMenu" anchor="after" relative-to-action="HelpMenu"/>
       <action id="TutuPlugin.ActionUniversal" class="com.unicorn.plugin.action.UniversalAction" text="Universal Action"
@@ -51,9 +57,10 @@
       <!--                <action class="SampleAction1" id="a3" text="A3"/>-->
       <!--                <action class="SampleAction2" id="a4" text="A4"/>-->
       <!--            </group>-->
+      <action id="UniPlugin.UniIntegrationTestAction" class="com.unicorn.plugin.action.UniIntegrationTestAction"
+              text="UniIntegrationTestAction"/>
     </group>
-    <action id="UniIntegrationTestAction" class="com.unicorn.plugin.action.UniIntegrationTestAction"
-            text="UniIntegrationTestAction"/>
+
   </actions>
 
   <!--todo:-->

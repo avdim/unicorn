@@ -2,10 +2,7 @@ package com.unicorn.plugin.update
 
 import com.intellij.openapi.ui.DialogPanel
 import com.intellij.ui.layout.panel
-import com.unicorn.plugin.buildDistPlugins
-import com.unicorn.plugin.installPlugin
-import com.unicorn.plugin.performActionById
-import com.unicorn.plugin.removeUniPlugin
+import com.unicorn.plugin.*
 import com.unicorn.plugin.ui.showDialog2
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
@@ -20,40 +17,46 @@ fun integrationTest() {
         label("empty panel only for progress")
       }
     }
-      showDialog2(
-          parent
-      )
+    showDialog2(parent)
     val path = buildDistPlugins().firstOrNull()
     if (path == null) {
       testError("plugin path == null")
     }
-    val installResult1 = installPlugin(File(path), parent)
-    if (!installResult1) {
-      testError("installResult1: $installResult1")
+    assertTrue("install1") {
+      installPlugin(File(path), parent)
     }
-      delay(6000)
-      performActionById("UniIntegrationTestAction")//todo
-    //todo launch action
-      delay(9000)
-    //        invokeLater {
-    val removeResult1 = removeUniPlugin(parent)
-    if (!removeResult1) {
-      testError("removeResult1: $removeResult1")
+
+    if (true) {
+      delay(5_000)
+      performActionById("UniPlugin.UniIntegrationTestAction")
+
+      delay(20_000)
+      assertTrue("remove1") {
+        removeUniPlugin(parent)
+      }
+      delay(10_000)
+      assertTrue("install2") {
+        installPlugin(File(path), parent)
+      }
+      delay(9_000)
+      assertTrue("remove2") {
+        removeUniPlugin(parent)
+      }
+      delay(3_000)
+      println("INGETRATION TEST DONE")
+      System.exit(0)
     }
-    //        }
-      delay(25_000)
-    val installResult2 = installPlugin(File(path), parent)
-    if (!installResult2) {
-      testError("installResult2: $installResult2")
-    }
-      delay(9000)
-      removeUniPlugin(parent)
-    println("INGETRATION TEST DONE")
-    System.exit(0)
   }
 }
 
-fun testError(message:String) {
+fun testError(message: String) {
   println("TEST ERROR: $message")
   System.exit(1)
+}
+
+fun assertTrue(message: String, action: () -> Boolean) {
+  val result = action()
+  if (!result) {
+    testError(message)
+  }
 }

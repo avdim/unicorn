@@ -28,15 +28,12 @@ class LifeListener : com.intellij.ide.AppLifecycleListener {
 
   override fun appStarting(projectFromCommandLine: Project?) {
     Uni.log.debug { "LifeListener.appStarting($projectFromCommandLine)" }
-    if(Uni.buildConfig.OPEN_FILE_MANAGER_AT_START) {
-      openDialogFileManager()
-    }
   }
 
   override fun appClosing() {
     Uni.log.debug { "1 LifeListener.appClosing()" }
-    Uni.job.cancel()
-    ActionSubscription.stopSubscription()
+//    Uni.job.cancel()
+//    ActionSubscription.stopSubscription()
   }
 
   override fun appWillBeClosed(isRestart: Boolean) {
