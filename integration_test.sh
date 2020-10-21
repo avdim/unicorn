@@ -8,5 +8,5 @@ repeat_wrapper () {
 rm -rf uni-idea-plugin/build/distributions
 ./gradlew uni-idea-plugin:clean uni-idea-plugin:buildPlugin
 
-repeat_wrapper ./gradlew update-plugin:runIde -PintegrationTest=true
-#./gradlew update-plugin:runIde
+#repeat_wrapper ./gradlew update-plugin:runIde -PintegrationTest=true
+./gradlew update-plugin:runIde
