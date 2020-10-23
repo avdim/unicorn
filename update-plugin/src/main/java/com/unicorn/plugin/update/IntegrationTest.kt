@@ -19,20 +19,18 @@ fun integrationTest() {
     }
     showDialog2(parent)
     installAndStartIntegrationTest("install 1", parent)
-    delay(500)
+    delay(1)
 
     assertTrue("remove1") {
       removeUniPlugin(parent)
     }
-    delay(1_000)
 
     installAndStartIntegrationTest("install 2", parent)
-    delay(500)
+    delay(1)
 
     assertTrue("remove2") {
       removeUniPlugin(parent)
     }
-    delay(1_000)
 
     println("INGETRATION TEST DONE")
     System.exit(0)
