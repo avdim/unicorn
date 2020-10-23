@@ -24,16 +24,10 @@ object Uni : Disposable {
   val PLUGIN_NAME = "UniCorn"
 
   init {
+    RecentLog.start()
+    ConsoleLog.start()
+    TmpFileLog.start()
     scope.launch {
-      launch {
-        RecentLog.start()
-      }
-      launch {
-        ConsoleLog.start()
-      }
-      launch {
-        TmpFileLog.start()
-      }
       launch {
         configureIDE()
       }

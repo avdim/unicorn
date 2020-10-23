@@ -19,6 +19,7 @@
 
 <!--  <applicationListeners>-->
 <!--    <listener class="com.unicorn.plugin.UniDynamicListener" topic="com.intellij.ide.plugins.DynamicPluginListener"/>-->
+<!--    <listener class="com.unicorn.plugin.MyKeymapListener" topic="com.intellij.openapi.keymap.KeymapManagerListener"/>-->
 <!--  </applicationListeners>-->
 
   <applicationListeners>
@@ -57,8 +58,6 @@
       <!--                <action class="SampleAction1" id="a3" text="A3"/>-->
       <!--                <action class="SampleAction2" id="a4" text="A4"/>-->
       <!--            </group>-->
-      <action id="UniPlugin.UniIntegrationTestAction" class="com.unicorn.plugin.action.UniIntegrationTestAction"
-              text="UniIntegrationTestAction"/>
     </group>
 
   </actions>

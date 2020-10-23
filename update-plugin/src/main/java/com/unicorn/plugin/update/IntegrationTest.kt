@@ -26,26 +26,22 @@ fun integrationTest() {
       installPlugin(File(path), parent)
     }
 
-    if (true) {
-      delay(5_000)
-      performActionById("UniPlugin.UniIntegrationTestAction")
-
-      delay(20_000)
-      assertTrue("remove1") {
-        removeUniPlugin(parent)
-      }
-      delay(10_000)
-      assertTrue("install2") {
-        installPlugin(File(path), parent)
-      }
-      delay(9_000)
-      assertTrue("remove2") {
-        removeUniPlugin(parent)
-      }
-      delay(3_000)
-      println("INGETRATION TEST DONE")
-      System.exit(0)
+    delay(20_000)
+    assertTrue("remove1") {
+      removeUniPlugin(parent)
     }
+    delay(10_000)
+    assertTrue("install2") {
+      installPlugin(File(path), parent)
+    }
+    delay(9_000)
+    assertTrue("remove2") {
+      removeUniPlugin(parent)
+    }
+    delay(3_000)
+    println("INGETRATION TEST DONE")
+    System.exit(0)
+
   }
 }
 

@@ -35,8 +35,7 @@ class UniversalAction : AnAction(), DumbAware {
 
   override fun actionPerformed(event: AnActionEvent) {
     Uni.log.debug { "UniversalAction" }
-    val dialog = openDialogFileManager()
-    Disposer.register(Uni, dialog.disposable)
+    openDialogFileManager()
 
 //    val context = UniversalContext(
 //      event = event,
