@@ -1,7 +1,5 @@
 package com.unicorn.plugin.update
 
-import com.intellij.ide.plugins.DynamicPluginListener
-import com.intellij.openapi.application.ApplicationManager
 import com.intellij.openapi.ui.DialogPanel
 import com.intellij.ui.layout.panel
 import com.unicorn.plugin.*
@@ -20,27 +18,28 @@ fun integrationTest() {
       }
     }
     showDialog2(parent)
+    installAndStartIntegrationTest("install 1", parent)
+    delay(5_000)
 
-    installAndStartIntegrationTest(parent)
-
-    delay(10_000)
     assertTrue("remove1") {
       removeUniPlugin(parent)
     }
-    delay(10_000)
-    installAndStartIntegrationTest(parent)
-    delay(10_000)
+    delay(1_000)
+
+    installAndStartIntegrationTest("install 2", parent)
+    delay(5_000)
+
     assertTrue("remove2") {
       removeUniPlugin(parent)
     }
-    delay(3_000)
+    delay(1_000)
+
     println("INGETRATION TEST DONE")
     System.exit(0)
-
   }
 }
 
-suspend fun installAndStartIntegrationTest(parent: JComponent) {
+suspend fun installAndStartIntegrationTest(assertMessage: String, parent: JComponent) {
   val path = buildDistPlugins().firstOrNull()
   if (path == null) {
     testError("plugin path == null")
@@ -49,7 +48,7 @@ suspend fun installAndStartIntegrationTest(parent: JComponent) {
   val asyncPlugin = GlobalScope.async {
     waitPlugin("UniCorn")
   }
-  assertTrue("install") {//todo assert message
+  assertTrue("$assertMessage, install") {
     installPlugin(File(path), parent)
   }
   /**
@@ -57,11 +56,27 @@ suspend fun installAndStartIntegrationTest(parent: JComponent) {
    * Если будет держаться ссылка, то плагин не получится динамически выгрузить.
    */
   val classLoader = asyncPlugin.await()
-  fun ClassLoader.uniIntegrationTest() {
-    val loadedClass: Class<*> = loadClass(/*com.package...*/"UniPluginIntegrationTest")
-    loadedClass.constructors[0].newInstance()
+  if (false) {
+//  fun ClassLoader.uniIntegrationTest() {
+//    val loadedClass: Class<*> = loadClass(/*com.package...*/"UniPluginIntegrationTest")
+//    loadedClass.constructors[0].newInstance()
+//  }
+//  classLoader.uniIntegrationTest()
+  } else {
+    val className = /*com.package...*/"UniPluginIntegrationTest"
+    val result = suspendCancellableCoroutine<Boolean> { continuation ->
+      val loadedClass: Class<*> = classLoader.loadClass(className)
+      loadedClass.constructors[0].newInstance({ result: Boolean ->
+        continuation.resumeWith(
+          Result.success(result)
+        )
+      })
+    }
+    assertTrue("$assertMessage, init class $className") {
+      result
+    }
   }
-  classLoader.uniIntegrationTest()
+  //Не надо добавлять сюлда delay, иначе classLoader не освобождается
 }
 
 fun testError(message: String) {
@@ -70,7 +85,7 @@ fun testError(message: String) {
 }
 
 fun assertTrue(message: String, action: () -> Boolean) {
-  val result = action()
+  val result: Boolean = action()
   if (!result) {
     testError(message)
   }

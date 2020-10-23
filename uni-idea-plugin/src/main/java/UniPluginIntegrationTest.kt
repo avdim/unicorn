@@ -1,9 +1,16 @@
 import com.unicorn.Uni
 import com.unicorn.plugin.action.cmd.openDialogFileManager
+import kotlinx.coroutines.MainScope
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 
-class UniPluginIntegrationTest {
+class UniPluginIntegrationTest(callback: (Boolean) -> Unit) {
   init {
     Uni.log.info { "init UniPluginIntegrationTest" }
-    openDialogFileManager()
+    MainScope().launch {
+      openDialogFileManager()
+      delay(5000)
+      callback(true)
+    }
   }
 }
