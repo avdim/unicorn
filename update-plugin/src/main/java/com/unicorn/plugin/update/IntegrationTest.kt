@@ -19,7 +19,7 @@ fun integrationTest() {
     }
     showDialog2(parent)
     installAndStartIntegrationTest("install 1", parent)
-    delay(5_000)
+    delay(500)
 
     assertTrue("remove1") {
       removeUniPlugin(parent)
@@ -27,7 +27,7 @@ fun integrationTest() {
     delay(1_000)
 
     installAndStartIntegrationTest("install 2", parent)
-    delay(5_000)
+    delay(500)
 
     assertTrue("remove2") {
       removeUniPlugin(parent)
