@@ -1,19 +1,27 @@
-package com.unicorn.plugin.action.cmd
+package com.unicorn.plugin.action.id
 
+import com.intellij.openapi.actionSystem.AnAction
+import com.intellij.openapi.actionSystem.AnActionEvent
+import com.intellij.openapi.project.DumbAware
 import com.intellij.openapi.project.ProjectManager
-import com.intellij.openapi.ui.DialogWrapper
 import com.intellij.openapi.util.Disposer
 import com.unicorn.Uni
-import com.unicorn.plugin.ui.showPanelDialog
 import com.unicorn.plugin.ui.render.fileManager
 import com.unicorn.plugin.ui.render.stateFlowView
-import kotlinx.coroutines.launch
+import com.unicorn.plugin.ui.showPanelDialog
 import todo.mvi.createFileManagerMviStore
 
-class DialogFileManager : Command {
-  override fun execute() {
+class FileManagerDialogAction : AnAction(), DumbAware {
+
+  override fun update(e: AnActionEvent) {
+    e.presentation.isVisible = true
+    e.presentation.isEnabled = true
+  }
+
+  override fun actionPerformed(e: AnActionEvent) {
     openDialogFileManager()
   }
+
 }
 
 fun openDialogFileManager() {

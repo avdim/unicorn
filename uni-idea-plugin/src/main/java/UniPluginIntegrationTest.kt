@@ -1,5 +1,5 @@
 import com.unicorn.Uni
-import com.unicorn.plugin.action.cmd.openDialogFileManager
+import com.unicorn.plugin.action.id.openDialogFileManager
 import kotlinx.coroutines.MainScope
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch

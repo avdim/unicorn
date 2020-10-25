@@ -1,19 +1,25 @@
-package com.unicorn.plugin.action.cmd.misc
+package com.unicorn.plugin.action.id
 
 import com.intellij.dvcs.ui.LightActionGroup
 import com.intellij.openapi.actionSystem.ActionManager
+import com.intellij.openapi.actionSystem.AnAction
 import com.intellij.openapi.actionSystem.AnActionEvent
-import com.unicorn.plugin.action.UniversalAction
-import com.unicorn.plugin.action.cmd.Command
+import com.intellij.openapi.project.DumbAware
 import com.unicorn.plugin.toolWindowAction
 import com.unicorn.plugin.ui.showDialog2
 import ru.tutu.idea.file.ConfUniFiles
 
-class MyActionPopupMenu(val event: AnActionEvent) : Command {
-  override fun execute() {
+class ActionPopupMenuAction : AnAction(), DumbAware {
+
+  override fun update(e: AnActionEvent) {
+    e.presentation.isVisible = true
+    e.presentation.isEnabled = true
+  }
+
+  override fun actionPerformed(event: AnActionEvent) {
     val lightActionGroup = LightActionGroup()
     lightActionGroup.add(toolWindowAction(ConfUniFiles.UNI_WINDOW_ID, event)!!)
-    lightActionGroup.add(UniversalAction())
+//    lightActionGroup.add(UniversalAction())
     lightActionGroup.update(event)
     showDialog2(
       ActionManager.getInstance().createActionPopupMenu(

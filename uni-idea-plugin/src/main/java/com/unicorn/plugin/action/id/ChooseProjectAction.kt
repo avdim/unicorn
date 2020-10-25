@@ -1,16 +1,24 @@
-package com.unicorn.plugin.action.cmd
+package com.unicorn.plugin.action.id
 
+import com.intellij.openapi.actionSystem.AnAction
 import com.intellij.openapi.actionSystem.AnActionEvent
-import com.intellij.openapi.project.Project
+import com.intellij.openapi.project.DumbAware
 import com.intellij.openapi.project.ProjectManager
 import com.intellij.openapi.wm.impl.ProjectWindowAction
 import com.unicorn.Uni
-import com.unicorn.plugin.action.UniversalContext
-import com.unicorn.plugin.action.cmd.misc.ProjectWindowActionGroup2
+import com.unicorn.plugin.action.uniContext
 import com.unicorn.plugin.ui.choosePopup
 
-class ChooseProject(val context: UniversalContext) : Command {
-  override fun execute() {
+
+class ChooseProjectAction : AnAction(), DumbAware {
+
+  override fun update(e: AnActionEvent) {
+    e.presentation.isVisible = true
+    e.presentation.isEnabled = true
+  }
+
+  override fun actionPerformed(event: AnActionEvent) {
+    val context = event.uniContext
 //    WindowDressing.getWindowActionGroup().activatePreviousWindow(context.event)
     choosePopup(
       context.event,
@@ -26,12 +34,12 @@ class ChooseProject(val context: UniversalContext) : Command {
         null
       ).select(context.event)
     }
-  }
-}
 
+  }
+
+}
 
 fun ProjectWindowAction.select(e: AnActionEvent) {
   setSelected(e, true)
 }
 
-fun projectsList(project: Project?) = ProjectWindowActionGroup2().projectsList(project)

@@ -1,17 +1,26 @@
-package com.unicorn.plugin.action.cmd.misc
+package com.unicorn.plugin.action.id
 
 import com.google.common.base.CaseFormat
+import com.intellij.openapi.actionSystem.AnAction
+import com.intellij.openapi.actionSystem.AnActionEvent
+import com.intellij.openapi.project.DumbAware
 import com.intellij.openapi.project.ProjectManager
 import com.intellij.openapi.util.Disposer
 import com.intellij.ui.components.dialog
 import com.intellij.ui.tabs.JBTabsFactory
 import com.intellij.ui.tabs.TabInfo
-import com.unicorn.plugin.action.cmd.Command
 import javax.swing.JPanel
 import kotlin.reflect.jvm.kotlinFunction
 
-class DialogUiShowCase : Command {
-  override fun execute() {
+
+class DialogUiShowcaseAction : AnAction(), DumbAware {
+
+  override fun update(e: AnActionEvent) {
+    e.presentation.isVisible = true
+    e.presentation.isEnabled = true
+  }
+
+  override fun actionPerformed(event: AnActionEvent) {
     val disposable = Disposer.newDisposable()
     val tabs = JBTabsFactory.createEditorTabs(ProjectManager.getInstance().defaultProject, disposable)
     tabs.presentation.setSupportsCompression(false)

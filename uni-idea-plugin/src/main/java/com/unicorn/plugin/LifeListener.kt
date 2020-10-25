@@ -1,8 +1,9 @@
 package com.unicorn.plugin
 
 import com.intellij.openapi.project.Project
+import com.intellij.openapi.util.Disposer
 import com.unicorn.Uni
-import com.unicorn.plugin.action.cmd.openDialogFileManager
+import com.unicorn.myDispose
 
 class LifeListener : com.intellij.ide.AppLifecycleListener {
 
@@ -32,8 +33,7 @@ class LifeListener : com.intellij.ide.AppLifecycleListener {
 
   override fun appClosing() {
     Uni.log.debug { "1 LifeListener.appClosing()" }
-//    Uni.job.cancel()
-//    ActionSubscription.stopSubscription()
+    Uni.myDispose()
   }
 
   override fun appWillBeClosed(isRestart: Boolean) {

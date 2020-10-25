@@ -2,6 +2,7 @@ package com.unicorn
 
 import com.intellij.openapi.Disposable
 import com.intellij.openapi.project.ProjectManager
+import com.intellij.openapi.util.Disposer
 import com.intellij.openapi.vfs.VirtualFile
 import com.unicorn.log.console.ConsoleLog
 import com.unicorn.log.lib.Log
@@ -57,4 +58,8 @@ object Uni : Disposable {
     Uni.log.debug { "Uni.dispose() complete" }
   }
 
+}
+
+fun Disposable.myDispose() {
+  Disposer.dispose(this)
 }

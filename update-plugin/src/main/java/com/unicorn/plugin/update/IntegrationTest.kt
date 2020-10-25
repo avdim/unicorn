@@ -11,8 +11,7 @@ import javax.swing.JComponent
 
 fun integrationTest() {
   APP_SCOPE.launch {
-    var parent: DialogPanel? = null
-    parent = panel {
+    val parent: DialogPanel = panel {
       row {
         label("empty panel only for progress")
       }

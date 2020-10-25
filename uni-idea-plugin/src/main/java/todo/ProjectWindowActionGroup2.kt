@@ -1,5 +1,5 @@
 // Copyright 2000-2019 JetBrains s.r.o. Use of this source code is governed by the Apache 2.0 license that can be found in the LICENSE file.
-package com.unicorn.plugin.action.cmd.misc
+package todo
 
 import com.intellij.openapi.actionSystem.AnActionEvent
 import com.intellij.openapi.actionSystem.CommonDataKeys
@@ -9,6 +9,9 @@ import com.intellij.openapi.util.io.FileUtil
 import com.intellij.openapi.wm.impl.ProjectWindowAction
 import com.intellij.platform.ModuleAttachProcessor
 import java.util.*
+
+//todo:
+fun projectsList(project: Project?) = ProjectWindowActionGroup2().projectsList(project)
 
 /**
  * @author Bas Leijdekkers
@@ -117,9 +120,8 @@ class ProjectWindowActionGroup2 : DefaultActionGroup() {
   }
 
   val Project.displayName get() = getProjectDisplayName(this)
-  fun projectsList(
-    project: Project?
-  ): List<ProjectWindowAction> {
+
+  fun projectsList(project: Project?): List<ProjectWindowAction> {
     val windowAction = findWindowAction(project?.presentableUrl) ?: return emptyList()
     return windowAction.allPrevious() + windowAction + windowAction.allNext()
   }

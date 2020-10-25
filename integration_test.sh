@@ -1,8 +1,8 @@
 #!/usr/bin/env bash
 
 repeat_wrapper () {
-  ("$@" && "$@" && "$@") ||  exit 1
-#  ("$@") ||  exit 1
+#  ("$@" && "$@" && "$@") ||  exit 1
+  ("$@") ||  exit 1
 }
 
 rm -rf uni-idea-plugin/build/distributions

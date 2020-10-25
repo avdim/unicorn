@@ -1,10 +1,14 @@
-package com.unicorn.plugin.action.cmd
+package com.unicorn.plugin.action.id
 
 import com.intellij.openapi.actionSystem.ActionManager
-import com.unicorn.plugin.ui.choosePopup
+import com.intellij.openapi.actionSystem.AnAction
+import com.intellij.openapi.actionSystem.AnActionEvent
+import com.intellij.openapi.project.DumbAware
 import com.unicorn.plugin.perform
+import com.unicorn.plugin.ui.choosePopup
 
-class FrameSwitch(val context: com.unicorn.plugin.action.UniversalContext) : Command {
+
+class FrameSwitchAction : AnAction(), DumbAware {
 
   enum class Options {
     FRAME_SWITCH,
@@ -12,8 +16,13 @@ class FrameSwitch(val context: com.unicorn.plugin.action.UniversalContext) : Com
     DIAGNOSTIC
   }
 
-  override fun execute() {
-    choosePopup(context.event, "FrameSwitch", Options.values().toList(), { it.name }) {
+  override fun update(e: AnActionEvent) {
+    e.presentation.isVisible = true
+    e.presentation.isEnabled = true
+  }
+
+  override fun actionPerformed(event: AnActionEvent) {
+    choosePopup(event, "FrameSwitch", Options.values().toList(), { it.name }) {
       when (it) {
         Options.FRAME_SWITCH -> {
           ActionManager.getInstance().getAction("FrameSwitchAction").perform()
@@ -26,7 +35,7 @@ class FrameSwitch(val context: com.unicorn.plugin.action.UniversalContext) : Com
         }
       }
     }
+
   }
 
 }
-

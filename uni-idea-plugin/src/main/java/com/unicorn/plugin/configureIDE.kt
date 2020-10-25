@@ -10,17 +10,13 @@ import com.intellij.openapi.application.ApplicationManager
 import com.intellij.openapi.editor.EditorFactory
 import com.intellij.openapi.editor.ex.EditorSettingsExternalizable
 import com.intellij.openapi.keymap.ex.KeymapManagerEx
-import com.intellij.openapi.project.ProjectManager
-import com.intellij.openapi.util.Disposer
 import com.intellij.openapi.util.registry.Registry
 import com.intellij.openapi.wm.impl.IdeBackgroundUtil
-import com.unicorn.BuildConfig
 import com.unicorn.Uni
-import com.unicorn.plugin.action.cmd.openDialogFileManager
+import com.unicorn.myDispose
+import com.unicorn.plugin.action.id.openDialogFileManager
 import kotlinx.coroutines.*
 import org.jetbrains.plugins.terminal.TerminalOptionsProvider
-import ru.avdim.mvi.APP_SCOPE
-import ru.tutu.idea.file.ConfUniFiles
 import javax.swing.SwingConstants
 
 private val UNICORN_KEYMAP = "Unicorn"
@@ -42,7 +38,7 @@ val dynamicPluginListener: DynamicPluginListener = object : DynamicPluginListene
     Uni.log.debug { "UniDynamicListener.beforePluginUnload 2" }
     Uni.log.debug { "pluginDescriptor.name: ${pluginDescriptor.name}" }
     if (pluginDescriptor.name == Uni.PLUGIN_NAME) {
-      Disposer.dispose(Uni)
+      Uni.myDispose()
       //todo dynamic plugin can't unload when tool window is open
     }
   }

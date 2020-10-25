@@ -1,16 +1,28 @@
-package com.unicorn.plugin.action.cmd
+package com.unicorn.plugin.action.id
 
 import com.intellij.ide.actions.ShowPopupMenuAction
+import com.intellij.openapi.actionSystem.AnAction
+import com.intellij.openapi.actionSystem.AnActionEvent
+import com.intellij.openapi.project.DumbAware
 import com.intellij.util.ui.UIUtil
 import com.unicorn.Uni
 import com.unicorn.plugin.MyMouseEvent
-import com.unicorn.plugin.action.UniversalContext
+import com.unicorn.plugin.action.uniContext
 import com.unicorn.plugin.docReference
 import java.awt.Component
 import java.awt.event.MouseEvent
 
-class ContextMenu(val context: UniversalContext) : Command {
-  override fun execute() {
+
+class ContextMenuAction : AnAction(), DumbAware {
+
+  override fun update(e: AnActionEvent) {
+    e.presentation.isVisible = true
+    e.presentation.isEnabled = true
+  }
+
+  override fun actionPerformed(event: AnActionEvent) {
+    val context = event.uniContext
+
     docReference<ShowPopupMenuAction> { }
     if (context.focusOwner == null) {
       Uni.log.error { "context.focusOwner == null" }
@@ -21,7 +33,7 @@ class ContextMenu(val context: UniversalContext) : Command {
       UIUtil.getDeepestComponentAt(context.focusOwner, point.x, point.y / 2) ?: context.focusOwner
     }
     val point = context.popupPoint.getPoint(deepestComponent)
-    val event = MyMouseEvent(
+    val mouseEvent = MyMouseEvent(
       context.focusOwner,
       501,
       System.currentTimeMillis(),
@@ -32,8 +44,10 @@ class ContextMenu(val context: UniversalContext) : Command {
       true,
       3
     )
-    deepestComponent.dispatchWhileNotConsumeToParent(event)
+    deepestComponent.dispatchWhileNotConsumeToParent(mouseEvent)
+
   }
+
 }
 
 fun Component.dispatchWhileNotConsumeToParent(event: MouseEvent) {
