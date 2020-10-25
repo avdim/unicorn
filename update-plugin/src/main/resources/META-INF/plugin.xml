@@ -22,6 +22,7 @@
   </actions>
 
   <applicationListeners>
+<!--    <listener class="com.unicorn.plugin.update.MyDynamicListener" topic="com.intellij.ide.plugins.DynamicPluginListener"/>-->
     <listener class="com.unicorn.plugin.update.LifeListener" topic="com.intellij.ide.AppLifecycleListener"/>
   </applicationListeners>
 

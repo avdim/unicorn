@@ -1,6 +1,8 @@
-package com.unicorn.plugin.action.cmd
+package com.unicorn.plugin.action.id
 
+import com.intellij.openapi.actionSystem.AnAction
 import com.intellij.openapi.actionSystem.AnActionEvent
+import com.intellij.openapi.project.DumbAware
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.project.ProjectManager
 import com.unicorn.plugin.docReference
@@ -9,14 +11,17 @@ import org.jetbrains.plugins.terminal.action.RevealFileInTerminalAction
 import org.jetbrains.plugins.terminal.arrangement.TerminalArrangementManager
 import org.jetbrains.plugins.terminal.arrangement.TerminalArrangementState
 
-class OpenFileInTerminal(val event: AnActionEvent) : Command {
-  val selectedFile = com.unicorn.Uni.selectedFile
 
-  override fun available(): Boolean {
-    return selectedFile != null
+class OpenFileInTerminalAction : AnAction(), DumbAware {
+
+  val selectedFile get()  = com.unicorn.Uni.selectedFile
+
+  override fun update(e: AnActionEvent) {
+    e.presentation.isVisible = true
+    e.presentation.isEnabled = selectedFile != null
   }
 
-  override fun execute() {
+  override fun actionPerformed(event: AnActionEvent) {
     docReference<RevealFileInTerminalAction> {}
     val project: Project = event.project ?: ProjectManager.getInstance().defaultProject
     val terminalView: TerminalView = TerminalView.getInstance(project)

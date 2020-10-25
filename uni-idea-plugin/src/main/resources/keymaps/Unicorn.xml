@@ -1,4 +1,8 @@
 <keymap version="1" name="Unicorn" parent="$default" disable-mnemonics="false">
+  <action id="UniCorn.action-group">
+    <keyboard-shortcut first-keystroke="alt F2"/>
+    <keyboard-shortcut first-keystroke="alt Z"/>
+  </action>
   <action id="$Copy">
     <keyboard-shortcut first-keystroke="ctrl c"/>
     <keyboard-shortcut first-keystroke="meta c"/>
