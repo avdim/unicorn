@@ -5,7 +5,7 @@ env:
   SSH_AUTH_SOCK: "/tmp/ssh_agent_${{github.run_id}}.sock"
     
 jobs:
-  Build-deploy:
+  unit-test:
     runs-on: ubuntu-18.04
     steps:
       - uses: actions/checkout@v1
