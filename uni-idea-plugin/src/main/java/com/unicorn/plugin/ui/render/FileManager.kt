@@ -11,6 +11,8 @@ import com.unicorn.plugin.mvi.UniWindowState
 import todo.mvi.Intent
 import java.io.File
 
+val TODO_TEXT_FIELD_COMPLETION = false//todo
+
 fun fileManager(
   layoutBuilder: LayoutBuilder,
   state: UniWindowState,
@@ -43,7 +45,7 @@ fun fileManager(
           send(Intent.RemoveColumn(col))
         }
         column.paths.forEachIndexed { row: Int, path: String ->
-          textFieldCompletion(
+          if (TODO_TEXT_FIELD_COMPLETION) textFieldCompletion(
             project = project,
             label = null,
             currentValue = path,
