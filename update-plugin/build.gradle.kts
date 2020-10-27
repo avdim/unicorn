@@ -61,7 +61,6 @@ repositories {
 }
 
 dependencies {
-  implementation(kotlin("stdlib-jdk8"))
   implementation(LOG_MAVEN_ARTIFACT)
   implementation("io.ktor:ktor-server-netty:$KTOR_VERSION")
   implementation("io.ktor:ktor-server-cio:$KTOR_VERSION")
@@ -77,8 +76,9 @@ dependencies {
 intellij {
   // Snapshots: https://www.jetbrains.com/intellij-repository/snapshots/
 //  version = "2020.2.3"
-  version = "203.4818-EAP-CANDIDATE-SNAPSHOT"//2020.3-eap
-//  version = "203.5251-EAP-CANDIDATE-SNAPSHOT"//2020.3-eap
+//  version = "203.4818-EAP-CANDIDATE-SNAPSHOT"//2020.3-eap
+//  version = "203.5251-EAP-CANDIDATE-SNAPSHOT"
+  version = "203.5419-EAP-CANDIDATE-SNAPSHOT"//2020.3-eap5
   type = "IC"
   pluginName = "unicorn-update"
   updateSinceUntilBuild = false

@@ -24,8 +24,9 @@ object TmpFileLog {
 
     Log.info { "log stream to ${file.absolutePath}" }
     Log.addLogConsumer {
-      writer.appendLine(it.payload.toString())
-      writer.flush()//todo flush with delay and coroutines
+      //todo:
+//      writer.appendLine(it.payload.toString())
+//      writer.flush()//todo flush with delay and coroutines
     }
   }
 

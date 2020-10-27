@@ -32,7 +32,6 @@ repositories {
 }
 
 dependencies {
-  implementation(kotlin("stdlib-jdk8"))
   implementation(if (true) "ch.qos.logback:logback-classic:1.2.3" else "org.slf4j:slf4j-simple:1.7.28")
   implementation("org.eclipse.jgit:org.eclipse.jgit:4.11.0.201803080745-r")
   implementation("com.jcraft:jsch.agentproxy.jsch:0.0.9")

@@ -46,7 +46,6 @@ repositories {
 }
 
 dependencies {
-  implementation(kotlin("stdlib-jdk8"))
   implementation(LOG_MAVEN_ARTIFACT)
   implementation("org.jgroups:jgroups:4.0.0.Final")//todo
   implementation("io.ktor:ktor-server-netty:$KTOR_VERSION")
