@@ -21,11 +21,12 @@ import java.awt.*
 import java.io.File
 import javax.swing.*
 import bootRuntime2.bundles.Runtime
+import com.unicorn.plugin.action.id.UniAction
 
 /**
  * @author denis
  */
-class ChooseBootRuntimeAction : AnAction(), DumbAware {
+class ChooseBootRuntimeAction : UniAction(), DumbAware {
 
   lateinit var installed:Runtime
 

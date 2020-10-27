@@ -14,11 +14,13 @@ import com.intellij.openapi.wm.ToolWindowContextMenuActionBase
 import com.intellij.ui.content.Content
 import com.intellij.ui.tabs.TabInfo
 import com.jediterm.terminal.model.TerminalTextBuffer
+import com.unicorn.Uni
 import org.jetbrains.plugins.terminal.TerminalView
 import org.jetbrains.plugins.terminal.vfs.TerminalSessionVirtualFileImpl
 import java.io.File
 
-private class CopyTerminalTabToFile : ToolWindowContextMenuActionBase(), DumbAware {
+class CopyTerminalTabToFile : ToolWindowContextMenuActionBase(), DumbAware {
+
   fun updateInTerminalToolWindow(e: AnActionEvent, project: Project, content: Content) {
     val terminalView = TerminalView.getInstance(project)
     val terminalWidget = TerminalView.getWidgetByContent(content)!!
@@ -69,9 +71,11 @@ private class CopyTerminalTabToFile : ToolWindowContextMenuActionBase(), DumbAwa
   }
 
   final override fun actionPerformed(e: AnActionEvent, toolWindow: ToolWindow, content: Content?) {
+    Uni.log.info { "CopyTerminalTabToFile.actionPerformed()" }
     val project = e.project
     if (project != null && project.terminalToolWindow == toolWindow && content != null) {
       actionPerformedInTerminalToolWindow(e, project, content)
     }
   }
+
 }

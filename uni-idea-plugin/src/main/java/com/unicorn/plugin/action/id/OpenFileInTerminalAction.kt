@@ -1,6 +1,5 @@
 package com.unicorn.plugin.action.id
 
-import com.intellij.openapi.actionSystem.AnAction
 import com.intellij.openapi.actionSystem.AnActionEvent
 import com.intellij.openapi.project.DumbAware
 import com.intellij.openapi.project.Project
@@ -12,14 +11,9 @@ import org.jetbrains.plugins.terminal.arrangement.TerminalArrangementManager
 import org.jetbrains.plugins.terminal.arrangement.TerminalArrangementState
 
 
-class OpenFileInTerminalAction : AnAction(), DumbAware {
+class OpenFileInTerminalAction : UniAction(), DumbAware {
 
   val selectedFile get()  = com.unicorn.Uni.selectedFile
-
-  override fun update(e: AnActionEvent) {
-    e.presentation.isVisible = true
-    e.presentation.isEnabled = selectedFile != null
-  }
 
   override fun actionPerformed(event: AnActionEvent) {
     docReference<RevealFileInTerminalAction> {}

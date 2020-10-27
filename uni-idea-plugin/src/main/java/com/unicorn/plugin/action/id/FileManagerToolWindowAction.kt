@@ -6,12 +6,7 @@ import com.intellij.openapi.project.DumbAware
 import com.unicorn.plugin.getToolWindow
 import ru.tutu.idea.file.ConfUniFiles
 
-class FileManagerToolWindowAction : AnAction(), DumbAware {
-
-  override fun update(e: AnActionEvent) {
-    e.presentation.isVisible = true
-    e.presentation.isEnabled = true
-  }
+class FileManagerToolWindowAction : UniAction(), DumbAware {
 
   override fun actionPerformed(event: AnActionEvent) {
     event.project?.getToolWindow(ConfUniFiles.UNI_WINDOW_ID)?.let {

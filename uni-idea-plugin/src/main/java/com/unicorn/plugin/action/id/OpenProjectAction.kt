@@ -1,18 +1,12 @@
 package com.unicorn.plugin.action.id
 
-import com.intellij.openapi.actionSystem.AnAction
 import com.intellij.openapi.actionSystem.AnActionEvent
 import com.intellij.openapi.project.DumbAware
 import com.intellij.openapi.project.ProjectManager
 import com.unicorn.plugin.suggestString
 
 
-class OpenProjectAction : AnAction(), DumbAware {
-
-  override fun update(e: AnActionEvent) {
-    e.presentation.isVisible = true
-    e.presentation.isEnabled = true
-  }
+class OpenProjectAction : UniAction(), DumbAware {
 
   override fun actionPerformed(event: AnActionEvent) {
     val file = com.unicorn.Uni.selectedFile

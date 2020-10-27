@@ -1,6 +1,5 @@
 package com.unicorn.plugin.action.id
 
-import com.intellij.openapi.actionSystem.AnAction
 import com.intellij.openapi.actionSystem.AnActionEvent
 import com.intellij.openapi.project.DumbAware
 import com.intellij.openapi.project.ProjectManager
@@ -10,12 +9,7 @@ import com.unicorn.plugin.action.uniContext
 import com.unicorn.plugin.ui.choosePopup
 
 
-class ChooseProjectAction : AnAction(), DumbAware {
-
-  override fun update(e: AnActionEvent) {
-    e.presentation.isVisible = true
-    e.presentation.isEnabled = true
-  }
+class ChooseProjectAction : UniAction(), DumbAware {
 
   override fun actionPerformed(event: AnActionEvent) {
     val context = event.uniContext
