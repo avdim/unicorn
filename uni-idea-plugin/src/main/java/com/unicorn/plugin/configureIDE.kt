@@ -12,6 +12,7 @@ import com.intellij.openapi.editor.ex.EditorSettingsExternalizable
 import com.intellij.openapi.keymap.ex.KeymapManagerEx
 import com.intellij.openapi.util.registry.Registry
 import com.intellij.openapi.wm.impl.IdeBackgroundUtil
+import com.unicorn.plugin.action.Actions
 import com.unicorn.Uni
 import com.unicorn.myDispose
 import com.unicorn.plugin.action.id.openDialogFileManager
@@ -50,10 +51,11 @@ val dynamicPluginListener: DynamicPluginListener = object : DynamicPluginListene
 }
 
 suspend fun configureIDE() {
-  Uni.log.info { "configureIDE" }
+  Uni.log.debug { "configureIDE begin" }
   ApplicationManager.getApplication().messageBus.connect(Uni)
   .subscribe(DynamicPluginListener.TOPIC, dynamicPluginListener)
 
+  Actions.register()
   // Upload plugin timeout
   Registry.get("ide.plugins.unload.timeout").setValue(8_000)
   // Terminal settings
@@ -122,4 +124,5 @@ suspend fun configureIDE() {
     openDialogFileManager()
   }
 
+  Uni.log.debug { "configureIDE end" }
 }

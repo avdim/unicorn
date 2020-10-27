@@ -9,12 +9,7 @@ import com.intellij.openapi.ui.Messages
 import java.awt.Color
 
 
-class RestartAction : AnAction(), DumbAware {
-
-  override fun update(e: AnActionEvent) {
-    e.presentation.isVisible = true
-    e.presentation.isEnabled = true
-  }
+class RestartAction : UniAction(), DumbAware {
 
   override fun actionPerformed(event: AnActionEvent) {
     val result = Messages.showOkCancelDialog(

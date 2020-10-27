@@ -5,13 +5,14 @@ import com.sample.getGithubRepoReleases
 import com.unicorn.plugin.buildDistPlugins
 import com.unicorn.plugin.installPlugin
 import com.unicorn.plugin.removeUniPlugin
+import com.unicorn.plugin.update.assertTrue
+import com.unicorn.plugin.update.waitPlugin
 import io.ktor.client.*
 import io.ktor.client.engine.apache.*
 import io.ktor.http.*
-import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.*
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.flowOn
-import kotlinx.coroutines.launch
 import ru.avdim.mvi.APP_SCOPE
 import ru.avdim.mvi.ReducerResult
 import ru.avdim.mvi.createStoreWithSideEffect
@@ -132,6 +133,20 @@ fun createUpdateStore() = createStoreWithSideEffect(
                 val file = File(effect.path)
                 val parentComponent = effect.parentComponent
                 installPlugin(file, parentComponent)
+              MainScope().launch {
+                val asyncPlugin = GlobalScope.async {
+                  waitPlugin("UniCorn")
+                }
+                installPlugin(file, parentComponent)
+                /**
+                 * Переменная classLoader должна иметь маленькую область видимости.
+                 * Если будет держаться ссылка, то плагин не получится динамически выгрузить.
+                 */
+                val classLoader = asyncPlugin.await()
+                val className = /*com.package...*/"UniPluginDynamicInit"
+                val loadedClass: Class<*> = classLoader.loadClass(className)
+                loadedClass.constructors[0].newInstance()
+              }
             }
             is Effect.RemovePlugin -> {
                 val parentComponent = effect.parentComponent

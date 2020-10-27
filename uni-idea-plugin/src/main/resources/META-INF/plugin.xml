@@ -38,51 +38,58 @@
     <bundledKeymap file="Unicorn.xml"/>
     <treeStructureProvider implementation="todo.MyTreeStructureProvider"/>
   </extensions>
-  <actions>
-    <group id="UniCorn.action-group" text="UniCorn">
-      <add-to-group group-id="MainMenu" anchor="after" relative-to-action="HelpMenu"/>
-      <!--      <action id="TutuPlugin.ActionUniversal" class="com.unicorn.plugin.action.UniversalAction" text="Universal Action" description="Universal action">-->
-      <!--        <add-to-group group-id="MainMenu" anchor="last"/>-->
-      <!--        <keyboard-shortcut first-keystroke="alt F2" keymap="$default"/>-->
-      <!--      </action>-->
-      <action id="com.unicorn.plugin.action.id.FileManagerDialogAction" class="com.unicorn.plugin.action.id.FileManagerDialogAction"
-              text="File Manager Dialog"/>
-      <action id="com.unicorn.plugin.action.id.FileManagerToolWindowAction" class="com.unicorn.plugin.action.id.FileManagerToolWindowAction"
-              text="File Manager Tool Window"/>
-      <action id="com.unicorn.plugin.action.id.ChooseProjectAction" class="com.unicorn.plugin.action.id.ChooseProjectAction"
-              text="Choose Project"/>
-      <action id="com.unicorn.plugin.action.id.ChooseRuntimeAction" class="com.unicorn.plugin.action.id.ChooseRuntimeAction"
-              text="Choose Runtime"/>
-      <action id="com.unicorn.plugin.action.id.ContextMenuAction" class="com.unicorn.plugin.action.id.ContextMenuAction"
-              text="Context Menu"/>
-      <action id="com.unicorn.plugin.action.id.FastCommitAction" class="com.unicorn.plugin.action.id.FastCommitAction"
-              text="Fast Commit"/>
-      <action id="com.unicorn.plugin.action.id.FrameSwitchAction" class="com.unicorn.plugin.action.id.FrameSwitchAction"
-              text="Frame Switch"/>
-      <action id="com.unicorn.plugin.action.id.OpenFileInTerminalAction" class="com.unicorn.plugin.action.id.OpenFileInTerminalAction"
-              text="Open File In Terminal"/>
-      <action id="com.unicorn.plugin.action.id.OpenProjectAction" class="com.unicorn.plugin.action.id.OpenProjectAction"
-              text="Open Project"/>
-      <action id="com.unicorn.plugin.action.id.QuickTypeDefinitionAction" class="com.unicorn.plugin.action.id.QuickTypeDefinitionAction"
-              text="Quick Type Definition"/>
-      <action id="com.unicorn.plugin.action.id.ReloadGradleAction" class="com.unicorn.plugin.action.id.ReloadGradleAction"
-              text="Reload Gradle"/>
-      <action id="com.unicorn.plugin.action.id.SelectInAction" class="com.unicorn.plugin.action.id.SelectInAction"
-              text="Select In Action"/>
-      <separator/>
-      <group text="Misc" popup="true"> <!--todo move up-->
-        <action id="com.unicorn.plugin.action.id.RestartAction" class="com.unicorn.plugin.action.id.RestartAction"
-                text="Restart"/>
-        <action id="com.unicorn.plugin.action.id.ActionPopupMenuAction" class="com.unicorn.plugin.action.id.ActionPopupMenuAction"
-                text="Popup Menu"/>
-        <action id="com.unicorn.plugin.action.id.DialogUiShowcaseAction" class="com.unicorn.plugin.action.id.DialogUiShowcaseAction"
-                text="Dialog Ui Showcase"/>
-        <action id="com.unicorn.plugin.action.id.KtorServerAction" class="com.unicorn.plugin.action.id.KtorServerAction"
-                text="Ktor Server"/>
-      </group>
-    </group>
+<!--  <actions>-->
+<!--    <group id="UniCorn.action-group" text="UniCorn">-->
+<!--      <add-to-group group-id="MainMenu" anchor="after" relative-to-action="HelpMenu"/>-->
+<!--      &lt;!&ndash;      <action id="TutuPlugin.ActionUniversal" class="com.unicorn.plugin.action.UniversalAction" text="Universal Action" description="Universal action">&ndash;&gt;-->
+<!--      &lt;!&ndash;        <add-to-group group-id="MainMenu" anchor="last"/>&ndash;&gt;-->
+<!--      &lt;!&ndash;        <keyboard-shortcut first-keystroke="alt F2" keymap="$default"/>&ndash;&gt;-->
+<!--      &lt;!&ndash;      </action>&ndash;&gt;-->
+<!--      <action id="com.unicorn.plugin.action.id.FileManagerDialogAction" class="com.unicorn.plugin.action.id.FileManagerDialogAction"-->
+<!--              text="File Manager Dialog"/>-->
+<!--      <action id="com.unicorn.plugin.action.id.FileManagerToolWindowAction" class="com.unicorn.plugin.action.id.FileManagerToolWindowAction"-->
+<!--              text="File Manager Tool Window"/>-->
+<!--      <action id="com.unicorn.plugin.action.id.ChooseProjectAction" class="com.unicorn.plugin.action.id.ChooseProjectAction"-->
+<!--              text="Choose Project"/>-->
+<!--      <action id="com.unicorn.plugin.action.id.ChooseRuntimeAction" class="com.unicorn.plugin.action.id.ChooseRuntimeAction"-->
+<!--              text="Choose Runtime"/>-->
+<!--      <action id="com.unicorn.plugin.action.id.ContextMenuAction" class="com.unicorn.plugin.action.id.ContextMenuAction"-->
+<!--              text="Context Menu"/>-->
+<!--      <action id="com.unicorn.plugin.action.id.FastCommitAction" class="com.unicorn.plugin.action.id.FastCommitAction"-->
+<!--              text="Fast Commit"/>-->
+<!--      <action id="com.unicorn.plugin.action.id.FrameSwitchAction" class="com.unicorn.plugin.action.id.FrameSwitchAction"-->
+<!--              text="Frame Switch"/>-->
+<!--      <action id="com.unicorn.plugin.action.id.OpenFileInTerminalAction" class="com.unicorn.plugin.action.id.OpenFileInTerminalAction"-->
+<!--              text="Open File In Terminal"/>-->
+<!--      <action id="com.unicorn.plugin.action.id.OpenProjectAction" class="com.unicorn.plugin.action.id.OpenProjectAction"-->
+<!--              text="Open Project"/>-->
+<!--      <action id="com.unicorn.plugin.action.id.QuickTypeDefinitionAction" class="com.unicorn.plugin.action.id.QuickTypeDefinitionAction"-->
+<!--              text="Quick Type Definition"/>-->
+<!--      <action id="com.unicorn.plugin.action.id.ReloadGradleAction" class="com.unicorn.plugin.action.id.ReloadGradleAction"-->
+<!--              text="Reload Gradle"/>-->
+<!--      <action id="com.unicorn.plugin.action.id.SelectInAction" class="com.unicorn.plugin.action.id.SelectInAction"-->
+<!--              text="Select In Action"/>-->
+<!--      <separator/>-->
+<!--      <group text="Misc" popup="true"> &lt;!&ndash;todo move up&ndash;&gt;-->
+<!--        <action id="com.unicorn.plugin.action.id.RestartAction" class="com.unicorn.plugin.action.id.RestartAction"-->
+<!--                text="Restart"/>-->
+<!--        <action id="com.unicorn.plugin.action.id.ActionPopupMenuAction" class="com.unicorn.plugin.action.id.ActionPopupMenuAction"-->
+<!--                text="Popup Menu"/>-->
+<!--        <action id="com.unicorn.plugin.action.id.DialogUiShowcaseAction" class="com.unicorn.plugin.action.id.DialogUiShowcaseAction"-->
+<!--                text="Dialog Ui Showcase"/>-->
+<!--        <action id="com.unicorn.plugin.action.id.KtorServerAction" class="com.unicorn.plugin.action.id.KtorServerAction"-->
+<!--                text="Ktor Server"/>-->
+<!--      </group>-->
+<!--    </group>-->
 
-  </actions>
+<!--  </actions>-->
+
+<!--  <actions>-->
+<!--    <action id="Terminal.MoveToEditor2" class="com.unicorn.plugin.action.terminal.CopyTerminalTabToFile">-->
+<!--      <add-to-group group-id="ToolWindowContextMenu" anchor="last"/>-->
+<!--    </action>-->
+<!--  </actions>-->
+
 
   <!--todo:-->
   <extensions defaultExtensionNs="com.intellij">
@@ -90,18 +97,6 @@
                 factoryClass="ru.tutu.idea.file.TutuProjectViewToolWindowFactory"/>
     <appStarter implementation="todo.AppStarter"/>
   </extensions>
-
-  <actions>
-    <action id="Terminal.MoveToEditor2" class="com.unicorn.plugin.action.terminal.CopyTerminalTabToFile">
-      <add-to-group group-id="ToolWindowContextMenu" anchor="last"/>
-    </action>
-  </actions>
-
-  <actions>
-<!--    todo сделать свой Action-->
-    <action id="bootRuntime2.main.ChooseBootRuntimeAction" class="bootRuntime2.main.ChooseBootRuntimeAction"
-            text="Choose Runtime..."/>
-  </actions>
 
   <!--  repo-->
   <depends>com.intellij.modules.json</depends>

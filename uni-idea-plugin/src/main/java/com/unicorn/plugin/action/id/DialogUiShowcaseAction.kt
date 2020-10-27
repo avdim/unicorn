@@ -13,12 +13,7 @@ import javax.swing.JPanel
 import kotlin.reflect.jvm.kotlinFunction
 
 
-class DialogUiShowcaseAction : AnAction(), DumbAware {
-
-  override fun update(e: AnActionEvent) {
-    e.presentation.isVisible = true
-    e.presentation.isEnabled = true
-  }
+class DialogUiShowcaseAction : UniAction(), DumbAware {
 
   override fun actionPerformed(event: AnActionEvent) {
     val disposable = Disposer.newDisposable()

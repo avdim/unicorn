@@ -2,19 +2,13 @@ package com.unicorn.plugin.action.id
 
 import com.intellij.dvcs.ui.LightActionGroup
 import com.intellij.openapi.actionSystem.ActionManager
-import com.intellij.openapi.actionSystem.AnAction
 import com.intellij.openapi.actionSystem.AnActionEvent
 import com.intellij.openapi.project.DumbAware
 import com.unicorn.plugin.toolWindowAction
 import com.unicorn.plugin.ui.showDialog2
 import ru.tutu.idea.file.ConfUniFiles
 
-class ActionPopupMenuAction : AnAction(), DumbAware {
-
-  override fun update(e: AnActionEvent) {
-    e.presentation.isVisible = true
-    e.presentation.isEnabled = true
-  }
+class ActionPopupMenuAction : UniAction(), DumbAware {
 
   override fun actionPerformed(event: AnActionEvent) {
     val lightActionGroup = LightActionGroup()

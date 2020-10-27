@@ -8,12 +8,7 @@ import com.unicorn.plugin.suggestString
 import ru.gg.lib.LibAll
 
 
-class FastCommitAction : AnAction(), DumbAware {
-
-  override fun update(e: AnActionEvent) {
-    e.presentation.isVisible = true
-    e.presentation.isEnabled = true
-  }
+class FastCommitAction : UniAction(), DumbAware {
 
   override fun actionPerformed(event: AnActionEvent) {
     val context = event.uniContext

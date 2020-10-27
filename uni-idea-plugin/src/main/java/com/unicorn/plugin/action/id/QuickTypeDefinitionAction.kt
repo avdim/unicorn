@@ -7,12 +7,7 @@ import com.intellij.openapi.project.DumbAware
 import com.unicorn.plugin.perform
 
 
-class QuickTypeDefinitionAction : AnAction(), DumbAware {
-
-  override fun update(e: AnActionEvent) {
-    e.presentation.isVisible = true
-    e.presentation.isEnabled = true
-  }
+class QuickTypeDefinitionAction : UniAction(), DumbAware {
 
   override fun actionPerformed(event: AnActionEvent) {
     ActionManager.getInstance().getAction("QuickTypeDefinition")

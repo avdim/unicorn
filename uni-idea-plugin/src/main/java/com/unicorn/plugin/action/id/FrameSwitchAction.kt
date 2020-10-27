@@ -8,17 +8,12 @@ import com.unicorn.plugin.perform
 import com.unicorn.plugin.ui.choosePopup
 
 
-class FrameSwitchAction : AnAction(), DumbAware {
+class FrameSwitchAction : UniAction(), DumbAware {
 
   enum class Options {
     FRAME_SWITCH,
     CLOSE_PROJECTS,
     DIAGNOSTIC
-  }
-
-  override fun update(e: AnActionEvent) {
-    e.presentation.isVisible = true
-    e.presentation.isEnabled = true
   }
 
   override fun actionPerformed(event: AnActionEvent) {

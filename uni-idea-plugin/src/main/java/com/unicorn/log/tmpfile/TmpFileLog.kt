@@ -13,14 +13,18 @@ object TmpFileLog {
 
   init {
     val calendar = GregorianCalendar()
+    @Suppress("UNUSED_VARIABLE")
     val year = calendar.get(Calendar.YEAR)
+    @Suppress("UNUSED_VARIABLE")
     val month = calendar.get(Calendar.MONTH)
+    @Suppress("UNUSED_VARIABLE")
     val day = calendar.get(Calendar.DAY_OF_MONTH)
+    @Suppress("UNUSED_VARIABLE")
     val hour = calendar.get(Calendar.HOUR_OF_DAY)
 
     Log.info { "log stream to ${file.absolutePath}" }
     Log.addLogConsumer {
-      writer.appendln(it.payload.toString())
+      writer.appendLine(it.payload.toString())
       writer.flush()//todo flush with delay and coroutines
     }
   }

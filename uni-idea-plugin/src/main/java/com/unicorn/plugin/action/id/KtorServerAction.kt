@@ -6,12 +6,7 @@ import com.intellij.openapi.project.DumbAware
 import com.unicorn.plugin.server.startKtorServer
 
 
-class KtorServerAction : AnAction(), DumbAware {
-
-  override fun update(e: AnActionEvent) {
-    e.presentation.isVisible = true
-    e.presentation.isEnabled = true
-  }
+class KtorServerAction : UniAction(), DumbAware {
 
   override fun actionPerformed(event: AnActionEvent) {
     startKtorServer()
