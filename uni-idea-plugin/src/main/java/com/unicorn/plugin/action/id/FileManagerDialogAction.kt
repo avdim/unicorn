@@ -11,12 +11,7 @@ import com.unicorn.plugin.ui.render.stateFlowView
 import com.unicorn.plugin.ui.showPanelDialog
 import todo.mvi.createFileManagerMviStore
 
-class FileManagerDialogAction : AnAction(), DumbAware {
-
-  override fun update(e: AnActionEvent) {
-    e.presentation.isVisible = true
-    e.presentation.isEnabled = true
-  }
+class FileManagerDialogAction : UniAction(), DumbAware {
 
   override fun actionPerformed(e: AnActionEvent) {
     openDialogFileManager()
@@ -25,6 +20,7 @@ class FileManagerDialogAction : AnAction(), DumbAware {
 }
 
 fun openDialogFileManager() {
+  Uni.log.debug { "openDialogFileManager start" }
   val mviStore = createFileManagerMviStore()
   val dialog = showPanelDialog { close ->
     Uni.scope.stateFlowView(this, mviStore.stateFlow) { state ->
@@ -34,4 +30,5 @@ fun openDialogFileManager() {
     }
   }
   Disposer.register(Uni, dialog.disposable)//todo move to showDialog
+  Uni.log.debug { "openDialogFileManager end" }
 }

@@ -7,12 +7,12 @@ buildscript {//todo workaround https://github.com/JetBrains/gradle-intellij-plug
 }
 
 group = "com.domain.plugin"
-version = "0.11.5"
+version = "0.11.6"
 
 plugins {
   java
   kotlin("jvm")
-  id("org.jetbrains.intellij") version "0.5.0" //https://github.com/JetBrains/gradle-intellij-plugin
+  id("org.jetbrains.intellij") version INTELLIJ_GRADLE
   id("com.github.kukuhyoniatmoko.buildconfigkotlin") version "1.0.5"
   idea
 }

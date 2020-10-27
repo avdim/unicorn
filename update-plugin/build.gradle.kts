@@ -9,7 +9,7 @@ buildscript {//todo workaround https://github.com/JetBrains/gradle-intellij-plug
 plugins {
   java
   kotlin("jvm")
-  id("org.jetbrains.intellij") version "0.5.0" //https://github.com/JetBrains/gradle-intellij-plugin
+  id("org.jetbrains.intellij") version INTELLIJ_GRADLE
   id("com.github.kukuhyoniatmoko.buildconfigkotlin") version "1.0.5"
   idea
 }
@@ -78,6 +78,7 @@ intellij {
   // Snapshots: https://www.jetbrains.com/intellij-repository/snapshots/
 //  version = "2020.2.3"
   version = "203.4818-EAP-CANDIDATE-SNAPSHOT"//2020.3-eap
+//  version = "203.5251-EAP-CANDIDATE-SNAPSHOT"//2020.3-eap
   type = "IC"
   pluginName = "unicorn-update"
   updateSinceUntilBuild = false
@@ -85,7 +86,7 @@ intellij {
   downloadSources = true
   instrumentCode = true
 //    setPlugins("org.jetbrains.kotlin:1.3.11-release-IJ2018.3-1")
-  sandboxDirectory = "/tmp/idea_sandbox2"
+  sandboxDirectory = tmpDir() //"/tmp/idea_sandbox2"
 }
 
 tasks.withType<org.jetbrains.intellij.tasks.PatchPluginXmlTask>() {
@@ -106,7 +107,7 @@ tasks.withType<org.jetbrains.kotlin.gradle.tasks.KotlinCompile> {
 }
 
 tasks {
-  publishPlugin {
-    token(System.getenv("PUBLISH_TOKEN"))
+  named("runIde") {
+    dependsOn(":uni-idea-plugin:buildPlugin")
   }
 }

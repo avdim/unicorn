@@ -13,12 +13,7 @@ import java.awt.Component
 import java.awt.event.MouseEvent
 
 
-class ContextMenuAction : AnAction(), DumbAware {
-
-  override fun update(e: AnActionEvent) {
-    e.presentation.isVisible = true
-    e.presentation.isEnabled = true
-  }
+class ContextMenuAction : UniAction(), DumbAware {
 
   override fun actionPerformed(event: AnActionEvent) {
     val context = event.uniContext

@@ -17,6 +17,7 @@ fun integrationTest() {
       }
     }
     showDialog2(parent)
+
     installAndStartIntegrationTest("install 1", parent)
     delay(1)
 
@@ -36,7 +37,7 @@ fun integrationTest() {
   }
 }
 
-suspend fun installAndStartIntegrationTest(assertMessage: String, parent: JComponent) {
+suspend fun installAndStartIntegrationTest(assertMessage: String, parent: JComponent?) {
   val path = buildDistPlugins().firstOrNull()
   if (path == null) {
     testError("plugin path == null")
@@ -81,7 +82,7 @@ fun testError(message: String) {
   System.exit(1)
 }
 
-fun assertTrue(message: String, action: () -> Boolean) {
+suspend fun assertTrue(message: String, action: suspend () -> Boolean) {
   val result: Boolean = action()
   if (!result) {
     testError(message)

@@ -64,3 +64,8 @@ val COMPILER_ARGS = listOf<String>()
 //or in gradle.properties: kotlin.js.compiler=ir
 
 val USE_ANDROID = false
+
+/**
+ * https://github.com/JetBrains/gradle-intellij-plugin
+ */
+val INTELLIJ_GRADLE = "0.5.0"//todo 0.5.1

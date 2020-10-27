@@ -9,6 +9,7 @@ import com.unicorn.log.lib.Log
 import com.unicorn.log.recent.RecentLog
 import com.unicorn.log.tmpfile.TmpFileLog
 import com.unicorn.plugin.ActionSubscription
+import com.unicorn.plugin.action.Actions
 import com.unicorn.plugin.configureIDE
 import com.unicorn.plugin.getToolWindow
 import kotlinx.coroutines.*
@@ -56,6 +57,7 @@ object Uni : Disposable {
       }
     }
     Uni.log.debug { "Uni.dispose() complete" }
+    Actions.unregister()
   }
 
 }
