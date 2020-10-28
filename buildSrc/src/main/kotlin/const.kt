@@ -70,11 +70,10 @@ val USE_ANDROID = false
  */
 val INTELLIJ_GRADLE = "0.5.1"
 
-/**
- * Snapshots: https://www.jetbrains.com/intellij-repository/snapshots/
- */
+//https://www.jetbrains.com/intellij-repository/snapshots/
 //val IDEA_VERSION = "2020.1.2"
 //val IDEA_VERSION = "2020.2.3"
-//val IDEA_VERSION = "203.4818-EAP-CANDIDATE-SNAPSHOT"//2020.3-eap3
-val IDEA_VERSION = "203.5419-EAP-CANDIDATE-SNAPSHOT"//2020.3-eap5
+val IDEA_VERSION = "203.4818-EAP-CANDIDATE-SNAPSHOT"//2020.3-eap3
+//val IDEA_VERSION = "203.5251-EAP-CANDIDATE-SNAPSHOT"//2020.3-eap4
+//val IDEA_VERSION = "203.5419-EAP-CANDIDATE-SNAPSHOT"//2020.3-eap5
 //val IDEA_VERSION = "LATEST-EAP-SNAPSHOT"
