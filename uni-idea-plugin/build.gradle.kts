@@ -7,7 +7,7 @@ buildscript {//todo workaround https://github.com/JetBrains/gradle-intellij-plug
 }
 
 group = "com.domain.plugin"
-version = "0.12.0"
+version = "0.12.1"
 
 plugins {
   java
@@ -93,7 +93,7 @@ intellij {
 //    "Kotlin", "java"
     /*, "org.jetbrains.kotlin:1.3.72-release-IJ2020.1-1"*/
   )
-  if (USE_AS) {
+  if (USE_AS) {//todo idea ultimate
     sandboxDirectory = "/tmp/android_studio_sandbox"
   } else {
     sandboxDirectory = "/tmp/idea_sandbox"
