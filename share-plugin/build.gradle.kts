@@ -29,8 +29,8 @@ buildConfigKotlin {
 }
 
 java {
-  sourceCompatibility = JavaVersion.VERSION_1_8
-  targetCompatibility = JavaVersion.VERSION_1_8
+  sourceCompatibility = JavaVersion.VERSION_11
+  targetCompatibility = JavaVersion.VERSION_11
 }
 
 group = "ru.avdim.idea-plugin-update"
@@ -57,8 +57,7 @@ dependencies {
 }
 
 intellij {
-  // See https://github.com/JetBrains/gradle-intellij-plugin/
-  version = "203.4818-EAP-CANDIDATE-SNAPSHOT"//2020.3-eap
+  version = IDEA_VERSION
   type = "IC"
   pluginName = "unicorn-update"
   updateSinceUntilBuild = false

@@ -11,7 +11,7 @@ import com.unicorn.plugin.mvi.UniWindowState
 import todo.mvi.Intent
 import java.io.File
 
-val TODO_TEXT_FIELD_COMPLETION = false//todo
+val TODO_TEXT_FIELD_COMPLETION = true//todo
 
 fun fileManager(
   layoutBuilder: LayoutBuilder,

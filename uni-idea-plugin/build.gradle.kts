@@ -32,8 +32,8 @@ buildConfigKotlin {
 }
 
 java {
-  sourceCompatibility = JavaVersion.VERSION_1_8
-  targetCompatibility = JavaVersion.VERSION_1_8
+  sourceCompatibility = JavaVersion.VERSION_11
+  targetCompatibility = JavaVersion.VERSION_11
 }
 
 repositories {
@@ -74,19 +74,7 @@ intellij {
   if (USE_AS) {
     localPath = as4_2_macos
   } else {
-    // Snapshots: https://www.jetbrains.com/intellij-repository/snapshots/
-    //2019.3, 2020.1 2020.1.2, LATEST-EAP-SNAPSHOT, 201-EAP-SNAPSHOT
-//    version = "2020.1.2"
-//    version = "202.4357.23-EAP-SNAPSHOT"
-//    version = "202.5103.13-EAP-SNAPSHOT"
-//    version = "202.6109.22-EAP-SNAPSHOT"
-//    version = "202.6250.13-EAP-SNAPSHOT"//beta
-//    version = "202.6397.20-EAP-SNAPSHOT"//beta
-//    version = "2020.2.1"
-//    version = "202.7319.45-EAP-SNAPSHOT"//2020.2.2-rc
-//    version = "2020.2.2"
-    version = "2020.2.3"
-//    version = "LATEST-EAP-SNAPSHOT"
+    version = IDEA_VERSION
 //    alternativeIdePath = as4_2
 //    localPath = idea2020_2
   }
