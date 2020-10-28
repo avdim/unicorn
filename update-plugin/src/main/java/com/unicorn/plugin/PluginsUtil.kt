@@ -39,9 +39,10 @@ fun buildDistPlugins(): List<String> {
     val distDir = File(BuildConfig.UNI_ZIP_BUILD_DIST)
     val zipFiles =
         if (distDir.exists()) {
-            distDir
-                .listFiles(FileFilter { it.extension == "zip" })
-                .map { it.absolutePath }
+          distDir
+            .listFiles(FileFilter { it.extension == "zip" })
+            .sortedByDescending { it.lastModified() }
+            .map { it.absolutePath }
         } else {
             emptyList()
         }
