@@ -192,6 +192,7 @@ private fun _createUniFilesComponent(
     override fun getData(dataId: String): Any? {
       val paneSpecificData = viewPane.getData(dataId)
       if (paneSpecificData != null) return paneSpecificData
+
       if (CommonDataKeys.PSI_ELEMENT.`is`(dataId)) {
         val elements = viewPane.selectedPSIElements
         return if (elements.size == 1) elements[0] else null
@@ -200,15 +201,6 @@ private fun _createUniFilesComponent(
         val elements = viewPane.selectedPSIElements
         return if (elements.isEmpty()) null else elements
       }
-//    if (LangDataKeys.MODULE.`is`(dataId)) {
-//      val virtualFiles: Array<VirtualFile>? = getData(CommonDataKeys.VIRTUAL_FILE_ARRAY.name) as? Array<VirtualFile>
-//      if (virtualFiles == null || virtualFiles.size <= 1) return null
-//      val modules: MutableSet<Module?> = HashSet()
-//      for (virtualFile in virtualFiles) {
-//        modules.add(ModuleUtilCore.findModuleForFile(virtualFile, myView.myProject))
-//      }
-//      return if (modules.size == 1) modules.iterator().next() else null
-//    }
       if (LangDataKeys.TARGET_PSI_ELEMENT.`is`(dataId)) {
         return null
       }
@@ -282,43 +274,6 @@ private fun _createUniFilesComponent(
         val selected = getSelectNodeElement()
         return selected as? Project
       }
-      if (LangDataKeys.MODULE_CONTEXT.`is`(dataId)) {
-        /**
-         * Project view has the same node for module and its single content root
-         * => MODULE_CONTEXT data key should return the module when its content root is selected
-         * When there are multiple content roots, they have different nodes under the module node
-         * => MODULE_CONTEXT should be only available for the module node
-         * otherwise VirtualFileArrayRule will return all module's content roots when just one of them is selected
-         */
-        fun moduleBySingleContentRoot(file: VirtualFile): Module? {
-          if (ProjectRootsUtil.isModuleContentRoot(
-              file,
-              project
-            )
-          ) {
-            val module = ProjectRootManager.getInstance(project).fileIndex.getModuleForFile(file)
-            if (module != null && !module.isDisposed && ModuleRootManager.getInstance(module).contentRoots.size == 1) {
-              return module
-            }
-          }
-          return null
-        }
-
-        val selected = getSelectNodeElement()
-        return if (selected is Module) {
-          if (!selected.isDisposed) selected else null
-        } else if (selected is PsiDirectory) {
-          moduleBySingleContentRoot(selected.virtualFile)
-        } else if (selected is VirtualFile) {
-          moduleBySingleContentRoot((selected as VirtualFile?)!!)
-        } else {
-          null
-        }
-      }
-      if (ModuleGroup.ARRAY_DATA_KEY.`is`(dataId)) {
-        val selectedElements = viewPane.selectedElements.filterType<ModuleGroup>()
-        return if (selectedElements.isEmpty()) null else selectedElements.toTypedArray()
-      }
       if (LibraryGroupElement.ARRAY_DATA_KEY.`is`(dataId)) {
         val selectedElements = viewPane.selectedElements.filterType<LibraryGroupElement>()
         return if (selectedElements.isEmpty()) null else selectedElements.toTypedArray()
@@ -330,9 +285,11 @@ private fun _createUniFilesComponent(
       if (PlatformDataKeys.SELECTED_ITEMS.`is`(dataId)) {
         return viewPane.selectedElements
       }
-      return if (QuickActionProvider.KEY.`is`(dataId)) {
-        this
-      } else null
+      if (QuickActionProvider.KEY.`is`(dataId)) {
+        return this
+      }
+
+      return null
     }
   }
 }

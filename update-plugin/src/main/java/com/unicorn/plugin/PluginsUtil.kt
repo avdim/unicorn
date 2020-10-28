@@ -27,7 +27,7 @@ fun removeUniPlugin(parentComponent: JComponent?):Boolean {
     val descriptor = PluginDescriptorLoader.loadDescriptorFromArtifact(file.toPath(), null)
     val result = PluginInstaller.uninstallDynamicPlugin(
         parentComponent,
-        descriptor,
+        descriptor!!,
         true
     )
 
