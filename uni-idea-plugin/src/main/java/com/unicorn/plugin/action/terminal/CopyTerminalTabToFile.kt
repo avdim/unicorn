@@ -44,16 +44,16 @@ class CopyTerminalTabToFile : ToolWindowContextMenuActionBase(), DumbAware {
     val fileEditor = FileEditorManager.getInstance(project).openFile(vFile, true).first()
 
     if (false) {
-      val file: VirtualFile =
-        TerminalSessionVirtualFileImpl(tabInfo, terminalWidget, terminalView.terminalRunner.settingsProvider)
-      tabInfo.setObject(file)
-      file.putUserData(FileEditorManagerImpl.CLOSING_TO_REOPEN, java.lang.Boolean.TRUE)
-      val fileEditor = FileEditorManager.getInstance(project).openFile(file, true).first()
-//      terminalWidget.listener = TerminalEditorWidgetListener(project, file)
-      terminalWidget.moveDisposable(fileEditor)
-      terminalView.detachWidgetAndRemoveContent(content)
-
-      file.putUserData(FileEditorManagerImpl.CLOSING_TO_REOPEN, null)
+//      val file: VirtualFile =
+//        TerminalSessionVirtualFileImpl(tabInfo, terminalWidget, terminalView.terminalRunner.settingsProvider)
+//      tabInfo.setObject(file)
+//      file.putUserData(FileEditorManagerImpl.CLOSING_TO_REOPEN, java.lang.Boolean.TRUE)
+//      val fileEditor = FileEditorManager.getInstance(project).openFile(file, true).first()
+////      terminalWidget.listener = TerminalEditorWidgetListener(project, file)
+//      terminalWidget.moveDisposable(fileEditor)
+//      terminalView.detachWidgetAndRemoveContent(content)
+//
+//      file.putUserData(FileEditorManagerImpl.CLOSING_TO_REOPEN, null)
     }
 
   }
