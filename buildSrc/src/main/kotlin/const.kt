@@ -71,9 +71,11 @@ val USE_ANDROID = false
 val INTELLIJ_GRADLE = "0.5.1"
 
 //https://www.jetbrains.com/intellij-repository/snapshots/
-//val IDEA_VERSION = "2020.1.2"
-//val IDEA_VERSION = "2020.2.3"
-val IDEA_VERSION = "203.4818-EAP-CANDIDATE-SNAPSHOT"//2020.3-eap3
-//val IDEA_VERSION = "203.5251-EAP-CANDIDATE-SNAPSHOT"//2020.3-eap4
-//val IDEA_VERSION = "203.5419-EAP-CANDIDATE-SNAPSHOT"//2020.3-eap5
-//val IDEA_VERSION = "LATEST-EAP-SNAPSHOT"
+//val IDEA_VERSION: IdeaVersion = IdeaVersion.Community("2020.1.2")
+//val IDEA_VERSION: IdeaVersion = IdeaVersion.Community("2020.2.3")
+//val IDEA_VERSION: IdeaVersion = IdeaVersion.Community("203.4818-EAP-CANDIDATE-SNAPSHOT")//jvm8
+//val IDEA_VERSION: IdeaVersion = IdeaVersion.Community("203.5251-EAP-CANDIDATE-SNAPSHOT")//jvm11
+//val IDEA_VERSION: IdeaVersion = IdeaVersion.Community("203.5419-EAP-CANDIDATE-SNAPSHOT")
+//val IDEA_VERSION: IdeaVersion = IdeaVersion.Community("LATEST-EAP-SNAPSHOT")
+//val IDEA_VERSION:IdeaVersion = IdeaVersion.Local("/Users/dim/Library/Application Support/JetBrains/Toolbox/apps/AndroidStudio/ch-1/202.6863838/Android Studio 4.2 Preview.app/Contents")
+val IDEA_VERSION:IdeaVersion = IdeaVersion.Local("/Users/dim/Library/Application Support/JetBrains/Toolbox/apps/IDEA-U/ch-0/203.5251.39/IntelliJ IDEA 2020.3 EAP.app/Contents")

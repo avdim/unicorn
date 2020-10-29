@@ -74,15 +74,24 @@ dependencies {
 }
 
 intellij {
-  version = IDEA_VERSION
-  type = "IC"
+  val ideaVersion = IDEA_VERSION
+  when(ideaVersion) {
+    is IdeaVersion.Community -> {
+      version = ideaVersion.version
+      type = "IC"
+    }
+    is IdeaVersion.Local -> {
+      localPath = ideaVersion.localPath
+    }
+  }
+  sandboxDirectory = ideaVersion.sandboxDir
+
   pluginName = "unicorn-update"
   updateSinceUntilBuild = false
   sameSinceUntilBuild = true
   downloadSources = true
   instrumentCode = true
 //    setPlugins("org.jetbrains.kotlin:1.3.11-release-IJ2018.3-1")
-  sandboxDirectory = tmpDir() //"/tmp/idea_sandbox2"
 }
 
 tasks.withType<org.jetbrains.intellij.tasks.PatchPluginXmlTask>() {

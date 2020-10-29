@@ -67,19 +67,20 @@ intellij {
   val as4_0 = "/home/dim/Desktop/programs/android-studio-4.0"
   val as4_1_macos = "/Users/dim/Library/Application Support/JetBrains/Toolbox/apps/AndroidStudio/ch-2/201.6823847/Android Studio.app/Contents"
   val as4_2_linux = "/home/dim/Desktop/programs/android-studio-4.2/4.2-canary4"
-//  val as4_2_macos = "/Users/dim/Library/Application Support/JetBrains/Toolbox/apps/AndroidStudio/ch-0/202.6825553/Android Studio 4.2 Preview.app/Contents"
-  val as4_2_macos = "/Users/dim/Library/Application Support/JetBrains/Toolbox/apps/AndroidStudio/ch-1/202.6863838/Android Studio 4.2 Preview.app/Contents"
-  val USE_AS:Boolean = safeArgument("useAndroidStudio") == "true"
+  //    alternativeIdePath = as4_2
 
-  if (USE_AS) {
-    localPath = as4_2_macos
-  } else {
-    version = IDEA_VERSION
-//    alternativeIdePath = as4_2
-//    localPath = idea2020_2
+  val ideaVersion = IDEA_VERSION
+  when (ideaVersion) {
+    is IdeaVersion.Community -> {
+      version = ideaVersion.version
+      type = "IC"
+    }
+    is IdeaVersion.Local -> {
+      localPath = ideaVersion.localPath
+    }
   }
+  sandboxDirectory = ideaVersion.sandboxDir
 
-  type = "IC"
   pluginName = "unicorn"
   updateSinceUntilBuild = false
   sameSinceUntilBuild = true
@@ -93,11 +94,6 @@ intellij {
 //    "Kotlin", "java"
     /*, "org.jetbrains.kotlin:1.3.72-release-IJ2020.1-1"*/
   )
-  if (USE_AS) {//todo idea ultimate
-    sandboxDirectory = "/tmp/android_studio_sandbox"
-  } else {
-    sandboxDirectory = "/tmp/idea_sandbox"
-  }
 }
 
 tasks.withType<org.jetbrains.intellij.tasks.PatchPluginXmlTask>() {
