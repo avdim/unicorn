@@ -69,11 +69,19 @@ val USE_ANDROID = false
  * https://github.com/JetBrains/gradle-intellij-plugin
  */
 val INTELLIJ_GRADLE = "0.5.1"
+val UNI_RELEASE: Boolean = System.getenv("UNI_RELEASE") == "true"
+val UNI_VERSION = "0.12.2"
 
-//https://www.jetbrains.com/intellij-repository/snapshots/
-//val IDEA_VERSION = "2020.1.2"
-//val IDEA_VERSION = "2020.2.3"
-val IDEA_VERSION = "203.4818-EAP-CANDIDATE-SNAPSHOT"//2020.3-eap3
-//val IDEA_VERSION = "203.5251-EAP-CANDIDATE-SNAPSHOT"//2020.3-eap4
-//val IDEA_VERSION = "203.5419-EAP-CANDIDATE-SNAPSHOT"//2020.3-eap5
-//val IDEA_VERSION = "LATEST-EAP-SNAPSHOT"
+val IDEA_VERSION: IdeaVersion =
+  if (UNI_RELEASE) {
+    //https://www.jetbrains.com/intellij-repository/snapshots/
+//    IdeaVersion.Community("2020.1.2")
+//    IdeaVersion.Community("2020.2.3")
+//    IdeaVersion.Community("203.4818-EAP-CANDIDATE-SNAPSHOT")//jvm8
+    IdeaVersion.Community("203.5251-EAP-CANDIDATE-SNAPSHOT")//jvm11
+    //IdeaVersion.Community("203.5419-EAP-CANDIDATE-SNAPSHOT")
+    //IdeaVersion.Community("LATEST-EAP-SNAPSHOT")
+  } else {
+//    IdeaVersion.Local("/Users/dim/Library/Application Support/JetBrains/Toolbox/apps/AndroidStudio/ch-1/202.6863838/Android Studio 4.2 Preview.app/Contents")
+    IdeaVersion.Local("/Users/dim/Library/Application Support/JetBrains/Toolbox/apps/IDEA-U/ch-0/203.5251.39/IntelliJ IDEA 2020.3 EAP.app/Contents")
+  }

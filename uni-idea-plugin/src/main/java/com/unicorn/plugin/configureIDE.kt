@@ -62,7 +62,7 @@ suspend fun configureIDE() {
   val previousTerminalLines: Int = Registry.intValue("terminal.buffer.max.lines.count")
   Registry.get("terminal.buffer.max.lines.count").setValue(100_000)
   TerminalOptionsProvider.instance.setOverrideIdeShortcuts(false)//enable Alt+F2 in terminal
-//  TerminalOptionsProvider.instance.setShellPath("/bin/bash")//todo work's on intellij {  version = "202.5103.13-EAP-SNAPSHOT"
+  TerminalOptionsProvider.instance.shellPath = "/bin/bash"
 
   // Tab settings
   UISettings.instance.editorTabPlacement = SwingConstants.LEFT
