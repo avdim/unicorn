@@ -7,7 +7,7 @@ buildscript {//todo workaround https://github.com/JetBrains/gradle-intellij-plug
 }
 
 group = "com.domain.plugin"
-version = "0.12.1"
+version = UNI_VERSION
 
 plugins {
   java

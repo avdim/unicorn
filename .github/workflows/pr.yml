@@ -3,6 +3,7 @@ on:
   pull_request:
 env:
   SSH_AUTH_SOCK: "/tmp/ssh_agent_${{github.run_id}}.sock"
+  UNI_RELEASE: "true"
     
 jobs:
   unit-test:
