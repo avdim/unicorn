@@ -44,16 +44,12 @@ val DEBUG_WEBPACK_TODO = false
  */
 val USE_KOTLIN_DEV_REPOSITORY = true
 
-// Версии библиотек:
-//val KOTLIN_VERSION = "1.3.72"
-val KOTLIN_VERSION = "1.4.10"
-val SERIALIZATION_VERSION = "1.0.0"
-//val COROUTINE_VERSION = "1.3.3"
-val COROUTINE_VERSION = "1.3.9"
-//val KTOR_VERSION = "1.2.6"
-val KTOR_VERSION = "1.4.0"
+//val KOTLIN_VERSION = "1.4.10"
+val KOTLIN_VERSION = "1.4.20-RC-233"
+val SERIALIZATION_VERSION = "1.0.1"
+val COROUTINE_VERSION = "1.4.0"
+val KTOR_VERSION = "1.4.1"
 val LOG_MAVEN_ARTIFACT = if (DEBUG_JVM) "ch.qos.logback:logback-classic:1.2.3" else "org.slf4j:slf4j-simple:1.7.28"
-val LANGUAGE_FEATURES = listOf("InlineClasses")
 
 //https://github.com/Kotlin/kotlinx.coroutines/commit/e37aec4edd09bfb7f622e113553aa88a0a5bd27c
 val COMPILER_ARGS = listOf<String>()
@@ -65,10 +61,8 @@ val COMPILER_ARGS = listOf<String>()
 
 val USE_ANDROID = false
 
-/**
- * https://github.com/JetBrains/gradle-intellij-plugin
- */
-val INTELLIJ_GRADLE = "0.5.1"
+// https://github.com/JetBrains/gradle-intellij-plugin
+val INTELLIJ_GRADLE = "0.6.1"
 val UNI_RELEASE: Boolean = System.getenv("UNI_RELEASE") == "true"
 val UNI_VERSION = "0.12.2"
 
@@ -77,8 +71,8 @@ val IDEA_VERSION: IdeaVersion =
     //https://www.jetbrains.com/intellij-repository/snapshots/
 //    IdeaVersion.Community("2020.1.2")
 //    IdeaVersion.Community("2020.2.3")
-//    IdeaVersion.Community("203.4818-EAP-CANDIDATE-SNAPSHOT")//jvm8
-    IdeaVersion.Community("203.5251-EAP-CANDIDATE-SNAPSHOT")//jvm11
+    IdeaVersion.Community("203.4818-EAP-CANDIDATE-SNAPSHOT")//jvm8
+//    IdeaVersion.Community("203.5251-EAP-CANDIDATE-SNAPSHOT")//jvm11
     //IdeaVersion.Community("203.5419-EAP-CANDIDATE-SNAPSHOT")
     //IdeaVersion.Community("LATEST-EAP-SNAPSHOT")
   } else {
