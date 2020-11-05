@@ -47,7 +47,7 @@ val USE_KOTLIN_DEV_REPOSITORY = true
 //val KOTLIN_VERSION = "1.4.10"
 val KOTLIN_VERSION = "1.4.20-RC-233"
 val SERIALIZATION_VERSION = "1.0.1"
-val COROUTINE_VERSION = "1.4.0"
+val COROUTINE_VERSION = "1.4.1"
 val KTOR_VERSION = "1.4.1"
 val LOG_MAVEN_ARTIFACT = if (DEBUG_JVM) "ch.qos.logback:logback-classic:1.2.3" else "org.slf4j:slf4j-simple:1.7.28"
 
