@@ -1,5 +1,3 @@
-import lib.gradle.safeArgument
-
 buildscript {//todo workaround https://github.com/JetBrains/gradle-intellij-plugin/issues/537
   repositories {
     maven("https://jetbrains.bintray.com/intellij-plugin-service")

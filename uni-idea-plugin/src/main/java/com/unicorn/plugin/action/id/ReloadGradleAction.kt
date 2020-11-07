@@ -7,7 +7,7 @@ import com.unicorn.plugin.performActionById
 class ReloadGradleAction : UniAction(), DumbAware {
 
   override fun actionPerformed(event: AnActionEvent) {
-    performActionById("SelectIn")
+    performActionById("ExternalSystem.RefreshAllProjects")
   }
 
 }
