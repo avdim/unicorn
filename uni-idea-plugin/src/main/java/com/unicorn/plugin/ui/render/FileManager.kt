@@ -17,16 +17,10 @@ fun fileManager(
   layoutBuilder: LayoutBuilder,
   state: UniWindowState,
   project: Project,
-  close: () -> Unit,
   send: (Intent) -> Unit
 ) {
   val dir: VirtualFile = LocalFileSystem.getInstance().refreshAndFindFileByPath("/")!!
   val files = dir.children.toList()
-  layoutBuilder.row {
-    button("close") {
-      close()
-    }
-  }
   layoutBuilder.row {
     cell(isVerticalFlow = false) {
       button("universal action") {

@@ -3,7 +3,7 @@ package com.unicorn.plugin.update
 import com.intellij.openapi.ui.DialogPanel
 import com.intellij.ui.layout.panel
 import com.unicorn.plugin.*
-import com.unicorn.plugin.ui.showDialog2
+import com.unicorn.plugin.ui.showDialog
 import kotlinx.coroutines.*
 import ru.avdim.mvi.APP_SCOPE
 import java.io.File
@@ -16,7 +16,7 @@ fun integrationTest() {
         label("empty panel only for progress")
       }
     }
-    showDialog2(parent)
+    showDialog(parent)
 
     installAndStartIntegrationTest("install 1", parent)
     delay(1)
