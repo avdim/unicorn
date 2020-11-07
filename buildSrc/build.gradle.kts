@@ -7,7 +7,7 @@ repositories {
 //  flatDir {
 //    dir("libs")
 //  }
-  mavenLocal {
+  mavenLocal {//todo delete
     url = uri("$projectDir/repository")
   }
   jcenter()
@@ -17,7 +17,7 @@ repositories {
 
 dependencies {
   //api("ru.uni:lib:0.0.1")
-  api("ru.uni:lib-gradle:0.0.2")
+//  api("ru.uni:lib-gradle:0.0.2")
 
 //  api(fileTree("libs") { include("*.jar") }) //groovy: compile fileTree(dir: 'libs', include: ['*.jar'])
 

@@ -5,10 +5,10 @@ repeat_wrapper () {
   ("$@") ||  exit 1
 }
 
-export UNI_RELEASE="true"
+#export UNI_BUILD_TYPE="integration-test"
 
-rm -rf uni-idea-plugin/build/distributions
+#rm -rf uni-idea-plugin/build/distributions
 #./gradlew uni-idea-plugin:clean uni-idea-plugin:buildPlugin
 
-repeat_wrapper ./gradlew update-plugin:runIde -PintegrationTest=true
+repeat_wrapper ./gradlew update-plugin:runIde -PuniBuildType=integration-test
 #./gradlew update-plugin:runIde

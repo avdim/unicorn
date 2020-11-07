@@ -1,5 +1,3 @@
-import lib.gradle.safeArgument
-
 buildscript {//todo workaround https://github.com/JetBrains/gradle-intellij-plugin/issues/537
   repositories {
     maven("https://jetbrains.bintray.com/intellij-plugin-service")
@@ -30,7 +28,7 @@ buildConfigKotlin {
     buildConfig(name = "GITHUB_CLIENT_ID", value = getLocalProperty("GITHUB_CLIENT_ID"))
     //todo не комплилировать секреты в jar-ник на CI/CD. Тут нужен request на доверенный сервер.
     buildConfig(name = "GITHUB_CLIENT_SECRET", value = getLocalProperty("GITHUB_CLIENT_SECRET"))
-    buildConfig(name = "INTEGRATION_TEST", value = safeArgument("integrationTest") == "true")
+    buildConfig(name = "INTEGRATION_TEST", value = UNI_BUILD_TYPE is BuildType.IntegrationTest)
 //    val AUTH_TOKEN_URL = "https://tutu-ci.herokuapp.com/github_token_localhost"
 //    requestStr(
 //      AUTH_TOKEN_URL,
