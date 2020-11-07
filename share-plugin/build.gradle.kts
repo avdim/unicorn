@@ -1,5 +1,3 @@
-import lib.gradle.safeArgument
-
 buildscript {//todo workaround https://github.com/JetBrains/gradle-intellij-plugin/issues/537
   repositories {
     maven("https://jetbrains.bintray.com/intellij-plugin-service")
@@ -10,21 +8,12 @@ plugins {
   java
   kotlin("jvm")
   id("org.jetbrains.intellij") version INTELLIJ_GRADLE
-  id("com.github.kukuhyoniatmoko.buildconfigkotlin") version "1.0.5"
   idea
 }
 
 idea {
   module {
     excludeDirs = excludeDirs + listOf(file("${project.projectDir}/build/libs"))
-  }
-}
-
-buildConfigKotlin {
-  sourceSet("main") {
-    packageName = "com.unicorn.update"
-    buildConfig(name = "BUILD_TIME", value = BUILD_TIME_STR)
-    buildConfig(name = "OPEN_FILE_MANAGER_AT_START", value = safeArgument("openFilesAtStart") == "true")
   }
 }
 

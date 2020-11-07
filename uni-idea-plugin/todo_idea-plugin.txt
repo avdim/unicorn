@@ -28,3 +28,5 @@ Event log -> clear all
 swith CamelHumps Words
 "compact middle packages" in project view settings
 Don't show tips (Tip of the day)
+
+yaml scheme https://github.com/softprops/github-actions-schemas/blob/master/workflow.json

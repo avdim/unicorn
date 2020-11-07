@@ -1,3 +1,4 @@
+import org.gradle.api.Project
 import java.text.SimpleDateFormat
 import java.util.*
 
@@ -45,9 +46,9 @@ val DEBUG_WEBPACK_TODO = false
 val USE_KOTLIN_DEV_REPOSITORY = true
 
 //val KOTLIN_VERSION = "1.4.10"
-val KOTLIN_VERSION = "1.4.20-RC-233"
+val KOTLIN_VERSION = "1.4.20-RC"
 val SERIALIZATION_VERSION = "1.0.1"
-val COROUTINE_VERSION = "1.4.0"
+val COROUTINE_VERSION = "1.4.1"
 val KTOR_VERSION = "1.4.1"
 val LOG_MAVEN_ARTIFACT = if (DEBUG_JVM) "ch.qos.logback:logback-classic:1.2.3" else "org.slf4j:slf4j-simple:1.7.28"
 
@@ -62,20 +63,49 @@ val COMPILER_ARGS = listOf<String>()
 val USE_ANDROID = false
 
 // https://github.com/JetBrains/gradle-intellij-plugin
-val INTELLIJ_GRADLE = "0.6.1"
-val UNI_RELEASE: Boolean = System.getenv("UNI_RELEASE") == "true"
+val INTELLIJ_GRADLE = "0.6.2"
+
+val Project.UNI_BUILD_TYPE: BuildType get() =
+  when (safeArgument("uniBuildType")) {
+    "release" -> BuildType.Release
+    "integration-test" -> BuildType.IntegrationTest
+    else -> BuildType.UseLocal
+  }
+
 val UNI_VERSION = "0.12.2"
 
-val IDEA_VERSION: IdeaVersion =
-  if (UNI_RELEASE) {
-    //https://www.jetbrains.com/intellij-repository/snapshots/
+val Project.IDEA_VERSION: IdeaVersion get() =
+  when (UNI_BUILD_TYPE) {
+    is BuildType.Release, BuildType.Debug -> {
+      //https://www.jetbrains.com/intellij-repository/snapshots/
 //    IdeaVersion.Community("2020.1.2")
 //    IdeaVersion.Community("2020.2.3")
-    IdeaVersion.Community("203.4818-EAP-CANDIDATE-SNAPSHOT")//jvm8
+//      IdeaVersion.Community("203.4818-EAP-CANDIDATE-SNAPSHOT")//jvm8
 //    IdeaVersion.Community("203.5251-EAP-CANDIDATE-SNAPSHOT")//jvm11
-    //IdeaVersion.Community("203.5419-EAP-CANDIDATE-SNAPSHOT")
-    //IdeaVersion.Community("LATEST-EAP-SNAPSHOT")
-  } else {
+      //IdeaVersion.Community("203.5419-EAP-CANDIDATE-SNAPSHOT")
+//    IdeaVersion.Community("203.5600.34-EAP-SNAPSHOT")
+      IdeaVersion.Community("203.5600-EAP-CANDIDATE-SNAPSHOT")
+      //IdeaVersion.Community("LATEST-EAP-SNAPSHOT")
+    }
+    is BuildType.IntegrationTest -> {
+      IdeaVersion.Community("203.4818-EAP-CANDIDATE-SNAPSHOT")//jvm8
+    }
+    is BuildType.UseLocal -> {
+      if(isMacOS) {
 //    IdeaVersion.Local("/Users/dim/Library/Application Support/JetBrains/Toolbox/apps/AndroidStudio/ch-1/202.6863838/Android Studio 4.2 Preview.app/Contents")
-    IdeaVersion.Local("/Users/dim/Library/Application Support/JetBrains/Toolbox/apps/IDEA-U/ch-0/203.5251.39/IntelliJ IDEA 2020.3 EAP.app/Contents")
+//    IdeaVersion.Local("/Users/dim/Library/Application Support/JetBrains/Toolbox/apps/IDEA-U/ch-0/203.5251.39/IntelliJ IDEA 2020.3 EAP.app/Contents")
+        IdeaVersion.Local("/Users/dim/Library/Application Support/JetBrains/Toolbox/apps/IDEA-U/ch-1/203.5600.34/IntelliJ IDEA 2020.3 EAP.app/Contents")
+      } else {
+        IdeaVersion.Community("203.5600-EAP-CANDIDATE-SNAPSHOT")
+      }
+    }
   }
+
+fun Project.safeArgument(key: String): String? =
+  if (hasProperty(key)) {
+    property(key) as? String
+  } else {
+    null
+  }
+
+val isMacOS get() = System.getProperty("os.name")?.contains("Mac OS") ?: false

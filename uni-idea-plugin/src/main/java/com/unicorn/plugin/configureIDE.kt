@@ -86,7 +86,7 @@ suspend fun configureIDE() {
   if (keymap != null) {//?: Uni.log.fatalError { "keymap not found $UNICORN_KEYMAP" }
     KeymapManagerEx.getInstanceEx().activeKeymap = keymap
   } else {
-    Uni.log.error { "keymap $UNICORN_KEYMAP not found" }
+    Uni.log.error { "keymap UNICORN_KEYMAP = $UNICORN_KEYMAP not found" }
   }
 
   UISettings.instance.smoothScrolling//=false todo val //UI: smooth scrolling
@@ -121,6 +121,7 @@ suspend fun configureIDE() {
 
   if (Uni.buildConfig.OPEN_FILE_MANAGER_AT_START) {
     delay(500)
+    //todo open welcome dialog
     openDialogFileManager()
   }
 

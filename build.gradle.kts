@@ -56,14 +56,3 @@ allprojects {//todo allprojects bad?
     }
   }
 }
-
-tasks {
-  register("checkLib") {
-    doLast {
-      println("CHECK:")
-      println(lib.CHECK_LIB_COMMON)
-      println(lib.CHECK_LIB_JVM)
-      println(lib.gradle.CHECK_LIB_GRADLE)
-    }
-  }
-}
