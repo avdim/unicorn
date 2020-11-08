@@ -25,7 +25,7 @@ buildConfigKotlin {
   sourceSet("main") {
     packageName = "com.unicorn"
     buildConfig(name = "BUILD_TIME", value = BUILD_TIME_STR)
-    buildConfig(name = "OPEN_FILE_MANAGER_AT_START", value = safeArgument("openFilesAtStart") == "true")
+    buildConfig(name = "DYNAMIC_UNLOAD", value = UNI_BUILD_TYPE == BuildType.IntegrationTest)
   }
 }
 

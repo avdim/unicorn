@@ -1,10 +1,10 @@
 package com.unicorn.plugin.mvi
 
-import com.unicorn.Uni
+import com.unicorn.BuildConfig
 
 data class UniWindowState(
   val columns: List<Column>,
-  val renderFiles: Boolean = !Uni.DYNAMIC_UNLOAD || Uni.buildConfig.OPEN_FILE_MANAGER_AT_START,
+  val renderFiles: Boolean = !BuildConfig.DYNAMIC_UNLOAD,
   val forceUpdate: Int = 0
 )
 

@@ -10,14 +10,20 @@ import com.intellij.openapi.application.ApplicationManager
 import com.intellij.openapi.editor.EditorFactory
 import com.intellij.openapi.editor.ex.EditorSettingsExternalizable
 import com.intellij.openapi.keymap.ex.KeymapManagerEx
+import com.intellij.openapi.project.ProjectManager
 import com.intellij.openapi.util.registry.Registry
 import com.intellij.openapi.wm.impl.IdeBackgroundUtil
+import com.unicorn.BuildConfig
 import com.unicorn.plugin.action.Actions
 import com.unicorn.Uni
 import com.unicorn.myDispose
 import com.unicorn.plugin.action.id.openDialogFileManager
+import com.unicorn.plugin.ui.showDialog
+import com.unicorn.plugin.ui.showPanelDialog
 import kotlinx.coroutines.*
 import org.jetbrains.plugins.terminal.TerminalOptionsProvider
+import ru.tutu.idea.file.uniFiles
+import java.io.File
 import javax.swing.SwingConstants
 
 private val UNICORN_KEYMAP = "Unicorn"
@@ -119,11 +125,28 @@ suspend fun configureIDE() {
   UISettings.instance.fireUISettingsChanged()
   EditorFactory.getInstance().refreshAllEditors()
 
-  if (Uni.buildConfig.OPEN_FILE_MANAGER_AT_START) {
-    delay(500)
-    //todo open welcome dialog
-    openDialogFileManager()
+  MainScope().launch {
+    showWelcomeDialog()
   }
 
   Uni.log.debug { "configureIDE end" }
+}
+
+fun showWelcomeDialog() {
+  showPanelDialog(Uni) {
+    row {
+      label("welcome dialog")
+    }
+    val homeDir = File(System.getProperty("user.home"))
+    val githubDir = homeDir.resolve("Desktop/github")//todo move to config with Linux/MacOS
+    val absolutePath = if (githubDir.exists()) githubDir.absolutePath else "/"
+    row {
+      if(!BuildConfig.DYNAMIC_UNLOAD) {
+        uniFiles(
+          ProjectManager.getInstance().defaultProject,
+          listOf(absolutePath)
+        )
+      }
+    }
+  }
 }
