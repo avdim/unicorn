@@ -4,15 +4,7 @@ plugins {
 }
 
 repositories {
-//  flatDir {
-//    dir("libs")
-//  }
-  mavenLocal {//todo delete
-    url = uri("$projectDir/repository")
-  }
   jcenter()
-//  maven { setUrl("https://dl.bintray.com/kotlin/kotlin-eap") }
-//  maven { setUrl("https://dl.bintray.com/kotlin/kotlin-dev") }
 }
 
 dependencies {

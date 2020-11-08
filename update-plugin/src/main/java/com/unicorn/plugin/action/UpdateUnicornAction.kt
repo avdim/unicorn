@@ -5,7 +5,7 @@ import com.intellij.openapi.actionSystem.AnActionEvent
 import com.intellij.openapi.project.DumbAware
 import com.intellij.ui.layout.panel
 import com.unicorn.plugin.ui.render.stateFlowView
-import com.unicorn.plugin.ui.showDialog2
+import com.unicorn.plugin.ui.showDialog
 import ru.avdim.mvi.APP_SCOPE
 import java.io.File
 import javax.swing.JComponent
@@ -63,5 +63,5 @@ fun openUpdateUnicornDialog() {
       }
     }
   }
-  showDialog2(panelComponent)
+  showDialog(panelComponent)
 }

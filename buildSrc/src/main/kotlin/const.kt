@@ -72,7 +72,7 @@ val Project.UNI_BUILD_TYPE: BuildType get() =
     else -> BuildType.UseLocal
   }
 
-val UNI_VERSION = "0.12.2"
+val UNI_VERSION = "0.12.3"
 
 val Project.IDEA_VERSION: IdeaVersion get() =
   when (UNI_BUILD_TYPE) {

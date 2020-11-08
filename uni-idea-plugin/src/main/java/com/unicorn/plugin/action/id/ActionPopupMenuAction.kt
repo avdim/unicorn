@@ -5,7 +5,7 @@ import com.intellij.openapi.actionSystem.ActionManager
 import com.intellij.openapi.actionSystem.AnActionEvent
 import com.intellij.openapi.project.DumbAware
 import com.unicorn.plugin.toolWindowAction
-import com.unicorn.plugin.ui.showDialog2
+import com.unicorn.plugin.ui.showDialog
 import ru.tutu.idea.file.ConfUniFiles
 
 class ActionPopupMenuAction : UniAction(), DumbAware {
@@ -15,7 +15,7 @@ class ActionPopupMenuAction : UniAction(), DumbAware {
     lightActionGroup.add(toolWindowAction(ConfUniFiles.UNI_WINDOW_ID, event)!!)
 //    lightActionGroup.add(UniversalAction())
     lightActionGroup.update(event)
-    showDialog2(
+    showDialog(
       ActionManager.getInstance().createActionPopupMenu(
         "MyActionPopup",
         lightActionGroup

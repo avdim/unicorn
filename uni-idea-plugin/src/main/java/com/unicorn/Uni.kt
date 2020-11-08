@@ -22,7 +22,6 @@ object Uni : Disposable {
   var selectedFile: VirtualFile? = null
   val job = Job()
   val scope: CoroutineScope = MainScope() + job
-  val DYNAMIC_UNLOAD = true
   val PLUGIN_NAME = "UniCorn"
 
   init {
