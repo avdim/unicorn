@@ -6,12 +6,6 @@ val BUILD_TIME_STR = SimpleDateFormat("yyyy-MM-dd_HH:mm", Locale("ru", "RU")).fo
 //val BUILD_TIME_STR = Date().toString()
 
 /**
- * Отладочная версия содержит расширенное логирование (tool-log), меряет скорость исполнения разных кусков кода (tool-measure).
- * Показывает dashboard в браузере.
- */
-val DEBUG_JS = true//todo false
-
-/**
  * Отладочная версия JVM схожа с JS. Можно выставлять не зависимо от JS.
  * Но если игровая логика содержит проверки IS_DEBUG, или DEBUG{...}, то возможна рассинхронизация стейта итгры.
  */
@@ -23,29 +17,11 @@ val DEBUG_JVM = true//todo false
 val MIN_JDK_VERSION: JdkVersion = if (true/*DEBUG_JVM*/) JdkVersion.JDK8 else JdkVersion.JDK11
 
 /**
- * Формат websocket для клиента. Для debug удобно использовать Json. Для production бинарный полегче.
- * Серверу сразу работает со всеми возможными вариантами, и ему формат указывать не нужно.
- */
-val CLIENT_WEB_SOCKET: WebSocketType = WebSocketType.JSON
-
-/**
- * Предполагается что эта опция будет включать отладочный режим для JS через webpack, но я пока это не сделал...
- * В идеале если собирать debug версию, то можно подсоединяться отладчиком и расставлять breakpoint-ы в Kotlin коде.
- * Будет собираться source-map JS-бандла к Kotlin файлам.
- *
- * Поначалу я пользовался отладчиком, но когда прокачал систему логов, и научился запускать JS тесты, - то необходимость отпала.
- * Тем более что общий код удобно дебажить под JVM.
- * А ещё в коде всегда можно расставить js("debugger;") и браузер остановится в этом месте.
- */
-val DEBUG_WEBPACK_TODO = false
-
-/**
  * Если хочется потестировать EAP или DEV версии kotlin.
  * Dev релизы на свой страх и риск: https://dl.bintray.com/kotlin/kotlin-dev/org/jetbrains/kotlin/kotlin-gradle-plugin/
  */
 val USE_KOTLIN_DEV_REPOSITORY = true
 
-//val KOTLIN_VERSION = "1.4.10"
 val KOTLIN_VERSION = "1.4.20-RC"
 val SERIALIZATION_VERSION = "1.0.1"
 val COROUTINE_VERSION = "1.4.1"
@@ -60,10 +36,8 @@ val COMPILER_ARGS = listOf<String>()
 //            freeCompilerArgs += COMPILER_ARGS
 //or in gradle.properties: kotlin.js.compiler=ir
 
-val USE_ANDROID = false
-
 // https://github.com/JetBrains/gradle-intellij-plugin
-val INTELLIJ_GRADLE = "0.6.2"
+val INTELLIJ_GRADLE = "0.6.3"
 
 val Project.UNI_BUILD_TYPE: BuildType get() =
   when (safeArgument("uniBuildType")) {
@@ -72,7 +46,7 @@ val Project.UNI_BUILD_TYPE: BuildType get() =
     else -> BuildType.UseLocal
   }
 
-val UNI_VERSION = "0.12.3"
+val UNI_VERSION = "0.12.4"
 
 val Project.IDEA_VERSION: IdeaVersion get() =
   when (UNI_BUILD_TYPE) {
@@ -88,7 +62,8 @@ val Project.IDEA_VERSION: IdeaVersion get() =
       //IdeaVersion.Community("LATEST-EAP-SNAPSHOT")
     }
     is BuildType.IntegrationTest -> {
-      IdeaVersion.Community("203.4818-EAP-CANDIDATE-SNAPSHOT")//jvm8
+//      IdeaVersion.Community("203.4818-EAP-CANDIDATE-SNAPSHOT")//jvm8
+      IdeaVersion.Community("203.5600.34-EAP-SNAPSHOT")//jvm11
     }
     is BuildType.UseLocal -> {
       if(isMacOS) {

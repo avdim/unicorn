@@ -18,6 +18,7 @@ import com.unicorn.plugin.action.Actions
 import com.unicorn.Uni
 import com.unicorn.myDispose
 import com.unicorn.plugin.action.id.openDialogFileManager
+import com.unicorn.plugin.ui.render.showWelcomeDialog
 import com.unicorn.plugin.ui.showDialog
 import com.unicorn.plugin.ui.showPanelDialog
 import kotlinx.coroutines.*
@@ -130,23 +131,4 @@ suspend fun configureIDE() {
   }
 
   Uni.log.debug { "configureIDE end" }
-}
-
-fun showWelcomeDialog() {
-  showPanelDialog(Uni) {
-    row {
-      label("welcome dialog")
-    }
-    val homeDir = File(System.getProperty("user.home"))
-    val githubDir = homeDir.resolve("Desktop/github")//todo move to config with Linux/MacOS
-    val absolutePath = if (githubDir.exists()) githubDir.absolutePath else "/"
-    row {
-      if(!BuildConfig.DYNAMIC_UNLOAD) {
-        uniFiles(
-          ProjectManager.getInstance().defaultProject,
-          listOf(absolutePath)
-        )
-      }
-    }
-  }
 }
