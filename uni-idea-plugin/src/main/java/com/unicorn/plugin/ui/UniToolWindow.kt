@@ -21,7 +21,7 @@ class UniToolWindow : ToolWindowFactory, DumbAware {
         ContentFactory.SERVICE.getInstance().createContent(
           panel {
             stateFlowView(this, mviStore.stateFlow) {
-              fileManager(this, it, project, {}) {
+              fileManager(this, it, project) {
                 launch {
                   mviStore.send(it)
                 }
