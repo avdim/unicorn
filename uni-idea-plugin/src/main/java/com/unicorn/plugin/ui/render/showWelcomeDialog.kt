@@ -16,7 +16,7 @@ fun showWelcomeDialog() {
 
   val welcomeProjects = listOf(
     "tutu/js-npm-migrate",
-    "kotlin-node-js"
+    "avdim/kotlin-node-js"
   )
 
   showPanelDialog(Uni) {
