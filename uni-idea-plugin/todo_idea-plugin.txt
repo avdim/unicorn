@@ -30,3 +30,10 @@ swith CamelHumps Words
 Don't show tips (Tip of the day)
 
 yaml scheme https://github.com/softprops/github-actions-schemas/blob/master/workflow.json
+
+[Marketplace]
+GitHub Actions. Self Hosted GH Actions,
+save secrets
+Heroku
+Google Cloud
+record and edit video from IDE, upload to youtube, share text buffer, console logs
