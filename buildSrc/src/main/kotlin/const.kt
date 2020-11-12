@@ -46,8 +46,9 @@ val Project.UNI_BUILD_TYPE: BuildType get() =
     else -> BuildType.UseLocal
   }
 
-val UNI_VERSION = "0.12.4"
+val UNI_VERSION = "0.12.5"
 
+val LAST_COMMUNITY = IdeaVersion.Community("203.5784.10-EAP-SNAPSHOT")
 val Project.IDEA_VERSION: IdeaVersion get() =
   when (UNI_BUILD_TYPE) {
     is BuildType.Release, BuildType.Debug -> {
@@ -58,20 +59,24 @@ val Project.IDEA_VERSION: IdeaVersion get() =
 //    IdeaVersion.Community("203.5251-EAP-CANDIDATE-SNAPSHOT")//jvm11
       //IdeaVersion.Community("203.5419-EAP-CANDIDATE-SNAPSHOT")
 //    IdeaVersion.Community("203.5600.34-EAP-SNAPSHOT")
-      IdeaVersion.Community("203.5600-EAP-CANDIDATE-SNAPSHOT")
+//      IdeaVersion.Community("203.5600-EAP-CANDIDATE-SNAPSHOT")
+      LAST_COMMUNITY
       //IdeaVersion.Community("LATEST-EAP-SNAPSHOT")
     }
     is BuildType.IntegrationTest -> {
-//      IdeaVersion.Community("203.4818-EAP-CANDIDATE-SNAPSHOT")//jvm8
-      IdeaVersion.Community("203.5600.34-EAP-SNAPSHOT")//jvm11
+      IdeaVersion.Community("203.4818-EAP-CANDIDATE-SNAPSHOT")//jvm8
+//      IdeaVersion.Community("203.5600.34-EAP-SNAPSHOT")//jvm11
+//      IdeaVersion.Community("203.5784.10-EAP-SNAPSHOT")
     }
     is BuildType.UseLocal -> {
       if(isMacOS) {
-//    IdeaVersion.Local("/Users/dim/Library/Application Support/JetBrains/Toolbox/apps/AndroidStudio/ch-1/202.6863838/Android Studio 4.2 Preview.app/Contents")
-//    IdeaVersion.Local("/Users/dim/Library/Application Support/JetBrains/Toolbox/apps/IDEA-U/ch-0/203.5251.39/IntelliJ IDEA 2020.3 EAP.app/Contents")
-        IdeaVersion.Local("/Users/dim/Library/Application Support/JetBrains/Toolbox/apps/IDEA-U/ch-1/203.5600.34/IntelliJ IDEA 2020.3 EAP.app/Contents")
+//        IdeaVersion.Local("/Users/dim/Library/Application Support/JetBrains/Toolbox/apps/AndroidStudio/ch-1/202.6863838/Android Studio 4.2 Preview.app/Contents")
+//        IdeaVersion.Local("/Users/dim/Library/Application Support/JetBrains/Toolbox/apps/IDEA-U/ch-0/203.5251.39/IntelliJ IDEA 2020.3 EAP.app/Contents")
+//        IdeaVersion.Local("/Users/dim/Library/Application Support/JetBrains/Toolbox/apps/IDEA-U/ch-1/203.5600.34/IntelliJ IDEA 2020.3 EAP.app/Contents")
+        IdeaVersion.Local("/Users/dim/Library/Application Support/JetBrains/Toolbox/apps/IDEA-U/ch-2/203.5784.10/IntelliJ IDEA 2020.3 EAP.app/Contents")
+//        LAST_COMMUNITY
       } else {
-        IdeaVersion.Community("203.5600-EAP-CANDIDATE-SNAPSHOT")
+        LAST_COMMUNITY
       }
     }
   }
