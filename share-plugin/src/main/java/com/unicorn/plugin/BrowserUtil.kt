@@ -1,4 +1,4 @@
-package com.sample
+package com.unicorn.plugin
 
 import com.intellij.ide.BrowserUtil
 import com.intellij.openapi.util.Disposer

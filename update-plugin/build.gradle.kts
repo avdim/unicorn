@@ -25,19 +25,7 @@ buildConfigKotlin {
       name = "UNI_ZIP_BUILD_DIST",
       value = rootProject.file("uni-idea-plugin/build/distributions").absolutePath
     )
-    buildConfig(name = "GITHUB_CLIENT_ID", value = getLocalProperty("GITHUB_CLIENT_ID"))
-    //todo не комплилировать секреты в jar-ник на CI/CD. Тут нужен request на доверенный сервер.
-    buildConfig(name = "GITHUB_CLIENT_SECRET", value = getLocalProperty("GITHUB_CLIENT_SECRET"))
     buildConfig(name = "INTEGRATION_TEST", value = UNI_BUILD_TYPE is BuildType.IntegrationTest)
-//    val AUTH_TOKEN_URL = "https://tutu-ci.herokuapp.com/github_token_localhost"
-//    requestStr(
-//      AUTH_TOKEN_URL,
-//      mapOf(
-//        "client_id" to CLIENT_ID,
-//        "code" to effect.tempCode
-//      )
-//    )
-
   }
 }
 

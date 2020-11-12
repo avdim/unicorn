@@ -106,6 +106,7 @@ tasks.withType<org.jetbrains.intellij.tasks.RunIdeTask> {
 //  jbrVersion("jbsdk8u202b1491") //"jbsdk8u202b1491"Win, "8u232b1638.6", "jbrex8u152b1024.10"
   // "jbr_jcef-11_0_6b840.3" for webview
   // jbsdk8u202b1491_osx_x64.tar.gz
+//  jbrVersion("jbrsdk-11_0_9-osx-x64-b944.45")//with jcef
 
   //Linux:
   //https://bintray.com/jetbrains/intellij-jbr/jbrsdk11-linux-x64
@@ -114,7 +115,7 @@ tasks.withType<org.jetbrains.intellij.tasks.RunIdeTask> {
 //  jbrVersion("jbrsdk-11_0_7b989.1")
   systemProperties["ide.browser.jcef.enabled"] = true
 //  systemProperties["pdf.viewer.debug"] = true
-  jvmArgs("-Xmx3000m", "-Xms128m")
+  jvmArgs("-Xmx2000m", "-Xms128m")
 }
 
 tasks.withType<org.jetbrains.kotlin.gradle.tasks.KotlinCompile> {

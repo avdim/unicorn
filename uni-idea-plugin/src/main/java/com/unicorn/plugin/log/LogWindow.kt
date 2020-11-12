@@ -1,14 +1,18 @@
 package com.unicorn.plugin.log
 
 import com.intellij.openapi.application.ApplicationManager
+import com.intellij.openapi.fileEditor.FileEditorManager
 import com.intellij.openapi.project.DumbAware
 import com.intellij.openapi.project.Project
+import com.intellij.openapi.vfs.LocalFileSystem
+import com.intellij.openapi.vfs.VirtualFile
 import com.intellij.openapi.wm.ToolWindow
 import com.intellij.openapi.wm.ToolWindowFactory
 import com.intellij.ui.content.ContentFactory
 import com.intellij.ui.layout.panel
 import com.unicorn.Uni
 import com.unicorn.log.recent.RecentLog
+import com.unicorn.log.tmpfile.TmpFileLog
 import com.unicorn.plugin.ActionSubscription
 import com.unicorn.plugin.showMessage
 import com.unicorn.plugin.ui.showPanelDialog
@@ -20,7 +24,7 @@ class LogWindow : ToolWindowFactory, DumbAware {
         ContentFactory.SERVICE.getInstance().createContent(
           panel {
             row {
-              label(Uni.buildConfig.BUILD_TIME)
+              label("build time: " + Uni.buildConfig.BUILD_TIME)
             }
             row {
               button("add log") {
@@ -53,6 +57,12 @@ class LogWindow : ToolWindowFactory, DumbAware {
                     }
                   }
                 }
+              }
+            }
+            row {
+              button("open log file") {
+                val vFile: VirtualFile = LocalFileSystem.getInstance().refreshAndFindFileByIoFile(TmpFileLog.file)!!
+                val fileEditor = FileEditorManager.getInstance(project).openFile(vFile, true).first()
               }
             }
             row {

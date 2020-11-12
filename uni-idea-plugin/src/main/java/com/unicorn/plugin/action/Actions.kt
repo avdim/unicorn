@@ -76,6 +76,7 @@ object Actions {
               ActionData("com.unicorn.plugin.action.id.ActionPopupMenuAction", ActionPopupMenuAction()),
               ActionData("com.unicorn.plugin.action.id.DialogUiShowcaseAction", DialogUiShowcaseAction()),
               ActionData("com.unicorn.plugin.action.id.KtorServerAction", KtorServerAction()),
+              ActionData("com.unicorn.plugin.action.id.GetGithubTokenAction", GetGithubTokenAction()),
               ActionData("bootRuntime2.main.ChooseBootRuntimeAction", ChooseBootRuntimeAction())
             )
           )
