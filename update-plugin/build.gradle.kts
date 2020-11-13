@@ -62,13 +62,15 @@ dependencies {
 intellij {
   val ideaVersion = IDEA_VERSION
   when(ideaVersion) {
-    is IdeaVersion.Community -> {
+    is IdeaVersion.Download -> {
       version = ideaVersion.version
-      type = "IC"
     }
     is IdeaVersion.Local -> {
       localPath = ideaVersion.localPath
     }
+  }
+  ideaVersion.type?.let {
+    type = it
   }
   sandboxDirectory = ideaVersion.sandboxDir
 
