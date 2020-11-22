@@ -22,7 +22,7 @@ val MIN_JDK_VERSION: JdkVersion = if (true/*DEBUG_JVM*/) JdkVersion.JDK8 else Jd
  */
 val USE_KOTLIN_DEV_REPOSITORY = true
 
-val KOTLIN_VERSION = "1.4.20-RC"
+val KOTLIN_VERSION = "1.4.20"
 val SERIALIZATION_VERSION = "1.0.1"
 val COROUTINE_VERSION = "1.4.1"
 val KTOR_VERSION = "1.4.1"
@@ -38,6 +38,7 @@ val COMPILER_ARGS = listOf<String>()
 
 // https://github.com/JetBrains/gradle-intellij-plugin
 val INTELLIJ_GRADLE = "0.6.3"
+val DESKTOP_COMPOSE = "0.2.0-build128"
 
 val Project.UNI_BUILD_TYPE: BuildType get() =
   when (safeArgument("uniBuildType")) {
@@ -52,6 +53,8 @@ val DOWNLOAD_IDEA_TYPE = "IU"
 //val DOWNLOAD_IDEA_TYPE = "IC"
 
 val LAST_COMMUNITY = IdeaVersion.Download("203.5784.10-EAP-SNAPSHOT")
+//val LAST_COMMUNITY = IdeaVersion.Download("203.5981.41-EAP-SNAPSHOT")
+
 val Project.IDEA_VERSION: IdeaVersion get() =
   when (UNI_BUILD_TYPE) {
     is BuildType.Release, BuildType.Debug -> {
