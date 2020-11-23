@@ -14,6 +14,7 @@ pluginManagement {
     jcenter()
     mavenCentral()
     maven { setUrl("https://dl.bintray.com/kotlin/kotlinx") }
+    maven(url = "https://maven.pkg.jetbrains.space/public/p/compose/dev")
     maven { setUrl("https://dl.bintray.com/kotlin/kotlin-eap") }
     maven { setUrl("https://dl.bintray.com/kotlin/kotlin-dev") }
   }
@@ -29,6 +30,7 @@ pluginManagement {
 //  }
 }
 rootProject.name = "unicorn"
+enableFeaturePreview("GRADLE_METADATA")
 
 include("uni-idea-plugin")
 include("update-plugin")

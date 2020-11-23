@@ -25,6 +25,7 @@ allprojects {//todo allprojects bad?
     maven { setUrl("https://dl.bintray.com/kotlin/kotlinx") }
     //maven { setUrl("https://dl.bintray.com/kotlin/exposed") }
     maven { setUrl("https://kotlin.bintray.com/ktor") }
+    maven(url = "https://maven.pkg.jetbrains.space/public/p/compose/dev")
 
     if (USE_KOTLIN_DEV_REPOSITORY) {
       maven { setUrl("https://dl.bintray.com/kotlin/kotlin-dev") }

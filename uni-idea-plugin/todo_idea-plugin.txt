@@ -31,9 +31,12 @@ Don't show tips (Tip of the day)
 
 yaml scheme https://github.com/softprops/github-actions-schemas/blob/master/workflow.json
 
+https://github.com/avdim/SourceMarker/blob/7492e7d98f7e36ad247c3fffe3fe2c5acea81630/portal/build.gradle.kts#L56
+
 [Marketplace]
 GitHub Actions. Self Hosted GH Actions,
 save secrets
 Heroku
 Google Cloud
 record and edit video from IDE, upload to youtube, share text buffer, console logs
+
