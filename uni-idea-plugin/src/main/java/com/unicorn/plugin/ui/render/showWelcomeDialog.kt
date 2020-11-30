@@ -18,6 +18,7 @@ fun showWelcomeDialog() {
     "tutu/js-npm-migrate",
     "avdim/kotlin-node-js",
     "avdim/github-script",
+    "ilgonmic/kotlin-ts",
   )
 
   showPanelDialog(Uni) {

@@ -39,7 +39,7 @@ val COMPILER_ARGS = listOf<String>()
 // https://github.com/JetBrains/gradle-intellij-plugin
 val INTELLIJ_GRADLE = "0.6.4"
 // https://maven.pkg.jetbrains.space/public/p/compose/dev/org/jetbrains/compose/org.jetbrains.compose.gradle.plugin/
-val DESKTOP_COMPOSE = "0.2.0-build128"
+val DESKTOP_COMPOSE = "0.2.0-build131"
 
 val Project.UNI_BUILD_TYPE: BuildType get() =
   when (safeArgument("uniBuildType")) {
@@ -53,13 +53,14 @@ val UNI_VERSION = "0.12.5"
 val DOWNLOAD_IDEA_TYPE = "IU"
 //val DOWNLOAD_IDEA_TYPE = "IC"
 
+// https://www.jetbrains.com/intellij-repository/snapshots/
 val LAST_COMMUNITY = IdeaVersion.Download("203.5784.10-EAP-SNAPSHOT")
 //val LAST_COMMUNITY = IdeaVersion.Download("203.5981.41-EAP-SNAPSHOT")
+//val LAST_COMMUNITY = IdeaVersion.Download("203.5981-EAP-CANDIDATE-SNAPSHOT")
 
 val Project.IDEA_VERSION: IdeaVersion get() =
   when (UNI_BUILD_TYPE) {
     is BuildType.Release, BuildType.Debug -> {
-      //https://www.jetbrains.com/intellij-repository/snapshots/
 //    IdeaVersion.Community("2020.1.2")
 //    IdeaVersion.Community("2020.2.3")
 //      IdeaVersion.Community("203.4818-EAP-CANDIDATE-SNAPSHOT")//jvm8
