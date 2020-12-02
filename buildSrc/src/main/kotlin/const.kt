@@ -54,9 +54,10 @@ val DOWNLOAD_IDEA_TYPE = "IU"
 //val DOWNLOAD_IDEA_TYPE = "IC"
 
 // https://www.jetbrains.com/intellij-repository/snapshots/
-val LAST_COMMUNITY = IdeaVersion.Download("203.5784.10-EAP-SNAPSHOT")
+//val LAST_COMMUNITY = IdeaVersion.Download("203.5784.10-EAP-SNAPSHOT")
 //val LAST_COMMUNITY = IdeaVersion.Download("203.5981.41-EAP-SNAPSHOT")
 //val LAST_COMMUNITY = IdeaVersion.Download("203.5981-EAP-CANDIDATE-SNAPSHOT")
+val LAST_COMMUNITY = IdeaVersion.Download("2020.3")
 
 val Project.IDEA_VERSION: IdeaVersion get() =
   when (UNI_BUILD_TYPE) {
