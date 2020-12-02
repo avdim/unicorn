@@ -91,7 +91,12 @@ suspend fun configureIDE() {
 
   val keymap = KeymapManagerEx.getInstanceEx().getKeymap(UNICORN_KEYMAP)
   if (keymap != null) {//?: Uni.log.fatalError { "keymap not found $UNICORN_KEYMAP" }
-    KeymapManagerEx.getInstanceEx().activeKeymap = keymap
+    try {
+      KeymapManagerEx.getInstanceEx().activeKeymap = keymap
+    } catch (t:Throwable) {
+      //todo fix error
+      Uni.log.error { t.stackTrace }
+    }
   } else {
     Uni.log.error { "keymap UNICORN_KEYMAP = $UNICORN_KEYMAP not found" }
   }

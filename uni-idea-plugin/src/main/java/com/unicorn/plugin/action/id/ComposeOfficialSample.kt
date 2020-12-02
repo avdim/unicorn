@@ -2,7 +2,6 @@ package com.unicorn.plugin.action.id
 
 import androidx.compose.desktop.AppManager
 import androidx.compose.desktop.ComposePanel
-import androidx.compose.desktop.setContent
 import androidx.compose.foundation.Text
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
