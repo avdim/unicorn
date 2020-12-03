@@ -39,7 +39,8 @@ val COMPILER_ARGS = listOf<String>()
 // https://github.com/JetBrains/gradle-intellij-plugin
 val INTELLIJ_GRADLE = "0.6.4"
 // https://maven.pkg.jetbrains.space/public/p/compose/dev/org/jetbrains/compose/org.jetbrains.compose.gradle.plugin/
-val DESKTOP_COMPOSE = "0.2.0-build132"
+//val DESKTOP_COMPOSE = "0.2.0-build132"
+val DESKTOP_COMPOSE = "0.3.0-build133"
 
 val Project.UNI_BUILD_TYPE: BuildType get() =
   when (safeArgument("uniBuildType")) {
