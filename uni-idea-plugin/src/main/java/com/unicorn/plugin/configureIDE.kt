@@ -10,21 +10,15 @@ import com.intellij.openapi.application.ApplicationManager
 import com.intellij.openapi.editor.EditorFactory
 import com.intellij.openapi.editor.ex.EditorSettingsExternalizable
 import com.intellij.openapi.keymap.ex.KeymapManagerEx
-import com.intellij.openapi.project.ProjectManager
 import com.intellij.openapi.util.registry.Registry
 import com.intellij.openapi.wm.impl.IdeBackgroundUtil
 import com.unicorn.BuildConfig
 import com.unicorn.plugin.action.Actions
 import com.unicorn.Uni
 import com.unicorn.myDispose
-import com.unicorn.plugin.action.id.openDialogFileManager
 import com.unicorn.plugin.ui.render.showWelcomeDialog
-import com.unicorn.plugin.ui.showDialog
-import com.unicorn.plugin.ui.showPanelDialog
 import kotlinx.coroutines.*
 import org.jetbrains.plugins.terminal.TerminalOptionsProvider
-import ru.tutu.idea.file.uniFiles
-import java.io.File
 import javax.swing.SwingConstants
 
 private val UNICORN_KEYMAP = "Unicorn"

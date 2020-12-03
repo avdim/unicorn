@@ -4,7 +4,7 @@ import com.unicorn.BuildConfig
 
 data class UniWindowState(
   val columns: List<Column>,
-  val renderFiles: Boolean = !BuildConfig.DYNAMIC_UNLOAD,
+  val renderFiles: Boolean = !BuildConfig.INTEGRATION_TEST,
   val forceUpdate: Int = 0
 )
 

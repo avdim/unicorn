@@ -27,7 +27,7 @@ fun showWelcomeDialog() {
     }
     renderWelcomeProjects(welcomeProjects, githubDir)
     row {
-      if(!BuildConfig.DYNAMIC_UNLOAD) {
+      if(!BuildConfig.INTEGRATION_TEST) {
         cell {
           uniFiles(
             ProjectManager.getInstance().defaultProject,
