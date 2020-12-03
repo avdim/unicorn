@@ -2,9 +2,8 @@ sealed class IdeaVersion {
   abstract val sandboxDir: String?
   abstract val type: String?
 
-  class Download(val version: String) : IdeaVersion() {
+  class Download(val version: String, override val type: String = "IC") : IdeaVersion() {
     override val sandboxDir: String get() = tmpDir()//"/tmp/idea_sandbox"
-    override val type: String = DOWNLOAD_IDEA_TYPE
   }
 
   class Local(val localPath: String) : IdeaVersion() {
