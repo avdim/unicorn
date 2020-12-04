@@ -1,8 +1,9 @@
 #!/usr/bin/env bash
 
 repeat_wrapper () {
-#  ("$@" && "$@" && "$@") ||  exit 1
   ("$@") ||  exit 1
+#  ("$@" || "$@" || "$@") ||  exit 1
+#  ("$@" && "$@" && "$@") ||  exit 1
 }
 
 #export UNI_BUILD_TYPE="integration-test"

@@ -40,3 +40,10 @@ Heroku
 Google Cloud
 record and edit video from IDE, upload to youtube, share text buffer, console logs
 
+https://github.com/hhru/android-multimodule-plugin
+
+JetPack Compose:
+/Users/dim/Desktop/github/joreilly/BikeShare
+/Users/dim/Desktop/github/JetBrains/compose-jb
+
+webinar questions valeria.letusheva@jetbrains.com.

@@ -18,6 +18,7 @@ fun showWelcomeDialog() {
     "tutu/js-npm-migrate",
     "avdim/kotlin-node-js",
     "avdim/github-script",
+    "ilgonmic/kotlin-ts",
   )
 
   showPanelDialog(Uni) {
@@ -26,7 +27,7 @@ fun showWelcomeDialog() {
     }
     renderWelcomeProjects(welcomeProjects, githubDir)
     row {
-      if(!BuildConfig.DYNAMIC_UNLOAD) {
+      if(!BuildConfig.INTEGRATION_TEST) {
         cell {
           uniFiles(
             ProjectManager.getInstance().defaultProject,

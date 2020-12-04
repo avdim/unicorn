@@ -37,9 +37,10 @@ val COMPILER_ARGS = listOf<String>()
 //or in gradle.properties: kotlin.js.compiler=ir
 
 // https://github.com/JetBrains/gradle-intellij-plugin
-val INTELLIJ_GRADLE = "0.6.4"
+val INTELLIJ_GRADLE = "0.6.5"
 // https://maven.pkg.jetbrains.space/public/p/compose/dev/org/jetbrains/compose/org.jetbrains.compose.gradle.plugin/
-val DESKTOP_COMPOSE = "0.2.0-build128"
+//val DESKTOP_COMPOSE = "0.2.0-build132"
+val DESKTOP_COMPOSE = "0.3.0-build133"
 
 val Project.UNI_BUILD_TYPE: BuildType get() =
   when (safeArgument("uniBuildType")) {
@@ -50,38 +51,30 @@ val Project.UNI_BUILD_TYPE: BuildType get() =
 
 val UNI_VERSION = "0.12.5"
 
-val DOWNLOAD_IDEA_TYPE = "IU"
-//val DOWNLOAD_IDEA_TYPE = "IC"
-
-val LAST_COMMUNITY = IdeaVersion.Download("203.5784.10-EAP-SNAPSHOT")
-//val LAST_COMMUNITY = IdeaVersion.Download("203.5981.41-EAP-SNAPSHOT")
+// https://www.jetbrains.com/intellij-repository/snapshots/
+//    IdeaVersion.Community("2020.1.2")
+//    IdeaVersion.Community("2020.2.3")
+// val LAST_COMMUNITY = IdeaVersion.Download("203.5784.10-EAP-SNAPSHOT")
+val LAST_COMMUNITY = IdeaVersion.Download("2020.3", "IC")
 
 val Project.IDEA_VERSION: IdeaVersion get() =
   when (UNI_BUILD_TYPE) {
     is BuildType.Release, BuildType.Debug -> {
-      //https://www.jetbrains.com/intellij-repository/snapshots/
-//    IdeaVersion.Community("2020.1.2")
-//    IdeaVersion.Community("2020.2.3")
-//      IdeaVersion.Community("203.4818-EAP-CANDIDATE-SNAPSHOT")//jvm8
-//    IdeaVersion.Community("203.5251-EAP-CANDIDATE-SNAPSHOT")//jvm11
-      //IdeaVersion.Community("203.5419-EAP-CANDIDATE-SNAPSHOT")
-//    IdeaVersion.Community("203.5600.34-EAP-SNAPSHOT")
-//      IdeaVersion.Community("203.5600-EAP-CANDIDATE-SNAPSHOT")
       LAST_COMMUNITY
+      IdeaVersion.Download("2020.3", "IU")
       //IdeaVersion.Community("LATEST-EAP-SNAPSHOT")
     }
     is BuildType.IntegrationTest -> {
-      IdeaVersion.Download("203.4818-EAP-CANDIDATE-SNAPSHOT")//jvm8
+      IdeaVersion.Download("203.4818-EAP-CANDIDATE-SNAPSHOT")//jvm8 stable integration test
+//      IdeaVersion.Community("203.5251-EAP-CANDIDATE-SNAPSHOT")//jvm11
 //      IdeaVersion.Community("203.5600.34-EAP-SNAPSHOT")//jvm11
 //      IdeaVersion.Community("203.5784.10-EAP-SNAPSHOT")
+//      LAST_COMMUNITY
     }
     is BuildType.UseLocal -> {
       if(isMacOS) {
 //        IdeaVersion.Local("/Users/dim/Library/Application Support/JetBrains/Toolbox/apps/AndroidStudio/ch-1/202.6863838/Android Studio 4.2 Preview.app/Contents")
-//        IdeaVersion.Local("/Users/dim/Library/Application Support/JetBrains/Toolbox/apps/IDEA-U/ch-0/203.5251.39/IntelliJ IDEA 2020.3 EAP.app/Contents")
-//        IdeaVersion.Local("/Users/dim/Library/Application Support/JetBrains/Toolbox/apps/IDEA-U/ch-1/203.5600.34/IntelliJ IDEA 2020.3 EAP.app/Contents")
-//        IdeaVersion.Local("/Users/dim/Library/Application Support/JetBrains/Toolbox/apps/IDEA-U/ch-2/203.5784.10/IntelliJ IDEA 2020.3 EAP.app/Contents")
-        LAST_COMMUNITY
+        IdeaVersion.Local("/Users/dim/Library/Application Support/JetBrains/Toolbox/apps/IDEA-U/ch-2/203.5784.10/IntelliJ IDEA 2020.3 EAP.app/Contents")
       } else {
         LAST_COMMUNITY
       }
