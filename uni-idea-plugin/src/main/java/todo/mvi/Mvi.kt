@@ -19,7 +19,7 @@ fun createFileManagerMviStore(): Store<UniWindowState, Intent> {
   val mviStore = createStore(
     UniWindowState(
       columns = listOf(
-        Column(paths = ConfUniFiles.DEFAULT_PATHS),
+        Column(paths = ConfUniFiles.DEFAULT_PATHS.map { it.absolutePath }),
         Column(paths = listOf("/"))
       )
     )
@@ -41,7 +41,7 @@ fun createFileManagerMviStore(): Store<UniWindowState, Intent> {
         }
       )
       is Intent.AddColumn -> s.copy(
-        columns = s.columns + Column(paths = ConfUniFiles.DEFAULT_PATHS)
+        columns = s.columns + Column(paths = ConfUniFiles.DEFAULT_PATHS.map { it.absolutePath })
       )
       is Intent.RemoveColumn -> {
         s.copy(

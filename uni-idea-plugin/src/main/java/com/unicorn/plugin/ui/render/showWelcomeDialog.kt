@@ -6,32 +6,27 @@ import com.intellij.ui.layout.LayoutBuilder
 import com.unicorn.BuildConfig
 import com.unicorn.Uni
 import com.unicorn.plugin.ui.showPanelDialog
+import ru.tutu.idea.file.ConfUniFiles
 import ru.tutu.idea.file.uniFiles
 import java.io.File
 
 fun showWelcomeDialog() {
-  val homeDir = File(System.getProperty("user.home"))
-  val githubDir = homeDir.resolve("Desktop/github")//todo move to config with Linux/MacOS
-  val absolutePath = if (githubDir.exists()) githubDir.absolutePath else "/"
 
-  val welcomeProjects = listOf(
-    "tutu/js-npm-migrate",
-    "avdim/kotlin-node-js",
-    "avdim/github-script",
-    "ilgonmic/kotlin-ts",
-  )
+  val githubDir = ConfUniFiles.GITHUB_DIR
 
   showPanelDialog(Uni) {
     row {
       label("welcome dialog")
     }
-    renderWelcomeProjects(welcomeProjects, githubDir)
+    if (githubDir.exists()) {
+      renderWelcomeProjects(githubDir)
+    }
     row {
       if(!BuildConfig.INTEGRATION_TEST) {
         cell {
           uniFiles(
             ProjectManager.getInstance().defaultProject,
-            listOf(absolutePath)
+            listOf(githubDir.absolutePath)
           )
         }
       }
@@ -40,9 +35,14 @@ fun showWelcomeDialog() {
 }
 
 fun LayoutBuilder.renderWelcomeProjects(
-  welcomeProjects: List<String>,
   githubDir: File
 ) {
+  val welcomeProjects = listOf(
+    "tutu/js-npm-migrate",
+    "avdim/kotlin-node-js",
+    "avdim/github-script",
+    "ilgonmic/kotlin-ts",
+  )
   welcomeProjects.forEach { projectPath ->
     row {
       button(text = projectPath) {
