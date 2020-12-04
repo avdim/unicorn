@@ -60,8 +60,8 @@ val LAST_COMMUNITY = IdeaVersion.Download("2020.3", "IC")
 val Project.IDEA_VERSION: IdeaVersion get() =
   when (UNI_BUILD_TYPE) {
     is BuildType.Release, BuildType.Debug -> {
+//      IdeaVersion.Download("2020.3", "IU")
       LAST_COMMUNITY
-      IdeaVersion.Download("2020.3", "IU")
       //IdeaVersion.Community("LATEST-EAP-SNAPSHOT")
     }
     is BuildType.IntegrationTest -> {

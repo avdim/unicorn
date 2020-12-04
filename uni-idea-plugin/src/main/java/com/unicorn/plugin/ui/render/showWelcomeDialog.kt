@@ -1,5 +1,8 @@
 package com.unicorn.plugin.ui.render
 
+import androidx.compose.desktop.ComposePanel
+import androidx.compose.foundation.layout.Column
+import androidx.compose.material.Text
 import com.intellij.ide.impl.ProjectUtil
 import com.intellij.openapi.project.ProjectManager
 import com.intellij.ui.layout.LayoutBuilder
