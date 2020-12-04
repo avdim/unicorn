@@ -46,7 +46,7 @@ val Project.UNI_BUILD_TYPE: BuildType get() =
   when (safeArgument("uniBuildType")) {
     "release" -> BuildType.Release
     "integration-test" -> BuildType.IntegrationTest
-    else -> BuildType.UseLocal
+    else -> BuildType.Debug
   }
 
 val UNI_VERSION = "0.12.5"
