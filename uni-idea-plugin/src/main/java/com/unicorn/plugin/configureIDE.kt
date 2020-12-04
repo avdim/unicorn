@@ -13,11 +13,12 @@ import com.intellij.openapi.keymap.ex.KeymapManagerEx
 import com.intellij.openapi.util.registry.Registry
 import com.intellij.openapi.wm.impl.IdeBackgroundUtil
 import com.unicorn.BuildConfig
-import com.unicorn.plugin.action.Actions
 import com.unicorn.Uni
 import com.unicorn.myDispose
+import com.unicorn.plugin.action.Actions
 import com.unicorn.plugin.ui.render.showWelcomeDialog
-import kotlinx.coroutines.*
+import kotlinx.coroutines.MainScope
+import kotlinx.coroutines.launch
 import org.jetbrains.plugins.terminal.TerminalOptionsProvider
 import javax.swing.SwingConstants
 
