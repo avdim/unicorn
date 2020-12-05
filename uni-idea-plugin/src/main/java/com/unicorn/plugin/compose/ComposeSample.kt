@@ -19,6 +19,15 @@ import java.awt.Dimension
 import javax.swing.JButton
 import javax.swing.JFrame
 
+fun helloComposePanel() = ComposePanel().apply {
+  setContent {
+    Column {
+      Text("Hello Compose")
+      Text("Column")
+    }
+  }
+}
+
 fun openComposeWindow() {
   val window = JFrame()
 //  window.defaultCloseOperation = WindowConstants.EXIT_ON_CLOSE
@@ -62,43 +71,43 @@ fun actionButton(text: String, action: (() -> Unit)? = null): JButton {
 
 @Composable
 fun ComposeContent(westClicks: MutableState<Int>, northClicks: MutableState<Int>, eastClicks: MutableState<Int>) {
-    Box(
-        modifier = Modifier.fillMaxSize(),
-        contentAlignment = Alignment.Center
-    ) {
-        Row {
-            Counter("West", westClicks)
-            Spacer(modifier = Modifier.width(25.dp))
-            Counter("North", northClicks)
-            Spacer(modifier = Modifier.width(25.dp))
-            Counter("East", eastClicks)
-        }
+  Box(
+    modifier = Modifier.fillMaxSize(),
+    contentAlignment = Alignment.Center
+  ) {
+    Row {
+      Counter("West", westClicks)
+      Spacer(modifier = Modifier.width(25.dp))
+      Counter("North", northClicks)
+      Spacer(modifier = Modifier.width(25.dp))
+      Counter("East", eastClicks)
     }
+  }
 }
 
 @Composable
 fun Counter(text: String, counter: MutableState<Int>) {
-    Surface(
-        modifier = Modifier.size(130.dp, 130.dp),
-        color = Color(180, 180, 180),
-        shape = RoundedCornerShape(4.dp)
-    ) {
-        Column {
-            Box(
-                modifier = Modifier.height(30.dp).fillMaxWidth(),
-                contentAlignment = Alignment.Center
-            ) {
-                Text(text = "${text}Clicks: ${counter.value}")
-            }
-            Spacer(modifier = Modifier.height(25.dp))
-            Box(
-                modifier = Modifier.fillMaxSize(),
-                contentAlignment = Alignment.Center
-            ) {
-                Button(onClick = { counter.value++ }) {
-                    Text(text = text, color = Color.White)
-                }
-            }
+  Surface(
+    modifier = Modifier.size(130.dp, 130.dp),
+    color = Color(180, 180, 180),
+    shape = RoundedCornerShape(4.dp)
+  ) {
+    Column {
+      Box(
+        modifier = Modifier.height(30.dp).fillMaxWidth(),
+        contentAlignment = Alignment.Center
+      ) {
+        Text(text = "${text}Clicks: ${counter.value}")
+      }
+      Spacer(modifier = Modifier.height(25.dp))
+      Box(
+        modifier = Modifier.fillMaxSize(),
+        contentAlignment = Alignment.Center
+      ) {
+        Button(onClick = { counter.value++ }) {
+          Text(text = text, color = Color.White)
         }
+      }
     }
+  }
 }
