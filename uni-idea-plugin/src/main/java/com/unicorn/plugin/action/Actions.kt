@@ -78,7 +78,7 @@ object Actions {
               ActionData("com.unicorn.plugin.action.id.KtorServerAction", KtorServerAction()),
               ActionData("com.unicorn.plugin.action.id.GetGithubTokenAction", GetGithubTokenAction()),
               ActionData("bootRuntime2.main.ChooseBootRuntimeAction", ChooseBootRuntimeAction()),
-              ActionData("com.unicorn.plugin.action.id.ComposeOfficialSample", ComposeOfficialSample()),
+              ActionData("com.unicorn.plugin.action.id.ComposeOfficialSample", ComposeOfficialSampleAction()),
               ActionData("com.unicorn.plugin.action.id.ComposePanelAction", ComposePanelAction()),
             )
           )
