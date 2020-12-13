@@ -125,15 +125,15 @@ suspend fun configureIDE() {
 
 //        ServiceManager.getService(StatusBarWidgetSettings::class.java).setEnabled()
 
-//  val lafManager = LafManager.getInstance()
-//  val lightTheme = lafManager.installedLookAndFeels.firstOrNull{ it.name == "IntelliJ Light" }
-//  if (lightTheme != null && lafManager.currentLookAndFeel != lightTheme) {
-//    lafManager.currentLookAndFeel = lightTheme
-////          lafManager.updateUI()
-////          lafManager.repaintUI()
-//    val lookAndFeelReference: LafManager.LafReference = lafManager.lookAndFeelReference
-//    QuickChangeLookAndFeel.switchLafAndUpdateUI(lafManager, lafManager.findLaf(lookAndFeelReference), true)
-//  }
+  val laf = LafManager.getInstance()
+  val comboBoxModel = laf.lafComboBoxModel
+  val ids = laf.lafComboBoxModel.items.map { it.themeId }
+  Uni.log.debug { "theme ids: $ids" }
+  val preferredTheme = comboBoxModel.items.firstOrNull { it.themeId == "JetBrainsLightTheme" }
+  val newLaf = laf.findLaf(preferredTheme)
+  if (laf.currentLookAndFeel != newLaf) {
+    QuickChangeLookAndFeel.switchLafAndUpdateUI(laf, newLaf, true)
+  }
 
   UISettings.instance.fireUISettingsChanged()
   EditorFactory.getInstance().refreshAllEditors()

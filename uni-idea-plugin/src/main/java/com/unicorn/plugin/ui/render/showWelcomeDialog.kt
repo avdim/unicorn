@@ -24,8 +24,6 @@ import java.io.File
 val propertyGraph = PropertyGraph()
 val laf get() = LafManager.getInstance()
 val lafProperty = propertyGraph.graphProperty { laf.lookAndFeelReference }
-var colorThemeComboBox: ComboBox<LafManager.LafReference>? = null
-val syncThemeProperty = propertyGraph.graphProperty { laf.autodetect }
 
 fun showWelcomeDialog() {
   lafProperty.afterChange({ ref: LafManager.LafReference ->
@@ -38,24 +36,6 @@ fun showWelcomeDialog() {
   showPanelDialog(Uni) {
     row {
       label("welcome dialog")
-    }
-    row {
-      blockRow {
-        fullRow {
-          val themeBuilder = comboBox(laf.lafComboBoxModel, lafProperty, laf.lookAndFeelCellRenderer)
-          colorThemeComboBox = themeBuilder.component
-          colorThemeComboBox!!.accessibleContext.accessibleName = IdeBundle.message("welcome.screen.color.theme.header")
-          val syncCheckBox = checkBox(IdeBundle.message("preferred.theme.autodetect.selector"),
-            syncThemeProperty).withLargeLeftGap().apply {
-            component.isOpaque = false
-            component.isVisible = laf.autodetectSupported
-          }
-
-          themeBuilder.enableIf(syncCheckBox.selected.not())
-          component(laf.settingsToolbar).visibleIf(syncCheckBox.selected).withLeftGap()
-        }
-      }.largeGapAfter()
-
     }
     if (githubDir.exists()) {
       renderWelcomeProjects(githubDir)
