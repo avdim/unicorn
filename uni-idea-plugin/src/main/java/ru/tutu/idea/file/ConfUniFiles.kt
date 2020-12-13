@@ -12,8 +12,7 @@ object ConfUniFiles {
 
   val DEFAULT_PATHS: List<File> =
     listOf(
-      GITHUB_DIR.resolve("Desktop"),
-      GITHUB_DIR.resolve("/Desktop/github"),
+      GITHUB_DIR,
       HOME_DIR
     )
       .filter { it.exists() }

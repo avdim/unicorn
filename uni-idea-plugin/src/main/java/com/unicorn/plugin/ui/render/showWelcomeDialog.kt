@@ -1,11 +1,18 @@
 package com.unicorn.plugin.ui.render
 
-import androidx.compose.desktop.ComposePanel
-import androidx.compose.foundation.layout.Column
-import androidx.compose.material.Text
+import com.intellij.ide.IdeBundle
+import com.intellij.ide.actions.QuickChangeLookAndFeel
 import com.intellij.ide.impl.ProjectUtil
+import com.intellij.ide.ui.LafManager
+import com.intellij.ide.ui.fullRow
+import com.intellij.openapi.observable.properties.GraphPropertyImpl.Companion.graphProperty
+import com.intellij.openapi.observable.properties.PropertyGraph
 import com.intellij.openapi.project.ProjectManager
+import com.intellij.openapi.ui.ComboBox
+import com.intellij.openapi.wm.impl.welcomeScreen.WelcomeScreenEventCollector
 import com.intellij.ui.layout.LayoutBuilder
+import com.intellij.ui.layout.not
+import com.intellij.ui.layout.selected
 import com.unicorn.BuildConfig
 import com.unicorn.Uni
 import com.unicorn.plugin.ui.showPanelDialog
@@ -13,8 +20,17 @@ import ru.tutu.idea.file.ConfUniFiles
 import ru.tutu.idea.file.uniFiles
 import java.io.File
 
-fun showWelcomeDialog() {
 
+val propertyGraph = PropertyGraph()
+val laf get() = LafManager.getInstance()
+val lafProperty = propertyGraph.graphProperty { laf.lookAndFeelReference }
+
+fun showWelcomeDialog() {
+  lafProperty.afterChange({ ref: LafManager.LafReference ->
+    val newLaf = laf.findLaf(ref)
+    if (laf.currentLookAndFeel == newLaf) return@afterChange
+    QuickChangeLookAndFeel.switchLafAndUpdateUI(laf, newLaf, true)
+  }, Uni)
   val githubDir = ConfUniFiles.GITHUB_DIR
 
   showPanelDialog(Uni) {
@@ -41,9 +57,11 @@ fun LayoutBuilder.renderWelcomeProjects(
   githubDir: File
 ) {
   val welcomeProjects = listOf(
-    "tutu/js-npm-migrate",
+    "avdim/aicup2020",
+    "avdim/unicorn",
     "avdim/kotlin-node-js",
     "avdim/github-script",
+    "tutu/js-npm-migrate",
     "ilgonmic/kotlin-ts",
   )
   welcomeProjects.forEach { projectPath ->

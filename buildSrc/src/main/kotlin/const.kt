@@ -49,6 +49,16 @@ val Project.UNI_BUILD_TYPE: BuildType get() =
     else -> BuildType.Debug
   }
 
+val Project.myIdeaSandboxDir:String get() = when (UNI_BUILD_TYPE) {
+    BuildType.Release -> {
+      HOME_DIR.resolve("Desktop/uni_release_system").absolutePath
+    }
+    BuildType.Debug -> {
+      tmpDir()//"/tmp/idea_sandbox"
+    }
+    else -> tmpDir()
+  }
+
 val UNI_VERSION = "0.12.5"
 
 // https://www.jetbrains.com/intellij-repository/snapshots/
@@ -62,6 +72,7 @@ val Project.IDEA_VERSION: IdeaVersion get() =
     is BuildType.Release, BuildType.Debug -> {
 //      IdeaVersion.Download("2020.3", "IU")
       LAST_COMMUNITY
+//      IdeaVersion.Download("203.5981-EAP-CANDIDATE-SNAPSHOT", "IC")
       //IdeaVersion.Community("LATEST-EAP-SNAPSHOT")
     }
     is BuildType.IntegrationTest -> {
