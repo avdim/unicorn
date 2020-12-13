@@ -4,22 +4,23 @@ import com.intellij.openapi.vfs.VirtualFile
 import com.unicorn.plugin.virtualFile
 import java.io.File
 
-val HOME_DIR_PATH: String = System.getenv("HOME") ?: "/"
-
 object ConfUniFiles {
+
+  val HOME_DIR: File = File(System.getProperty("user.home") ?: "/")
+  val GITHUB_DIR = HOME_DIR.resolve("Desktop/github")//todo move to config with Linux/MacOS
   const val UNI_WINDOW_ID: String = "uni-tool-window"//synchronize with plugin.xml
 
-  val DEFAULT_PATHS:List<String> = listOf("$HOME_DIR_PATH/Desktop", "$HOME_DIR_PATH/Desktop/github", HOME_DIR_PATH, "/")
-    .filter { File(it).exists() }
-    .take(2)
+  val DEFAULT_PATHS: List<File> =
+    listOf(
+      GITHUB_DIR.resolve("Desktop"),
+      GITHUB_DIR.resolve("/Desktop/github"),
+      HOME_DIR
+    )
+      .filter { it.exists() }
+      .take(2)
 
   val DEFAULT_NEW_PATH = "/"
   val ROOT_DIRS: List<VirtualFile> = DEFAULT_PATHS.map {
-    virtualFile(it)
+    virtualFile(it.absolutePath)
   }
-}
-
-fun main() {//todo
-  val homeDir = System.getenv("HOME")
-  println("home: $homeDir")
 }

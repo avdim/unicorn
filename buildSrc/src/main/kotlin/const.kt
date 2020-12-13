@@ -46,7 +46,7 @@ val Project.UNI_BUILD_TYPE: BuildType get() =
   when (safeArgument("uniBuildType")) {
     "release" -> BuildType.Release
     "integration-test" -> BuildType.IntegrationTest
-    else -> BuildType.UseLocal
+    else -> BuildType.Debug
   }
 
 val UNI_VERSION = "0.12.5"
@@ -60,8 +60,8 @@ val LAST_COMMUNITY = IdeaVersion.Download("2020.3", "IC")
 val Project.IDEA_VERSION: IdeaVersion get() =
   when (UNI_BUILD_TYPE) {
     is BuildType.Release, BuildType.Debug -> {
+//      IdeaVersion.Download("2020.3", "IU")
       LAST_COMMUNITY
-      IdeaVersion.Download("2020.3", "IU")
       //IdeaVersion.Community("LATEST-EAP-SNAPSHOT")
     }
     is BuildType.IntegrationTest -> {

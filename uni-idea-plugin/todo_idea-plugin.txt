@@ -47,3 +47,5 @@ JetPack Compose:
 /Users/dim/Desktop/github/JetBrains/compose-jb
 
 webinar questions valeria.letusheva@jetbrains.com.
+
+welcome screen action
