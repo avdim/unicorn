@@ -57,9 +57,11 @@ fun LayoutBuilder.renderWelcomeProjects(
   githubDir: File
 ) {
   val welcomeProjects = listOf(
-    "tutu/js-npm-migrate",
+    "avdim/aicup2020",
+    "avdim/unicorn",
     "avdim/kotlin-node-js",
     "avdim/github-script",
+    "tutu/js-npm-migrate",
     "ilgonmic/kotlin-ts",
   )
   welcomeProjects.forEach { projectPath ->

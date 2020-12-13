@@ -82,7 +82,7 @@ intellij {
   ideaVersion.type?.let {
     type = it
   }
-  sandboxDirectory = ideaVersion.sandboxDir
+  sandboxDirectory = myIdeaSandboxDir
 
   pluginName = "unicorn"
   updateSinceUntilBuild = false
