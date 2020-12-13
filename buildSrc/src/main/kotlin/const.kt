@@ -62,6 +62,7 @@ val Project.IDEA_VERSION: IdeaVersion get() =
     is BuildType.Release, BuildType.Debug -> {
 //      IdeaVersion.Download("2020.3", "IU")
       LAST_COMMUNITY
+//      IdeaVersion.Download("203.5981-EAP-CANDIDATE-SNAPSHOT", "IC")
       //IdeaVersion.Community("LATEST-EAP-SNAPSHOT")
     }
     is BuildType.IntegrationTest -> {

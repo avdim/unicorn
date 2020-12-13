@@ -120,7 +120,7 @@ tasks.withType<org.jetbrains.intellij.tasks.RunIdeTask> {
 //  jbrVersion("jbrsdk-11_0_7b989.1")
   systemProperties["ide.browser.jcef.enabled"] = true
 //  systemProperties["pdf.viewer.debug"] = true
-  jvmArgs("-Xmx2000m", "-Xms128m")
+  jvmArgs("-Xmx2500m", "-Xms128m")
 }
 
 tasks.withType<org.jetbrains.kotlin.gradle.tasks.KotlinCompile> {

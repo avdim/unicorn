@@ -2,9 +2,11 @@ package com.unicorn.plugin
 
 import com.intellij.codeInsight.daemon.DaemonCodeAnalyzerSettings
 import com.intellij.ide.GeneralSettings
+import com.intellij.ide.actions.QuickChangeLookAndFeel
 import com.intellij.ide.actions.ViewInplaceCommentsAction
 import com.intellij.ide.plugins.DynamicPluginListener
 import com.intellij.ide.plugins.IdeaPluginDescriptor
+import com.intellij.ide.ui.LafManager
 import com.intellij.ide.ui.UISettings
 import com.intellij.openapi.application.ApplicationManager
 import com.intellij.openapi.editor.EditorFactory
@@ -12,7 +14,6 @@ import com.intellij.openapi.editor.ex.EditorSettingsExternalizable
 import com.intellij.openapi.keymap.ex.KeymapManagerEx
 import com.intellij.openapi.util.registry.Registry
 import com.intellij.openapi.wm.impl.IdeBackgroundUtil
-import com.unicorn.BuildConfig
 import com.unicorn.Uni
 import com.unicorn.myDispose
 import com.unicorn.plugin.action.Actions
@@ -21,10 +22,11 @@ import kotlinx.coroutines.MainScope
 import kotlinx.coroutines.launch
 import org.jetbrains.plugins.terminal.TerminalOptionsProvider
 import javax.swing.SwingConstants
+import javax.swing.UIManager
 
 private val UNICORN_KEYMAP = "Unicorn"
 
-val dynamicPluginListener: DynamicPluginListener = object : DynamicPluginListener{
+val dynamicPluginListener: DynamicPluginListener = object : DynamicPluginListener {
   override fun beforePluginLoaded(pluginDescriptor: IdeaPluginDescriptor) {
     Uni.log.debug { "UniDynamicListener.beforePluginLoaded 1" }
   }
@@ -55,7 +57,7 @@ val dynamicPluginListener: DynamicPluginListener = object : DynamicPluginListene
 suspend fun configureIDE() {
   Uni.log.debug { "configureIDE begin" }
   ApplicationManager.getApplication().messageBus.connect(Uni)
-  .subscribe(DynamicPluginListener.TOPIC, dynamicPluginListener)
+    .subscribe(DynamicPluginListener.TOPIC, dynamicPluginListener)
 
   Actions.register()
   // Upload plugin timeout
@@ -88,7 +90,7 @@ suspend fun configureIDE() {
   if (keymap != null) {//?: Uni.log.fatalError { "keymap not found $UNICORN_KEYMAP" }
     try {
       KeymapManagerEx.getInstanceEx().activeKeymap = keymap
-    } catch (t:Throwable) {
+    } catch (t: Throwable) {
       //todo fix error
       Uni.log.error { t.stackTrace }
     }
@@ -109,7 +111,7 @@ suspend fun configureIDE() {
 //            ViewInplaceCommentsAction.updateAllTreesCellsWidth()
 
 //    withContext(Dispatchers.Main) {
-      if(false /*TODO*/) IdeBackgroundUtil.repaintAllWindows()
+    if (false /*TODO*/) IdeBackgroundUtil.repaintAllWindows()
 //    }
   }
 
@@ -122,6 +124,16 @@ suspend fun configureIDE() {
   GeneralSettings.getInstance().isReopenLastProject = false
 
 //        ServiceManager.getService(StatusBarWidgetSettings::class.java).setEnabled()
+
+//  val lafManager = LafManager.getInstance()
+//  val lightTheme = lafManager.installedLookAndFeels.firstOrNull{ it.name == "IntelliJ Light" }
+//  if (lightTheme != null && lafManager.currentLookAndFeel != lightTheme) {
+//    lafManager.currentLookAndFeel = lightTheme
+////          lafManager.updateUI()
+////          lafManager.repaintUI()
+//    val lookAndFeelReference: LafManager.LafReference = lafManager.lookAndFeelReference
+//    QuickChangeLookAndFeel.switchLafAndUpdateUI(lafManager, lafManager.findLaf(lookAndFeelReference), true)
+//  }
 
   UISettings.instance.fireUISettingsChanged()
   EditorFactory.getInstance().refreshAllEditors()
