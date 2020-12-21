@@ -56,6 +56,7 @@ fun LayoutBuilder.renderWelcomeProjects(
     "avdim/github-script",
     "tutu/js-npm-migrate",
     "ilgonmic/kotlin-ts",
+    "JetBrains/intellij-community",
   )
   welcomeProjects.forEach { projectPath ->
     row {

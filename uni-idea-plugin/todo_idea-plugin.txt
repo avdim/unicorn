@@ -42,4 +42,3 @@ https://github.com/hhru/android-multimodule-plugin
 JetPack Compose:
 /Users/dim/Desktop/github/joreilly/BikeShare
 
-(Search) Open Results in New Tab
