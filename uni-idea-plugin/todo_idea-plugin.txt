@@ -1,6 +1,5 @@
 команда для навигации из терминала к файловому менеджеру
 open git dir in github
-закрывать uni-files
 Сделать упрощенный коммит без проверки на warning
 
 Settings:
@@ -9,7 +8,6 @@ set project JDK 1.8
 
 сделать hotkey для reimport gradle project
 
-(Search) Open Results in New Tab
 action without indexing
 is not available while indexing
 import gradle project//todo in new window
@@ -44,3 +42,4 @@ https://github.com/hhru/android-multimodule-plugin
 JetPack Compose:
 /Users/dim/Desktop/github/joreilly/BikeShare
 
+(Search) Open Results in New Tab
