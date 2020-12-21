@@ -12,7 +12,9 @@ But it don't contains my plugin.
 I want to execute some startup script only once - then IDE install my plugin, or plugin run first time (edited)
 
 Imran Settuba  6 days ago
-The earliest phase, where one can do something computationally interesting regarding the environment  is com.intellij.ide.ApplicationInitializedListener#componentsInitialized it get’s called right after all the depending plugins of your Ide plugin are loaded and their services and component’s.
+The earliest phase, where one can do something computationally interesting regarding the environment  is
+com.intellij.ide.ApplicationInitializedListener#componentsInitialized
+it get’s called right after all the depending plugins of your Ide plugin are loaded and their services and component’s.
 There are also PreloadingActivities , ApplicationListener , depending on the lifecycle  phase you’re trying to target.
 
 Imran Settuba  6 days ago
