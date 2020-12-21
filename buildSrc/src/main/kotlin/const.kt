@@ -76,11 +76,11 @@ val Project.IDEA_VERSION: IdeaVersion get() =
       //IdeaVersion.Community("LATEST-EAP-SNAPSHOT")
     }
     is BuildType.IntegrationTest -> {
-      IdeaVersion.Download("203.4818-EAP-CANDIDATE-SNAPSHOT")//jvm8 stable integration test
+//      IdeaVersion.Download("203.4818-EAP-CANDIDATE-SNAPSHOT")//jvm8 stable integration test
 //      IdeaVersion.Community("203.5251-EAP-CANDIDATE-SNAPSHOT")//jvm11
 //      IdeaVersion.Community("203.5600.34-EAP-SNAPSHOT")//jvm11
 //      IdeaVersion.Community("203.5784.10-EAP-SNAPSHOT")
-//      LAST_COMMUNITY
+      LAST_COMMUNITY
     }
     is BuildType.UseLocal -> {
       if(isMacOS) {
