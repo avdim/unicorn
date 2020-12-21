@@ -38,7 +38,6 @@ GitHub Actions. Self Hosted GH Actions,
 save secrets
 Heroku
 Google Cloud
-record and edit video from IDE, upload to youtube, share text buffer, console logs
 
 https://github.com/hhru/android-multimodule-plugin
 
