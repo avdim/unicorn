@@ -26,7 +26,7 @@ buildConfigKotlin {
   sourceSet("main") {
     packageName = "com.unicorn"
     buildConfig(name = "BUILD_TIME", value = BUILD_TIME_STR)
-    buildConfig(name = "INTEGRATION_TEST", value = UNI_BUILD_TYPE == BuildType.IntegrationTest)//todo это костыль, нужно проверять динамическую выгрузку без дополнительных проверок
+    buildConfig(name = "INTEGRATION_TEST", value = UNI_BUILD_TYPE == BuildType.IntegrationTest)
   }
 }
 
