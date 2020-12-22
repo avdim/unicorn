@@ -13,7 +13,6 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.geometry.Size
-import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.LinearGradient
 import androidx.compose.ui.graphics.TileMode
@@ -28,14 +27,14 @@ fun helloComposePanel() = ComposePanel().apply {
   setContent {
     Column {
       Text("Hello Compose")
-      Text("Column")
-      Canvas(Modifier) {
+      Canvas(Modifier.size(100.dp, 100.dp)) {
         drawRect(
           size = Size(100f, 100f),
-          color = Color.Red,
-//          bush = LinearGradient(listOf(Color.Red, Color.Green), 0f, 0f, 1f, 1f, TileMode.Clamp),
+//          color = Color.Red,
+          brush = LinearGradient(listOf(Color.Red, Color.Green), 0f, 0f, 100f, 100f, TileMode.Clamp),
         )
       }
+      Text("Column")
     }
   }
 }
