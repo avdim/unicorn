@@ -1,6 +1,7 @@
 package com.unicorn.plugin.compose
 
 import androidx.compose.desktop.ComposePanel
+import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.Button
@@ -11,7 +12,11 @@ import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.geometry.Size
+import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.LinearGradient
+import androidx.compose.ui.graphics.TileMode
 import androidx.compose.ui.unit.dp
 import java.awt.BorderLayout
 import java.awt.Container
@@ -24,6 +29,13 @@ fun helloComposePanel() = ComposePanel().apply {
     Column {
       Text("Hello Compose")
       Text("Column")
+      Canvas(Modifier) {
+        drawRect(
+          size = Size(100f, 100f),
+          color = Color.Red,
+//          bush = LinearGradient(listOf(Color.Red, Color.Green), 0f, 0f, 1f, 1f, TileMode.Clamp),
+        )
+      }
     }
   }
 }
