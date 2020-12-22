@@ -1,6 +1,7 @@
 package com.unicorn.plugin
 
 import com.intellij.codeInsight.daemon.DaemonCodeAnalyzerSettings
+import com.intellij.find.FindSettings
 import com.intellij.ide.GeneralSettings
 import com.intellij.ide.actions.QuickChangeLookAndFeel
 import com.intellij.ide.actions.ViewInplaceCommentsAction
@@ -67,6 +68,8 @@ suspend fun configureIDE() {
   Registry.get("terminal.buffer.max.lines.count").setValue(100_000)
   TerminalOptionsProvider.instance.setOverrideIdeShortcuts(false)//enable Alt+F2 in terminal
   TerminalOptionsProvider.instance.shellPath = "/bin/bash"
+
+  FindSettings.getInstance().isShowResultsInSeparateView = true
 
   // Tab settings
   UISettings.instance.editorTabPlacement = SwingConstants.LEFT

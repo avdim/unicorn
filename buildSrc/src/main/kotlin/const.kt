@@ -22,10 +22,10 @@ val MIN_JDK_VERSION: JdkVersion = if (true/*DEBUG_JVM*/) JdkVersion.JDK8 else Jd
  */
 val USE_KOTLIN_DEV_REPOSITORY = true
 
-val KOTLIN_VERSION = "1.4.20"
+val KOTLIN_VERSION = "1.4.21"
 val SERIALIZATION_VERSION = "1.0.1"
-val COROUTINE_VERSION = "1.4.1"
-val KTOR_VERSION = "1.4.1"
+val COROUTINE_VERSION = "1.4.2"
+val KTOR_VERSION = "1.5.0"
 val LOG_MAVEN_ARTIFACT = if (DEBUG_JVM) "ch.qos.logback:logback-classic:1.2.3" else "org.slf4j:slf4j-simple:1.7.28"
 
 //https://github.com/Kotlin/kotlinx.coroutines/commit/e37aec4edd09bfb7f622e113553aa88a0a5bd27c
@@ -40,7 +40,8 @@ val COMPILER_ARGS = listOf<String>()
 val INTELLIJ_GRADLE = "0.6.5"
 // https://maven.pkg.jetbrains.space/public/p/compose/dev/org/jetbrains/compose/org.jetbrains.compose.gradle.plugin/
 //val DESKTOP_COMPOSE = "0.2.0-build132"
-val DESKTOP_COMPOSE = "0.3.0-build133"
+//val DESKTOP_COMPOSE = "0.3.0-build133"
+val DESKTOP_COMPOSE = "0.3.0-build135"
 
 val Project.UNI_BUILD_TYPE: BuildType get() =
   when (safeArgument("uniBuildType")) {
@@ -62,10 +63,10 @@ val Project.myIdeaSandboxDir:String get() = when (UNI_BUILD_TYPE) {
 val UNI_VERSION = "0.12.5"
 
 // https://www.jetbrains.com/intellij-repository/snapshots/
-//    IdeaVersion.Community("2020.1.2")
 //    IdeaVersion.Community("2020.2.3")
 // val LAST_COMMUNITY = IdeaVersion.Download("203.5784.10-EAP-SNAPSHOT")
-val LAST_COMMUNITY = IdeaVersion.Download("2020.3", "IC")
+//val LAST_COMMUNITY = IdeaVersion.Download("2020.3", "IC")
+val LAST_COMMUNITY = IdeaVersion.Download("203.6682.78-EAP-SNAPSHOT", "IC")
 
 val Project.IDEA_VERSION: IdeaVersion get() =
   when (UNI_BUILD_TYPE) {
@@ -76,11 +77,11 @@ val Project.IDEA_VERSION: IdeaVersion get() =
       //IdeaVersion.Community("LATEST-EAP-SNAPSHOT")
     }
     is BuildType.IntegrationTest -> {
-      IdeaVersion.Download("203.4818-EAP-CANDIDATE-SNAPSHOT")//jvm8 stable integration test
+//      IdeaVersion.Download("203.4818-EAP-CANDIDATE-SNAPSHOT")//jvm8 stable integration test
 //      IdeaVersion.Community("203.5251-EAP-CANDIDATE-SNAPSHOT")//jvm11
 //      IdeaVersion.Community("203.5600.34-EAP-SNAPSHOT")//jvm11
 //      IdeaVersion.Community("203.5784.10-EAP-SNAPSHOT")
-//      LAST_COMMUNITY
+      LAST_COMMUNITY
     }
     is BuildType.UseLocal -> {
       if(isMacOS) {

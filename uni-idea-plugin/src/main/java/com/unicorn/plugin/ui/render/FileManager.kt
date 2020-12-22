@@ -23,6 +23,9 @@ fun fileManager(
   val files = dir.children.toList()
   layoutBuilder.row {
     cell(isVerticalFlow = false) {
+      button("welcome") {
+        showWelcomeDialog()
+      }
       button("universal action") {
         //todo register action programmatically
         performActionById("TutuPlugin.ActionUniversal")
