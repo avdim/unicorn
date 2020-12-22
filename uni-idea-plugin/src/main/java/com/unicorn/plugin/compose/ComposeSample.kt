@@ -27,7 +27,7 @@ fun helloComposePanel() = ComposePanel().apply {
   setContent {
     Column {
       Text("Hello Compose")
-      Canvas(Modifier.size(100.dp, 100.dp)) {
+      Canvas(Modifier.size(150.dp, 150.dp)) {
         drawRect(
           size = Size(100f, 100f),
 //          color = Color.Red,
