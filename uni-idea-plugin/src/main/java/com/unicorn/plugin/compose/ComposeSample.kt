@@ -12,10 +12,9 @@ import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.geometry.Size
-import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.LinearGradient
-import androidx.compose.ui.graphics.TileMode
+import androidx.compose.ui.graphics.*
 import androidx.compose.ui.unit.dp
 import java.awt.BorderLayout
 import java.awt.Container
@@ -26,15 +25,21 @@ import javax.swing.JFrame
 fun helloComposePanel() = ComposePanel().apply {
   setContent {
     Column {
-      Text("Hello Compose")
+      Text("before canvas")
       Canvas(Modifier.size(150.dp, 150.dp)) {
         drawRect(
+          topLeft = Offset.Zero,
           size = Size(100f, 100f),
 //          color = Color.Red,
-          brush = LinearGradient(listOf(Color.Red, Color.Green), 0f, 0f, 100f, 100f, TileMode.Clamp),
+          brush = Brush.linearGradient(
+            colors = listOf(Color.Red, Color.Green),
+            start = Offset.Zero,
+            end = Offset(100f, 100f),
+            tileMode = TileMode.Clamp
+          ),
         )
       }
-      Text("Column")
+      Text("after canvas")
     }
   }
 }
