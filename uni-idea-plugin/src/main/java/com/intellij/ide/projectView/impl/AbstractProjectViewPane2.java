@@ -82,15 +82,6 @@ import java.util.function.Predicate;
 @SuppressWarnings("UnstableApiUsage")
 public abstract class AbstractProjectViewPane2 implements DataProvider, Disposable, BusyObject {
   private static final Logger LOG = Logger.getInstance(AbstractProjectViewPane2.class);
-  public static final ProjectExtensionPointName<AbstractProjectViewPane2> EP
-    = new ProjectExtensionPointName<>("com.intellij.projectViewPane");
-
-  /**
-   * @deprecated use {@link #EP} instead
-   */
-  @Deprecated
-  @ApiStatus.ScheduledForRemoval(inVersion = "2022.2")
-  public static final ExtensionPointName<AbstractProjectViewPane2> EP_NAME = new ExtensionPointName<>("com.intellij.projectViewPane");
 
   protected final @NotNull Project myProject;
   protected DnDAwareTree myTree;

@@ -3,7 +3,6 @@ package com.intellij.ide.projectView.impl;
 
 import com.intellij.ide.PsiCopyPasteManager;
 import com.intellij.ide.projectView.BaseProjectTreeBuilder;
-import com.intellij.ide.projectView.impl.*;
 import com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode;
 import com.intellij.ide.ui.customization.CustomizationUtil;
 import com.intellij.ide.util.treeView.*;
@@ -284,9 +283,4 @@ public abstract class AbstractProjectViewPSIPane2 extends AbstractProjectViewPan
     return myAsyncSupport;
   }
 
-  @ApiStatus.Internal
-  @NotNull
-  public AsyncProjectViewSupport createAsyncSupport(@NotNull Disposable parent, @NotNull Comparator<NodeDescriptor<?>> comparator) {
-    return new AsyncProjectViewSupport(parent, myProject, createStructure(), comparator);
-  }
 }
