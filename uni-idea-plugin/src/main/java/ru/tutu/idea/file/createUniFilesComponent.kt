@@ -82,11 +82,10 @@ private fun _createUniFilesComponent(
   }
 
   ApplicationManager.getApplication().assertIsDispatchThread()
-  val viewPane = object : AbstractProjectViewPSIPane(project) {
-    val component: JComponent = createComponent().also { container: JComponent ->
+  val viewPane = object : AbstractProjectViewPSIPane2(project) {
+    val component: JComponent = createComponent().also {
 //      UIUtil.removeScrollBorder(it)
-      ScrollPaneFactory.createScrollPane(container, false)
-      container
+      ScrollPaneFactory.createScrollPane(it, false)
     }
 
     override fun getSelectionPaths(): Array<TreePath>? {
@@ -177,7 +176,7 @@ private fun _createUniFilesComponent(
   viewPane.tree.addSelectionListener {
     selectionListener(it)
   }
-  viewPane.restoreExpandedPaths()
+//  viewPane.restoreExpandedPaths()
 
   return object : JPanel(), DataProvider {
     private val myCopyPasteDelegator = CopyPasteDelegator(project, viewPane.component)
