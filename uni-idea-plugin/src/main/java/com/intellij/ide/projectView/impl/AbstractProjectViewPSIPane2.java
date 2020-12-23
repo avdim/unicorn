@@ -6,7 +6,6 @@ import com.intellij.ide.projectView.BaseProjectTreeBuilder;
 import com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode;
 import com.intellij.ide.ui.customization.CustomizationUtil;
 import com.intellij.ide.util.treeView.*;
-import com.intellij.openapi.Disposable;
 import com.intellij.openapi.actionSystem.ActionPlaces;
 import com.intellij.openapi.actionSystem.IdeActions;
 import com.intellij.openapi.editor.colors.EditorColorsManager;
@@ -29,7 +28,6 @@ import com.intellij.util.ui.UIUtil;
 import com.intellij.util.ui.tree.TreeUtil;
 import com.intellij.util.ui.update.Activatable;
 import com.intellij.util.ui.update.UiNotifyConnector;
-import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.NotNull;
 
 import javax.swing.*;
@@ -276,11 +274,6 @@ public abstract class AbstractProjectViewPSIPane2 extends AbstractProjectViewPan
         return super.isMatchingElement(element, pattern);
       }
     }
-  }
-
-  @Override
-  AsyncProjectViewSupport getAsyncSupport() {
-    return myAsyncSupport;
   }
 
 }

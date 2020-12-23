@@ -5,7 +5,6 @@ package ru.tutu.idea.file
 import com.intellij.history.LocalHistory
 import com.intellij.icons.AllIcons
 import com.intellij.ide.*
-import com.intellij.ide.impl.ProjectPaneSelectInTarget
 import com.intellij.ide.projectView.HelpID
 import com.intellij.ide.projectView.ProjectViewSettings
 import com.intellij.ide.projectView.ViewSettings
@@ -21,10 +20,7 @@ import com.intellij.ide.util.treeView.AbstractTreeUpdater
 import com.intellij.ide.util.treeView.NodeDescriptor
 import com.intellij.openapi.actionSystem.*
 import com.intellij.openapi.application.ApplicationManager
-import com.intellij.openapi.module.Module
 import com.intellij.openapi.project.Project
-import com.intellij.openapi.roots.ModuleRootManager
-import com.intellij.openapi.roots.ProjectRootManager
 import com.intellij.openapi.vfs.JarFileSystem
 import com.intellij.openapi.vfs.LocalFileSystem
 import com.intellij.openapi.vfs.VirtualFile
@@ -35,7 +31,6 @@ import com.intellij.psi.util.PsiUtilCore
 import com.intellij.ui.ScrollPaneFactory
 import com.intellij.ui.layout.Cell
 import com.intellij.ui.switcher.QuickActionProvider
-import com.intellij.util.ui.UIUtil
 import com.intellij.util.ui.tree.TreeUtil
 import com.unicorn.Uni
 import com.unicorn.plugin.virtualFile
@@ -94,12 +89,6 @@ private fun _createUniFilesComponent(
 
     override fun getTitle(): String = "todo title pane"
     override fun getId(): String = FILES_PANE_ID
-    override fun getIcon(): Icon = AllIcons.General.ProjectTab
-
-    override fun createSelectInTarget(): SelectInTarget =
-      object : ProjectPaneSelectInTarget(project) {
-        override fun getMinorViewId(): String = FILES_PANE_ID//todo не удобно
-      }
 
     override fun createTreeUpdater(treeBuilder: AbstractTreeBuilder): AbstractTreeUpdater/*todo deprecated*/ =
       object : AbstractTreeUpdater(treeBuilder) {
@@ -154,19 +143,6 @@ private fun _createUniFilesComponent(
       }
     }
 
-    override fun addToolbarActions(actionGroup: DefaultActionGroup) {
-      //todo not working
-      actionGroup.addAction(object : AnAction("sample action") {
-        override fun actionPerformed(e: AnActionEvent) {
-          Uni.log.debug { "sample files toolbar action" }
-        }
-      }) //.setAsSecondary(true)
-    }
-
-    // should be first
-    override fun getWeight(): Int = 0
-//  override fun supportsFlattenModules(): Boolean = false
-//  override fun supportsShowExcludedFiles(): Boolean = true
   }
 
   fun getSelectNodeElement(): Any? {
