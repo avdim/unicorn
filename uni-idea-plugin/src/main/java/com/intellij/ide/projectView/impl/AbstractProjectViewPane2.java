@@ -186,8 +186,6 @@ public abstract class AbstractProjectViewPane2 implements DataProvider, Disposab
   @NotNull
   public abstract ActionCallback updateFromRoot(boolean restoreExpandedPaths);
 
-  public abstract void select(Object element, VirtualFile file, boolean requestFocus);
-
   public TreePath[] getSelectionPaths() {
     return myTree == null ? null : myTree.getSelectionPaths();
   }

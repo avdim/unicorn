@@ -178,38 +178,6 @@ public abstract class AbstractProjectViewPSIPane2 extends AbstractProjectViewPan
     return cb;
   }
 
-  @Override
-  public void select(Object element, VirtualFile file, boolean requestFocus) {
-    selectCB(element, file, requestFocus);
-  }
-
-  @NotNull
-  public ActionCallback selectCB(Object element, VirtualFile file, boolean requestFocus) {
-    if (file != null) {
-      AbstractTreeBuilder builder = getTreeBuilder();
-      if (builder instanceof BaseProjectTreeBuilder) {
-        beforeSelect().doWhenDone(() -> UIUtil.invokeLaterIfNeeded(() -> {
-          if (!builder.isDisposed()) {
-            ((BaseProjectTreeBuilder)builder).selectAsync(element, file, requestFocus);
-          }
-        }));
-      }
-      else if (myAsyncSupport != null) {
-        return myAsyncSupport.select(myTree, element, file);
-      }
-    }
-    return ActionCallback.DONE;
-  }
-
-  @NotNull
-  public ActionCallback beforeSelect() {
-    // actually, getInitialized().doWhenDone() should be called by builder internally
-    // this will be done in 2017
-    AbstractTreeBuilder builder = getTreeBuilder();
-    if (builder == null) return ActionCallback.DONE;
-    return builder.getInitialized();
-  }
-
   protected BaseProjectTreeBuilder createBuilder(@NotNull DefaultTreeModel treeModel) {
     return new ProjectTreeBuilder(myProject, myTree, treeModel, null, (ProjectAbstractTreeStructureBase)myTreeStructure) {
       @Override
