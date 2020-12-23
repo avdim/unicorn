@@ -45,7 +45,7 @@ import java.util.List;
 import java.util.StringTokenizer;
 
 @SuppressWarnings("UnstableApiUsage")
-public abstract class AbstractProjectViewPSIPane2 extends AbstractProjectViewPane {
+public abstract class AbstractProjectViewPSIPane2 extends AbstractProjectViewPane2 {
   private AsyncProjectViewSupport myAsyncSupport;
   private JScrollPane myComponent;
 
