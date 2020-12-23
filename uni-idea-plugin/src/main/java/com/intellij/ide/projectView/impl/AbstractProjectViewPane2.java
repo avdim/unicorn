@@ -79,6 +79,7 @@ import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.function.BooleanSupplier;
 import java.util.function.Predicate;
 
+@SuppressWarnings("UnstableApiUsage")
 public abstract class AbstractProjectViewPane2 implements DataProvider, Disposable, BusyObject {
   private static final Logger LOG = Logger.getInstance(AbstractProjectViewPane2.class);
   public static final ProjectExtensionPointName<AbstractProjectViewPane2> EP
