@@ -80,14 +80,8 @@ public abstract class AbstractProjectViewPSIPane2 extends AbstractProjectViewPan
         return createTreeUpdater(this);
       }
     };
-    if (treeBuilder != null) {
-      installComparator(treeBuilder);
-      setTreeBuilder(treeBuilder);
-    }
-    else {
-      myAsyncSupport = new AsyncProjectViewSupport(this, myProject, myTreeStructure, createComparator());
-      myAsyncSupport.setModelTo(myTree);
-    }
+    installComparator(treeBuilder);
+    setTreeBuilder(treeBuilder);
 
     initTree();
 
@@ -115,7 +109,6 @@ public abstract class AbstractProjectViewPSIPane2 extends AbstractProjectViewPan
 
   @Override
   public final void dispose() {
-    myAsyncSupport = null;
     myComponent = null;
     super.dispose();
   }
@@ -161,9 +154,6 @@ public abstract class AbstractProjectViewPSIPane2 extends AbstractProjectViewPan
     }
     if (builder != null) {
       builder.addSubtreeToUpdate(builder.getRootNode(), afterUpdate);
-    }
-    else if (myAsyncSupport != null) {
-      myAsyncSupport.updateAll(afterUpdate);
     }
     else {
       return ActionCallback.REJECTED;
