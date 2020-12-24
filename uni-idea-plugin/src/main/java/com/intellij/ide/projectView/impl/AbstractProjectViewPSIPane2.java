@@ -68,25 +68,6 @@ public abstract class AbstractProjectViewPSIPane2 extends AbstractProjectViewPan
     installComparator(treeBuilder);
     setTreeBuilder(treeBuilder);
     initTree();
-    Disposer.register(this, new UiNotifyConnector(myTree, new Activatable() {
-      private boolean showing;
-
-      @Override
-      public void showNotify() {
-        if (!showing) {
-          showing = true;
-          restoreExpandedPaths();
-        }
-      }
-
-      @Override
-      public void hideNotify() {
-        if (showing) {
-          showing = false;
-          saveExpandedPaths();
-        }
-      }
-    }));
     return myComponent;
   }
 
