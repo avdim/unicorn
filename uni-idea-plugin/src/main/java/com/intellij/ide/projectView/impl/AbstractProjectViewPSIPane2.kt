@@ -17,66 +17,55 @@ import com.intellij.util.EditSourceOnEnterKeyHandler
 import com.intellij.util.ui.tree.TreeUtil
 import javax.swing.JComponent
 import javax.swing.JScrollPane
-import javax.swing.SwingUtilities
 import javax.swing.ToolTipManager
 import javax.swing.tree.DefaultMutableTreeNode
 import javax.swing.tree.DefaultTreeModel
 import javax.swing.tree.TreePath
 import javax.swing.tree.TreeSelectionModel
 
-abstract class AbstractProjectViewPSIPane2 protected constructor(project: Project) :
-    AbstractProjectViewPaneMiddle(project) {
-    private var myComponent: JScrollPane? = null
-    override fun createComponent(): JComponent {
-        if (myComponent != null) {
-            SwingUtilities.updateComponentTreeUI(myComponent)
-            return myComponent!!
-        }
-        val rootNode = DefaultMutableTreeNode(null)
-        val treeModel = DefaultTreeModel(rootNode)
-        myTree = createTree(treeModel)
-        enableDnD()
-        myComponent = ScrollPaneFactory.createScrollPane(myTree)
-        myTreeStructure = createStructure()
-        val treeBuilder: BaseProjectTreeBuilder = object : ProjectTreeBuilder(
-            myProject,
-            myTree,
-            treeModel,
-            null,
-            (myTreeStructure as ProjectAbstractTreeStructureBase)
-        ) {
-            override fun createUpdater(): AbstractTreeUpdater = createTreeUpdater(this)
-        }
-        installComparator(treeBuilder)
-        setTreeBuilder(treeBuilder)
-        initTree()
-        return myComponent!!
-    }
+abstract class AbstractProjectViewPSIPane2 constructor(project: Project) : AbstractProjectViewPane2(project) {
 
-    private fun initTree() {
-        myTree.selectionModel.selectionMode = TreeSelectionModel.DISCONTIGUOUS_TREE_SELECTION
-        myTree.isRootVisible = false
-        myTree.showsRootHandles = true
-        myTree.expandPath(TreePath(myTree.model.root))
-        EditSourceOnDoubleClickHandler.install(myTree)
-        EditSourceOnEnterKeyHandler.install(myTree)
-        ToolTipManager.sharedInstance().registerComponent(myTree)
-        TreeUtil.installActions(myTree)
-        SpeedSearchFiles(myTree)
-        myTree.addKeyListener(PsiCopyPasteManager.EscapeHandler())
-        CustomizationUtil.installPopupHandler(
-            myTree,
-            IdeActions.GROUP_PROJECT_VIEW_POPUP,
-            ActionPlaces.PROJECT_VIEW_POPUP
-        )
+  override fun createComponent(): JComponent {
+    val rootNode = DefaultMutableTreeNode(null)
+    val treeModel = DefaultTreeModel(rootNode)
+    myTree = createTree(treeModel)
+    enableDnD()
+    val result: JScrollPane = ScrollPaneFactory.createScrollPane(myTree)
+    myTreeStructure = createStructure()
+    val treeBuilder: BaseProjectTreeBuilder = object : ProjectTreeBuilder(
+      myProject,
+      myTree,
+      treeModel,
+      null,
+      (myTreeStructure as ProjectAbstractTreeStructureBase)
+    ) {
+      override fun createUpdater(): AbstractTreeUpdater = createTreeUpdater(this)
     }
+    installComparator(treeBuilder)
+    setTreeBuilder(treeBuilder)
+    initTree()
+    return result
+  }
 
-    override fun dispose() {
-        myComponent = null
-        super.dispose()
-    }
+  private fun initTree() {
+    myTree.selectionModel.selectionMode = TreeSelectionModel.DISCONTIGUOUS_TREE_SELECTION
+    myTree.isRootVisible = false
+    myTree.showsRootHandles = true
+    myTree.expandPath(TreePath(myTree.model.root))
+    EditSourceOnDoubleClickHandler.install(myTree)
+    EditSourceOnEnterKeyHandler.install(myTree)
+    ToolTipManager.sharedInstance().registerComponent(myTree)
+    TreeUtil.installActions(myTree)
+    SpeedSearchFiles(myTree)
+    myTree.addKeyListener(PsiCopyPasteManager.EscapeHandler())
+    CustomizationUtil.installPopupHandler(
+      myTree,
+      IdeActions.GROUP_PROJECT_VIEW_POPUP,
+      ActionPlaces.PROJECT_VIEW_POPUP
+    )
+  }
 
-    protected abstract fun createStructure(): ProjectAbstractTreeStructureBase
-    protected abstract fun createTree(treeModel: DefaultTreeModel): ProjectViewTree
-    protected abstract fun createTreeUpdater(treeBuilder: AbstractTreeBuilder): AbstractTreeUpdater
+  protected abstract fun createStructure(): ProjectAbstractTreeStructureBase
+  protected abstract fun createTree(treeModel: DefaultTreeModel): ProjectViewTree
+  protected abstract fun createTreeUpdater(treeBuilder: AbstractTreeBuilder): AbstractTreeUpdater
 }
