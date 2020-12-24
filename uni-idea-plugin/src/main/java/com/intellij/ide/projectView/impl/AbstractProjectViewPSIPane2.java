@@ -16,7 +16,6 @@ import com.intellij.openapi.util.ActionCallback;
 import com.intellij.openapi.util.Disposer;
 import com.intellij.openapi.util.registry.Registry;
 import com.intellij.openapi.util.text.StringUtil;
-import com.intellij.openapi.vfs.VirtualFile;
 import com.intellij.ui.ScrollPaneFactory;
 import com.intellij.ui.TreeSpeedSearch;
 import com.intellij.ui.stripe.ErrorStripe;
@@ -24,7 +23,6 @@ import com.intellij.ui.stripe.ErrorStripePainter;
 import com.intellij.ui.stripe.TreeUpdater;
 import com.intellij.util.EditSourceOnDoubleClickHandler;
 import com.intellij.util.EditSourceOnEnterKeyHandler;
-import com.intellij.util.ui.UIUtil;
 import com.intellij.util.ui.tree.TreeUtil;
 import com.intellij.util.ui.update.Activatable;
 import com.intellij.util.ui.update.UiNotifyConnector;
@@ -37,13 +35,11 @@ import javax.swing.tree.TreePath;
 import javax.swing.tree.TreeSelectionModel;
 import java.awt.*;
 import java.util.ArrayList;
-import java.util.Comparator;
 import java.util.List;
 import java.util.StringTokenizer;
 
 @SuppressWarnings("UnstableApiUsage")
 public abstract class AbstractProjectViewPSIPane2 extends AbstractProjectViewPaneMiddle {
-  private AsyncProjectViewSupport myAsyncSupport;
   private JScrollPane myComponent;
 
   protected AbstractProjectViewPSIPane2(@NotNull Project project) {
@@ -78,7 +74,12 @@ public abstract class AbstractProjectViewPSIPane2 extends AbstractProjectViewPan
     }
     myTreeStructure = createStructure();
 
-    BaseProjectTreeBuilder treeBuilder = createBuilder(treeModel);
+    BaseProjectTreeBuilder treeBuilder = new ProjectTreeBuilder(myProject, myTree, treeModel, null, (ProjectAbstractTreeStructureBase) myTreeStructure) {
+      @Override
+      protected AbstractTreeUpdater createUpdater() {
+        return createTreeUpdater(this);
+      }
+    };
     if (treeBuilder != null) {
       installComparator(treeBuilder);
       setTreeBuilder(treeBuilder);
@@ -110,14 +111,6 @@ public abstract class AbstractProjectViewPSIPane2 extends AbstractProjectViewPan
       }
     }));
     return myComponent;
-  }
-
-  @Override
-  protected void installComparator(AbstractTreeBuilder builder, @NotNull Comparator<? super NodeDescriptor<?>> comparator) {
-    if (myAsyncSupport != null) {
-      myAsyncSupport.setComparator(comparator);
-    }
-    super.installComparator(builder, comparator);
   }
 
   @Override
@@ -176,15 +169,6 @@ public abstract class AbstractProjectViewPSIPane2 extends AbstractProjectViewPan
       return ActionCallback.REJECTED;
     }
     return cb;
-  }
-
-  protected BaseProjectTreeBuilder createBuilder(@NotNull DefaultTreeModel treeModel) {
-    return new ProjectTreeBuilder(myProject, myTree, treeModel, null, (ProjectAbstractTreeStructureBase)myTreeStructure) {
-      @Override
-      protected AbstractTreeUpdater createUpdater() {
-        return createTreeUpdater(this);
-      }
-    };
   }
 
   @NotNull
