@@ -132,36 +132,6 @@ public abstract class AbstractProjectViewPSIPane2 extends AbstractProjectViewPan
   }
 
   @NotNull
-  @Override
-  public final ActionCallback updateFromRoot(boolean restoreExpandedPaths) {
-    Runnable afterUpdate;
-    final ActionCallback cb = new ActionCallback();
-    AbstractTreeBuilder builder = getTreeBuilder();
-    if (restoreExpandedPaths && builder != null) {
-      List<Object> pathsToExpand = new ArrayList<>();
-      List<Object> selectionPaths = new ArrayList<>();
-      TreeBuilderUtil.storePaths(builder, (DefaultMutableTreeNode)myTree.getModel().getRoot(), pathsToExpand, selectionPaths, true);
-      afterUpdate = () -> {
-        if (myTree != null && !builder.isDisposed()) {
-          myTree.clearSelection();
-          TreeBuilderUtil.restorePaths(builder, pathsToExpand, selectionPaths, true);
-        }
-        cb.setDone();
-      };
-    }
-    else {
-      afterUpdate = cb.createSetDoneRunnable();
-    }
-    if (builder != null) {
-      builder.addSubtreeToUpdate(builder.getRootNode(), afterUpdate);
-    }
-    else {
-      return ActionCallback.REJECTED;
-    }
-    return cb;
-  }
-
-  @NotNull
   protected abstract ProjectAbstractTreeStructureBase createStructure();
 
   @NotNull
