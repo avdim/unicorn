@@ -30,21 +30,21 @@ abstract class AbstractProjectViewPSIPane2 constructor(project: Project) : Abstr
     val treeModel = DefaultTreeModel(rootNode)
     myTree = createTree(treeModel)
     enableDnD()
-    val result: JScrollPane = ScrollPaneFactory.createScrollPane(myTree)
-    myTreeStructure = createStructure()
+    val treeStructure = createStructure()
+    myTreeStructure = treeStructure
     val treeBuilder: BaseProjectTreeBuilder = object : ProjectTreeBuilder(
       myProject,
       myTree,
       treeModel,
       null,
-      (myTreeStructure as ProjectAbstractTreeStructureBase)
+      treeStructure
     ) {
-      override fun createUpdater(): AbstractTreeUpdater = createTreeUpdater(this)
+      override fun createUpdater() = createTreeUpdater(this)
     }
     installComparator(treeBuilder)
     setTreeBuilder(treeBuilder)
     initTree()
-    return result
+    return ScrollPaneFactory.createScrollPane(myTree)
   }
 
   private fun initTree() {
