@@ -78,7 +78,28 @@ private fun _createUniFilesComponent(
 
   ApplicationManager.getApplication().assertIsDispatchThread()
   val viewPane = object : AbstractProjectViewPSIPane2(project) {
-    val component: JComponent = createComponent().also {
+    val component: JComponent = createComponent(
+      object : ProjectTreeStructure(project, FILES_PANE_ID), ProjectViewSettings {
+        override fun createRoot(project: Project, settings: ViewSettings): AbstractTreeNode<*> =
+          object : ProjectViewProjectNode(project, settings) {
+            override fun canRepresent(element: Any): Boolean = true
+            override fun getChildren(): Collection<AbstractTreeNode<*>> {
+              return uniFilesRootNodes(project, settings, rootDirs = rootPaths)
+            }
+          }
+
+        override fun getChildElements(element: Any): Array<Any> {
+          val treeNode = element as AbstractTreeNode<*>
+          val elements = treeNode.children
+          elements.forEach { it.setParent(treeNode) }
+          return elements.toTypedArray()
+        }
+
+        override fun isShowExcludedFiles(): Boolean = true
+        override fun isShowLibraryContents(): Boolean = true
+        override fun isUseFileNestingRules(): Boolean = true
+      }
+    ).also {
 //      UIUtil.removeScrollBorder(it)
       ScrollPaneFactory.createScrollPane(it, false)
     }
@@ -110,28 +131,6 @@ private fun _createUniFilesComponent(
           }
           return super.addSubtreeToUpdateByElement(element)
         }
-      }
-
-    override fun createStructure(): ProjectAbstractTreeStructureBase =
-      object : ProjectTreeStructure(project, FILES_PANE_ID), ProjectViewSettings {
-        override fun createRoot(project: Project, settings: ViewSettings): AbstractTreeNode<*> =
-          object : ProjectViewProjectNode(project, settings) {
-            override fun canRepresent(element: Any): Boolean = true
-            override fun getChildren(): Collection<AbstractTreeNode<*>> {
-              return uniFilesRootNodes(project, settings, rootDirs = rootPaths)
-            }
-          }
-
-        override fun getChildElements(element: Any): Array<Any> {
-          val treeNode = element as AbstractTreeNode<*>
-          val elements = treeNode.children
-          elements.forEach { it.setParent(treeNode) }
-          return elements.toTypedArray()
-        }
-
-        override fun isShowExcludedFiles(): Boolean = true
-        override fun isShowLibraryContents(): Boolean = true
-        override fun isUseFileNestingRules(): Boolean = true
       }
 
     override fun createTree(treeModel: DefaultTreeModel): ProjectViewTree {

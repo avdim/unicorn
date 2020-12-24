@@ -16,7 +16,6 @@ import com.intellij.util.EditSourceOnDoubleClickHandler
 import com.intellij.util.EditSourceOnEnterKeyHandler
 import com.intellij.util.ui.tree.TreeUtil
 import javax.swing.JComponent
-import javax.swing.JScrollPane
 import javax.swing.ToolTipManager
 import javax.swing.tree.DefaultMutableTreeNode
 import javax.swing.tree.DefaultTreeModel
@@ -25,12 +24,11 @@ import javax.swing.tree.TreeSelectionModel
 
 abstract class AbstractProjectViewPSIPane2 constructor(project: Project) : AbstractProjectViewPane2(project) {
 
-  override fun createComponent(): JComponent {
+  fun createComponent(treeStructure: ProjectAbstractTreeStructureBase): JComponent {
     val rootNode = DefaultMutableTreeNode(null)
     val treeModel = DefaultTreeModel(rootNode)
     myTree = createTree(treeModel)
     enableDnD()
-    val treeStructure = createStructure()
     myTreeStructure = treeStructure
     val treeBuilder: BaseProjectTreeBuilder = object : ProjectTreeBuilder(
       myProject,
@@ -65,7 +63,6 @@ abstract class AbstractProjectViewPSIPane2 constructor(project: Project) : Abstr
     )
   }
 
-  protected abstract fun createStructure(): ProjectAbstractTreeStructureBase
   protected abstract fun createTree(treeModel: DefaultTreeModel): ProjectViewTree
   protected abstract fun createTreeUpdater(treeBuilder: AbstractTreeBuilder): AbstractTreeUpdater
 }

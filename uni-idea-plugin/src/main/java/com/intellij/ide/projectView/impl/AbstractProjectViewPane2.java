@@ -126,9 +126,6 @@ public abstract class AbstractProjectViewPane2 implements DataProvider, Disposab
     return null;//todo no sense
   }
 
-  @NotNull
-  public abstract JComponent createComponent();
-
   @Override
   public void dispose() {
     if (myDropTarget != null) {
