@@ -53,27 +53,12 @@ public abstract class AbstractProjectViewPSIPane2 extends AbstractProjectViewPan
       SwingUtilities.updateComponentTreeUI(myComponent);
       return myComponent;
     }
-
     DefaultMutableTreeNode rootNode = new DefaultMutableTreeNode(null);
     DefaultTreeModel treeModel = new DefaultTreeModel(rootNode);
     myTree = createTree(treeModel);
     enableDnD();
     myComponent = ScrollPaneFactory.createScrollPane(myTree);
-    if (Registry.is("error.stripe.enabled")) {
-      ErrorStripePainter painter = new ErrorStripePainter(true);
-      Disposer.register(this, new TreeUpdater<ErrorStripePainter>(painter, myComponent, myTree) {
-        @Override
-        protected void update(ErrorStripePainter painter, int index, Object object) {
-          if (object instanceof DefaultMutableTreeNode) {
-            DefaultMutableTreeNode node = (DefaultMutableTreeNode)object;
-            object = node.getUserObject();
-          }
-          super.update(painter, index, getStripe(object, myTree.isExpanded(index)));
-        }
-      });
-    }
     myTreeStructure = createStructure();
-
     BaseProjectTreeBuilder treeBuilder = new ProjectTreeBuilder(myProject, myTree, treeModel, null, (ProjectAbstractTreeStructureBase) myTreeStructure) {
       @Override
       protected AbstractTreeUpdater createUpdater() {
@@ -82,9 +67,7 @@ public abstract class AbstractProjectViewPSIPane2 extends AbstractProjectViewPan
     };
     installComparator(treeBuilder);
     setTreeBuilder(treeBuilder);
-
     initTree();
-
     Disposer.register(this, new UiNotifyConnector(myTree, new Activatable() {
       private boolean showing;
 
@@ -118,15 +101,11 @@ public abstract class AbstractProjectViewPSIPane2 extends AbstractProjectViewPan
     myTree.setRootVisible(false);
     myTree.setShowsRootHandles(true);
     myTree.expandPath(new TreePath(myTree.getModel().getRoot()));
-
     EditSourceOnDoubleClickHandler.install(myTree);
     EditSourceOnEnterKeyHandler.install(myTree);
-
     ToolTipManager.sharedInstance().registerComponent(myTree);
     TreeUtil.installActions(myTree);
-
     new MySpeedSearch(myTree);
-
     myTree.addKeyListener(new PsiCopyPasteManager.EscapeHandler());
     CustomizationUtil.installPopupHandler(myTree, IdeActions.GROUP_PROJECT_VIEW_POPUP, ActionPlaces.PROJECT_VIEW_POPUP);
   }
@@ -139,24 +118,6 @@ public abstract class AbstractProjectViewPSIPane2 extends AbstractProjectViewPan
 
   @NotNull
   protected abstract AbstractTreeUpdater createTreeUpdater(@NotNull AbstractTreeBuilder treeBuilder);
-
-  /**
-   * @param object   an object that represents a node in the project tree
-   * @param expanded {@code true} if the corresponding node is expanded,
-   *                 {@code false} if it is collapsed
-   * @return a non-null value if the corresponding node should be , or {@code null}
-   */
-  protected ErrorStripe getStripe(Object object, boolean expanded) {
-    if (expanded && object instanceof PsiDirectoryNode) return null;
-    if (object instanceof PresentableNodeDescriptor) {
-      PresentableNodeDescriptor node = (PresentableNodeDescriptor)object;
-      TextAttributesKey key = node.getPresentation().getTextAttributesKey();
-      TextAttributes attributes = key == null ? null : EditorColorsManager.getInstance().getSchemeForCurrentUITheme().getAttributes(key);
-      Color color = attributes == null ? null : attributes.getErrorStripeColor();
-      if (color != null) return ErrorStripe.create(color, 1);
-    }
-    return null;
-  }
 
   protected static final class MySpeedSearch extends TreeSpeedSearch {
     MySpeedSearch(JTree tree) {
