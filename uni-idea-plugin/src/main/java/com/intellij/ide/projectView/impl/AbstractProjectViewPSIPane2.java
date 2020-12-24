@@ -3,29 +3,15 @@ package com.intellij.ide.projectView.impl;
 
 import com.intellij.ide.PsiCopyPasteManager;
 import com.intellij.ide.projectView.BaseProjectTreeBuilder;
-import com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode;
 import com.intellij.ide.ui.customization.CustomizationUtil;
 import com.intellij.ide.util.treeView.*;
 import com.intellij.openapi.actionSystem.ActionPlaces;
 import com.intellij.openapi.actionSystem.IdeActions;
-import com.intellij.openapi.editor.colors.EditorColorsManager;
-import com.intellij.openapi.editor.colors.TextAttributesKey;
-import com.intellij.openapi.editor.markup.TextAttributes;
 import com.intellij.openapi.project.Project;
-import com.intellij.openapi.util.ActionCallback;
-import com.intellij.openapi.util.Disposer;
-import com.intellij.openapi.util.registry.Registry;
-import com.intellij.openapi.util.text.StringUtil;
 import com.intellij.ui.ScrollPaneFactory;
-import com.intellij.ui.TreeSpeedSearch;
-import com.intellij.ui.stripe.ErrorStripe;
-import com.intellij.ui.stripe.ErrorStripePainter;
-import com.intellij.ui.stripe.TreeUpdater;
 import com.intellij.util.EditSourceOnDoubleClickHandler;
 import com.intellij.util.EditSourceOnEnterKeyHandler;
 import com.intellij.util.ui.tree.TreeUtil;
-import com.intellij.util.ui.update.Activatable;
-import com.intellij.util.ui.update.UiNotifyConnector;
 import org.jetbrains.annotations.NotNull;
 
 import javax.swing.*;
@@ -33,10 +19,6 @@ import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.DefaultTreeModel;
 import javax.swing.tree.TreePath;
 import javax.swing.tree.TreeSelectionModel;
-import java.awt.*;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.StringTokenizer;
 
 @SuppressWarnings("UnstableApiUsage")
 public abstract class AbstractProjectViewPSIPane2 extends AbstractProjectViewPaneMiddle {
@@ -71,12 +53,6 @@ public abstract class AbstractProjectViewPSIPane2 extends AbstractProjectViewPan
     return myComponent;
   }
 
-  @Override
-  public final void dispose() {
-    myComponent = null;
-    super.dispose();
-  }
-
   private void initTree() {
     myTree.getSelectionModel().setSelectionMode(TreeSelectionModel.DISCONTIGUOUS_TREE_SELECTION);
     myTree.setRootVisible(false);
@@ -86,9 +62,15 @@ public abstract class AbstractProjectViewPSIPane2 extends AbstractProjectViewPan
     EditSourceOnEnterKeyHandler.install(myTree);
     ToolTipManager.sharedInstance().registerComponent(myTree);
     TreeUtil.installActions(myTree);
-    new MySpeedSearch(myTree);
+    new SpeedSearchFiles(myTree);
     myTree.addKeyListener(new PsiCopyPasteManager.EscapeHandler());
     CustomizationUtil.installPopupHandler(myTree, IdeActions.GROUP_PROJECT_VIEW_POPUP, ActionPlaces.PROJECT_VIEW_POPUP);
+  }
+
+  @Override
+  public final void dispose() {
+    myComponent = null;
+    super.dispose();
   }
 
   @NotNull
@@ -99,35 +81,5 @@ public abstract class AbstractProjectViewPSIPane2 extends AbstractProjectViewPan
 
   @NotNull
   protected abstract AbstractTreeUpdater createTreeUpdater(@NotNull AbstractTreeBuilder treeBuilder);
-
-  protected static final class MySpeedSearch extends TreeSpeedSearch {
-    MySpeedSearch(JTree tree) {
-      super(tree);
-    }
-
-    @Override
-    protected boolean isMatchingElement(Object element, String pattern) {
-      Object userObject = ((DefaultMutableTreeNode)((TreePath)element).getLastPathComponent()).getUserObject();
-      if (userObject instanceof PsiDirectoryNode) {
-        String str = getElementText(element);
-        if (str == null) return false;
-        str = StringUtil.toLowerCase(str);
-        if (pattern.indexOf('.') >= 0) {
-          return compare(str, pattern);
-        }
-        StringTokenizer tokenizer = new StringTokenizer(str, ".");
-        while (tokenizer.hasMoreTokens()) {
-          String token = tokenizer.nextToken();
-          if (compare(token, pattern)) {
-            return true;
-          }
-        }
-        return false;
-      }
-      else {
-        return super.isMatchingElement(element, pattern);
-      }
-    }
-  }
 
 }
