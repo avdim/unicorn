@@ -5,12 +5,10 @@ package ru.tutu.idea.file
 import com.intellij.history.LocalHistory
 import com.intellij.ide.*
 import com.intellij.ide.projectView.HelpID
-import com.intellij.ide.projectView.ProjectViewSettings
 import com.intellij.ide.projectView.ViewSettings
 import com.intellij.ide.projectView.impl.*
 import com.intellij.ide.projectView.impl.nodes.LibraryGroupElement
 import com.intellij.ide.projectView.impl.nodes.NamedLibraryElement
-import com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode
 import com.intellij.ide.util.DeleteHandler
 import com.intellij.ide.util.DirectoryChooserUtil
 import com.intellij.ide.util.treeView.AbstractTreeNode
@@ -82,26 +80,7 @@ private fun _createUniFilesComponent(
 //  viewPane.restoreExpandedPaths()
   val treeModel = DefaultTreeModel(DefaultMutableTreeNode(null))
   val viewPaneComponent = viewPane.createComponent(
-    object : ProjectTreeStructure(project, FILES_PANE_ID), ProjectViewSettings {
-      override fun createRoot(project: Project, settings: ViewSettings): AbstractTreeNode<*> =
-        object : ProjectViewProjectNode(project, settings) {
-          override fun canRepresent(element: Any): Boolean = true
-          override fun getChildren(): Collection<AbstractTreeNode<*>> {
-            return uniFilesRootNodes(project, settings, rootDirs = rootPaths)
-          }
-        }
-
-      override fun getChildElements(element: Any): Array<Any> {
-        val treeNode = element as AbstractTreeNode<*>
-        val elements = treeNode.children
-        elements.forEach { it.setParent(treeNode) }
-        return elements.toTypedArray()
-      }
-
-      override fun isShowExcludedFiles(): Boolean = true
-      override fun isShowLibraryContents(): Boolean = true
-      override fun isUseFileNestingRules(): Boolean = true
-    },
+    rootPaths = rootPaths,
     treeModel = treeModel,
     tree = object : ProjectViewTree(treeModel) {
       override fun toString(): String = "todo title" + " " + super.toString()//todo title

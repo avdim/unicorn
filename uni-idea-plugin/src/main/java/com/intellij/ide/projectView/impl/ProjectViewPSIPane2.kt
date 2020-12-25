@@ -5,22 +5,27 @@ package com.intellij.ide.projectView.impl
 
 import com.intellij.ide.PsiCopyPasteManager
 import com.intellij.ide.projectView.BaseProjectTreeBuilder
+import com.intellij.ide.projectView.ProjectViewSettings
+import com.intellij.ide.projectView.ViewSettings
+import com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode
 import com.intellij.ide.ui.customization.CustomizationUtil
 import com.intellij.ide.util.treeView.AbstractTreeBuilder
+import com.intellij.ide.util.treeView.AbstractTreeNode
 import com.intellij.ide.util.treeView.AbstractTreeStructure
 import com.intellij.ide.util.treeView.AbstractTreeUpdater
 import com.intellij.openapi.actionSystem.ActionPlaces
 import com.intellij.openapi.actionSystem.IdeActions
 import com.intellij.openapi.project.Project
+import com.intellij.openapi.vfs.VirtualFile
 import com.intellij.psi.PsiDirectory
 import com.intellij.ui.ScrollPaneFactory
 import com.intellij.util.EditSourceOnDoubleClickHandler
 import com.intellij.util.EditSourceOnEnterKeyHandler
 import com.intellij.util.ui.tree.TreeUtil
 import ru.tutu.idea.file.FILES_PANE_ID
+import ru.tutu.idea.file.uniFilesRootNodes
 import javax.swing.JComponent
 import javax.swing.ToolTipManager
-import javax.swing.tree.DefaultMutableTreeNode
 import javax.swing.tree.DefaultTreeModel
 import javax.swing.tree.TreePath
 import javax.swing.tree.TreeSelectionModel
@@ -30,7 +35,29 @@ class ProjectViewPSIPane2 constructor(project: Project) : AbstractProjectViewPan
   override fun getTitle(): String = "todo title pane"
   override fun getId(): String = FILES_PANE_ID
 
-  fun createComponent(treeStructure: ProjectAbstractTreeStructureBase, treeModel: DefaultTreeModel, tree: ProjectViewTree): JComponent {
+  fun createComponent(rootPaths: List<VirtualFile>, treeModel: DefaultTreeModel, tree: ProjectViewTree): JComponent {
+    val treeStructure: ProjectAbstractTreeStructureBase =
+      object : ProjectTreeStructure(myProject, FILES_PANE_ID), ProjectViewSettings {
+        override fun createRoot(project: Project, settings: ViewSettings): AbstractTreeNode<*> =
+          object : ProjectViewProjectNode(project, settings) {
+            override fun canRepresent(element: Any): Boolean = true
+            override fun getChildren(): Collection<AbstractTreeNode<*>> {
+              return uniFilesRootNodes(project, settings, rootDirs = rootPaths)
+            }
+          }
+
+        override fun getChildElements(element: Any): Array<Any> {
+          val treeNode = element as AbstractTreeNode<*>
+          val elements = treeNode.children
+          elements.forEach { it.setParent(treeNode) }
+          return elements.toTypedArray()
+        }
+
+        override fun isShowExcludedFiles(): Boolean = true
+        override fun isShowLibraryContents(): Boolean = true
+        override fun isUseFileNestingRules(): Boolean = true
+      }
+
     myTree = tree
     enableDnD()
     myTreeStructure = treeStructure
