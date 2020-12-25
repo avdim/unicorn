@@ -91,23 +91,6 @@ public abstract class AbstractProjectViewPane2 implements DataProvider, Disposab
 
   protected AbstractProjectViewPane2(@NotNull Project project) {
     myProject = project;
-    ProblemListener problemListener = new ProblemListener() {
-      @Override
-      public void problemsAppeared(@NotNull VirtualFile file) {
-        queueUpdateByProblem();
-      }
-
-      @Override
-      public void problemsChanged(@NotNull VirtualFile file) {
-        queueUpdateByProblem();
-      }
-
-      @Override
-      public void problemsDisappeared(@NotNull VirtualFile file) {
-        queueUpdateByProblem();
-      }
-    };
-    project.getMessageBus().connect(this).subscribe(ProblemListener.TOPIC, problemListener);
     Disposer.register(project, this);
   }
 
