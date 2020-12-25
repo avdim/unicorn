@@ -80,10 +80,7 @@ private fun _createUniFilesComponent(
 //  viewPane.restoreExpandedPaths()
   val viewPaneComponent = viewPane.createComponent(
     rootPaths = rootPaths
-  ).also {
-//      UIUtil.removeScrollBorder(it)
-    ScrollPaneFactory.createScrollPane(it, false)
-  }
+  )
   viewPane.tree.addSelectionListener {
     selectionListener(it)
   }
