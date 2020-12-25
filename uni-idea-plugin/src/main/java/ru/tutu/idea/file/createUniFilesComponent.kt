@@ -78,16 +78,8 @@ private fun _createUniFilesComponent(
     return if (descriptor is AbstractTreeNode<*>) descriptor.value else descriptor.element
   }
 //  viewPane.restoreExpandedPaths()
-  val treeModel = DefaultTreeModel(DefaultMutableTreeNode(null))
   val viewPaneComponent = viewPane.createComponent(
-    rootPaths = rootPaths,
-    treeModel = treeModel,
-    tree = object : ProjectViewTree(treeModel) {
-      override fun toString(): String = "todo title" + " " + super.toString()//todo title
-      override fun setFont(font: Font) {
-        super.setFont(font.deriveFont(font.size /*+ 3f*/))
-      }
-    },
+    rootPaths = rootPaths
   ).also {
 //      UIUtil.removeScrollBorder(it)
     ScrollPaneFactory.createScrollPane(it, false)

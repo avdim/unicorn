@@ -24,8 +24,10 @@ import com.intellij.util.EditSourceOnEnterKeyHandler
 import com.intellij.util.ui.tree.TreeUtil
 import ru.tutu.idea.file.FILES_PANE_ID
 import ru.tutu.idea.file.uniFilesRootNodes
+import java.awt.Font
 import javax.swing.JComponent
 import javax.swing.ToolTipManager
+import javax.swing.tree.DefaultMutableTreeNode
 import javax.swing.tree.DefaultTreeModel
 import javax.swing.tree.TreePath
 import javax.swing.tree.TreeSelectionModel
@@ -35,7 +37,15 @@ class ProjectViewPSIPane2 constructor(project: Project) : AbstractProjectViewPan
   override fun getTitle(): String = "todo title pane"
   override fun getId(): String = FILES_PANE_ID
 
-  fun createComponent(rootPaths: List<VirtualFile>, treeModel: DefaultTreeModel, tree: ProjectViewTree): JComponent {
+  fun createComponent(rootPaths: List<VirtualFile>): JComponent {
+    val treeModel = DefaultTreeModel(DefaultMutableTreeNode(null))
+    val tree: ProjectViewTree =
+      object : ProjectViewTree(treeModel) {
+        override fun toString(): String = "todo title" + " " + super.toString()//todo title
+        override fun setFont(font: Font) {
+          super.setFont(font.deriveFont(font.size /*+ 3f*/))
+        }
+      }
     val treeStructure: ProjectAbstractTreeStructureBase =
       object : ProjectTreeStructure(myProject, FILES_PANE_ID), ProjectViewSettings {
         override fun createRoot(project: Project, settings: ViewSettings): AbstractTreeNode<*> =
