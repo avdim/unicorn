@@ -66,18 +66,18 @@ import java.util.function.Predicate;
 
 @SuppressWarnings("UnstableApiUsage")
 public abstract class AbstractProjectViewPane2 {
-  private static final Logger LOG = Logger.getInstance(AbstractProjectViewPane2.class);
+  public static final Logger LOG = Logger.getInstance(AbstractProjectViewPane2.class);
 
-  protected final @NotNull Project myProject;
-  private final Disposable fileManagerDisposable;
-  protected DnDAwareTree myTree;
-  protected ProjectAbstractTreeStructureBase myTreeStructure;
-  private AbstractTreeBuilder myTreeBuilder;
-  private TreeExpander myTreeExpander;
-  private DnDTarget myDropTarget;
-  private DnDSource myDragSource;
+  public final @NotNull Project myProject;
+  public final Disposable fileManagerDisposable;
+  public DnDAwareTree myTree;
+  public ProjectAbstractTreeStructureBase myTreeStructure;
+  public AbstractTreeBuilder myTreeBuilder;
+  public TreeExpander myTreeExpander;
+  public DnDTarget myDropTarget;
+  public DnDSource myDragSource;
 
-  protected AbstractProjectViewPane2(@NotNull Project project) {
+  public AbstractProjectViewPane2(@NotNull Project project) {
     myProject = project;
     Disposable fileManagerDisposable = new Disposable() {
       @Override
@@ -106,7 +106,7 @@ public abstract class AbstractProjectViewPane2 {
    * @deprecated unused
    */
   @Deprecated
-  protected final void fireTreeChangeListener() {
+  public final void fireTreeChangeListener() {
   }
 
   public abstract @NotNull @Nls(capitalization = Nls.Capitalization.Title) String getTitle();
@@ -123,14 +123,14 @@ public abstract class AbstractProjectViewPane2 {
   @NotNull
   @Deprecated
   @ApiStatus.ScheduledForRemoval(inVersion = "2020.2")
-  protected ToggleAction createFlattenModulesAction(@NotNull BooleanSupplier isApplicable) {
+  public ToggleAction createFlattenModulesAction(@NotNull BooleanSupplier isApplicable) {
     return new FlattenModulesToggleAction(myProject, () -> isApplicable.getAsBoolean() && ProjectView.getInstance(myProject).isShowModules(getId()),
                                           () -> ProjectView.getInstance(myProject).isFlattenModules(getId()),
                                           value -> ProjectView.getInstance(myProject).setFlattenModules(getId(), value));
   }
 
   @NotNull
-  protected <T extends NodeDescriptor<?>> List<T> getSelectedNodes(@NotNull Class<T> nodeClass) {
+  public <T extends NodeDescriptor<?>> List<T> getSelectedNodes(@NotNull Class<T> nodeClass) {
     TreePath[] paths = getSelectionPaths();
     if (paths == null) {
       return Collections.emptyList();
@@ -227,7 +227,7 @@ public abstract class AbstractProjectViewPane2 {
   }
 
   @Nullable
-  protected Module getNodeModule(@Nullable final Object element) {
+  public Module getNodeModule(@Nullable final Object element) {
     if (element instanceof PsiElement) {
       PsiElement psiElement = (PsiElement)element;
       return ModuleUtilCore.findModuleForPsiElement(psiElement);
@@ -259,7 +259,7 @@ public abstract class AbstractProjectViewPane2 {
 
   /** @deprecated use {@link AbstractProjectViewPane2#getValueFromNode(Object)} **/
   @Deprecated
-  protected Object exhumeElementFromNode(DefaultMutableTreeNode node) {
+  public Object exhumeElementFromNode(DefaultMutableTreeNode node) {
     return getValueFromNode(node);
   }
 
@@ -297,7 +297,7 @@ public abstract class AbstractProjectViewPane2 {
     return expander;
   }
 
-  protected @NotNull TreeExpander createTreeExpander() {
+  public @NotNull TreeExpander createTreeExpander() {
     return new DefaultTreeExpander(this::getTree) {
       private boolean isExpandAllAllowed() {
         JTree tree = getTree();
@@ -316,14 +316,14 @@ public abstract class AbstractProjectViewPane2 {
       }
 
       @Override
-      protected void collapseAll(@NotNull JTree tree, boolean strict, int keepSelectionLevel) {
+      public void collapseAll(@NotNull JTree tree, boolean strict, int keepSelectionLevel) {
         super.collapseAll(tree, false, keepSelectionLevel);
       }
     };
   }
 
 
-  protected @NotNull Comparator<NodeDescriptor<?>> createComparator() {
+  public @NotNull Comparator<NodeDescriptor<?>> createComparator() {
     return new GroupByTypeComparator(myProject, getId());
   }
 
@@ -331,7 +331,7 @@ public abstract class AbstractProjectViewPane2 {
     installComparator(treeBuilder, createComparator());
   }
 
-  protected void installComparator(AbstractTreeBuilder builder, @NotNull Comparator<? super NodeDescriptor<?>> comparator) {
+  public void installComparator(AbstractTreeBuilder builder, @NotNull Comparator<? super NodeDescriptor<?>> comparator) {
     if (builder != null) {
       builder.setNodeDescriptorComparator(comparator);
     }
@@ -404,7 +404,7 @@ public abstract class AbstractProjectViewPane2 {
     return PsiDirectory.EMPTY_ARRAY;
   }
 
-  protected PsiDirectory @NotNull [] getSelectedDirectoriesInAmbiguousCase(Object userObject) {
+  public PsiDirectory @NotNull [] getSelectedDirectoriesInAmbiguousCase(Object userObject) {
     if (userObject instanceof AbstractModuleNode) {
       final Module module = ((AbstractModuleNode)userObject).getValue();
       if (module != null && !module.isDisposed()) {
@@ -435,7 +435,7 @@ public abstract class AbstractProjectViewPane2 {
 
   // Drag'n'Drop stuff
 
-  protected void enableDnD() {
+  public void enableDnD() {
     if (!ApplicationManager.getApplication().isHeadlessEnvironment()) {
       myDropTarget = new ProjectViewDropTarget2(myTree, myProject) {
         @Nullable
@@ -469,9 +469,9 @@ public abstract class AbstractProjectViewPane2 {
     }
   }
 
-  protected void beforeDnDUpdate() { }
+  public void beforeDnDUpdate() { }
 
-  protected void beforeDnDLeave() { }
+  public void beforeDnDLeave() { }
 
   public void setTreeBuilder(final AbstractTreeBuilder treeBuilder) {
     if (treeBuilder != null) {
