@@ -76,6 +76,7 @@ fun createUniFilesComponent(
   selectionListener: (VirtualFile) -> Unit = {}
 ): JComponent = _createUniFilesComponent(project, rootPaths.map { virtualFile(it) }, selectionListener)
 
+@Suppress("DEPRECATION")
 private fun _createUniFilesComponent(
   project: Project,
   rootPaths: List<VirtualFile>,
@@ -123,10 +124,8 @@ private fun _createUniFilesComponent(
   var myDropTarget: DnDTarget? = null
   var myDragSource: DnDSource? = null
 
-  val myTreeStructure = treeStructure
-
   fun getSelectionPaths(): Array<TreePath>? {
-    return myTree.getSelectionPaths()
+    return myTree.selectionPaths
   }
 
   fun getSelectedElements(): Array<Any> {
@@ -138,10 +137,10 @@ private fun _createUniFilesComponent(
   }
 
   fun <T : NodeDescriptor<*>> getSelectedNodes(nodeClass: Class<T>): List<T> {
-    val paths: Array<out TreePath> = getSelectionPaths() ?: return emptyList<T>()
+    val paths: Array<out TreePath> = getSelectionPaths() ?: return emptyList()
     val result = ArrayList<T>()
     for (path in paths) {
-      val userObject = TreeUtil.getLastUserObject<T>(nodeClass, path)
+      val userObject = TreeUtil.getLastUserObject(nodeClass, path)
       if (userObject != null) {
         result.add(userObject)
       }
@@ -153,17 +152,16 @@ private fun _createUniFilesComponent(
     if (PlatformDataKeys.TREE_EXPANDER.`is`(dataId)) return createTreeExpander(myTree)//todo lazy cache
 
     val nodes = getSelectedNodes(AbstractTreeNode::class.java)
-    val data = myTreeStructure.getDataFromProviders(nodes, dataId)
+    val data = treeStructure.getDataFromProviders(nodes, dataId)
     if (data != null) {
       return data
     }
 
     if (CommonDataKeys.NAVIGATABLE_ARRAY.`is`(dataId)) {
-      val paths = getSelectionPaths()
-      if (paths == null) return null
+      val paths = getSelectionPaths() ?: return null
       val navigatables = ArrayList<Navigatable>()
       for (path in paths) {
-        val node = path.getLastPathComponent()
+        val node = path.lastPathComponent
         val userObject = TreeUtil.getUserObject(node)
         if (userObject is Navigatable) {
           navigatables.add(userObject)
@@ -171,14 +169,13 @@ private fun _createUniFilesComponent(
           navigatables.add(node)
         }
       }
-      return if (navigatables.isEmpty()) null else navigatables.toTypedArray<Navigatable>()
+      return if (navigatables.isEmpty()) null else navigatables.toTypedArray()
     }
     return null
   }
 
   fun getSelectedPSIElements(): Array<PsiElement> {
-    val paths = getSelectionPaths()
-    if (paths == null) return PsiElement.EMPTY_ARRAY
+    val paths = getSelectionPaths() ?: return emptyArray()
     val result = ArrayList<PsiElement>()
     for (path in paths) {
       result.addAll(JavaHelpers.getElementsFromNode(project, path.lastPathComponent))
@@ -217,13 +214,13 @@ private fun _createUniFilesComponent(
   fun getSelectedDirectories(): Array<PsiDirectory> {
     val directories = ArrayList<PsiDirectory>()
     for (node in getSelectedNodes(PsiDirectoryNode::class.java)) {
-      var directory: PsiDirectory? = node.getValue()
+      var directory: PsiDirectory? = node.value
       if (directory != null) {
         directories.add(directory)
-        val parentValue = node.getParent().getValue()
+        val parentValue = node.parent.value
         if (parentValue is PsiDirectory && Registry.`is`("projectView.choose.directory.on.compacted.middle.packages")) {
           while (true) {
-            directory = directory!!.getParentDirectory()
+            directory = directory!!.parentDirectory
             if (directory == null || directory == parentValue) {
               break
             }
@@ -274,21 +271,8 @@ private fun _createUniFilesComponent(
     return PsiDirectory.EMPTY_ARRAY
   }
 
-  /**
-   * @see TreeUtil.getUserObject
-   */
-  @Deprecated("AbstractProjectViewPane#getSelectedPath")
-  fun getSelectedNode(): DefaultMutableTreeNode? {
-    val path = getSelectedPath()
-    return if (path == null) null else ObjectUtils.tryCast<DefaultMutableTreeNode>(
-      path.getLastPathComponent(),
-      DefaultMutableTreeNode::class.java
-    )
-  }
-
-
   fun getFirstElementFromNode(node: Any?): PsiElement? {
-    return ContainerUtil.getFirstItem<PsiElement>(JavaHelpers.getElementsFromNode(project, node))
+    return ContainerUtil.getFirstItem(JavaHelpers.getElementsFromNode(project, node))
   }
 
   fun getNodeModule(element: Any?): Module? {
@@ -300,48 +284,47 @@ private fun _createUniFilesComponent(
   }
 
   class MyDragSource : DnDSource {
-    public override fun canStartDragging(action: DnDAction, dragOrigin: Point): Boolean {
-      if ((action.getActionId() and DnDConstants.ACTION_COPY_OR_MOVE) == 0) return false
+    override fun canStartDragging(action: DnDAction, dragOrigin: Point): Boolean {
+      if ((action.actionId and DnDConstants.ACTION_COPY_OR_MOVE) == 0) return false
       val elements = getSelectedElements()
       val psiElements = getSelectedPSIElements()
       val dataContext = DataManager.getInstance().getDataContext(myTree)
-      return psiElements.size > 0 || canDragElements(elements, dataContext, action.getActionId())
+      return psiElements.isNotEmpty() || canDragElements(elements, dataContext, action.actionId)
     }
 
-    public override fun startDragging(action: DnDAction, dragOrigin: Point): DnDDragStartBean {
+    override fun startDragging(action: DnDAction, dragOrigin: Point): DnDDragStartBean {
       val psiElements = getSelectedPSIElements()
       val paths = getSelectionPaths()
       return DnDDragStartBean(object : TransferableWrapper {
-        public override fun asFileList(): List<File>? {
+        override fun asFileList(): List<File>? {
           return PsiCopyPasteManager.asFileList(psiElements)
         }
 
-        public override fun getTreePaths(): Array<TreePath> {
+        override fun getTreePaths(): Array<TreePath> {
           return paths ?: emptyArray()
         }
 
-        public override fun getTreeNodes(): Array<TreeNode>? {
-          return TreePathUtil.toTreeNodes(*getTreePaths())
+        override fun getTreeNodes(): Array<TreeNode>? {
+          return TreePathUtil.toTreeNodes(*treePaths)
         }
 
-        public override fun getPsiElements(): Array<PsiElement>? {
+        override fun getPsiElements(): Array<PsiElement> {
           return psiElements
         }
       })
     }
 
     // copy/paste from com.intellij.ide.dnd.aware.DnDAwareTree.createDragImage
-    public override fun createDraggedImage(action: DnDAction, dragOrigin: Point, bean: DnDDragStartBean): Pair<Image, Point>? {
-      val paths = getSelectionPaths()
-      if (paths == null) return null
+    override fun createDraggedImage(action: DnDAction, dragOrigin: Point, bean: DnDDragStartBean): Pair<Image, Point>? {
+      val paths = getSelectionPaths() ?: return null
 
       val toRender = ArrayList<Trinity<String, Icon, VirtualFile>>()
       getSelectionPaths()?.forEach { path ->
         val iconAndText = getIconAndText(path)
         toRender.add(
-          Trinity.create<String, Icon, VirtualFile>(
+          Trinity.create(
             iconAndText.second, iconAndText.first,
-            PsiCopyPasteManager.asVirtualFile(getFirstElementFromNode(path.getLastPathComponent()))
+            PsiCopyPasteManager.asVirtualFile(getFirstElementFromNode(path.lastPathComponent))
           )
         )
       }
@@ -366,11 +349,11 @@ private fun _createUniFilesComponent(
           break
         }
       }
-      panel.setSize(panel.getPreferredSize())
+      panel.size = panel.preferredSize
       panel.doLayout()
 
-      val image = ImageUtil.createImage(panel.getWidth(), panel.getHeight(), BufferedImage.TYPE_INT_ARGB)
-      val g2 = image.getGraphics() as Graphics2D
+      val image = ImageUtil.createImage(panel.width, panel.height, BufferedImage.TYPE_INT_ARGB)
+      val g2 = image.graphics as Graphics2D
       panel.paint(g2)
       g2.dispose()
 
@@ -379,39 +362,39 @@ private fun _createUniFilesComponent(
 
     fun getIconAndText(path: TreePath): Pair<Icon, String> {
       val `object` = TreeUtil.getLastUserObject(path)
-      val component = myTree.getCellRenderer()
+      val component = myTree.cellRenderer
         .getTreeCellRendererComponent(myTree, `object`, false, false, true, myTree.getRowForPath(path), false)
       val icon = arrayOfNulls<Icon>(1)
       val text = arrayOfNulls<String>(1)
-      ObjectUtils.consumeIfCast<ProjectViewRenderer>(
+      ObjectUtils.consumeIfCast(
         component,
-        ProjectViewRenderer::class.java,
-        { renderer -> icon[0] = renderer.getIcon() })
-      ObjectUtils.consumeIfCast<SimpleColoredComponent>(
+        ProjectViewRenderer::class.java
+      ) { renderer ->
+        icon[0] = renderer.icon
+      }
+      ObjectUtils.consumeIfCast(
         component,
-        SimpleColoredComponent::class.java,
-        { renderer -> text[0] = renderer.getCharSequence(true).toString() })
-      return Pair.create<Icon, String>(icon[0], text[0])
+        SimpleColoredComponent::class.java
+      ) { renderer ->
+        text[0] = renderer.getCharSequence(true).toString()
+      }
+      return Pair.create(icon[0], text[0])
     }
   }
 
 
   fun enableDnD() {
-    if (!ApplicationManager.getApplication().isHeadlessEnvironment()) {
+    if (!ApplicationManager.getApplication().isHeadlessEnvironment) {
       myDropTarget = object : ProjectViewDropTarget2(myTree, project) {
         override fun getPsiElement(path: TreePath): PsiElement? {
-          return getFirstElementFromNode(path.getLastPathComponent())
+          return getFirstElementFromNode(path.lastPathComponent)
         }
 
         override fun getModule(element: PsiElement): Module? {
           return getNodeModule(element)
         }
 
-        public override fun cleanUpOnLeave() {
-          super.cleanUpOnLeave()
-        }
-
-        public override fun update(event: DnDEvent): Boolean {
+        override fun update(event: DnDEvent): Boolean {
           return super.update(event)
         }
       }
