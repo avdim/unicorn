@@ -32,8 +32,6 @@ import com.intellij.ui.render.RenderingUtil;
 import com.intellij.ui.tabs.impl.SingleHeightTabs;
 import com.intellij.ui.tree.AsyncTreeModel;
 import com.intellij.ui.tree.TreePathUtil;
-import com.intellij.ui.tree.TreeVisitor;
-import com.intellij.ui.tree.project.ProjectFileNode;
 import com.intellij.util.ArrayUtil;
 import com.intellij.util.ObjectUtils;
 import com.intellij.util.concurrency.InvokerSupplier;
@@ -46,9 +44,6 @@ import com.intellij.util.ui.UIUtil;
 import com.intellij.util.ui.tree.TreeUtil;
 import com.unicorn.Uni;
 import org.jetbrains.annotations.*;
-import org.jetbrains.concurrency.Promise;
-import org.jetbrains.concurrency.Promises;
-
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
 import javax.swing.tree.DefaultMutableTreeNode;
@@ -71,7 +66,6 @@ public abstract class AbstractProjectViewPane2 {
   public final Disposable fileManagerDisposable;
   public DnDAwareTree myTree;
   public ProjectAbstractTreeStructureBase myTreeStructure;
-  public AbstractTreeBuilder myTreeBuilder;
   public TreeExpander myTreeExpander;
   public DnDTarget myDropTarget;
   public DnDSource myDragSource;
@@ -89,7 +83,6 @@ public abstract class AbstractProjectViewPane2 {
           DnDManager.getInstance().unregisterSource(myDragSource, myTree);
           myDragSource = null;
         }
-        setTreeBuilder(null);
         myTree = null;
         myTreeStructure = null;
       }
@@ -283,10 +276,6 @@ public abstract class AbstractProjectViewPane2 {
     return element;
   }
 
-  public final AbstractTreeBuilder getTreeBuilder() {
-    return myTreeBuilder;
-  }
-
   private @NotNull TreeExpander getTreeExpander() {
     TreeExpander expander = myTreeExpander;
     if (expander == null) {
@@ -471,15 +460,6 @@ public abstract class AbstractProjectViewPane2 {
   public void beforeDnDUpdate() { }
 
   public void beforeDnDLeave() { }
-
-  public void setTreeBuilder(final AbstractTreeBuilder treeBuilder) {
-    if (treeBuilder != null) {
-      Disposer.register(fileManagerDisposable, treeBuilder);
-// needs refactoring for project view first
-//      treeBuilder.setCanYieldUpdate(true);
-    }
-    myTreeBuilder = treeBuilder;
-  }
 
   private final class MyDragSource implements DnDSource {
     @Override
