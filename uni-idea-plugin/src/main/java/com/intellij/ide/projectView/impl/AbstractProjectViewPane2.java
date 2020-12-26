@@ -1,48 +1,32 @@
 // Copyright 2000-2020 JetBrains s.r.o. Use of this source code is governed by the Apache 2.0 license that can be found in the LICENSE file.
 package com.intellij.ide.projectView.impl;
 
-import com.intellij.ide.DefaultTreeExpander;
-import com.intellij.ide.TreeExpander;
 import com.intellij.ide.dnd.DnDManager;
 import com.intellij.ide.dnd.DnDSource;
 import com.intellij.ide.dnd.DnDTarget;
 import com.intellij.ide.dnd.aware.DnDAwareTree;
-import com.intellij.ide.impl.FlattenModulesToggleAction;
-import com.intellij.ide.projectView.ProjectView;
 import com.intellij.ide.projectView.RootsProvider;
-import com.intellij.ide.util.treeView.AbstractTreeBuilder;
-import com.intellij.ide.util.treeView.NodeDescriptor;
 import com.intellij.openapi.Disposable;
-import com.intellij.openapi.actionSystem.ToggleAction;
 import com.intellij.openapi.module.Module;
 import com.intellij.openapi.module.ModuleUtilCore;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.util.Disposer;
-import com.intellij.openapi.util.registry.Registry;
 import com.intellij.openapi.vfs.VirtualFile;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.util.PsiUtilCore;
-import com.intellij.ui.tree.AsyncTreeModel;
 import com.intellij.util.ArrayUtil;
-import com.intellij.util.concurrency.InvokerSupplier;
 import com.intellij.util.containers.ContainerUtil;
 import com.intellij.util.containers.JBIterable;
 import com.intellij.util.ui.tree.TreeUtil;
 import com.unicorn.Uni;
-import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import javax.swing.*;
-import javax.swing.tree.DefaultMutableTreeNode;
-import javax.swing.tree.TreeModel;
-import javax.swing.tree.TreeNode;
 import javax.swing.tree.TreePath;
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.Comparator;
 import java.util.List;
-import java.util.function.BooleanSupplier;
 
 import static com.intellij.ide.projectView.impl.HelpersKt.extractValueFromNode;
 
@@ -75,22 +59,8 @@ public abstract class AbstractProjectViewPane2 {
     );
   }
 
-  public abstract @NotNull String getId();
-
   public TreePath[] getSelectionPaths() {
     return myTree.getSelectionPaths();
-  }
-
-  /**
-   * @deprecated added in {@link ProjectViewImpl} automatically
-   */
-  @NotNull
-  @Deprecated
-  @ApiStatus.ScheduledForRemoval(inVersion = "2020.2")
-  public ToggleAction createFlattenModulesAction(@NotNull BooleanSupplier isApplicable) {
-    return new FlattenModulesToggleAction(myProject, () -> isApplicable.getAsBoolean() && ProjectView.getInstance(myProject).isShowModules(getId()),
-                                          () -> ProjectView.getInstance(myProject).isFlattenModules(getId()),
-                                          value -> ProjectView.getInstance(myProject).setFlattenModules(getId(), value));
   }
 
   public final TreePath getSelectedPath() {
@@ -113,13 +83,6 @@ public abstract class AbstractProjectViewPane2 {
       .filter(PsiElement.class)
       .filter(PsiElement::isValid)
       .toList();
-  }
-
-  /** @deprecated use {@link AbstractProjectViewPane2#getElementsFromNode(Object)}**/
-  @Deprecated
-  @Nullable
-  public PsiElement getPSIElementFromNode(@Nullable TreeNode node) {
-    return getFirstElementFromNode(node);
   }
 
   @Nullable
@@ -151,37 +114,6 @@ public abstract class AbstractProjectViewPane2 {
   @Nullable
   public Object getValueFromNode(@Nullable Object node) {
     return extractValueFromNode(node);
-  }
-
-  /** @deprecated use {@link AbstractProjectViewPane2#getValueFromNode(Object)} **/
-  @Deprecated
-  public Object exhumeElementFromNode(DefaultMutableTreeNode node) {
-    return getValueFromNode(node);
-  }
-
-  public @NotNull TreeExpander createTreeExpander() {
-    return new DefaultTreeExpander(this::getTree) {
-      public boolean isExpandAllAllowed() {
-        JTree tree = getTree();
-        TreeModel model = tree.getModel();
-        return model == null || model instanceof AsyncTreeModel || model instanceof InvokerSupplier;
-      }
-
-      @Override
-      public boolean isExpandAllVisible() {
-        return isExpandAllAllowed() && Registry.is("ide.project.view.expand.all.action.visible");
-      }
-
-      @Override
-      public boolean canExpand() {
-        return isExpandAllAllowed() && super.canExpand();
-      }
-
-      @Override
-      public void collapseAll(@NotNull JTree tree, boolean strict, int keepSelectionLevel) {
-        super.collapseAll(tree, false, keepSelectionLevel);
-      }
-    };
   }
 
   @NotNull public JTree getTree() {

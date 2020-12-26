@@ -64,8 +64,6 @@ import javax.swing.tree.*
 
 class ProjectViewPSIPane2 constructor(project: Project) : AbstractProjectViewPane2(project) {
 
-  override fun getId(): String = FILES_PANE_ID
-
   fun createComponent(rootPaths: List<VirtualFile>): JComponent {
     val treeModel = DefaultTreeModel(DefaultMutableTreeNode(null))
     val tree: ProjectViewTree =
@@ -110,7 +108,7 @@ class ProjectViewPSIPane2 constructor(project: Project) : AbstractProjectViewPan
       ) {
         override fun createUpdater() = createTreeUpdater(this, treeStructure)
       }
-    treeBuilder.setNodeDescriptorComparator(GroupByTypeComparator(myProject, id))
+    treeBuilder.setNodeDescriptorComparator(GroupByTypeComparator(myProject, FILES_PANE_ID))
     initTree()
     return ScrollPaneFactory.createScrollPane(myTree)
   }
@@ -134,7 +132,7 @@ class ProjectViewPSIPane2 constructor(project: Project) : AbstractProjectViewPan
   }
 
   fun getData(dataId: String): Any? {
-    if (PlatformDataKeys.TREE_EXPANDER.`is`(dataId)) return createTreeExpander()//todo lazy cache
+    if (PlatformDataKeys.TREE_EXPANDER.`is`(dataId)) return createTreeExpander(tree)//todo lazy cache
 
     val nodes = getSelectedNodes(AbstractTreeNode::class.java)
     val data = myTreeStructure.getDataFromProviders(nodes, dataId)
