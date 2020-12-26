@@ -34,7 +34,6 @@ import javax.swing.tree.TreeSelectionModel
 
 class ProjectViewPSIPane2 constructor(project: Project) : AbstractProjectViewPane2(project) {
 
-  override fun getTitle(): String = "todo title pane"
   override fun getId(): String = FILES_PANE_ID
 
   fun createComponent(rootPaths: List<VirtualFile>): JComponent {

@@ -60,10 +60,7 @@ import java.util.function.BooleanSupplier;
 
 @SuppressWarnings("UnstableApiUsage")
 public abstract class AbstractProjectViewPane2 {
-  public static final Logger LOG = Logger.getInstance(AbstractProjectViewPane2.class);
-
   public final @NotNull Project myProject;
-  public final Disposable fileManagerDisposable;
   public DnDAwareTree myTree;
   public ProjectAbstractTreeStructureBase myTreeStructure;
   public TreeExpander myTreeExpander;
@@ -91,17 +88,7 @@ public abstract class AbstractProjectViewPane2 {
       Uni.INSTANCE,
       fileManagerDisposable
     );
-    this.fileManagerDisposable = fileManagerDisposable;
   }
-
-  /**
-   * @deprecated unused
-   */
-  @Deprecated
-  public final void fireTreeChangeListener() {
-  }
-
-  public abstract @NotNull @Nls(capitalization = Nls.Capitalization.Title) String getTitle();
 
   public abstract @NotNull String getId();
 
@@ -440,13 +427,11 @@ public abstract class AbstractProjectViewPane2 {
 
         @Override
         public void cleanUpOnLeave() {
-          beforeDnDLeave();
           super.cleanUpOnLeave();
         }
 
         @Override
         public boolean update(DnDEvent event) {
-          beforeDnDUpdate();
           return super.update(event);
         }
       };
