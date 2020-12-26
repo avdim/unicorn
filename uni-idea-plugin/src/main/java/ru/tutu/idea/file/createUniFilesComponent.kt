@@ -361,9 +361,16 @@ private fun _createUniFilesComponent(
     }
 
     fun getIconAndText(path: TreePath): Pair<Icon, String> {
-      val `object` = TreeUtil.getLastUserObject(path)
-      val component = myTree.cellRenderer
-        .getTreeCellRendererComponent(myTree, `object`, false, false, true, myTree.getRowForPath(path), false)
+      val obj = TreeUtil.getLastUserObject(path)
+      val component = myTree.cellRenderer.getTreeCellRendererComponent(
+        myTree,
+        obj,
+        false,
+        false,
+        true,
+        myTree.getRowForPath(path),
+        false
+      )
       val icon = arrayOfNulls<Icon>(1)
       val text = arrayOfNulls<String>(1)
       ObjectUtils.consumeIfCast(
