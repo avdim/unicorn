@@ -62,7 +62,6 @@ import java.io.File;
 import java.util.List;
 import java.util.*;
 import java.util.function.BooleanSupplier;
-import java.util.function.Predicate;
 
 @SuppressWarnings("UnstableApiUsage")
 public abstract class AbstractProjectViewPane2 {
@@ -637,28 +636,14 @@ public abstract class AbstractProjectViewPane2 {
 
   @NotNull
   public static TreeVisitor createVisitor(@NotNull VirtualFile file) {
-    return createVisitor(null, file);
+    return new ProjectViewFileVisitor(file, null);
   }
 
   @Nullable
   public static TreeVisitor createVisitor(@NotNull PsiElement element) {
-    return createVisitor(element, null);
-  }
-
-  @Nullable
-  public static TreeVisitor createVisitor(@Nullable PsiElement element, @Nullable VirtualFile file) {
-    return createVisitor(element, file, null);
-  }
-
-  @Nullable
-  static TreeVisitor createVisitor(@Nullable PsiElement element, @Nullable VirtualFile file, @Nullable List<? super TreePath> collector) {
-    Predicate<? super TreePath> predicate = collector == null ? null : path -> {
-      collector.add(path);
-      return false;
-    };
-    if (element != null && element.isValid()) return new ProjectViewNodeVisitor(element, file, predicate);
-    if (file != null) return new ProjectViewFileVisitor(file, predicate);
-    LOG.warn(element != null ? "element invalidated: " + element : "cannot create visitor without element and/or file");
+    if (element.isValid()) return new ProjectViewNodeVisitor(element, null, null);
+    LOG.warn("element invalidated: " + element);
     return null;
   }
+
 }
