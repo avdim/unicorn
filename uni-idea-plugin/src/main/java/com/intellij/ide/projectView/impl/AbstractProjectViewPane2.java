@@ -24,7 +24,6 @@ import com.intellij.openapi.util.*;
 import com.intellij.openapi.util.registry.Registry;
 import com.intellij.openapi.vfs.VirtualFile;
 import com.intellij.pom.Navigatable;
-import com.intellij.problems.ProblemListener;
 import com.intellij.psi.*;
 import com.intellij.psi.util.PsiUtilCore;
 import com.intellij.refactoring.move.MoveHandler;
@@ -67,7 +66,7 @@ import java.util.function.BooleanSupplier;
 import java.util.function.Predicate;
 
 @SuppressWarnings("UnstableApiUsage")
-public abstract class AbstractProjectViewPane2 implements DataProvider, BusyObject {
+public abstract class AbstractProjectViewPane2 implements DataProvider {
   private static final Logger LOG = Logger.getInstance(AbstractProjectViewPane2.class);
 
   protected final @NotNull Project myProject;
@@ -647,14 +646,6 @@ public abstract class AbstractProjectViewPane2 implements DataProvider, BusyObje
       }
     }
     return dragAction == DnDConstants.ACTION_MOVE && MoveHandler.canMove(dataContext);
-  }
-
-  @NotNull
-  @Override
-  public ActionCallback getReady(@NotNull Object requestor) {
-    if (myTreeBuilder == null) return ActionCallback.DONE;
-    if (myTreeBuilder.isDisposed()) return ActionCallback.REJECTED;
-    return myTreeBuilder.getUi().getReady(requestor);
   }
 
   /**
