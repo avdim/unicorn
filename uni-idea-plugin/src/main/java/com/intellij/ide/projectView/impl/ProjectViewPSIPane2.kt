@@ -3,7 +3,10 @@
 
 package com.intellij.ide.projectView.impl
 
+import com.intellij.ide.DataManager
+import com.intellij.ide.IdeBundle
 import com.intellij.ide.PsiCopyPasteManager
+import com.intellij.ide.dnd.*
 import com.intellij.ide.projectView.BaseProjectTreeBuilder
 import com.intellij.ide.projectView.ProjectViewSettings
 import com.intellij.ide.projectView.ViewSettings
@@ -16,26 +19,42 @@ import com.intellij.openapi.actionSystem.ActionPlaces
 import com.intellij.openapi.actionSystem.CommonDataKeys
 import com.intellij.openapi.actionSystem.IdeActions
 import com.intellij.openapi.actionSystem.PlatformDataKeys
+import com.intellij.openapi.application.ApplicationManager
+import com.intellij.openapi.module.Module
 import com.intellij.openapi.project.Project
+import com.intellij.openapi.ui.VerticalFlowLayout
+import com.intellij.openapi.util.Pair
+import com.intellij.openapi.util.Trinity
 import com.intellij.openapi.util.registry.Registry
 import com.intellij.openapi.vfs.VirtualFile
 import com.intellij.pom.Navigatable
 import com.intellij.psi.PsiDirectory
 import com.intellij.psi.PsiDirectoryContainer
+import com.intellij.psi.PsiElement
 import com.intellij.ui.ScrollPaneFactory
+import com.intellij.ui.SimpleColoredComponent
+import com.intellij.ui.tree.TreePathUtil
 import com.intellij.util.EditSourceOnDoubleClickHandler
 import com.intellij.util.EditSourceOnEnterKeyHandler
+import com.intellij.util.ObjectUtils
+import com.intellij.util.ui.EmptyIcon
+import com.intellij.util.ui.ImageUtil
 import com.intellij.util.ui.tree.TreeUtil
 import ru.tutu.idea.file.FILES_PANE_ID
 import ru.tutu.idea.file.uniFilesRootNodes
 import java.awt.Font
+import java.awt.Graphics2D
+import java.awt.Image
+import java.awt.Point
+import java.awt.dnd.DnDConstants
+import java.awt.image.BufferedImage
+import java.io.File
 import java.util.*
+import javax.swing.Icon
 import javax.swing.JComponent
+import javax.swing.JPanel
 import javax.swing.ToolTipManager
-import javax.swing.tree.DefaultMutableTreeNode
-import javax.swing.tree.DefaultTreeModel
-import javax.swing.tree.TreePath
-import javax.swing.tree.TreeSelectionModel
+import javax.swing.tree.*
 
 
 class ProjectViewPSIPane2 constructor(project: Project) : AbstractProjectViewPane2(project) {
@@ -206,6 +225,132 @@ class ProjectViewPSIPane2 constructor(project: Project) : AbstractProjectViewPan
       }
     }
     return PsiDirectory.EMPTY_ARRAY
+  }
+
+  /**
+   * @see TreeUtil.getUserObject
+   */
+  @Deprecated("AbstractProjectViewPane#getSelectedPath")
+  fun getSelectedNode(): DefaultMutableTreeNode? {
+    val path = getSelectedPath()
+    return if (path == null) null else ObjectUtils.tryCast<DefaultMutableTreeNode>(
+      path.getLastPathComponent(),
+      DefaultMutableTreeNode::class.java
+    )
+  }
+
+  fun enableDnD() {
+    if (!ApplicationManager.getApplication().isHeadlessEnvironment()) {
+      myDropTarget = object : ProjectViewDropTarget2(myTree, myProject) {
+        protected override fun getPsiElement(path: TreePath): PsiElement? {
+          return getFirstElementFromNode(path.getLastPathComponent())
+        }
+
+        protected override fun getModule(element: PsiElement): Module? {
+          return getNodeModule(element)
+        }
+
+        public override fun cleanUpOnLeave() {
+          super.cleanUpOnLeave()
+        }
+
+        public override fun update(event: DnDEvent): Boolean {
+          return super.update(event)
+        }
+      }
+      myDragSource = MyDragSource()
+      val dndManager = DnDManager.getInstance()
+      dndManager.registerSource(myDragSource!!, myTree)
+      dndManager.registerTarget(myDropTarget, myTree)
+    }
+  }
+
+  inner class MyDragSource : DnDSource {
+    public override fun canStartDragging(action: DnDAction, dragOrigin: Point): Boolean {
+      if ((action.getActionId() and DnDConstants.ACTION_COPY_OR_MOVE) == 0) return false
+      val elements = getSelectedElements()
+      val psiElements = getSelectedPSIElements()
+      val dataContext = DataManager.getInstance().getDataContext(myTree)
+      return psiElements.size > 0 || canDragElements(elements, dataContext, action.getActionId())
+    }
+
+    public override fun startDragging(action: DnDAction, dragOrigin: Point): DnDDragStartBean {
+      val psiElements = getSelectedPSIElements()
+      val paths = getSelectionPaths()
+      return DnDDragStartBean(object : TransferableWrapper {
+        public override fun asFileList(): List<File>? {
+          return PsiCopyPasteManager.asFileList(psiElements)
+        }
+
+        public override fun getTreePaths(): Array<TreePath> {
+          return paths
+        }
+
+        public override fun getTreeNodes(): Array<TreeNode>? {
+          return TreePathUtil.toTreeNodes(*getTreePaths())
+        }
+
+        public override fun getPsiElements(): Array<PsiElement>? {
+          return psiElements
+        }
+      })
+    }
+
+    // copy/paste from com.intellij.ide.dnd.aware.DnDAwareTree.createDragImage
+    public override fun createDraggedImage(action: DnDAction, dragOrigin: Point, bean: DnDDragStartBean): Pair<Image, Point>? {
+      val paths = getSelectionPaths()
+      if (paths == null) return null
+
+      val toRender = ArrayList<Trinity<String, Icon, VirtualFile>>()
+      for (path in getSelectionPaths()) {
+        val iconAndText = getIconAndText(path)
+        toRender.add(
+          Trinity.create<String, Icon, VirtualFile>(
+            iconAndText.second, iconAndText.first,
+            PsiCopyPasteManager.asVirtualFile(getFirstElementFromNode(path.getLastPathComponent()))
+          )
+        )
+      }
+
+      var count = 0
+      val panel = JPanel(VerticalFlowLayout(0, 0))
+      val maxItemsToShow = if (toRender.size < 20) toRender.size else 10
+      for (trinity in toRender) {
+        val fileLabel = DragImageLabel(trinity.first, trinity.second, trinity.third)
+        panel.add(fileLabel)
+        count++
+        if (count > maxItemsToShow) {
+          panel.add(DragImageLabel(IdeBundle.message("label.more.files", paths.size - maxItemsToShow), EmptyIcon.ICON_16, null))
+          break
+        }
+      }
+      panel.setSize(panel.getPreferredSize())
+      panel.doLayout()
+
+      val image = ImageUtil.createImage(panel.getWidth(), panel.getHeight(), BufferedImage.TYPE_INT_ARGB)
+      val g2 = image.getGraphics() as Graphics2D
+      panel.paint(g2)
+      g2.dispose()
+
+      return Pair<Image, Point>(image, Point())
+    }
+
+    fun getIconAndText(path: TreePath): Pair<Icon, String> {
+      val `object` = TreeUtil.getLastUserObject(path)
+      val component = getTree().getCellRenderer()
+        .getTreeCellRendererComponent(getTree(), `object`, false, false, true, getTree().getRowForPath(path), false)
+      val icon = arrayOfNulls<Icon>(1)
+      val text = arrayOfNulls<String>(1)
+      ObjectUtils.consumeIfCast<ProjectViewRenderer>(
+        component,
+        ProjectViewRenderer::class.java,
+        { renderer -> icon[0] = renderer.getIcon() })
+      ObjectUtils.consumeIfCast<SimpleColoredComponent>(
+        component,
+        SimpleColoredComponent::class.java,
+        { renderer -> text[0] = renderer.getCharSequence(true).toString() })
+      return Pair.create<Icon, String>(icon[0], text[0])
+    }
   }
 
 }
