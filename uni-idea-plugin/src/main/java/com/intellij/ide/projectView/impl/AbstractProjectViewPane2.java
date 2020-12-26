@@ -14,7 +14,6 @@ import com.intellij.openapi.util.Disposer;
 import com.intellij.openapi.vfs.VirtualFile;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.util.PsiUtilCore;
-import com.intellij.util.ArrayUtil;
 import com.intellij.util.containers.ContainerUtil;
 import com.intellij.util.containers.JBIterable;
 import com.intellij.util.ui.tree.TreeUtil;
@@ -24,11 +23,10 @@ import org.jetbrains.annotations.Nullable;
 
 import javax.swing.*;
 import javax.swing.tree.TreePath;
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-import static com.intellij.ide.projectView.impl.HelpersKt.extractValueFromNode;
+import static com.intellij.ide.projectView.impl.HelpersKt.getValueFromNode;
 
 @SuppressWarnings("UnstableApiUsage")
 public abstract class AbstractProjectViewPane2 {
@@ -92,28 +90,6 @@ public abstract class AbstractProjectViewPane2 {
       return ModuleUtilCore.findModuleForPsiElement(psiElement);
     }
     return null;
-  }
-
-  public final Object @NotNull [] getSelectedElements() {
-    TreePath[] paths = getSelectionPaths();
-    if (paths == null) return PsiElement.EMPTY_ARRAY;
-    ArrayList<Object> list = new ArrayList<>(paths.length);
-    for (TreePath path : paths) {
-      Object lastPathComponent = path.getLastPathComponent();
-      Object element = getValueFromNode(lastPathComponent);
-      if (element instanceof Object[]) {
-        Collections.addAll(list, (Object[])element);
-      }
-      else if (element != null) {
-        list.add(element);
-      }
-    }
-    return ArrayUtil.toObjectArray(list);
-  }
-
-  @Nullable
-  public Object getValueFromNode(@Nullable Object node) {
-    return extractValueFromNode(node);
   }
 
   @NotNull public JTree getTree() {

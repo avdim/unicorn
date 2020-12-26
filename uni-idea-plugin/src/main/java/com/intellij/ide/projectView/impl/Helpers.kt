@@ -30,7 +30,7 @@ fun extractValueFromNode(node: Any?): Any? {
   return element
 }
 
-fun canDragElements(elements: Array<Any?>, dataContext: DataContext, dragAction: Int): Boolean {
+fun canDragElements(elements: Array<Any>, dataContext: DataContext, dragAction: Int): Boolean {
   for (element in elements) {
     if (element is Module) {
       return true
@@ -59,4 +59,8 @@ fun createTreeExpander(treeArg: JTree): TreeExpander {
       super.collapseAll(tree, false, keepSelectionLevel)
     }
   }
+}
+
+fun getValueFromNode(node: Any?): Any? {
+  return extractValueFromNode(node)
 }

@@ -181,15 +181,15 @@ private fun _createUniFilesComponent(
         return selected as? Project
       }
       if (LibraryGroupElement.ARRAY_DATA_KEY.`is`(dataId)) {
-        val selectedElements = viewPane.selectedElements.filterType<LibraryGroupElement>()
+        val selectedElements = viewPane.getSelectedElements().filterType<LibraryGroupElement>()
         return if (selectedElements.isEmpty()) null else selectedElements.toTypedArray()
       }
       if (NamedLibraryElement.ARRAY_DATA_KEY.`is`(dataId)) {
-        val selectedElements = viewPane.selectedElements.filterType<NamedLibraryElement>()
+        val selectedElements = viewPane.getSelectedElements().filterType<NamedLibraryElement>()
         return if (selectedElements.isEmpty()) null else selectedElements.toTypedArray()
       }
       if (PlatformDataKeys.SELECTED_ITEMS.`is`(dataId)) {
-        return viewPane.selectedElements
+        return viewPane.getSelectedElements()
       }
       if (QuickActionProvider.KEY.`is`(dataId)) {
         return this

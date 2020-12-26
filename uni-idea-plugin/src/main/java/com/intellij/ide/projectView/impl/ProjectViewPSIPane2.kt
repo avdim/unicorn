@@ -11,6 +11,7 @@ import com.intellij.ide.projectView.BaseProjectTreeBuilder
 import com.intellij.ide.projectView.ProjectViewNode
 import com.intellij.ide.projectView.ProjectViewSettings
 import com.intellij.ide.projectView.ViewSettings
+import com.intellij.ide.projectView.impl.JavaHelpers.pathsToSelectedElements
 import com.intellij.ide.projectView.impl.nodes.AbstractModuleNode
 import com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode
 import com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode
@@ -304,6 +305,10 @@ class ProjectViewPSIPane2 constructor(project: Project) : AbstractProjectViewPan
       }
     }
     return PsiDirectory.EMPTY_ARRAY
+  }
+
+  fun getSelectedElements(): Array<Any> {
+    return pathsToSelectedElements(getSelectionPaths())
   }
 
   inner class MyDragSource : DnDSource {
