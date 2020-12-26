@@ -74,7 +74,7 @@ private fun _createUniFilesComponent(
   val viewPane = ProjectViewPSIPane2(project)
 
   fun getSelectNodeElement(): Any? {
-    val descriptor = TreeUtil.getLastUserObject(NodeDescriptor::class.java, viewPane.selectedPath) ?: return null
+    val descriptor = TreeUtil.getLastUserObject(NodeDescriptor::class.java, viewPane.getSelectedPath()) ?: return null
     return if (descriptor is AbstractTreeNode<*>) descriptor.value else descriptor.element
   }
 //  viewPane.restoreExpandedPaths()

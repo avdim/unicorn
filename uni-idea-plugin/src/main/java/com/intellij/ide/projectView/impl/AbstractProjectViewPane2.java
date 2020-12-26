@@ -57,18 +57,6 @@ public abstract class AbstractProjectViewPane2 {
     );
   }
 
-  public TreePath[] getSelectionPaths() {
-    return myTree.getSelectionPaths();
-  }
-
-  public final TreePath getSelectedPath() {
-    return TreeUtil.getSelectedPathIfOne(myTree);
-  }
-
-  public @Nullable PsiElement getFirstElementFromNode(@Nullable Object node) {
-    return ContainerUtil.getFirstItem(getElementsFromNode(node));
-  }
-
   @NotNull
   public List<PsiElement> getElementsFromNode(@Nullable Object node) {
     Object value = getValueFromNode(node);

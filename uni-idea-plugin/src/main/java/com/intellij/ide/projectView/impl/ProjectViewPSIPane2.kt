@@ -3,6 +3,7 @@
 
 package com.intellij.ide.projectView.impl
 
+
 import com.intellij.ide.DataManager
 import com.intellij.ide.IdeBundle
 import com.intellij.ide.PsiCopyPasteManager
@@ -43,6 +44,7 @@ import com.intellij.ui.tree.TreePathUtil
 import com.intellij.util.EditSourceOnDoubleClickHandler
 import com.intellij.util.EditSourceOnEnterKeyHandler
 import com.intellij.util.ObjectUtils
+import com.intellij.util.containers.ContainerUtil
 import com.intellij.util.ui.EmptyIcon
 import com.intellij.util.ui.ImageUtil
 import com.intellij.util.ui.tree.TreeUtil
@@ -56,10 +58,7 @@ import java.awt.dnd.DnDConstants
 import java.awt.image.BufferedImage
 import java.io.File
 import java.util.*
-import javax.swing.Icon
-import javax.swing.JComponent
-import javax.swing.JPanel
-import javax.swing.ToolTipManager
+import javax.swing.*
 import javax.swing.tree.*
 
 
@@ -219,7 +218,7 @@ class ProjectViewPSIPane2 constructor(project: Project) : AbstractProjectViewPan
         }
       }
     } else {
-      val path = selectedPath
+      val path = getSelectedPath()
       if (path != null) {
         val component = path.lastPathComponent
         if (component is DefaultMutableTreeNode) {
@@ -311,6 +310,18 @@ class ProjectViewPSIPane2 constructor(project: Project) : AbstractProjectViewPan
     return pathsToSelectedElements(getSelectionPaths())
   }
 
+  fun getSelectionPaths(): Array<TreePath>? {
+    return myTree.getSelectionPaths()
+  }
+
+  fun getSelectedPath(): TreePath? {
+    return TreeUtil.getSelectedPathIfOne(myTree)
+  }
+
+  fun getFirstElementFromNode(node: Any?): PsiElement? {
+    return ContainerUtil.getFirstItem<PsiElement>(getElementsFromNode(node))
+  }
+
   inner class MyDragSource : DnDSource {
     public override fun canStartDragging(action: DnDAction, dragOrigin: Point): Boolean {
       if ((action.getActionId() and DnDConstants.ACTION_COPY_OR_MOVE) == 0) return false
@@ -329,7 +340,7 @@ class ProjectViewPSIPane2 constructor(project: Project) : AbstractProjectViewPan
         }
 
         public override fun getTreePaths(): Array<TreePath> {
-          return paths
+          return paths ?: emptyArray()
         }
 
         public override fun getTreeNodes(): Array<TreeNode>? {
@@ -348,7 +359,7 @@ class ProjectViewPSIPane2 constructor(project: Project) : AbstractProjectViewPan
       if (paths == null) return null
 
       val toRender = ArrayList<Trinity<String, Icon, VirtualFile>>()
-      for (path in getSelectionPaths()) {
+      getSelectionPaths()?.forEach { path ->
         val iconAndText = getIconAndText(path)
         toRender.add(
           Trinity.create<String, Icon, VirtualFile>(
