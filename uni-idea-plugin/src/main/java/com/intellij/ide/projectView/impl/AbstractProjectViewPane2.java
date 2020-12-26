@@ -184,10 +184,6 @@ public abstract class AbstractProjectViewPane2 {
     };
   }
 
-  public @NotNull Comparator<NodeDescriptor<?>> createComparator() {
-    return new GroupByTypeComparator(myProject, getId());
-  }
-
   @NotNull public JTree getTree() {
     return myTree;
   }

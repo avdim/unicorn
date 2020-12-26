@@ -110,7 +110,7 @@ class ProjectViewPSIPane2 constructor(project: Project) : AbstractProjectViewPan
       ) {
         override fun createUpdater() = createTreeUpdater(this, treeStructure)
       }
-    treeBuilder.setNodeDescriptorComparator(createComparator())
+    treeBuilder.setNodeDescriptorComparator(GroupByTypeComparator(myProject, id))
     initTree()
     return ScrollPaneFactory.createScrollPane(myTree)
   }
