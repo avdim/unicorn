@@ -3,28 +3,35 @@
 
 package com.intellij.ide.projectView.impl
 
-import com.intellij.ide.*
-import com.intellij.ide.dnd.*
-import com.intellij.ide.projectView.*
+import com.intellij.ide.PsiCopyPasteManager
+import com.intellij.ide.projectView.BaseProjectTreeBuilder
+import com.intellij.ide.projectView.ProjectViewSettings
+import com.intellij.ide.projectView.ViewSettings
 import com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode
+import com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode
 import com.intellij.ide.ui.customization.CustomizationUtil
 import com.intellij.ide.util.treeView.*
-import com.intellij.openapi.actionSystem.*
+import com.intellij.injected.editor.VirtualFileWindow
+import com.intellij.openapi.actionSystem.ActionPlaces
+import com.intellij.openapi.actionSystem.CommonDataKeys
+import com.intellij.openapi.actionSystem.IdeActions
+import com.intellij.openapi.actionSystem.PlatformDataKeys
 import com.intellij.openapi.project.Project
-import com.intellij.openapi.util.*
+import com.intellij.openapi.util.registry.Registry
 import com.intellij.openapi.vfs.VirtualFile
 import com.intellij.pom.Navigatable
-import com.intellij.psi.*
+import com.intellij.psi.PsiDirectory
+import com.intellij.psi.PsiDirectoryContainer
 import com.intellij.ui.ScrollPaneFactory
 import com.intellij.util.EditSourceOnDoubleClickHandler
 import com.intellij.util.EditSourceOnEnterKeyHandler
 import com.intellij.util.ui.tree.TreeUtil
-import org.jetbrains.annotations.*
 import ru.tutu.idea.file.FILES_PANE_ID
 import ru.tutu.idea.file.uniFilesRootNodes
-import java.awt.*
+import java.awt.Font
 import java.util.*
-import javax.swing.*
+import javax.swing.JComponent
+import javax.swing.ToolTipManager
 import javax.swing.tree.DefaultMutableTreeNode
 import javax.swing.tree.DefaultTreeModel
 import javax.swing.tree.TreePath
@@ -127,6 +134,82 @@ class ProjectViewPSIPane2 constructor(project: Project) : AbstractProjectViewPan
       return if (navigatables.isEmpty()) null else navigatables.toTypedArray<Navigatable>()
     }
     return null
+  }
+
+  fun <T : NodeDescriptor<*>> getSelectedNodes(nodeClass: Class<T>): List<T> {
+    val paths = getSelectionPaths()
+    if (paths == null) {
+      return emptyList<T>()
+    }
+
+    val result = ArrayList<T>()
+    for (path in paths!!) {
+      val userObject = TreeUtil.getLastUserObject<T>(nodeClass, path)
+      if (userObject != null) {
+        result.add(userObject)
+      }
+    }
+    return result
+  }
+
+  fun getSelectedDirectories(): Array<PsiDirectory> {
+    val directories = ArrayList<PsiDirectory>()
+    for (node in getSelectedNodes(PsiDirectoryNode::class.java)) {
+      var directory: PsiDirectory? = node.getValue()
+      if (directory != null) {
+        directories.add(directory)
+        val parentValue = node.getParent().getValue()
+        if (parentValue is PsiDirectory && Registry.`is`("projectView.choose.directory.on.compacted.middle.packages")) {
+          while (true) {
+            directory = directory!!.getParentDirectory()
+            if (directory == null || directory == parentValue) {
+              break
+            }
+            directories.add(directory)
+          }
+        }
+      }
+    }
+    if (!directories.isEmpty()) {
+      return directories.toTypedArray<PsiDirectory>()
+    }
+
+    val elements = getSelectedPSIElements()
+    if (elements.size == 1) {
+      val element = elements[0]
+      if (element is PsiDirectory) {
+        return arrayOf<PsiDirectory>(element as PsiDirectory)
+      } else if (element is PsiDirectoryContainer) {
+        return (element as PsiDirectoryContainer).getDirectories()
+      } else {
+        val containingFile = element.getContainingFile()
+        if (containingFile != null) {
+          val psiDirectory = containingFile!!.getContainingDirectory()
+          if (psiDirectory != null) {
+            return arrayOf<PsiDirectory>(psiDirectory)
+          }
+          val file = containingFile!!.getVirtualFile()
+          if (file is VirtualFileWindow) {
+            val delegate = (file as VirtualFileWindow).getDelegate()
+            val delegatePsiFile = containingFile!!.getManager().findFile(delegate)
+            if (delegatePsiFile != null && delegatePsiFile!!.getContainingDirectory() != null) {
+              return arrayOf<PsiDirectory>(delegatePsiFile!!.getContainingDirectory())
+            }
+          }
+          return PsiDirectory.EMPTY_ARRAY
+        }
+      }
+    } else {
+      val path = getSelectedPath()
+      if (path != null) {
+        val component = path!!.getLastPathComponent()
+        if (component is DefaultMutableTreeNode) {
+          return getSelectedDirectoriesInAmbiguousCase((component as DefaultMutableTreeNode).getUserObject())
+        }
+        return getSelectedDirectoriesInAmbiguousCase(component)
+      }
+    }
+    return PsiDirectory.EMPTY_ARRAY
   }
 
 }

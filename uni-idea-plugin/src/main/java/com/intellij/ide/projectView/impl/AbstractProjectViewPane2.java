@@ -104,23 +104,6 @@ public abstract class AbstractProjectViewPane2 {
                                           value -> ProjectView.getInstance(myProject).setFlattenModules(getId(), value));
   }
 
-  @NotNull
-  public <T extends NodeDescriptor<?>> List<T> getSelectedNodes(@NotNull Class<T> nodeClass) {
-    TreePath[] paths = getSelectionPaths();
-    if (paths == null) {
-      return Collections.emptyList();
-    }
-
-    List<T> result = new ArrayList<>();
-    for (TreePath path : paths) {
-      T userObject = TreeUtil.getLastUserObject(nodeClass, path);
-      if (userObject != null) {
-        result.add(userObject);
-      }
-    }
-    return result;
-  }
-
   public final TreePath getSelectedPath() {
     return TreeUtil.getSelectedPathIfOne(myTree);
   }
@@ -270,69 +253,6 @@ public abstract class AbstractProjectViewPane2 {
 
   @NotNull public JTree getTree() {
     return myTree;
-  }
-
-  public PsiDirectory @NotNull [] getSelectedDirectories() {
-    List<PsiDirectory> directories = new ArrayList<>();
-    for (PsiDirectoryNode node : getSelectedNodes(PsiDirectoryNode.class)) {
-      PsiDirectory directory = node.getValue();
-      if (directory != null) {
-        directories.add(directory);
-        Object parentValue = node.getParent().getValue();
-        if (parentValue instanceof PsiDirectory && Registry.is("projectView.choose.directory.on.compacted.middle.packages")) {
-          while (true) {
-            directory = directory.getParentDirectory();
-            if (directory == null || directory.equals(parentValue)) {
-              break;
-            }
-            directories.add(directory);
-          }
-        }
-      }
-    }
-    if (!directories.isEmpty()) {
-      return directories.toArray(PsiDirectory.EMPTY_ARRAY);
-    }
-
-    final PsiElement[] elements = getSelectedPSIElements();
-    if (elements.length == 1) {
-      final PsiElement element = elements[0];
-      if (element instanceof PsiDirectory) {
-        return new PsiDirectory[]{(PsiDirectory)element};
-      }
-      else if (element instanceof PsiDirectoryContainer) {
-        return ((PsiDirectoryContainer)element).getDirectories();
-      }
-      else {
-        final PsiFile containingFile = element.getContainingFile();
-        if (containingFile != null) {
-          final PsiDirectory psiDirectory = containingFile.getContainingDirectory();
-          if (psiDirectory != null) {
-            return new PsiDirectory[]{psiDirectory};
-          }
-          final VirtualFile file = containingFile.getVirtualFile();
-          if (file instanceof VirtualFileWindow) {
-            final VirtualFile delegate = ((VirtualFileWindow)file).getDelegate();
-            final PsiFile delegatePsiFile = containingFile.getManager().findFile(delegate);
-            if (delegatePsiFile != null && delegatePsiFile.getContainingDirectory() != null) {
-              return new PsiDirectory[] { delegatePsiFile.getContainingDirectory() };
-            }
-          }
-          return PsiDirectory.EMPTY_ARRAY;
-        }
-      }
-    }
-    else {
-      TreePath path = getSelectedPath();
-      if (path != null) {
-        Object component = path.getLastPathComponent();
-        if (component instanceof DefaultMutableTreeNode) {
-          return getSelectedDirectoriesInAmbiguousCase(((DefaultMutableTreeNode)component).getUserObject());
-        }
-        return getSelectedDirectoriesInAmbiguousCase(component);
-      }
-    }
-    return PsiDirectory.EMPTY_ARRAY;
   }
 
   public PsiDirectory @NotNull [] getSelectedDirectoriesInAmbiguousCase(Object userObject) {

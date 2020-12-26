@@ -122,7 +122,7 @@ private fun _createUniFilesComponent(
       if (LangDataKeys.IDE_VIEW.`is`(dataId)) {
         return object : IdeView {
           override fun getOrChooseDirectory(): PsiDirectory? = DirectoryChooserUtil.getOrChooseDirectory(this)
-          override fun getDirectories(): Array<PsiDirectory> = viewPane.selectedDirectories
+          override fun getDirectories(): Array<PsiDirectory> = viewPane.getSelectedDirectories()
           override fun selectElement(element: PsiElement) {}
         }
       }
