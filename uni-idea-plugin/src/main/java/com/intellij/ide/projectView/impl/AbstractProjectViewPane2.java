@@ -45,6 +45,7 @@ import com.intellij.util.ui.ImageUtil;
 import com.intellij.util.ui.JBUI;
 import com.intellij.util.ui.UIUtil;
 import com.intellij.util.ui.tree.TreeUtil;
+import com.unicorn.Uni;
 import org.jetbrains.annotations.*;
 import org.jetbrains.concurrency.Promise;
 import org.jetbrains.concurrency.Promises;
@@ -66,10 +67,11 @@ import java.util.function.BooleanSupplier;
 import java.util.function.Predicate;
 
 @SuppressWarnings("UnstableApiUsage")
-public abstract class AbstractProjectViewPane2 implements DataProvider, Disposable, BusyObject {
+public abstract class AbstractProjectViewPane2 implements DataProvider, BusyObject {
   private static final Logger LOG = Logger.getInstance(AbstractProjectViewPane2.class);
 
   protected final @NotNull Project myProject;
+  private final Disposable fileManagerDisposable;
   protected DnDAwareTree myTree;
   protected AbstractTreeStructure myTreeStructure;
   private AbstractTreeBuilder myTreeBuilder;
@@ -91,7 +93,27 @@ public abstract class AbstractProjectViewPane2 implements DataProvider, Disposab
 
   protected AbstractProjectViewPane2(@NotNull Project project) {
     myProject = project;
-    Disposer.register(project, this);
+    Disposable fileManagerDisposable = new Disposable() {
+      @Override
+      public void dispose() {
+        if (myDropTarget != null) {
+          DnDManager.getInstance().unregisterTarget(myDropTarget, myTree);
+          myDropTarget = null;
+        }
+        if (myDragSource != null) {
+          DnDManager.getInstance().unregisterSource(myDragSource, myTree);
+          myDragSource = null;
+        }
+        setTreeBuilder(null);
+        myTree = null;
+        myTreeStructure = null;
+      }
+    };
+    Disposer.register(
+      Uni.INSTANCE,
+      fileManagerDisposable
+    );
+    this.fileManagerDisposable = fileManagerDisposable;
   }
 
   /**
@@ -107,21 +129,6 @@ public abstract class AbstractProjectViewPane2 implements DataProvider, Disposab
 
   public final @Nullable String getSubId() {
     return null;//todo no sense
-  }
-
-  @Override
-  public void dispose() {
-    if (myDropTarget != null) {
-      DnDManager.getInstance().unregisterTarget(myDropTarget, myTree);
-      myDropTarget = null;
-    }
-    if (myDragSource != null) {
-      DnDManager.getInstance().unregisterSource(myDragSource, myTree);
-      myDragSource = null;
-    }
-    setTreeBuilder(null);
-    myTree = null;
-    myTreeStructure = null;
   }
 
   public TreePath[] getSelectionPaths() {
@@ -516,7 +523,7 @@ public abstract class AbstractProjectViewPane2 implements DataProvider, Disposab
 
   public void setTreeBuilder(final AbstractTreeBuilder treeBuilder) {
     if (treeBuilder != null) {
-      Disposer.register(this, treeBuilder);
+      Disposer.register(fileManagerDisposable, treeBuilder);
 // needs refactoring for project view first
 //      treeBuilder.setCanYieldUpdate(true);
     }
