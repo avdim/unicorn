@@ -121,35 +121,6 @@ public abstract class AbstractProjectViewPane2 {
     return result;
   }
 
-  public Object getData(@NotNull String dataId) {
-    if (PlatformDataKeys.TREE_EXPANDER.is(dataId)) return createTreeExpander();//todo lazy cache
-
-    @SuppressWarnings("unchecked")
-    List<AbstractTreeNode<?>> nodes = (List)getSelectedNodes(AbstractTreeNode.class);
-    Object data = myTreeStructure.getDataFromProviders(nodes, dataId);
-    if (data != null) {
-      return data;
-    }
-
-    if (CommonDataKeys.NAVIGATABLE_ARRAY.is(dataId)) {
-      TreePath[] paths = getSelectionPaths();
-      if (paths == null) return null;
-      final ArrayList<Navigatable> navigatables = new ArrayList<>();
-      for (TreePath path : paths) {
-        Object node = path.getLastPathComponent();
-        Object userObject = TreeUtil.getUserObject(node);
-        if (userObject instanceof Navigatable) {
-          navigatables.add((Navigatable)userObject);
-        }
-        else if (node instanceof Navigatable) {
-          navigatables.add((Navigatable)node);
-        }
-      }
-      return navigatables.isEmpty() ? null : navigatables.toArray(new Navigatable[0]);
-    }
-    return null;
-  }
-
   public final TreePath getSelectedPath() {
     return TreeUtil.getSelectedPathIfOne(myTree);
   }

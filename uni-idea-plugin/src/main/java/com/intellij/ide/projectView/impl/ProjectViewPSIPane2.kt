@@ -3,34 +3,33 @@
 
 package com.intellij.ide.projectView.impl
 
-import com.intellij.ide.PsiCopyPasteManager
-import com.intellij.ide.projectView.BaseProjectTreeBuilder
-import com.intellij.ide.projectView.ProjectViewSettings
-import com.intellij.ide.projectView.ViewSettings
+import com.intellij.ide.*
+import com.intellij.ide.dnd.*
+import com.intellij.ide.projectView.*
 import com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode
 import com.intellij.ide.ui.customization.CustomizationUtil
-import com.intellij.ide.util.treeView.AbstractTreeBuilder
-import com.intellij.ide.util.treeView.AbstractTreeNode
-import com.intellij.ide.util.treeView.AbstractTreeStructure
-import com.intellij.ide.util.treeView.AbstractTreeUpdater
-import com.intellij.openapi.actionSystem.ActionPlaces
-import com.intellij.openapi.actionSystem.IdeActions
+import com.intellij.ide.util.treeView.*
+import com.intellij.openapi.actionSystem.*
 import com.intellij.openapi.project.Project
+import com.intellij.openapi.util.*
 import com.intellij.openapi.vfs.VirtualFile
-import com.intellij.psi.PsiDirectory
+import com.intellij.pom.Navigatable
+import com.intellij.psi.*
 import com.intellij.ui.ScrollPaneFactory
 import com.intellij.util.EditSourceOnDoubleClickHandler
 import com.intellij.util.EditSourceOnEnterKeyHandler
 import com.intellij.util.ui.tree.TreeUtil
+import org.jetbrains.annotations.*
 import ru.tutu.idea.file.FILES_PANE_ID
 import ru.tutu.idea.file.uniFilesRootNodes
-import java.awt.Font
-import javax.swing.JComponent
-import javax.swing.ToolTipManager
+import java.awt.*
+import java.util.*
+import javax.swing.*
 import javax.swing.tree.DefaultMutableTreeNode
 import javax.swing.tree.DefaultTreeModel
 import javax.swing.tree.TreePath
 import javax.swing.tree.TreeSelectionModel
+
 
 class ProjectViewPSIPane2 constructor(project: Project) : AbstractProjectViewPane2(project) {
 
@@ -101,6 +100,33 @@ class ProjectViewPSIPane2 constructor(project: Project) : AbstractProjectViewPan
       IdeActions.GROUP_PROJECT_VIEW_POPUP,
       ActionPlaces.PROJECT_VIEW_POPUP
     )
+  }
+
+  fun getData(dataId: String): Any? {
+    if (PlatformDataKeys.TREE_EXPANDER.`is`(dataId)) return createTreeExpander()//todo lazy cache
+
+    val nodes = getSelectedNodes(AbstractTreeNode::class.java)
+    val data = myTreeStructure.getDataFromProviders(nodes, dataId)
+    if (data != null) {
+      return data
+    }
+
+    if (CommonDataKeys.NAVIGATABLE_ARRAY.`is`(dataId)) {
+      val paths = getSelectionPaths()
+      if (paths == null) return null
+      val navigatables = ArrayList<Navigatable>()
+      for (path in paths) {
+        val node = path.getLastPathComponent()
+        val userObject = TreeUtil.getUserObject(node)
+        if (userObject is Navigatable) {
+          navigatables.add(userObject)
+        } else if (node is Navigatable) {
+          navigatables.add(node)
+        }
+      }
+      return if (navigatables.isEmpty()) null else navigatables.toTypedArray<Navigatable>()
+    }
+    return null
   }
 
 }
