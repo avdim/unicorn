@@ -119,6 +119,7 @@ suspend fun configureIDE() {
 //    }
   }
 
+  GeneralSettings.getInstance().isShowTipsOnStartup = false
   GeneralSettings.getInstance().isUseSafeWrite = true
   if (true) {
     // когда перестанет вылетать вернуть на default
