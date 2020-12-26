@@ -61,7 +61,6 @@ import java.awt.image.BufferedImage;
 import java.io.File;
 import java.util.List;
 import java.util.*;
-import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.function.BooleanSupplier;
 import java.util.function.Predicate;
 
@@ -75,20 +74,8 @@ public abstract class AbstractProjectViewPane2 {
   protected ProjectAbstractTreeStructureBase myTreeStructure;
   private AbstractTreeBuilder myTreeBuilder;
   private TreeExpander myTreeExpander;
-  // subId->Tree state; key may be null
-  private final Map<String,TreeState> myReadTreeState = new HashMap<>();
-  private final AtomicBoolean myTreeStateRestored = new AtomicBoolean();
-
   private DnDTarget myDropTarget;
   private DnDSource myDragSource;
-
-  private void queueUpdateByProblem() {
-    if (Registry.is("projectView.showHierarchyErrors")) {
-      if (myTreeBuilder != null) {
-        myTreeBuilder.queueUpdate();
-      }
-    }
-  }
 
   protected AbstractProjectViewPane2(@NotNull Project project) {
     myProject = project;
@@ -125,10 +112,6 @@ public abstract class AbstractProjectViewPane2 {
   public abstract @NotNull @Nls(capitalization = Nls.Capitalization.Title) String getTitle();
 
   public abstract @NotNull String getId();
-
-  public final @Nullable String getSubId() {
-    return null;//todo no sense
-  }
 
   public TreePath[] getSelectionPaths() {
     return myTree == null ? null : myTree.getSelectionPaths();
@@ -304,31 +287,6 @@ public abstract class AbstractProjectViewPane2 {
   public final AbstractTreeBuilder getTreeBuilder() {
     return myTreeBuilder;
   }
-
-  protected void saveExpandedPaths() {
-    myTreeStateRestored.set(false);
-    if (myTree != null) {
-      TreeState treeState = TreeState.createOn(myTree);
-      if (!treeState.isEmpty()) {
-        myReadTreeState.put(getSubId(), treeState);
-      }
-      else {
-        myReadTreeState.remove(getSubId());
-      }
-    }
-  }
-
-  public final void restoreExpandedPaths(){
-    if (myTree == null || myTreeStateRestored.getAndSet(true)) return;
-    TreeState treeState = myReadTreeState.get(getSubId());
-    if (treeState != null && !treeState.isEmpty()) {
-      treeState.applyTo(myTree);
-    }
-    else if (myTree.isSelectionEmpty()) {
-      TreeUtil.promiseSelectFirst(myTree);
-    }
-  }
-
 
   private @NotNull TreeExpander getTreeExpander() {
     TreeExpander expander = myTreeExpander;
