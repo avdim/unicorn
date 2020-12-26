@@ -84,6 +84,7 @@ suspend fun configureIDE() {
   EditorSettingsExternalizable.getInstance().setLineNumbersShown(false)
   EditorSettingsExternalizable.getInstance().setBreadcrumbsShown(false)
   EditorSettingsExternalizable.getInstance().isWhitespacesShown = false//todo показывает табуляцию и пробелы
+  EditorSettingsExternalizable.getInstance().isWheelFontChangeEnabled = true
   if (false) {
     //todo exception in idea community 2020.2-beta
     DaemonCodeAnalyzerSettings.getInstance().SHOW_METHOD_SEPARATORS = true

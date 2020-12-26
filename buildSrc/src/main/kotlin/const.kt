@@ -39,9 +39,8 @@ val COMPILER_ARGS = listOf<String>()
 // https://github.com/JetBrains/gradle-intellij-plugin
 val INTELLIJ_GRADLE = "0.6.5"
 // https://maven.pkg.jetbrains.space/public/p/compose/dev/org/jetbrains/compose/org.jetbrains.compose.gradle.plugin/
-//val DESKTOP_COMPOSE = "0.2.0-build132"
-//val DESKTOP_COMPOSE = "0.3.0-build133"
-val DESKTOP_COMPOSE = "0.3.0-build135"
+//val DESKTOP_COMPOSE = "0.3.0-build135"
+val DESKTOP_COMPOSE = "0.3.0-build136"
 
 val Project.UNI_BUILD_TYPE: BuildType get() =
   when (safeArgument("uniBuildType")) {
@@ -66,7 +65,8 @@ val UNI_VERSION = "0.12.5"
 //    IdeaVersion.Community("2020.2.3")
 // val LAST_COMMUNITY = IdeaVersion.Download("203.5784.10-EAP-SNAPSHOT")
 //val LAST_COMMUNITY = IdeaVersion.Download("2020.3", "IC")
-val LAST_COMMUNITY = IdeaVersion.Download("203.6682.78-EAP-SNAPSHOT", "IC")
+//val LAST_COMMUNITY = IdeaVersion.Download("203.6682.78-EAP-SNAPSHOT", "IC")
+val LAST_COMMUNITY = IdeaVersion.Download("203.6682.115-EAP-SNAPSHOT", "IC")
 
 val Project.IDEA_VERSION: IdeaVersion get() =
   when (UNI_BUILD_TYPE) {

@@ -3,28 +3,19 @@
 package ru.tutu.idea.file
 
 import com.intellij.history.LocalHistory
-import com.intellij.icons.AllIcons
 import com.intellij.ide.*
-import com.intellij.ide.impl.ProjectPaneSelectInTarget
 import com.intellij.ide.projectView.HelpID
-import com.intellij.ide.projectView.ProjectViewSettings
 import com.intellij.ide.projectView.ViewSettings
 import com.intellij.ide.projectView.impl.*
 import com.intellij.ide.projectView.impl.nodes.LibraryGroupElement
 import com.intellij.ide.projectView.impl.nodes.NamedLibraryElement
-import com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode
 import com.intellij.ide.util.DeleteHandler
 import com.intellij.ide.util.DirectoryChooserUtil
-import com.intellij.ide.util.treeView.AbstractTreeBuilder
 import com.intellij.ide.util.treeView.AbstractTreeNode
-import com.intellij.ide.util.treeView.AbstractTreeUpdater
 import com.intellij.ide.util.treeView.NodeDescriptor
 import com.intellij.openapi.actionSystem.*
 import com.intellij.openapi.application.ApplicationManager
-import com.intellij.openapi.module.Module
 import com.intellij.openapi.project.Project
-import com.intellij.openapi.roots.ModuleRootManager
-import com.intellij.openapi.roots.ProjectRootManager
 import com.intellij.openapi.vfs.JarFileSystem
 import com.intellij.openapi.vfs.LocalFileSystem
 import com.intellij.openapi.vfs.VirtualFile
@@ -35,18 +26,16 @@ import com.intellij.psi.util.PsiUtilCore
 import com.intellij.ui.ScrollPaneFactory
 import com.intellij.ui.layout.Cell
 import com.intellij.ui.switcher.QuickActionProvider
-import com.intellij.util.ui.UIUtil
 import com.intellij.util.ui.tree.TreeUtil
 import com.unicorn.Uni
 import com.unicorn.plugin.virtualFile
 import java.awt.BorderLayout
 import java.awt.Font
 import java.util.*
-import javax.swing.Icon
 import javax.swing.JComponent
 import javax.swing.JPanel
+import javax.swing.tree.DefaultMutableTreeNode
 import javax.swing.tree.DefaultTreeModel
-import javax.swing.tree.TreePath
 
 //@todo.mvi.State(name = "ProjectView", storages = {
 //  @Storage(StoragePathMacros.PRODUCT_WORKSPACE_FILE),
@@ -82,109 +71,26 @@ private fun _createUniFilesComponent(
   }
 
   ApplicationManager.getApplication().assertIsDispatchThread()
-  val viewPane = object : AbstractProjectViewPSIPane(project) {
-    val component: JComponent = createComponent().also { container: JComponent ->
-//      UIUtil.removeScrollBorder(it)
-      ScrollPaneFactory.createScrollPane(container, false)
-      container
-    }
-
-    override fun getSelectionPaths(): Array<TreePath>? {
-      return super.getSelectionPaths() // ?: emptyArray()
-    }
-
-    override fun getTitle(): String = "todo title pane"
-    override fun getId(): String = FILES_PANE_ID
-    override fun getIcon(): Icon = AllIcons.General.ProjectTab
-
-    override fun createSelectInTarget(): SelectInTarget =
-      object : ProjectPaneSelectInTarget(project) {
-        override fun getMinorViewId(): String = FILES_PANE_ID//todo не удобно
-      }
-
-    override fun createTreeUpdater(treeBuilder: AbstractTreeBuilder): AbstractTreeUpdater/*todo deprecated*/ =
-      object : AbstractTreeUpdater(treeBuilder) {
-        override fun addSubtreeToUpdateByElement(element: Any): Boolean {
-          if (element is PsiDirectory) {
-            val treeStructure = treeStructure// as ProjectTreeStructure
-            var dirToUpdateFrom: PsiDirectory? = element
-
-            var addedOk: Boolean
-            while (!super.addSubtreeToUpdateByElement(dirToUpdateFrom ?: treeStructure.rootElement)
-                .also { addedOk = it }
-            ) {
-              if (dirToUpdateFrom == null) {
-                break
-              }
-              dirToUpdateFrom = dirToUpdateFrom.parentDirectory
-            }
-            return addedOk
-          }
-          return super.addSubtreeToUpdateByElement(element)
-        }
-      }
-
-    override fun createStructure(): ProjectAbstractTreeStructureBase =
-      object : ProjectTreeStructure(project, FILES_PANE_ID), ProjectViewSettings {
-        override fun createRoot(project: Project, settings: ViewSettings): AbstractTreeNode<*> =
-          object : ProjectViewProjectNode(project, settings) {
-            override fun canRepresent(element: Any): Boolean = true
-            override fun getChildren(): Collection<AbstractTreeNode<*>> {
-              return uniFilesRootNodes(project, settings, rootDirs = rootPaths)
-            }
-          }
-
-        override fun getChildElements(element: Any): Array<Any> {
-          val treeNode = element as AbstractTreeNode<*>
-          val elements = treeNode.children
-          elements.forEach { it.setParent(treeNode) }
-          return elements.toTypedArray()
-        }
-
-        override fun isShowExcludedFiles(): Boolean = true
-        override fun isShowLibraryContents(): Boolean = true
-        override fun isUseFileNestingRules(): Boolean = true
-      }
-
-    override fun createTree(treeModel: DefaultTreeModel): ProjectViewTree {
-      return object : ProjectViewTree(treeModel) {
-        override fun toString(): String = title + " " + super.toString()
-        override fun setFont(font: Font) {
-          super.setFont(font.deriveFont(font.size /*+ 3f*/))
-        }
-      }
-    }
-
-    override fun addToolbarActions(actionGroup: DefaultActionGroup) {
-      //todo not working
-      actionGroup.addAction(object : AnAction("sample action") {
-        override fun actionPerformed(e: AnActionEvent) {
-          Uni.log.debug { "sample files toolbar action" }
-        }
-      }) //.setAsSecondary(true)
-    }
-
-    // should be first
-    override fun getWeight(): Int = 0
-//  override fun supportsFlattenModules(): Boolean = false
-//  override fun supportsShowExcludedFiles(): Boolean = true
-  }
+  val viewPane = ProjectViewPSIPane2(project)
 
   fun getSelectNodeElement(): Any? {
     val descriptor = TreeUtil.getLastUserObject(NodeDescriptor::class.java, viewPane.selectedPath) ?: return null
     return if (descriptor is AbstractTreeNode<*>) descriptor.value else descriptor.element
   }
+//  viewPane.restoreExpandedPaths()
+  val viewPaneComponent = viewPane.createComponent(
+    rootPaths = rootPaths
+  )
   viewPane.tree.addSelectionListener {
     selectionListener(it)
   }
-  viewPane.restoreExpandedPaths()
 
   return object : JPanel(), DataProvider {
-    private val myCopyPasteDelegator = CopyPasteDelegator(project, viewPane.component)
+    private val myCopyPasteDelegator = CopyPasteDelegator(project, viewPaneComponent)
 
     init {
       layout = BorderLayout()
-      add(viewPane.component, BorderLayout.CENTER)
+      add(viewPaneComponent, BorderLayout.CENTER)
       revalidate()
       repaint()
     }
