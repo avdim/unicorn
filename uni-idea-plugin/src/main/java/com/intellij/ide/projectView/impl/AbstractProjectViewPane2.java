@@ -72,7 +72,7 @@ public abstract class AbstractProjectViewPane2 {
   protected final @NotNull Project myProject;
   private final Disposable fileManagerDisposable;
   protected DnDAwareTree myTree;
-  protected AbstractTreeStructure myTreeStructure;
+  protected ProjectAbstractTreeStructureBase myTreeStructure;
   private AbstractTreeBuilder myTreeBuilder;
   private TreeExpander myTreeExpander;
   // subId->Tree state; key may be null
@@ -166,10 +166,10 @@ public abstract class AbstractProjectViewPane2 {
   public Object getData(@NotNull String dataId) {
     if (PlatformDataKeys.TREE_EXPANDER.is(dataId)) return getTreeExpander();
 
-    if (myTreeStructure instanceof AbstractTreeStructureBase) {
+    if (myTreeStructure != null) {
       @SuppressWarnings("unchecked")
       List<AbstractTreeNode<?>> nodes = (List)getSelectedNodes(AbstractTreeNode.class);
-      Object data = ((AbstractTreeStructureBase)myTreeStructure).getDataFromProviders(nodes, dataId);
+      Object data = myTreeStructure.getDataFromProviders(nodes, dataId);
       if (data != null) {
         return data;
       }
@@ -303,10 +303,6 @@ public abstract class AbstractProjectViewPane2 {
 
   public final AbstractTreeBuilder getTreeBuilder() {
     return myTreeBuilder;
-  }
-
-  public AbstractTreeStructure getTreeStructure() {
-    return myTreeStructure;
   }
 
   protected void saveExpandedPaths() {
