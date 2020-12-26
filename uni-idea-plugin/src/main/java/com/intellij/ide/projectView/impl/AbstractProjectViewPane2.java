@@ -71,15 +71,6 @@ public abstract class AbstractProjectViewPane2 {
       .toList();
   }
 
-  @Nullable
-  public Module getNodeModule(@Nullable final Object element) {
-    if (element instanceof PsiElement) {
-      PsiElement psiElement = (PsiElement)element;
-      return ModuleUtilCore.findModuleForPsiElement(psiElement);
-    }
-    return null;
-  }
-
   @NotNull public JTree getTree() {
     return myTree;
   }

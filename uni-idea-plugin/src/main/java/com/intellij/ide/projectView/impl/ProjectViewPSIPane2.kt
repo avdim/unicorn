@@ -25,6 +25,7 @@ import com.intellij.openapi.actionSystem.IdeActions
 import com.intellij.openapi.actionSystem.PlatformDataKeys
 import com.intellij.openapi.application.ApplicationManager
 import com.intellij.openapi.module.Module
+import com.intellij.openapi.module.ModuleUtilCore
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.roots.ModuleRootManager
 import com.intellij.openapi.ui.VerticalFlowLayout
@@ -320,6 +321,14 @@ class ProjectViewPSIPane2 constructor(project: Project) : AbstractProjectViewPan
 
   fun getFirstElementFromNode(node: Any?): PsiElement? {
     return ContainerUtil.getFirstItem<PsiElement>(getElementsFromNode(node))
+  }
+
+  fun getNodeModule(element: Any?): Module? {
+    if (element is PsiElement) {
+      val psiElement = element as PsiElement?
+      return ModuleUtilCore.findModuleForPsiElement(psiElement!!)
+    }
+    return null
   }
 
   inner class MyDragSource : DnDSource {
