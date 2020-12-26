@@ -137,13 +137,9 @@ class ProjectViewPSIPane2 constructor(project: Project) : AbstractProjectViewPan
   }
 
   fun <T : NodeDescriptor<*>> getSelectedNodes(nodeClass: Class<T>): List<T> {
-    val paths = getSelectionPaths()
-    if (paths == null) {
-      return emptyList<T>()
-    }
-
+    val paths: Array<out TreePath> = getSelectionPaths() ?: return emptyList<T>()
     val result = ArrayList<T>()
-    for (path in paths!!) {
+    for (path in paths) {
       val userObject = TreeUtil.getLastUserObject<T>(nodeClass, path)
       if (userObject != null) {
         result.add(userObject)
@@ -184,16 +180,16 @@ class ProjectViewPSIPane2 constructor(project: Project) : AbstractProjectViewPan
       } else {
         val containingFile = element.getContainingFile()
         if (containingFile != null) {
-          val psiDirectory = containingFile!!.getContainingDirectory()
+          val psiDirectory = containingFile.getContainingDirectory()
           if (psiDirectory != null) {
             return arrayOf<PsiDirectory>(psiDirectory)
           }
-          val file = containingFile!!.getVirtualFile()
+          val file = containingFile.getVirtualFile()
           if (file is VirtualFileWindow) {
             val delegate = (file as VirtualFileWindow).getDelegate()
-            val delegatePsiFile = containingFile!!.getManager().findFile(delegate)
-            if (delegatePsiFile != null && delegatePsiFile!!.getContainingDirectory() != null) {
-              return arrayOf<PsiDirectory>(delegatePsiFile!!.getContainingDirectory())
+            val delegatePsiFile = containingFile.getManager().findFile(delegate)
+            if (delegatePsiFile != null && delegatePsiFile.getContainingDirectory() != null) {
+              return arrayOf<PsiDirectory>(delegatePsiFile.getContainingDirectory())
             }
           }
           return PsiDirectory.EMPTY_ARRAY
@@ -202,9 +198,9 @@ class ProjectViewPSIPane2 constructor(project: Project) : AbstractProjectViewPan
     } else {
       val path = getSelectedPath()
       if (path != null) {
-        val component = path!!.getLastPathComponent()
+        val component = path.getLastPathComponent()
         if (component is DefaultMutableTreeNode) {
-          return getSelectedDirectoriesInAmbiguousCase((component as DefaultMutableTreeNode).getUserObject())
+          return getSelectedDirectoriesInAmbiguousCase(component.getUserObject())
         }
         return getSelectedDirectoriesInAmbiguousCase(component)
       }
