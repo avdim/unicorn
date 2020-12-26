@@ -62,8 +62,8 @@ public abstract class AbstractProjectViewPane2 {
   public final @NotNull Project myProject;
   @NotNull public DnDAwareTree myTree;
   @NotNull public ProjectAbstractTreeStructureBase myTreeStructure;
-  @Nullable private DnDTarget myDropTarget;
-  @Nullable private DnDSource myDragSource;
+  @Nullable public DnDTarget myDropTarget;
+  @Nullable public DnDSource myDragSource;
 
   public AbstractProjectViewPane2(@NotNull Project project) {
     myProject = project;
@@ -174,7 +174,7 @@ public abstract class AbstractProjectViewPane2 {
     return PsiUtilCore.toPsiElementArray(result);
   }
 
-  private @Nullable PsiElement getFirstElementFromNode(@Nullable Object node) {
+  public @Nullable PsiElement getFirstElementFromNode(@Nullable Object node) {
     return ContainerUtil.getFirstItem(getElementsFromNode(node));
   }
 
@@ -259,7 +259,7 @@ public abstract class AbstractProjectViewPane2 {
 
   public @NotNull TreeExpander createTreeExpander() {
     return new DefaultTreeExpander(this::getTree) {
-      private boolean isExpandAllAllowed() {
+      public boolean isExpandAllAllowed() {
         JTree tree = getTree();
         TreeModel model = tree.getModel();
         return model == null || model instanceof AsyncTreeModel || model instanceof InvokerSupplier;
@@ -427,7 +427,7 @@ public abstract class AbstractProjectViewPane2 {
     }
   }
 
-  private final class MyDragSource implements DnDSource {
+  public final class MyDragSource implements DnDSource {
     @Override
     public boolean canStartDragging(DnDAction action, Point dragOrigin) {
       if ((action.getActionId() & DnDConstants.ACTION_COPY_OR_MOVE) == 0) return false;
@@ -502,7 +502,7 @@ public abstract class AbstractProjectViewPane2 {
     }
 
     @NotNull
-    private Pair<Icon, @Nls String> getIconAndText(TreePath path) {
+    public Pair<Icon, @Nls String> getIconAndText(TreePath path) {
       Object object = TreeUtil.getLastUserObject(path);
       Component component = getTree().getCellRenderer()
         .getTreeCellRendererComponent(getTree(), object, false, false, true, getTree().getRowForPath(path), false);
@@ -514,8 +514,8 @@ public abstract class AbstractProjectViewPane2 {
     }
   }
 
-  private class DragImageLabel extends JLabel {
-    private DragImageLabel(@Nls String text, Icon icon, @Nullable VirtualFile file) {
+  public class DragImageLabel extends JLabel {
+    public DragImageLabel(@Nls String text, Icon icon, @Nullable VirtualFile file) {
       super(text, icon, SwingConstants.LEADING);
       setFont(UIUtil.getTreeFont());
       setOpaque(true);
@@ -537,7 +537,7 @@ public abstract class AbstractProjectViewPane2 {
     }
   }
 
-  private static boolean canDragElements(Object @NotNull [] elements, @NotNull DataContext dataContext, int dragAction) {
+  public static boolean canDragElements(Object @NotNull [] elements, @NotNull DataContext dataContext, int dragAction) {
     for (Object element : elements) {
       if (element instanceof Module) {
         return true;
