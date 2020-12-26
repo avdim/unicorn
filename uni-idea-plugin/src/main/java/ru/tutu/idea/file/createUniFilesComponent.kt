@@ -100,11 +100,11 @@ private fun _createUniFilesComponent(
       if (paneSpecificData != null) return paneSpecificData
 
       if (CommonDataKeys.PSI_ELEMENT.`is`(dataId)) {
-        val elements = viewPane.selectedPSIElements
+        val elements = viewPane.getSelectedPSIElements()
         return if (elements.size == 1) elements[0] else null
       }
       if (LangDataKeys.PSI_ELEMENT_ARRAY.`is`(dataId)) {
-        val elements = viewPane.selectedPSIElements
+        val elements = viewPane.getSelectedPSIElements()
         return if (elements.isEmpty()) null else elements
       }
       if (LangDataKeys.TARGET_PSI_ELEMENT.`is`(dataId)) {
@@ -134,7 +134,7 @@ private fun _createUniFilesComponent(
 
           override fun deleteElement(dataContext: DataContext) {
             fun getElementsToDelete(): Array<PsiElement> {// if is jar-file root
-              val elements = viewPane.selectedPSIElements
+              val elements = viewPane.getSelectedPSIElements()
               for (idx in elements.indices) {
                 val element = elements[idx]
                 if (element is PsiDirectory) {

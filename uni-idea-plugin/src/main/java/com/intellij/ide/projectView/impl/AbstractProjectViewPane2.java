@@ -108,16 +108,6 @@ public abstract class AbstractProjectViewPane2 {
     return TreeUtil.getSelectedPathIfOne(myTree);
   }
 
-  public final PsiElement @NotNull [] getSelectedPSIElements() {
-    TreePath[] paths = getSelectionPaths();
-    if (paths == null) return PsiElement.EMPTY_ARRAY;
-    List<PsiElement> result = new ArrayList<>();
-    for (TreePath path : paths) {
-      result.addAll(getElementsFromNode(path.getLastPathComponent()));
-    }
-    return PsiUtilCore.toPsiElementArray(result);
-  }
-
   public @Nullable PsiElement getFirstElementFromNode(@Nullable Object node) {
     return ContainerUtil.getFirstItem(getElementsFromNode(node));
   }

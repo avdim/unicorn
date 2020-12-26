@@ -31,6 +31,7 @@ import com.intellij.pom.Navigatable
 import com.intellij.psi.PsiDirectory
 import com.intellij.psi.PsiDirectoryContainer
 import com.intellij.psi.PsiElement
+import com.intellij.psi.util.PsiUtilCore
 import com.intellij.ui.ScrollPaneFactory
 import com.intellij.ui.SimpleColoredComponent
 import com.intellij.ui.tree.TreePathUtil
@@ -263,6 +264,16 @@ class ProjectViewPSIPane2 constructor(project: Project) : AbstractProjectViewPan
       dndManager.registerSource(myDragSource!!, myTree)
       dndManager.registerTarget(myDropTarget, myTree)
     }
+  }
+
+  fun getSelectedPSIElements(): Array<PsiElement> {
+    val paths = getSelectionPaths()
+    if (paths == null) return PsiElement.EMPTY_ARRAY
+    val result = ArrayList<PsiElement>()
+    for (path in paths) {
+      result.addAll(getElementsFromNode(path.lastPathComponent))
+    }
+    return PsiUtilCore.toPsiElementArray(result)
   }
 
   inner class MyDragSource : DnDSource {
