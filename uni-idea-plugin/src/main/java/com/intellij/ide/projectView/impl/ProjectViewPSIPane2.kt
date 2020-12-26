@@ -8,6 +8,7 @@ import com.intellij.ide.DataManager
 import com.intellij.ide.IdeBundle
 import com.intellij.ide.PsiCopyPasteManager
 import com.intellij.ide.dnd.*
+import com.intellij.ide.dnd.aware.DnDAwareTree
 import com.intellij.ide.projectView.BaseProjectTreeBuilder
 import com.intellij.ide.projectView.ProjectViewNode
 import com.intellij.ide.projectView.ProjectViewSettings
@@ -20,6 +21,7 @@ import com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode
 import com.intellij.ide.ui.customization.CustomizationUtil
 import com.intellij.ide.util.treeView.*
 import com.intellij.injected.editor.VirtualFileWindow
+import com.intellij.openapi.Disposable
 import com.intellij.openapi.actionSystem.ActionPlaces
 import com.intellij.openapi.actionSystem.CommonDataKeys
 import com.intellij.openapi.actionSystem.IdeActions
@@ -30,6 +32,7 @@ import com.intellij.openapi.module.ModuleUtilCore
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.roots.ModuleRootManager
 import com.intellij.openapi.ui.VerticalFlowLayout
+import com.intellij.openapi.util.Disposer
 import com.intellij.openapi.util.Pair
 import com.intellij.openapi.util.Trinity
 import com.intellij.openapi.util.registry.Registry
@@ -50,6 +53,7 @@ import com.intellij.util.containers.ContainerUtil
 import com.intellij.util.ui.EmptyIcon
 import com.intellij.util.ui.ImageUtil
 import com.intellij.util.ui.tree.TreeUtil
+import com.unicorn.Uni
 import ru.tutu.idea.file.FILES_PANE_ID
 import ru.tutu.idea.file.uniFilesRootNodes
 import java.awt.Font
@@ -64,7 +68,29 @@ import javax.swing.*
 import javax.swing.tree.*
 
 
-class ProjectViewPSIPane2 constructor(project: Project) : AbstractProjectViewPane2(project) {
+class ProjectViewPSIPane2 constructor(val myProject: Project) {
+
+  lateinit var myTree: DnDAwareTree
+  lateinit var myTreeStructure: ProjectAbstractTreeStructureBase
+  var myDropTarget: DnDTarget? = null
+  var myDragSource: DnDSource? = null
+
+  init {
+    val fileManagerDisposable = Disposable {
+      if (myDropTarget != null) {
+        DnDManager.getInstance().unregisterTarget(myDropTarget, myTree)
+        myDropTarget = null
+      }
+      if (myDragSource != null) {
+        DnDManager.getInstance().unregisterSource(myDragSource!!, myTree)
+        myDragSource = null
+      }
+    }
+    Disposer.register(
+      Uni,
+      fileManagerDisposable
+    )
+  }
 
   fun createComponent(rootPaths: List<VirtualFile>): JComponent {
     val treeModel = DefaultTreeModel(DefaultMutableTreeNode(null))
@@ -134,7 +160,7 @@ class ProjectViewPSIPane2 constructor(project: Project) : AbstractProjectViewPan
   }
 
   fun getData(dataId: String): Any? {
-    if (PlatformDataKeys.TREE_EXPANDER.`is`(dataId)) return createTreeExpander(tree)//todo lazy cache
+    if (PlatformDataKeys.TREE_EXPANDER.`is`(dataId)) return createTreeExpander(myTree)//todo lazy cache
 
     val nodes = getSelectedNodes(AbstractTreeNode::class.java)
     val data = myTreeStructure.getDataFromProviders(nodes, dataId)
@@ -383,14 +409,14 @@ class ProjectViewPSIPane2 constructor(project: Project) : AbstractProjectViewPan
       val panel = JPanel(VerticalFlowLayout(0, 0))
       val maxItemsToShow = if (toRender.size < 20) toRender.size else 10
       for (trinity in toRender) {
-        val fileLabel = DragImageLabel(myProject, tree, trinity.first, trinity.second, trinity.third)
+        val fileLabel = DragImageLabel(myProject, myTree, trinity.first, trinity.second, trinity.third)
         panel.add(fileLabel)
         count++
         if (count > maxItemsToShow) {
           panel.add(
             DragImageLabel(
               myProject,
-              tree,
+              myTree,
               IdeBundle.message("label.more.files", paths.size - maxItemsToShow),
               EmptyIcon.ICON_16,
               null
@@ -412,8 +438,8 @@ class ProjectViewPSIPane2 constructor(project: Project) : AbstractProjectViewPan
 
     fun getIconAndText(path: TreePath): Pair<Icon, String> {
       val `object` = TreeUtil.getLastUserObject(path)
-      val component = getTree().getCellRenderer()
-        .getTreeCellRendererComponent(getTree(), `object`, false, false, true, getTree().getRowForPath(path), false)
+      val component = myTree.getCellRenderer()
+        .getTreeCellRendererComponent(myTree, `object`, false, false, true, myTree.getRowForPath(path), false)
       val icon = arrayOfNulls<Icon>(1)
       val text = arrayOfNulls<String>(1)
       ObjectUtils.consumeIfCast<ProjectViewRenderer>(

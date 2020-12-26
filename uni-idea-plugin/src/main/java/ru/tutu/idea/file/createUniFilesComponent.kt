@@ -23,19 +23,15 @@ import com.intellij.psi.PsiDirectory
 import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiManager
 import com.intellij.psi.util.PsiUtilCore
-import com.intellij.ui.ScrollPaneFactory
 import com.intellij.ui.layout.Cell
 import com.intellij.ui.switcher.QuickActionProvider
 import com.intellij.util.ui.tree.TreeUtil
 import com.unicorn.Uni
 import com.unicorn.plugin.virtualFile
 import java.awt.BorderLayout
-import java.awt.Font
 import java.util.*
 import javax.swing.JComponent
 import javax.swing.JPanel
-import javax.swing.tree.DefaultMutableTreeNode
-import javax.swing.tree.DefaultTreeModel
 
 //@todo.mvi.State(name = "ProjectView", storages = {
 //  @Storage(StoragePathMacros.PRODUCT_WORKSPACE_FILE),
@@ -81,7 +77,7 @@ private fun _createUniFilesComponent(
   val viewPaneComponent = viewPane.createComponent(
     rootPaths = rootPaths
   )
-  viewPane.tree.addSelectionListener {
+  viewPane.myTree.addSelectionListener {
     selectionListener(it)
   }
 
