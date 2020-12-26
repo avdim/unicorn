@@ -66,7 +66,7 @@ import java.util.function.BooleanSupplier;
 import java.util.function.Predicate;
 
 @SuppressWarnings("UnstableApiUsage")
-public abstract class AbstractProjectViewPane2 implements DataProvider {
+public abstract class AbstractProjectViewPane2 {
   private static final Logger LOG = Logger.getInstance(AbstractProjectViewPane2.class);
 
   protected final @NotNull Project myProject;
@@ -163,7 +163,6 @@ public abstract class AbstractProjectViewPane2 implements DataProvider {
     return result;
   }
 
-  @Override
   public Object getData(@NotNull String dataId) {
     if (PlatformDataKeys.TREE_EXPANDER.is(dataId)) return getTreeExpander();
 
