@@ -12,6 +12,7 @@ import com.intellij.ide.projectView.BaseProjectTreeBuilder
 import com.intellij.ide.projectView.ProjectViewNode
 import com.intellij.ide.projectView.ProjectViewSettings
 import com.intellij.ide.projectView.ViewSettings
+import com.intellij.ide.projectView.impl.JavaHelpers.getElementsFromNode
 import com.intellij.ide.projectView.impl.JavaHelpers.pathsToSelectedElements
 import com.intellij.ide.projectView.impl.nodes.AbstractModuleNode
 import com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode
@@ -274,7 +275,7 @@ class ProjectViewPSIPane2 constructor(project: Project) : AbstractProjectViewPan
     if (paths == null) return PsiElement.EMPTY_ARRAY
     val result = ArrayList<PsiElement>()
     for (path in paths) {
-      result.addAll(getElementsFromNode(path.lastPathComponent))
+      result.addAll(getElementsFromNode(myProject, path.lastPathComponent))
     }
     return PsiUtilCore.toPsiElementArray(result)
   }
@@ -320,7 +321,7 @@ class ProjectViewPSIPane2 constructor(project: Project) : AbstractProjectViewPan
   }
 
   fun getFirstElementFromNode(node: Any?): PsiElement? {
-    return ContainerUtil.getFirstItem<PsiElement>(getElementsFromNode(node))
+    return ContainerUtil.getFirstItem<PsiElement>(getElementsFromNode(myProject, node))
   }
 
   fun getNodeModule(element: Any?): Module? {
