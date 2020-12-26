@@ -13,7 +13,6 @@ import com.intellij.injected.editor.VirtualFileWindow;
 import com.intellij.openapi.Disposable;
 import com.intellij.openapi.actionSystem.*;
 import com.intellij.openapi.application.ApplicationManager;
-import com.intellij.openapi.diagnostic.Logger;
 import com.intellij.openapi.fileEditor.impl.EditorTabPresentationUtil;
 import com.intellij.openapi.module.Module;
 import com.intellij.openapi.module.ModuleUtilCore;
@@ -61,11 +60,10 @@ import java.util.function.BooleanSupplier;
 @SuppressWarnings("UnstableApiUsage")
 public abstract class AbstractProjectViewPane2 {
   public final @NotNull Project myProject;
-  public DnDAwareTree myTree;
-  public ProjectAbstractTreeStructureBase myTreeStructure;
-  public TreeExpander myTreeExpander;
-  public DnDTarget myDropTarget;
-  public DnDSource myDragSource;
+  @NotNull public DnDAwareTree myTree;
+  @NotNull public ProjectAbstractTreeStructureBase myTreeStructure;
+  @Nullable private DnDTarget myDropTarget;
+  @Nullable private DnDSource myDragSource;
 
   public AbstractProjectViewPane2(@NotNull Project project) {
     myProject = project;
@@ -80,8 +78,6 @@ public abstract class AbstractProjectViewPane2 {
           DnDManager.getInstance().unregisterSource(myDragSource, myTree);
           myDragSource = null;
         }
-        myTree = null;
-        myTreeStructure = null;
       }
     };
     Disposer.register(
@@ -93,7 +89,7 @@ public abstract class AbstractProjectViewPane2 {
   public abstract @NotNull String getId();
 
   public TreePath[] getSelectionPaths() {
-    return myTree == null ? null : myTree.getSelectionPaths();
+    return myTree.getSelectionPaths();
   }
 
   /**
@@ -126,15 +122,13 @@ public abstract class AbstractProjectViewPane2 {
   }
 
   public Object getData(@NotNull String dataId) {
-    if (PlatformDataKeys.TREE_EXPANDER.is(dataId)) return getTreeExpander();
+    if (PlatformDataKeys.TREE_EXPANDER.is(dataId)) return createTreeExpander();//todo lazy cache
 
-    if (myTreeStructure != null) {
-      @SuppressWarnings("unchecked")
-      List<AbstractTreeNode<?>> nodes = (List)getSelectedNodes(AbstractTreeNode.class);
-      Object data = myTreeStructure.getDataFromProviders(nodes, dataId);
-      if (data != null) {
-        return data;
-      }
+    @SuppressWarnings("unchecked")
+    List<AbstractTreeNode<?>> nodes = (List)getSelectedNodes(AbstractTreeNode.class);
+    Object data = myTreeStructure.getDataFromProviders(nodes, dataId);
+    if (data != null) {
+      return data;
     }
 
     if (CommonDataKeys.NAVIGATABLE_ARRAY.is(dataId)) {
@@ -157,7 +151,7 @@ public abstract class AbstractProjectViewPane2 {
   }
 
   public final TreePath getSelectedPath() {
-    return myTree == null ? null : TreeUtil.getSelectedPathIfOne(myTree);
+    return TreeUtil.getSelectedPathIfOne(myTree);
   }
 
   /**
@@ -263,20 +257,11 @@ public abstract class AbstractProjectViewPane2 {
     return element;
   }
 
-  private @NotNull TreeExpander getTreeExpander() {
-    TreeExpander expander = myTreeExpander;
-    if (expander == null) {
-      expander = createTreeExpander();
-      myTreeExpander = expander;
-    }
-    return expander;
-  }
-
   public @NotNull TreeExpander createTreeExpander() {
     return new DefaultTreeExpander(this::getTree) {
       private boolean isExpandAllAllowed() {
         JTree tree = getTree();
-        TreeModel model = tree == null ? null : tree.getModel();
+        TreeModel model = tree.getModel();
         return model == null || model instanceof AsyncTreeModel || model instanceof InvokerSupplier;
       }
 
@@ -312,7 +297,7 @@ public abstract class AbstractProjectViewPane2 {
     }
   }
 
-  public JTree getTree() {
+  @NotNull public JTree getTree() {
     return myTree;
   }
 
@@ -441,10 +426,6 @@ public abstract class AbstractProjectViewPane2 {
       dndManager.registerTarget(myDropTarget, myTree);
     }
   }
-
-  public void beforeDnDUpdate() { }
-
-  public void beforeDnDLeave() { }
 
   private final class MyDragSource implements DnDSource {
     @Override
