@@ -2,11 +2,11 @@ package com.intellij.ide.projectView.impl
 
 import com.intellij.ide.DefaultTreeExpander
 import com.intellij.ide.TreeExpander
-import com.intellij.ide.util.treeView.AbstractTreeNode
-import com.intellij.ide.util.treeView.NodeDescriptor
+import com.intellij.ide.util.treeView.*
 import com.intellij.openapi.actionSystem.DataContext
 import com.intellij.openapi.module.Module
 import com.intellij.openapi.util.registry.Registry
+import com.intellij.psi.PsiDirectory
 import com.intellij.refactoring.move.MoveHandler
 import com.intellij.ui.tree.AsyncTreeModel
 import com.intellij.util.concurrency.InvokerSupplier
@@ -64,3 +64,26 @@ fun createTreeExpander(treeArg: JTree): TreeExpander {
 fun getValueFromNode(node: Any?): Any? {
   return extractValueFromNode(node)
 }
+
+@Suppress("UnstableApiUsage")
+fun createTreeUpdater(treeBuilder: AbstractTreeBuilder, treeStructure: AbstractTreeStructure): AbstractTreeUpdater =
+  object : AbstractTreeUpdater(treeBuilder) {
+    override fun addSubtreeToUpdateByElement(element: Any): Boolean {
+      if (element is PsiDirectory) {
+        var dirToUpdateFrom: PsiDirectory? = element
+
+        var addedOk: Boolean
+        while (!super.addSubtreeToUpdateByElement(dirToUpdateFrom ?: treeStructure.rootElement)
+            .also { addedOk = it }
+        ) {
+          if (dirToUpdateFrom == null) {
+            break
+          }
+          dirToUpdateFrom = dirToUpdateFrom.parentDirectory
+        }
+        return addedOk
+      }
+      return super.addSubtreeToUpdateByElement(element)
+    }
+  }
+

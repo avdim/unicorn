@@ -9,8 +9,8 @@ import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.TreePath;
 import java.util.StringTokenizer;
 
-final class SpeedSearchFiles extends TreeSpeedSearch {
-  SpeedSearchFiles(JTree tree) {
+public final class SpeedSearchFiles extends TreeSpeedSearch {
+  public SpeedSearchFiles(JTree tree) {
     super(tree);
   }
 
