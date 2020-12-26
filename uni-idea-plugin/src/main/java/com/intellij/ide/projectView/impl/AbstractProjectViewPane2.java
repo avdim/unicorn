@@ -1,61 +1,55 @@
 // Copyright 2000-2020 JetBrains s.r.o. Use of this source code is governed by the Apache 2.0 license that can be found in the LICENSE file.
 package com.intellij.ide.projectView.impl;
 
-import com.intellij.ide.*;
-import com.intellij.ide.dnd.*;
+import com.intellij.ide.DefaultTreeExpander;
+import com.intellij.ide.TreeExpander;
+import com.intellij.ide.dnd.DnDManager;
+import com.intellij.ide.dnd.DnDSource;
+import com.intellij.ide.dnd.DnDTarget;
 import com.intellij.ide.dnd.aware.DnDAwareTree;
 import com.intellij.ide.impl.FlattenModulesToggleAction;
-import com.intellij.ide.projectView.*;
+import com.intellij.ide.projectView.ProjectView;
+import com.intellij.ide.projectView.ProjectViewNode;
+import com.intellij.ide.projectView.RootsProvider;
 import com.intellij.ide.projectView.impl.nodes.AbstractModuleNode;
-import com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode;
-import com.intellij.ide.util.treeView.*;
-import com.intellij.injected.editor.VirtualFileWindow;
+import com.intellij.ide.util.treeView.AbstractTreeBuilder;
+import com.intellij.ide.util.treeView.NodeDescriptor;
 import com.intellij.openapi.Disposable;
-import com.intellij.openapi.actionSystem.*;
-import com.intellij.openapi.application.ApplicationManager;
-import com.intellij.openapi.fileEditor.impl.EditorTabPresentationUtil;
+import com.intellij.openapi.actionSystem.ToggleAction;
 import com.intellij.openapi.module.Module;
 import com.intellij.openapi.module.ModuleUtilCore;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.roots.ModuleRootManager;
-import com.intellij.openapi.ui.VerticalFlowLayout;
-import com.intellij.openapi.util.*;
+import com.intellij.openapi.util.Disposer;
 import com.intellij.openapi.util.registry.Registry;
 import com.intellij.openapi.vfs.VirtualFile;
-import com.intellij.pom.Navigatable;
-import com.intellij.psi.*;
+import com.intellij.psi.PsiDirectory;
+import com.intellij.psi.PsiElement;
+import com.intellij.psi.PsiManager;
 import com.intellij.psi.util.PsiUtilCore;
-import com.intellij.refactoring.move.MoveHandler;
-import com.intellij.ui.SimpleColoredComponent;
-import com.intellij.ui.render.RenderingUtil;
-import com.intellij.ui.tabs.impl.SingleHeightTabs;
 import com.intellij.ui.tree.AsyncTreeModel;
-import com.intellij.ui.tree.TreePathUtil;
 import com.intellij.util.ArrayUtil;
-import com.intellij.util.ObjectUtils;
 import com.intellij.util.concurrency.InvokerSupplier;
 import com.intellij.util.containers.ContainerUtil;
 import com.intellij.util.containers.JBIterable;
-import com.intellij.util.ui.EmptyIcon;
-import com.intellij.util.ui.ImageUtil;
-import com.intellij.util.ui.JBUI;
-import com.intellij.util.ui.UIUtil;
 import com.intellij.util.ui.tree.TreeUtil;
 import com.unicorn.Uni;
-import org.jetbrains.annotations.*;
+import org.jetbrains.annotations.ApiStatus;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
+
 import javax.swing.*;
-import javax.swing.border.EmptyBorder;
 import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.TreeModel;
 import javax.swing.tree.TreeNode;
 import javax.swing.tree.TreePath;
-import java.awt.*;
-import java.awt.dnd.DnDConstants;
-import java.awt.image.BufferedImage;
-import java.io.File;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
-import java.util.*;
 import java.util.function.BooleanSupplier;
+
+import static com.intellij.ide.projectView.impl.HelpersKt.extractValueFromNode;
 
 @SuppressWarnings("UnstableApiUsage")
 public abstract class AbstractProjectViewPane2 {
@@ -170,27 +164,6 @@ public abstract class AbstractProjectViewPane2 {
     return getValueFromNode(node);
   }
 
-  @Nullable
-  public static Object extractValueFromNode(@Nullable Object node) {
-    Object userObject = TreeUtil.getUserObject(node);
-    Object element = null;
-    if (userObject instanceof AbstractTreeNode) {
-      AbstractTreeNode descriptor = (AbstractTreeNode)userObject;
-      element = descriptor.getValue();
-    }
-    else if (userObject instanceof NodeDescriptor) {
-      NodeDescriptor descriptor = (NodeDescriptor)userObject;
-      element = descriptor.getElement();
-      if (element instanceof AbstractTreeNode) {
-        element = ((AbstractTreeNode)element).getValue();
-      }
-    }
-    else if (userObject != null) {
-      element = userObject;
-    }
-    return element;
-  }
-
   public @NotNull TreeExpander createTreeExpander() {
     return new DefaultTreeExpander(this::getTree) {
       public boolean isExpandAllAllowed() {
@@ -262,17 +235,6 @@ public abstract class AbstractProjectViewPane2 {
       }
     }
     return PsiDirectory.EMPTY_ARRAY;
-  }
-
-  // Drag'n'Drop stuff
-
-  public static boolean canDragElements(Object @NotNull [] elements, @NotNull DataContext dataContext, int dragAction) {
-    for (Object element : elements) {
-      if (element instanceof Module) {
-        return true;
-      }
-    }
-    return dragAction == DnDConstants.ACTION_MOVE && MoveHandler.canMove(dataContext);
   }
 
 }
