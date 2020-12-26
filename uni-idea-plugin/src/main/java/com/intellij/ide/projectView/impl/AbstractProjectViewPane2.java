@@ -9,9 +9,7 @@ import com.intellij.ide.dnd.DnDTarget;
 import com.intellij.ide.dnd.aware.DnDAwareTree;
 import com.intellij.ide.impl.FlattenModulesToggleAction;
 import com.intellij.ide.projectView.ProjectView;
-import com.intellij.ide.projectView.ProjectViewNode;
 import com.intellij.ide.projectView.RootsProvider;
-import com.intellij.ide.projectView.impl.nodes.AbstractModuleNode;
 import com.intellij.ide.util.treeView.AbstractTreeBuilder;
 import com.intellij.ide.util.treeView.NodeDescriptor;
 import com.intellij.openapi.Disposable;
@@ -19,13 +17,10 @@ import com.intellij.openapi.actionSystem.ToggleAction;
 import com.intellij.openapi.module.Module;
 import com.intellij.openapi.module.ModuleUtilCore;
 import com.intellij.openapi.project.Project;
-import com.intellij.openapi.roots.ModuleRootManager;
 import com.intellij.openapi.util.Disposer;
 import com.intellij.openapi.util.registry.Registry;
 import com.intellij.openapi.vfs.VirtualFile;
-import com.intellij.psi.PsiDirectory;
 import com.intellij.psi.PsiElement;
-import com.intellij.psi.PsiManager;
 import com.intellij.psi.util.PsiUtilCore;
 import com.intellij.ui.tree.AsyncTreeModel;
 import com.intellij.util.ArrayUtil;
@@ -189,7 +184,6 @@ public abstract class AbstractProjectViewPane2 {
     };
   }
 
-
   public @NotNull Comparator<NodeDescriptor<?>> createComparator() {
     return new GroupByTypeComparator(myProject, getId());
   }
@@ -206,35 +200,6 @@ public abstract class AbstractProjectViewPane2 {
 
   @NotNull public JTree getTree() {
     return myTree;
-  }
-
-  public PsiDirectory @NotNull [] getSelectedDirectoriesInAmbiguousCase(Object userObject) {
-    if (userObject instanceof AbstractModuleNode) {
-      final Module module = ((AbstractModuleNode)userObject).getValue();
-      if (module != null && !module.isDisposed()) {
-        final ModuleRootManager moduleRootManager = ModuleRootManager.getInstance(module);
-        final VirtualFile[] sourceRoots = moduleRootManager.getSourceRoots();
-        List<PsiDirectory> dirs = new ArrayList<>(sourceRoots.length);
-        final PsiManager psiManager = PsiManager.getInstance(myProject);
-        for (final VirtualFile sourceRoot : sourceRoots) {
-          final PsiDirectory directory = psiManager.findDirectory(sourceRoot);
-          if (directory != null) {
-            dirs.add(directory);
-          }
-        }
-        return dirs.toArray(PsiDirectory.EMPTY_ARRAY);
-      }
-    }
-    else if (userObject instanceof ProjectViewNode) {
-      VirtualFile file = ((ProjectViewNode)userObject).getVirtualFile();
-      if (file != null && file.isValid() && file.isDirectory()) {
-        PsiDirectory directory = PsiManager.getInstance(myProject).findDirectory(file);
-        if (directory != null) {
-          return new PsiDirectory[]{directory};
-        }
-      }
-    }
-    return PsiDirectory.EMPTY_ARRAY;
   }
 
 }

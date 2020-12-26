@@ -8,8 +8,10 @@ import com.intellij.ide.IdeBundle
 import com.intellij.ide.PsiCopyPasteManager
 import com.intellij.ide.dnd.*
 import com.intellij.ide.projectView.BaseProjectTreeBuilder
+import com.intellij.ide.projectView.ProjectViewNode
 import com.intellij.ide.projectView.ProjectViewSettings
 import com.intellij.ide.projectView.ViewSettings
+import com.intellij.ide.projectView.impl.nodes.AbstractModuleNode
 import com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode
 import com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode
 import com.intellij.ide.ui.customization.CustomizationUtil
@@ -22,6 +24,7 @@ import com.intellij.openapi.actionSystem.PlatformDataKeys
 import com.intellij.openapi.application.ApplicationManager
 import com.intellij.openapi.module.Module
 import com.intellij.openapi.project.Project
+import com.intellij.openapi.roots.ModuleRootManager
 import com.intellij.openapi.ui.VerticalFlowLayout
 import com.intellij.openapi.util.Pair
 import com.intellij.openapi.util.Trinity
@@ -31,6 +34,7 @@ import com.intellij.pom.Navigatable
 import com.intellij.psi.PsiDirectory
 import com.intellij.psi.PsiDirectoryContainer
 import com.intellij.psi.PsiElement
+import com.intellij.psi.PsiManager
 import com.intellij.psi.util.PsiUtilCore
 import com.intellij.ui.ScrollPaneFactory
 import com.intellij.ui.SimpleColoredComponent
@@ -186,41 +190,41 @@ class ProjectViewPSIPane2 constructor(project: Project) : AbstractProjectViewPan
         }
       }
     }
-    if (!directories.isEmpty()) {
-      return directories.toTypedArray<PsiDirectory>()
+    if (directories.isNotEmpty()) {
+      return directories.toTypedArray()
     }
 
     val elements = getSelectedPSIElements()
     if (elements.size == 1) {
       val element = elements[0]
       if (element is PsiDirectory) {
-        return arrayOf<PsiDirectory>(element as PsiDirectory)
+        return arrayOf(element)
       } else if (element is PsiDirectoryContainer) {
-        return (element as PsiDirectoryContainer).getDirectories()
+        return element.directories
       } else {
-        val containingFile = element.getContainingFile()
+        val containingFile = element.containingFile
         if (containingFile != null) {
-          val psiDirectory = containingFile.getContainingDirectory()
+          val psiDirectory = containingFile.containingDirectory
           if (psiDirectory != null) {
-            return arrayOf<PsiDirectory>(psiDirectory)
+            return arrayOf(psiDirectory)
           }
-          val file = containingFile.getVirtualFile()
+          val file = containingFile.virtualFile
           if (file is VirtualFileWindow) {
-            val delegate = (file as VirtualFileWindow).getDelegate()
-            val delegatePsiFile = containingFile.getManager().findFile(delegate)
-            if (delegatePsiFile != null && delegatePsiFile.getContainingDirectory() != null) {
-              return arrayOf<PsiDirectory>(delegatePsiFile.getContainingDirectory())
+            val delegate = (file as VirtualFileWindow).delegate
+            val containingDirectory = containingFile.manager.findFile(delegate)?.containingDirectory
+            if (containingDirectory != null) {
+              return arrayOf(containingDirectory)
             }
           }
           return PsiDirectory.EMPTY_ARRAY
         }
       }
     } else {
-      val path = getSelectedPath()
+      val path = selectedPath
       if (path != null) {
-        val component = path.getLastPathComponent()
+        val component = path.lastPathComponent
         if (component is DefaultMutableTreeNode) {
-          return getSelectedDirectoriesInAmbiguousCase(component.getUserObject())
+          return getSelectedDirectoriesInAmbiguousCase(component.userObject)
         }
         return getSelectedDirectoriesInAmbiguousCase(component)
       }
@@ -274,6 +278,34 @@ class ProjectViewPSIPane2 constructor(project: Project) : AbstractProjectViewPan
       result.addAll(getElementsFromNode(path.lastPathComponent))
     }
     return PsiUtilCore.toPsiElementArray(result)
+  }
+
+  fun getSelectedDirectoriesInAmbiguousCase(userObject: Any): Array<PsiDirectory> {
+    if (userObject is AbstractModuleNode) {
+      val module = userObject.value
+      if (module != null && !module.isDisposed) {
+        val moduleRootManager = ModuleRootManager.getInstance(module)
+        val sourceRoots = moduleRootManager.sourceRoots
+        val dirs = ArrayList<PsiDirectory>(sourceRoots.size)
+        val psiManager = PsiManager.getInstance(myProject)
+        for (sourceRoot in sourceRoots) {
+          val directory = psiManager.findDirectory(sourceRoot)
+          if (directory != null) {
+            dirs.add(directory)
+          }
+        }
+        return dirs.toTypedArray()
+      }
+    } else if (userObject is ProjectViewNode<*>) {
+      val file = userObject.virtualFile
+      if (file != null && file.isValid && file.isDirectory) {
+        val directory = PsiManager.getInstance(myProject).findDirectory(file)
+        if (directory != null) {
+          return arrayOf(directory)
+        }
+      }
+    }
+    return PsiDirectory.EMPTY_ARRAY
   }
 
   inner class MyDragSource : DnDSource {
