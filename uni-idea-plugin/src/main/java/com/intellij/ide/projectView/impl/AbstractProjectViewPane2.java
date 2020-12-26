@@ -276,29 +276,6 @@ public abstract class AbstractProjectViewPane2 {
 
   // Drag'n'Drop stuff
 
-  public class DragImageLabel extends JLabel {
-    public DragImageLabel(@Nls String text, Icon icon, @Nullable VirtualFile file) {
-      super(text, icon, SwingConstants.LEADING);
-      setFont(UIUtil.getTreeFont());
-      setOpaque(true);
-      if (file != null) {
-        setBackground(EditorTabPresentationUtil.getEditorTabBackgroundColor(myProject, file, null));
-        setForeground(EditorTabPresentationUtil.getFileForegroundColor(myProject, file));
-      } else {
-        setForeground(RenderingUtil.getForeground(getTree(), true));
-        setBackground(RenderingUtil.getBackground(getTree(), true));
-      }
-      setBorder(new EmptyBorder(JBUI.CurrentTheme.EditorTabs.tabInsets()));
-    }
-
-    @Override
-    public Dimension getPreferredSize() {
-      Dimension size = super.getPreferredSize();
-      size.height = JBUI.scale(SingleHeightTabs.UNSCALED_PREF_HEIGHT);
-      return size;
-    }
-  }
-
   public static boolean canDragElements(Object @NotNull [] elements, @NotNull DataContext dataContext, int dragAction) {
     for (Object element : elements) {
       if (element instanceof Module) {

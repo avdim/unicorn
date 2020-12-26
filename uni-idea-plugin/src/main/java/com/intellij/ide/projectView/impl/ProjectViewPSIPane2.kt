@@ -316,11 +316,19 @@ class ProjectViewPSIPane2 constructor(project: Project) : AbstractProjectViewPan
       val panel = JPanel(VerticalFlowLayout(0, 0))
       val maxItemsToShow = if (toRender.size < 20) toRender.size else 10
       for (trinity in toRender) {
-        val fileLabel = DragImageLabel(trinity.first, trinity.second, trinity.third)
+        val fileLabel = DragImageLabel(myProject, tree, trinity.first, trinity.second, trinity.third)
         panel.add(fileLabel)
         count++
         if (count > maxItemsToShow) {
-          panel.add(DragImageLabel(IdeBundle.message("label.more.files", paths.size - maxItemsToShow), EmptyIcon.ICON_16, null))
+          panel.add(
+            DragImageLabel(
+              myProject,
+              tree,
+              IdeBundle.message("label.more.files", paths.size - maxItemsToShow),
+              EmptyIcon.ICON_16,
+              null
+            )
+          )
           break
         }
       }
