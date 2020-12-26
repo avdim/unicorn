@@ -188,16 +188,6 @@ public abstract class AbstractProjectViewPane2 {
     return new GroupByTypeComparator(myProject, getId());
   }
 
-  void installComparator(AbstractTreeBuilder treeBuilder) {
-    installComparator(treeBuilder, createComparator());
-  }
-
-  public void installComparator(AbstractTreeBuilder builder, @NotNull Comparator<? super NodeDescriptor<?>> comparator) {
-    if (builder != null) {
-      builder.setNodeDescriptorComparator(comparator);
-    }
-  }
-
   @NotNull public JTree getTree() {
     return myTree;
   }
