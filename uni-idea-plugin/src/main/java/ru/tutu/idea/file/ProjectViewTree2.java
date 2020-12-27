@@ -70,38 +70,26 @@ public class ProjectViewTree2 extends DnDAwareTree {
 
   @Override
   public boolean isFileColorsEnabled() {
-    return isFileColorsEnabledFor(this);
-  }
-
-  public static boolean isFileColorsEnabledFor(JTree tree) {
-    boolean enabled = FileColorManagerImpl._isEnabled() && FileColorManagerImpl._isEnabledForProjectView();
-    boolean opaque = tree.isOpaque();
-    if (enabled && opaque) {
-      tree.setOpaque(false);
-    }
-    else if (!enabled && !opaque) {
-      tree.setOpaque(true);
-    }
-    return enabled;
+    return ProjectViewTreeHelpers.isFileColorsEnabledFor(this);
   }
 
   @DirtyUI
   @Nullable
   @Override
-  public Color getFileColorFor(Object object) {
-    if (object instanceof DefaultMutableTreeNode) {
-      DefaultMutableTreeNode node = (DefaultMutableTreeNode)object;
-      object = node.getUserObject();
+  public Color getFileColorFor(Object obj) {
+    if (obj instanceof DefaultMutableTreeNode) {
+      DefaultMutableTreeNode node = (DefaultMutableTreeNode)obj;
+      obj = node.getUserObject();
     }
-    if (object instanceof AbstractTreeNode) {
-      AbstractTreeNode<?> node = (AbstractTreeNode<?>)object;
+    if (obj instanceof AbstractTreeNode) {
+      AbstractTreeNode<?> node = (AbstractTreeNode<?>)obj;
       Object value = node.getValue();
       if (value instanceof PsiElement) {
-        return getColorForElement((PsiElement)value);
+        return ProjectViewTreeHelpers.getColorForElement((PsiElement)value);
       }
     }
-    if (object instanceof ProjectViewNode) {
-      ProjectViewNode<?> node = (ProjectViewNode<?>)object;
+    if (obj instanceof ProjectViewNode) {
+      ProjectViewNode<?> node = (ProjectViewNode<?>)obj;
       VirtualFile file = node.getVirtualFile();
       if (file != null) {
         Project project = node.getProject();
@@ -114,35 +102,4 @@ public class ProjectViewTree2 extends DnDAwareTree {
     return null;
   }
 
-  @Nullable
-  public static Color getColorForElement(@Nullable PsiElement psi) {
-    Color color = null;
-    if (psi != null) {
-      if (!psi.isValid()) return null;
-
-      Project project = psi.getProject();
-      final VirtualFile file = PsiUtilCore.getVirtualFile(psi);
-
-      if (file != null) {
-        color = VfsPresentationUtil.getFileBackgroundColor(project, file);
-      }
-      else if (psi instanceof PsiDirectory) {
-        color = VfsPresentationUtil.getFileBackgroundColor(project, ((PsiDirectory)psi).getVirtualFile());
-      }
-      else if (psi instanceof PsiDirectoryContainer) {
-        final PsiDirectory[] dirs = ((PsiDirectoryContainer)psi).getDirectories();
-        for (PsiDirectory dir : dirs) {
-          Color c = VfsPresentationUtil.getFileBackgroundColor(project, dir.getVirtualFile());
-          if (c != null && color == null) {
-            color = c;
-          }
-          else if (c != null) {
-            color = null;
-            break;
-          }
-        }
-      }
-    }
-    return color;
-  }
 }
