@@ -411,7 +411,7 @@ private fun _createUniFilesComponent(
               return directories.toTypedArray()
             }
 
-            val elements = getSelectedPSIElements()
+            val elements: Array<PsiElement> = getSelectedPSIElements()
             if (elements.size == 1) {
               val element = elements[0]
               if (element is PsiDirectory) {
@@ -443,17 +443,10 @@ private fun _createUniFilesComponent(
                   if (userObject is AbstractModuleNode) {
                     val module = userObject.value
                     if (module != null && !module.isDisposed) {
-                      val moduleRootManager = ModuleRootManager.getInstance(module)
-                      val sourceRoots = moduleRootManager.sourceRoots
-                      val dirs = ArrayList<PsiDirectory>(sourceRoots.size)
                       val psiManager = PsiManager.getInstance(project)
-                      for (sourceRoot in sourceRoots) {
-                        val directory = psiManager.findDirectory(sourceRoot)
-                        if (directory != null) {
-                          dirs.add(directory)
-                        }
-                      }
-                      return dirs.toTypedArray()
+                      return ModuleRootManager.getInstance(module).sourceRoots.mapNotNull {
+                        psiManager.findDirectory(it)
+                      }.toTypedArray()
                     }
                   } else if (userObject is ProjectViewNode<*>) {
                     val file = userObject.virtualFile
@@ -466,6 +459,7 @@ private fun _createUniFilesComponent(
                   }
                   return emptyArray()
                 }
+
                 val component = path.lastPathComponent
                 if (component is DefaultMutableTreeNode) {
                   return getSelectedDirectoriesInAmbiguousCase(component.userObject)
@@ -534,6 +528,7 @@ private fun _createUniFilesComponent(
           val descriptor = TreeUtil.getLastUserObject(NodeDescriptor::class.java, getSelectedPath()) ?: return null
           return if (descriptor is AbstractTreeNode<*>) descriptor.value else descriptor.element
         }
+
         val selected = getSelectNodeElement()
         return selected as? Project
       }
