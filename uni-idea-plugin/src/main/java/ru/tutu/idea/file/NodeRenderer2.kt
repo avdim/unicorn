@@ -4,8 +4,6 @@ package ru.tutu.idea.file
 import com.intellij.ide.projectView.PresentationData
 import com.intellij.ide.util.treeView.NodeDescriptor
 import com.intellij.ide.util.treeView.PresentableNodeDescriptor
-import com.intellij.navigation.ColoredItemPresentation
-import com.intellij.navigation.ItemPresentation
 import com.intellij.navigation.NavigationItem
 import com.intellij.openapi.editor.colors.EditorColorsManager
 import com.intellij.openapi.editor.colors.EditorColorsScheme
@@ -46,13 +44,16 @@ open class NodeRenderer2 : ColoredTreeCellRenderer2() {
       val descriptor = node
       icon = fixIconIfNeeded(descriptor.icon, selected, hasFocus)
     }
-    val p0 = getPresentation(node)
-    if (p0 is PresentationData) {
-      val presentation = p0
+    val presentation = when (node) {
+      is PresentableNodeDescriptor<*> -> node.presentation
+      is NavigationItem -> node.presentation
+      else -> null
+    }
+    if (presentation is PresentationData) {
       val color = if (node is NodeDescriptor<*>) node.color else null
       icon = fixIconIfNeeded(presentation.getIcon(false), selected, hasFocus)
       val coloredText = presentation.coloredText
-      val forcedForeground = presentation.forcedTextForeground
+      val forcedForeground: Color? = presentation.forcedTextForeground
       if (coloredText.isEmpty()) {
         var text = presentation.presentableText
         if (StringUtil.isEmpty(text)) {
@@ -60,14 +61,23 @@ open class NodeRenderer2 : ColoredTreeCellRenderer2() {
           text = valueSting
         }
         text = tree.convertValueToText(text, selected, expanded, leaf, row, hasFocus)
-        val simpleTextAttributes = getSimpleTextAttributes(
-          presentation, forcedForeground ?: color
-        )
+        val textAttributesKey = presentation.textAttributesKey
+        val simpleTextAttributes = if (textAttributesKey != null) {
+          val textAttributes = scheme.getAttributes(textAttributesKey)
+          if (textAttributes != null) {
+            SimpleTextAttributes.fromTextAttributes(textAttributes)
+          } else {
+            SimpleTextAttributes.REGULAR_ATTRIBUTES
+          }
+        } else {
+          SimpleTextAttributes.REGULAR_ATTRIBUTES
+        }.let {
+          addColorToSimpleTextAttributes(it, forcedForeground ?: color)
+        }
         append(text, simpleTextAttributes)
-        val location = presentation.locationString
-        if (!StringUtil.isEmpty(location)) {
-          val attributes =
-            SimpleTextAttributes.merge(simpleTextAttributes, SimpleTextAttributes.GRAYED_ATTRIBUTES)
+        val location: String? = presentation.locationString
+        if (!location.isNullOrEmpty()) {
+          val attributes = SimpleTextAttributes.merge(simpleTextAttributes, SimpleTextAttributes.GRAYED_ATTRIBUTES)
           append(presentation.locationPrefix + location + presentation.locationSuffix, attributes, false)
         }
       } else {
@@ -122,15 +132,6 @@ open class NodeRenderer2 : ColoredTreeCellRenderer2() {
     }
   }
 
-  protected fun getPresentation(node: Any?): ItemPresentation? {
-    return if (node is PresentableNodeDescriptor<*>) node.presentation else if (node is NavigationItem) node.presentation else null
-  }
-
-  protected fun getSimpleTextAttributes(presentation: PresentationData, color: Color?): SimpleTextAttributes {
-    val simpleTextAttributes = getSimpleTextAttributes(presentation, scheme)
-    return addColorToSimpleTextAttributes(simpleTextAttributes, color)
-  }
-
   companion object {
     private val scheme: EditorColorsScheme
       private get() = EditorColorsManager.getInstance().schemeForCurrentUITheme
@@ -148,19 +149,5 @@ open class NodeRenderer2 : ColoredTreeCellRenderer2() {
       return simpleTextAttributes
     }
 
-    private fun getSimpleTextAttributes(
-      presentation: ItemPresentation?,
-      colorsScheme: EditorColorsScheme
-    ): SimpleTextAttributes {
-      if (presentation is ColoredItemPresentation) {
-        val textAttributesKey = presentation.textAttributesKey
-          ?: return SimpleTextAttributes.REGULAR_ATTRIBUTES
-        val textAttributes = colorsScheme.getAttributes(textAttributesKey)
-        return if (textAttributes == null) SimpleTextAttributes.REGULAR_ATTRIBUTES else SimpleTextAttributes.fromTextAttributes(
-          textAttributes
-        )
-      }
-      return SimpleTextAttributes.REGULAR_ATTRIBUTES
-    }
   }
 }
