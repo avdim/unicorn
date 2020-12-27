@@ -24,7 +24,6 @@ import com.intellij.openapi.ui.VerticalFlowLayout
 import com.intellij.openapi.util.Disposer
 import com.intellij.openapi.util.Pair
 import com.intellij.openapi.util.Trinity
-import com.intellij.openapi.util.registry.Registry
 import com.intellij.openapi.vfs.JarFileSystem
 import com.intellij.openapi.vfs.LocalFileSystem
 import com.intellij.openapi.vfs.VirtualFile
@@ -149,94 +148,6 @@ private fun _createUniFilesComponent(
       result.addAll(JavaHelpers.getElementsFromNode(project, path.lastPathComponent))
     }
     return PsiUtilCore.toPsiElementArray(result)
-  }
-
-  fun getSelectedDirectoriesInAmbiguousCase(userObject: Any): Array<PsiDirectory> {
-    if (userObject is AbstractModuleNode) {
-      val module = userObject.value
-      if (module != null && !module.isDisposed) {
-        val moduleRootManager = ModuleRootManager.getInstance(module)
-        val sourceRoots = moduleRootManager.sourceRoots
-        val dirs = ArrayList<PsiDirectory>(sourceRoots.size)
-        val psiManager = PsiManager.getInstance(project)
-        for (sourceRoot in sourceRoots) {
-          val directory = psiManager.findDirectory(sourceRoot)
-          if (directory != null) {
-            dirs.add(directory)
-          }
-        }
-        return dirs.toTypedArray()
-      }
-    } else if (userObject is ProjectViewNode<*>) {
-      val file = userObject.virtualFile
-      if (file != null && file.isValid && file.isDirectory) {
-        val directory = PsiManager.getInstance(project).findDirectory(file)
-        if (directory != null) {
-          return arrayOf(directory)
-        }
-      }
-    }
-    return PsiDirectory.EMPTY_ARRAY
-  }
-
-  fun getSelectedDirectories(): Array<PsiDirectory> {
-    val directories = ArrayList<PsiDirectory>()
-    for (node in getSelectedNodes(PsiDirectoryNode::class.java)) {
-      var directory: PsiDirectory? = node.value
-      if (directory != null) {
-        directories.add(directory)
-        val parentValue = node.parent.value
-        if (parentValue is PsiDirectory && Registry.`is`("projectView.choose.directory.on.compacted.middle.packages")) {
-          while (true) {
-            directory = directory!!.parentDirectory
-            if (directory == null || directory == parentValue) {
-              break
-            }
-            directories.add(directory)
-          }
-        }
-      }
-    }
-    if (directories.isNotEmpty()) {
-      return directories.toTypedArray()
-    }
-
-    val elements = getSelectedPSIElements()
-    if (elements.size == 1) {
-      val element = elements[0]
-      if (element is PsiDirectory) {
-        return arrayOf(element)
-      } else if (element is PsiDirectoryContainer) {
-        return element.directories
-      } else {
-        val containingFile = element.containingFile
-        if (containingFile != null) {
-          val psiDirectory = containingFile.containingDirectory
-          if (psiDirectory != null) {
-            return arrayOf(psiDirectory)
-          }
-          val file = containingFile.virtualFile
-          if (file is VirtualFileWindow) {
-            val delegate = (file as VirtualFileWindow).delegate
-            val containingDirectory = containingFile.manager.findFile(delegate)?.containingDirectory
-            if (containingDirectory != null) {
-              return arrayOf(containingDirectory)
-            }
-          }
-          return PsiDirectory.EMPTY_ARRAY
-        }
-      }
-    } else {
-      val path = getSelectedPath()
-      if (path != null) {
-        val component = path.lastPathComponent
-        if (component is DefaultMutableTreeNode) {
-          return getSelectedDirectoriesInAmbiguousCase(component.userObject)
-        }
-        return getSelectedDirectoriesInAmbiguousCase(component)
-      }
-    }
-    return PsiDirectory.EMPTY_ARRAY
   }
 
   class MyDragSource : DnDSource {
@@ -491,7 +402,80 @@ private fun _createUniFilesComponent(
       if (LangDataKeys.IDE_VIEW.`is`(dataId)) {
         return object : IdeView {
           override fun getOrChooseDirectory(): PsiDirectory? = DirectoryChooserUtil.getOrChooseDirectory(this)
-          override fun getDirectories(): Array<PsiDirectory> = getSelectedDirectories()
+          override fun getDirectories(): Array<PsiDirectory> {
+            val directories = ArrayList<PsiDirectory>()
+            for (node in getSelectedNodes(PsiDirectoryNode::class.java)) {
+              directories.add(node.value)
+            }
+            if (directories.isNotEmpty()) {
+              return directories.toTypedArray()
+            }
+
+            val elements = getSelectedPSIElements()
+            if (elements.size == 1) {
+              val element = elements[0]
+              if (element is PsiDirectory) {
+                return arrayOf(element)
+              } else if (element is PsiDirectoryContainer) {
+                return element.directories
+              } else {
+                val containingFile = element.containingFile
+                if (containingFile != null) {
+                  val psiDirectory = containingFile.containingDirectory
+                  if (psiDirectory != null) {
+                    return arrayOf(psiDirectory)
+                  }
+                  val file = containingFile.virtualFile
+                  if (file is VirtualFileWindow) {
+                    val delegate = (file as VirtualFileWindow).delegate
+                    val containingDirectory = containingFile.manager.findFile(delegate)?.containingDirectory
+                    if (containingDirectory != null) {
+                      return arrayOf(containingDirectory)
+                    }
+                  }
+                  return PsiDirectory.EMPTY_ARRAY
+                }
+              }
+            } else {
+              val path = getSelectedPath()
+              if (path != null) {
+                fun getSelectedDirectoriesInAmbiguousCase(userObject: Any): Array<PsiDirectory> {
+                  if (userObject is AbstractModuleNode) {
+                    val module = userObject.value
+                    if (module != null && !module.isDisposed) {
+                      val moduleRootManager = ModuleRootManager.getInstance(module)
+                      val sourceRoots = moduleRootManager.sourceRoots
+                      val dirs = ArrayList<PsiDirectory>(sourceRoots.size)
+                      val psiManager = PsiManager.getInstance(project)
+                      for (sourceRoot in sourceRoots) {
+                        val directory = psiManager.findDirectory(sourceRoot)
+                        if (directory != null) {
+                          dirs.add(directory)
+                        }
+                      }
+                      return dirs.toTypedArray()
+                    }
+                  } else if (userObject is ProjectViewNode<*>) {
+                    val file = userObject.virtualFile
+                    if (file != null && file.isValid && file.isDirectory) {
+                      val directory = PsiManager.getInstance(project).findDirectory(file)
+                      if (directory != null) {
+                        return arrayOf(directory)
+                      }
+                    }
+                  }
+                  return emptyArray()
+                }
+                val component = path.lastPathComponent
+                if (component is DefaultMutableTreeNode) {
+                  return getSelectedDirectoriesInAmbiguousCase(component.userObject)
+                }
+                return getSelectedDirectoriesInAmbiguousCase(component)
+              }
+            }
+            return emptyArray()
+          }
+
           override fun selectElement(element: PsiElement) {}
         }
       }
