@@ -92,8 +92,8 @@ private fun _createUniFilesComponent(
   ApplicationManager.getApplication().assertIsDispatchThread()
 
   val treeModel = DefaultTreeModel(DefaultMutableTreeNode(null))
-  val myTree: ProjectViewTree =
-    object : ProjectViewTree(treeModel) {
+  val myTree: ProjectViewTree2 =
+    object : ProjectViewTree2(treeModel) {
       override fun toString(): String = "todo title" + " " + super.toString()//todo title
       override fun setFont(font: Font) {
         super.setFont(font.deriveFont(font.size /*+ 3f*/))
