@@ -339,18 +339,17 @@ private fun _createUniFilesComponent(
   }
   Disposer.register(Uni, fileManagerDisposable)
 
-//  viewPane.restoreExpandedPaths()
-  val viewPaneComponent = ScrollPaneFactory.createScrollPane(myTree)
+  val viewComponent: JComponent = ScrollPaneFactory.createScrollPane(myTree)
   myTree.addSelectionListener {
     selectionListener(it)
   }
 
   return object : JPanel(), DataProvider {
-    private val myCopyPasteDelegator = CopyPasteDelegator(project, viewPaneComponent)
+    private val myCopyPasteDelegator = CopyPasteDelegator(project, viewComponent)
 
     init {
       layout = BorderLayout()
-      add(viewPaneComponent, BorderLayout.CENTER)
+      add(viewComponent, BorderLayout.CENTER)
       revalidate()
       repaint()
     }
