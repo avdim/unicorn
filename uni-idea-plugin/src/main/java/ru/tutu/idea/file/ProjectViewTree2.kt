@@ -12,15 +12,15 @@ import com.intellij.ui.popup.HintUpdateSupply
 import com.unicorn.Uni
 import java.awt.Color
 import javax.swing.tree.DefaultMutableTreeNode
-import javax.swing.tree.TreeCellRenderer
 import javax.swing.tree.TreeModel
 
 open class ProjectViewTree2(model: TreeModel?) : DnDAwareTree(null as TreeModel?) {
-  /**
-   * @return custom renderer for tree nodes
-   */
-  private fun createCellRenderer(): TreeCellRenderer {
-    return ProjectViewRenderer()
+
+  init {
+    isLargeModel = true
+    setModel(model)
+    setCellRenderer(ProjectViewRenderer2())
+    HintUpdateSupply.installDataContextHintUpdateSupply(this)
   }
 
   override fun setToggleClickCount(count: Int) {
@@ -62,10 +62,4 @@ open class ProjectViewTree2(model: TreeModel?) : DnDAwareTree(null as TreeModel?
     return JBColor.BLACK
   }
 
-  init {
-    isLargeModel = true
-    setModel(model)
-    setCellRenderer(createCellRenderer())
-    HintUpdateSupply.installDataContextHintUpdateSupply(this)
-  }
 }
