@@ -18,7 +18,7 @@ import java.nio.file.Files
 import java.nio.file.attribute.BasicFileAttributes
 import javax.swing.JTree
 
-open class ProjectViewRenderer2 : NodeRenderer() {
+open class ProjectViewRenderer2 : NodeRenderer2() {
   init {
     isOpaque = false
     isIconOpaque = false
