@@ -9,7 +9,6 @@ import com.intellij.navigation.NavigationItem
 import com.intellij.openapi.fileEditor.impl.IdeDocumentHistoryImpl
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.util.Comparing
-import com.intellij.openapi.util.NlsSafe
 import com.intellij.openapi.util.registry.Registry
 import com.intellij.openapi.util.text.StringUtil
 import com.intellij.openapi.vfs.VirtualFile
@@ -19,6 +18,7 @@ import com.intellij.psi.PsiFileSystemItem
 import com.intellij.ui.SimpleTextAttributes
 import com.intellij.util.text.JBDateFormat
 import com.intellij.util.ui.tree.TreeUtil
+import com.unicorn.Uni
 import java.awt.Color
 import java.nio.file.Files
 import java.nio.file.attribute.BasicFileAttributes
@@ -40,10 +40,12 @@ open class ProjectViewRenderer2 : NodeRenderer2() {
     row: Int,
     hasFocus: Boolean
   ) {
+    if (value == null) {
+      Uni.log.fatalError { "customizeCellRenderer, value == null" }
+    }
     val node = TreeUtil.getUserObject(value)
     if (node is NodeDescriptor<*>) {
-      val descriptor = node
-      icon = super.fixIconIfNeeded(descriptor.icon, selected, hasFocus)
+      icon = super.fixIconIfNeeded(node.icon, selected, hasFocus)
     }
     val presentation = when (node) {
       is PresentableNodeDescriptor<*> -> node.presentation
@@ -119,15 +121,13 @@ open class ProjectViewRenderer2 : NodeRenderer2() {
         }
       }
       toolTipText = presentation.tooltip
-    } else if (value != null) {
-      var text: @NlsSafe String? = value.toString()
-      if (node is NodeDescriptor<*>) {
-        text = node.toString()
-      }
-      text = tree.convertValueToText(text, selected, expanded, leaf, row, hasFocus)
-      if (text == null) {
-        text = ""
-      }
+    } else {
+      val text: String =
+        if (node is NodeDescriptor<*>) {
+          node.toString()
+        } else {
+          value.toString()
+        }
       super.append(text)
       toolTipText = null
     }
