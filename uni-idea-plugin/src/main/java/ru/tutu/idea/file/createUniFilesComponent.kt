@@ -121,8 +121,6 @@ private fun _createUniFilesComponent(
       override fun isShowLibraryContents(): Boolean = true
       override fun isUseFileNestingRules(): Boolean = true
     }
-  var myDropTarget: DnDTarget? = null
-  var myDragSource: DnDSource? = null
 
   fun getSelectedElements(): Array<Any> {
     return JavaHelpers.pathsToSelectedElements(myTree.selectionPaths)
@@ -343,27 +341,36 @@ private fun _createUniFilesComponent(
 
   }
 
-  //enableDnD start
-  if (!ApplicationManager.getApplication().isHeadlessEnvironment) {
-    myDropTarget = object : ProjectViewDropTarget2(myTree, project) {
-      override fun getPsiElement(path: TreePath): PsiElement? {
-        return ContainerUtil.getFirstItem(JavaHelpers.getElementsFromNode(project, path.lastPathComponent))
+  val headlessEnvironment = ApplicationManager.getApplication().isHeadlessEnvironment
+  val myDragSource: DnDSource? =
+    if (!headlessEnvironment) {
+      MyDragSource().also {
+        DnDManager.getInstance().registerSource(it, myTree)
       }
-
-      override fun getModule(element: PsiElement): Module? {
-        return ModuleUtilCore.findModuleForPsiElement(element)
-      }
-
-      override fun update(event: DnDEvent): Boolean {
-        return super.update(event)
-      }
+    } else {
+      null
     }
-    myDragSource = MyDragSource()
-    val dndManager = DnDManager.getInstance()
-    dndManager.registerSource(myDragSource!!, myTree)
-    dndManager.registerTarget(myDropTarget, myTree)
-  }
-  //enableDnD end
+  val myDropTarget: DnDTarget? =
+    if (!headlessEnvironment) {
+      object : ProjectViewDropTarget2(myTree, project) {
+        override fun getPsiElement(path: TreePath): PsiElement? {
+          return ContainerUtil.getFirstItem(JavaHelpers.getElementsFromNode(project, path.lastPathComponent))
+        }
+
+        override fun getModule(element: PsiElement): Module? {
+          return ModuleUtilCore.findModuleForPsiElement(element)
+        }
+
+        override fun update(event: DnDEvent): Boolean {
+          return super.update(event)
+        }
+      }.also {
+        DnDManager.getInstance().registerTarget(it, myTree)
+      }
+    } else {
+      null
+    }
+
   val treeBuilder: BaseProjectTreeBuilder =
     object : ProjectTreeBuilder(
       project,
@@ -372,7 +379,25 @@ private fun _createUniFilesComponent(
       null,
       treeStructure
     ) {
-      override fun createUpdater() = createTreeUpdater(this, treeStructure)
+      override fun createUpdater() = object : AbstractTreeUpdater(this) {
+        override fun addSubtreeToUpdateByElement(element: Any): Boolean {
+          if (element is PsiDirectory) {
+            var dirToUpdateFrom: PsiDirectory? = element
+
+            var addedOk: Boolean
+            while (!super.addSubtreeToUpdateByElement(dirToUpdateFrom ?: treeStructure.rootElement)
+                .also { addedOk = it }
+            ) {
+              if (dirToUpdateFrom == null) {
+                break
+              }
+              dirToUpdateFrom = dirToUpdateFrom.parentDirectory
+            }
+            return addedOk
+          }
+          return super.addSubtreeToUpdateByElement(element)
+        }
+      }
     }
   treeBuilder.setNodeDescriptorComparator(GroupByTypeComparator(project, FILES_PANE_ID))
   fun initTree() {
@@ -396,22 +421,13 @@ private fun _createUniFilesComponent(
   val fileManagerDisposable = Disposable {
     if (myDropTarget != null) {
       DnDManager.getInstance().unregisterTarget(myDropTarget, myTree)
-      myDropTarget = null
     }
     if (myDragSource != null) {
-      DnDManager.getInstance().unregisterSource(myDragSource!!, myTree)
-      myDragSource = null
+      DnDManager.getInstance().unregisterSource(myDragSource, myTree)
     }
   }
-  Disposer.register(
-    Uni,
-    fileManagerDisposable
-  )
+  Disposer.register(Uni, fileManagerDisposable)
 
-  fun getSelectNodeElement(): Any? {
-    val descriptor = TreeUtil.getLastUserObject(NodeDescriptor::class.java, getSelectedPath()) ?: return null
-    return if (descriptor is AbstractTreeNode<*>) descriptor.value else descriptor.element
-  }
 //  viewPane.restoreExpandedPaths()
   val viewPaneComponent = ScrollPaneFactory.createScrollPane(myTree)
   myTree.addSelectionListener {
@@ -530,6 +546,10 @@ private fun _createUniFilesComponent(
         return HelpID.PROJECT_VIEWS
       }
       if (PlatformDataKeys.PROJECT_CONTEXT.`is`(dataId)) {
+        fun getSelectNodeElement(): Any? {
+          val descriptor = TreeUtil.getLastUserObject(NodeDescriptor::class.java, getSelectedPath()) ?: return null
+          return if (descriptor is AbstractTreeNode<*>) descriptor.value else descriptor.element
+        }
         val selected = getSelectNodeElement()
         return selected as? Project
       }
