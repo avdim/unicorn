@@ -7,11 +7,9 @@ import com.intellij.ide.util.treeView.NodeDescriptor
 import com.intellij.ide.util.treeView.PresentableNodeDescriptor
 import com.intellij.navigation.NavigationItem
 import com.intellij.openapi.fileEditor.impl.IdeDocumentHistoryImpl
-import com.intellij.openapi.project.Project
 import com.intellij.openapi.util.Comparing
 import com.intellij.openapi.util.registry.Registry
 import com.intellij.openapi.util.text.StringUtil
-import com.intellij.openapi.vfs.VirtualFile
 import com.intellij.psi.PsiDirectory
 import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiFileSystemItem
@@ -132,37 +130,35 @@ open class ProjectViewRenderer2 : NodeRenderer2() {
       toolTipText = null
     }
 
-    val userObject = TreeUtil.getUserObject(value)
-    if (userObject is ProjectViewNode<*> && instance.showInplaceComments) {
-      appendInplaceComments(userObject)
+    append(" --", SimpleTextAttributes.GRAYED_SMALL_ATTRIBUTES)
+    if (false && node is ProjectViewNode<*> && instance.showInplaceComments) {
+      //Additional info from file system
+      val parentNode = node.parent
+      val content = node.value
+      if (content is PsiFileSystemItem || content !is PsiElement || parentNode != null && parentNode.value is PsiDirectory) {
+        val virtualFile = node.virtualFile
+        val ioFile = if (virtualFile == null || virtualFile.isDirectory || !virtualFile.isInLocalFileSystem) {
+          null
+        } else {
+          virtualFile.toNioPath()
+        }
+        val fileAttributes = try {
+          if (ioFile == null) null else Files.readAttributes(ioFile, BasicFileAttributes::class.java)
+        } catch (ignored: Exception) {
+          null
+        }
+        if (fileAttributes != null) {
+          append("  ")
+          val attributes = SimpleTextAttributes.GRAYED_SMALL_ATTRIBUTES
+          append(JBDateFormat.getFormatter().formatDateTime(fileAttributes.lastModifiedTime().toMillis()), attributes)
+          append(", " + StringUtil.formatFileSize(fileAttributes.size()), attributes)
+        }
+        val project = node.project
+        if (Registry.`is`("show.last.visited.timestamps") && virtualFile != null && project != null) {
+          IdeDocumentHistoryImpl.appendTimestamp(project, this, virtualFile)
+        }
+      }
     }
   }
 
-  fun appendInplaceComments(project: Project?, file: VirtualFile?) {
-    val ioFile = if (file == null || file.isDirectory || !file.isInLocalFileSystem) null else file.toNioPath()
-    val fileAttributes = try {
-      if (ioFile == null) null else Files.readAttributes(ioFile, BasicFileAttributes::class.java)
-    } catch (ignored: Exception) {
-      null
-    }
-
-    if (fileAttributes != null) {
-      append("  ")
-      val attributes = SimpleTextAttributes.GRAYED_SMALL_ATTRIBUTES
-      append(JBDateFormat.getFormatter().formatDateTime(fileAttributes.lastModifiedTime().toMillis()), attributes)
-      append(", " + StringUtil.formatFileSize(fileAttributes.size()), attributes)
-    }
-
-    if (Registry.`is`("show.last.visited.timestamps") && file != null && project != null) {
-      IdeDocumentHistoryImpl.appendTimestamp(project, this, file)
-    }
-  }
-
-  fun appendInplaceComments(node: ProjectViewNode<*>) {
-    val parentNode = node.parent
-    val content = node.value
-    if (content is PsiFileSystemItem || content !is PsiElement || parentNode != null && parentNode.value is PsiDirectory) {
-      appendInplaceComments(node.project, node.virtualFile)
-    }
-  }
 }
