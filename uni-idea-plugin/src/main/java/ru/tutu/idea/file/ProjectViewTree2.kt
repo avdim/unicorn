@@ -14,7 +14,7 @@ import java.awt.Color
 import javax.swing.tree.DefaultMutableTreeNode
 import javax.swing.tree.TreeModel
 
-open class ProjectViewTree2(model: TreeModel?) : DnDAwareTree(null as TreeModel?) {
+open class ProjectViewTree2(model: TreeModel?) : DnDAwareTree(null as TreeModel?/*TODO null*/) {
 
   init {
     isLargeModel = true

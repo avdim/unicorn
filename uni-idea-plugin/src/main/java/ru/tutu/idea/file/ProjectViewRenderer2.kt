@@ -7,6 +7,7 @@ import com.intellij.ide.util.treeView.AbstractTreeUi
 import com.intellij.ide.util.treeView.NodeDescriptor
 import com.intellij.ide.util.treeView.PresentableNodeDescriptor
 import com.intellij.navigation.NavigationItem
+import com.intellij.openapi.diagnostic.Logger
 import com.intellij.openapi.editor.colors.EditorColorsManager
 import com.intellij.openapi.editor.colors.EditorColorsScheme
 import com.intellij.openapi.fileEditor.impl.IdeDocumentHistoryImpl
@@ -20,28 +21,37 @@ import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiFileSystemItem
 import com.intellij.ui.JBColor
 import com.intellij.ui.LoadingNode
+import com.intellij.ui.SimpleColoredComponent
 import com.intellij.ui.SimpleTextAttributes
 import com.intellij.ui.render.RenderingUtil
+import com.intellij.ui.scale.JBUIScale
 import com.intellij.ui.speedSearch.SpeedSearchSupply
 import com.intellij.ui.speedSearch.SpeedSearchUtil
 import com.intellij.util.text.JBDateFormat
+import com.intellij.util.ui.EmptyIcon
 import com.intellij.util.ui.StartupUiUtil
+import com.intellij.util.ui.UIUtil
 import com.intellij.util.ui.tree.TreeUtil
+import com.unicorn.Uni
+import org.jetbrains.annotations.Nls
 import java.awt.Color
 import java.awt.Component
+import java.awt.Font
 import java.nio.file.Files
 import java.nio.file.Path
 import java.nio.file.attribute.BasicFileAttributes
+import javax.accessibility.AccessibleContext
 import javax.swing.Icon
 import javax.swing.JTree
+import javax.swing.tree.TreeCellRenderer
 
 const val NODE_TO_VIRTUAL_FILE = false//todo
 
-open class ProjectViewRenderer2 : ColoredTreeCellRenderer2() {
+open class ProjectViewRenderer2 : SimpleColoredComponent(), TreeCellRenderer {
 
   companion object {
-    val scheme: EditorColorsScheme
-      get() = EditorColorsManager.getInstance().schemeForCurrentUITheme
+    val LOADING_NODE_ICON: Icon = JBUIScale.scaleIcon(EmptyIcon.create(8, 16))
+    val scheme: EditorColorsScheme by lazy { EditorColorsManager.getInstance().schemeForCurrentUITheme }
 
     fun addColorToSimpleTextAttributes(
       simpleTextAttributes: SimpleTextAttributes,
@@ -58,11 +68,70 @@ open class ProjectViewRenderer2 : ColoredTreeCellRenderer2() {
 
   }
 
+  /**
+   * Defines whether the tree is selected or not
+   */
+  var mySelected = false
+
+  /**
+   * Defines whether the tree has focus or not
+   */
+  var myFocused = false
+  var myFocusedCalculated = false
+  var myUsedCustomSpeedSearchHighlighting = false
+  var myTree: JTree? = null //todo not nullable
+  var myOpaque = true
+  val isFocused: Boolean
+    get() {
+      if (!myFocusedCalculated) {
+        myFocused = calcFocusedState()
+        myFocusedCalculated = true
+      }
+      return myFocused
+    }
+
   init {
     isOpaque = false
     isIconOpaque = false
     isTransparentIconBackground = true
   }
+
+  fun calcFocusedState(): Boolean {
+    return myTree!!.hasFocus()
+  }
+
+  override fun setOpaque(isOpaque: Boolean) {
+    myOpaque = isOpaque
+    super.setOpaque(isOpaque)
+  }
+
+  override fun getFont(): Font =
+    super.getFont() ?: myTree?.font ?: Uni.log.fatalError { "front == null" }
+
+  /**
+   * When the item is selected then we use default tree's selection foreground.
+   * It guaranties readability of selected text in any LAF.
+   */
+  override fun append(fragment: @Nls String, attributes: SimpleTextAttributes, isMainText: Boolean) {
+    if (mySelected && isFocused) {
+      super.append(
+        fragment,
+        SimpleTextAttributes(attributes.style, UIUtil.getTreeSelectionForeground(true)),
+        isMainText
+      )
+    } else {
+      super.append(fragment, attributes, isMainText)
+    }
+  }
+
+  override fun getAccessibleContext(): AccessibleContext {
+    if (accessibleContext == null) {
+      accessibleContext = AccessibleColoredTreeCellRenderer()
+    }
+    return accessibleContext
+  }
+
+  private inner class AccessibleColoredTreeCellRenderer : AccessibleSimpleColoredComponent()
 
   private fun fixIconIfNeeded(icon: Icon?, selected: Boolean, hasFocus: Boolean): Icon? {
     return if (icon != null && !StartupUiUtil.isUnderDarcula() && Registry.`is`(
@@ -240,14 +309,28 @@ open class ProjectViewRenderer2 : ColoredTreeCellRenderer2() {
     } catch (e: ProcessCanceledException) {
       throw e
     } catch (e: Exception) {
-      try {
-        LOG.error(e)
-      } catch (ignore: Exception) {
-      }
-
+      Uni.log.error { e }
     }
 
     return this
   }
+
+  // The following method are overridden for performance reasons.
+  // See the Implementation Note for more information.
+  // javax.swing.tree.DefaultTreeCellRenderer
+  // javax.swing.DefaultListCellRenderer
+  override fun validate() {}
+  override fun invalidate() {}
+  override fun revalidate() {}
+  override fun repaint(tm: Long, x: Int, y: Int, width: Int, height: Int) {}
+  public override fun firePropertyChange(propertyName: String, oldValue: Any?, newValue: Any?) {}
+  override fun firePropertyChange(propertyName: String, oldValue: Byte, newValue: Byte) {}
+  override fun firePropertyChange(propertyName: String, oldValue: Char, newValue: Char) {}
+  override fun firePropertyChange(propertyName: String, oldValue: Short, newValue: Short) {}
+  override fun firePropertyChange(propertyName: String, oldValue: Int, newValue: Int) {}
+  override fun firePropertyChange(propertyName: String, oldValue: Long, newValue: Long) {}
+  override fun firePropertyChange(propertyName: String, oldValue: Float, newValue: Float) {}
+  override fun firePropertyChange(propertyName: String, oldValue: Double, newValue: Double) {}
+  override fun firePropertyChange(propertyName: String, oldValue: Boolean, newValue: Boolean) {}
 
 }
