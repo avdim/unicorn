@@ -21,7 +21,6 @@ import com.intellij.ui.render.RenderingUtil
 import com.intellij.ui.speedSearch.SpeedSearchSupply
 import com.intellij.ui.speedSearch.SpeedSearchUtil
 import com.intellij.util.text.JBDateFormat
-import com.intellij.util.ui.UIUtil
 import com.intellij.util.ui.tree.TreeUtil
 import com.intellij.util.ui.tree.WideSelectionTreeUI
 import com.unicorn.Uni
@@ -30,6 +29,8 @@ import java.nio.file.Files
 import java.nio.file.attribute.BasicFileAttributes
 import javax.swing.JTree
 
+const val NODE_TO_VIRTUAL_FILE = false
+
 open class ProjectViewRenderer2 : NodeRenderer2() {
   init {
     isOpaque = false
@@ -37,18 +38,34 @@ open class ProjectViewRenderer2 : NodeRenderer2() {
     isTransparentIconBackground = true
   }
 
-  fun customizeCellRenderer(
+  @Suppress("UnstableApiUsage")
+  override fun rendererComponentInner(
     tree: JTree,
-    value: Any?,
+    value: Any,
     selected: Boolean,
     expanded: Boolean,
     leaf: Boolean,
     row: Int,
     hasFocus: Boolean
   ) {
-    if (value == null) {
-      Uni.log.fatalError { "customizeCellRenderer, value == null" }
+    myTree = tree
+    clear()
+    mySelected = selected
+    myFocusedCalculated = false
+    // We paint background if and only if tree path is selected and tree has focus.
+    // If path is selected and tree is not focused then we just paint focused border.
+    setPaintFocusBorder(selected)
+    background = if (selected && isFocused) JBColor(0x3875D6, 0x2F65CA) else null
+
+    if (value is LoadingNode) {
+      foreground = JBColor.GRAY
+      icon = LOADING_NODE_ICON
+    } else {
+      foreground = RenderingUtil.getForeground(tree)
+      icon = null
     }
+    super.setOpaque(false)  // avoid erasing Nimbus focus frame
+    super.setIconOpaque(false)
     val node = TreeUtil.getUserObject(value)
     if (node is NodeDescriptor<*>) {
       icon = super.fixIconIfNeeded(node.icon, selected, hasFocus)
@@ -137,9 +154,8 @@ open class ProjectViewRenderer2 : NodeRenderer2() {
       super.append(text)
       toolTipText = null
     }
-
     append(" --", SimpleTextAttributes.GRAYED_SMALL_ATTRIBUTES)
-    if (false && node is ProjectViewNode<*> && instance.showInplaceComments) {
+    if (NODE_TO_VIRTUAL_FILE && node is ProjectViewNode<*> && instance.showInplaceComments) {
       //Additional info from file system
       val parentNode = node.parent
       val content = node.value
@@ -167,66 +183,10 @@ open class ProjectViewRenderer2 : NodeRenderer2() {
         }
       }
     }
-  }
-
-  @Suppress("UnstableApiUsage")
-  override fun rendererComponentInner(
-    tree: JTree,
-    value: Any,
-    selected: Boolean,
-    expanded: Boolean,
-    leaf: Boolean,
-    row: Int,
-    hasFocus: Boolean
-  ) {
-    myTree = tree
-
-    clear()
-
-    mySelected = selected
-    myFocusedCalculated = false
-
-    // We paint background if and only if tree path is selected and tree has focus.
-    // If path is selected and tree is not focused then we just paint focused border.
-    if (UIUtil.isFullRowSelectionLAF()) {
-      setBackground(if (selected) UIUtil.getTreeSelectionBackground() else null)
-    } else if (WideSelectionTreeUI.isWideSelection(tree)) {
-      setPaintFocusBorder(false)
-      if (selected) {
-        setBackground(UIUtil.getTreeSelectionBackground(hasFocus))
-      } else {
-        setBackground(null)
-      }
-    } else if (selected) {
-      setPaintFocusBorder(true)
-      if (isFocused()) {
-        setBackground(UIUtil.getTreeSelectionBackground())
-      } else {
-        setBackground(null)
-      }
-    } else {
-      setBackground(null)
-    }
-
-    if (value is LoadingNode) {
-      setForeground(JBColor.GRAY)
-      setIcon(LOADING_NODE_ICON)
-    } else {
-      setForeground(RenderingUtil.getForeground(tree))
-      setIcon(null)
-    }
-
-    if (WideSelectionTreeUI.isWideSelection(tree)) {
-      super.setOpaque(false)  // avoid erasing Nimbus focus frame
-      super.setIconOpaque(false)
-    } else {
-      super.setOpaque(myOpaque || selected && hasFocus || selected && isFocused()) // draw selection background even for non-opaque tree
-    }
-    customizeCellRenderer(tree, value, selected, expanded, leaf, row, hasFocus)
 
     if (!myUsedCustomSpeedSearchHighlighting && !AbstractTreeUi.isLoadingNode(value)) {
       val speedSearch = SpeedSearchSupply.getSupply(tree)
-      if (speedSearch != null && !speedSearch!!.isObjectFilteredOut(value)) {
+      if (speedSearch != null && !speedSearch.isObjectFilteredOut(value)) {
         SpeedSearchUtil.applySpeedSearchHighlighting(tree, this, true, selected)
       }
     }
