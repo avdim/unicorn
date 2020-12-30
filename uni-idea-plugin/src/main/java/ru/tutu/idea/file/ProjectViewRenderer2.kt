@@ -22,14 +22,13 @@ import com.intellij.ui.speedSearch.SpeedSearchSupply
 import com.intellij.ui.speedSearch.SpeedSearchUtil
 import com.intellij.util.text.JBDateFormat
 import com.intellij.util.ui.tree.TreeUtil
-import com.intellij.util.ui.tree.WideSelectionTreeUI
-import com.unicorn.Uni
 import java.awt.Color
 import java.nio.file.Files
+import java.nio.file.Path
 import java.nio.file.attribute.BasicFileAttributes
 import javax.swing.JTree
 
-const val NODE_TO_VIRTUAL_FILE = false
+const val NODE_TO_VIRTUAL_FILE = false//todo
 
 open class ProjectViewRenderer2 : NodeRenderer2() {
   init {
@@ -56,14 +55,8 @@ open class ProjectViewRenderer2 : NodeRenderer2() {
     // If path is selected and tree is not focused then we just paint focused border.
     setPaintFocusBorder(selected)
     background = if (selected && isFocused) JBColor(0x3875D6, 0x2F65CA) else null
-
-    if (value is LoadingNode) {
-      foreground = JBColor.GRAY
-      icon = LOADING_NODE_ICON
-    } else {
-      foreground = RenderingUtil.getForeground(tree)
-      icon = null
-    }
+    foreground = RenderingUtil.getForeground(tree)
+    icon = if (value is LoadingNode) LOADING_NODE_ICON else null
     super.setOpaque(false)  // avoid erasing Nimbus focus frame
     super.setIconOpaque(false)
     val node = TreeUtil.getUserObject(value)
@@ -154,23 +147,33 @@ open class ProjectViewRenderer2 : NodeRenderer2() {
       super.append(text)
       toolTipText = null
     }
+    if (!myUsedCustomSpeedSearchHighlighting && !AbstractTreeUi.isLoadingNode(value)) {
+      val speedSearch = SpeedSearchSupply.getSupply(tree)
+      if (speedSearch != null && !speedSearch.isObjectFilteredOut(value)) {
+        SpeedSearchUtil.applySpeedSearchHighlighting(tree, this, true, selected)
+      }
+    }
+
     append(" --", SimpleTextAttributes.GRAYED_SMALL_ATTRIBUTES)
     if (NODE_TO_VIRTUAL_FILE && node is ProjectViewNode<*> && instance.showInplaceComments) {
+      node.project
       //Additional info from file system
       val parentNode = node.parent
       val content = node.value
       if (content is PsiFileSystemItem || content !is PsiElement || parentNode != null && parentNode.value is PsiDirectory) {
         val virtualFile = node.virtualFile
-        val ioFile = if (virtualFile == null || virtualFile.isDirectory || !virtualFile.isInLocalFileSystem) {
-          null
-        } else {
-          virtualFile.toNioPath()
-        }
-        val fileAttributes = try {
-          if (ioFile == null) null else Files.readAttributes(ioFile, BasicFileAttributes::class.java)
-        } catch (ignored: Exception) {
-          null
-        }
+        val ioFile: Path? =
+          if (virtualFile == null || virtualFile.isDirectory || !virtualFile.isInLocalFileSystem) {
+            null
+          } else {
+            virtualFile.toNioPath()
+          }
+        val fileAttributes: BasicFileAttributes? =
+          try {
+            if (ioFile == null) null else Files.readAttributes(ioFile, BasicFileAttributes::class.java)
+          } catch (ignored: Exception) {
+            null
+          }
         if (fileAttributes != null) {
           append("  ")
           val attributes = SimpleTextAttributes.GRAYED_SMALL_ATTRIBUTES
@@ -184,12 +187,6 @@ open class ProjectViewRenderer2 : NodeRenderer2() {
       }
     }
 
-    if (!myUsedCustomSpeedSearchHighlighting && !AbstractTreeUi.isLoadingNode(value)) {
-      val speedSearch = SpeedSearchSupply.getSupply(tree)
-      if (speedSearch != null && !speedSearch.isObjectFilteredOut(value)) {
-        SpeedSearchUtil.applySpeedSearchHighlighting(tree, this, true, selected)
-      }
-    }
   }
 
 }
