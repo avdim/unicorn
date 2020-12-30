@@ -17,7 +17,6 @@ import com.intellij.openapi.util.text.StringUtil
 import com.intellij.psi.PsiDirectory
 import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiFileSystemItem
-import com.intellij.ui.JBColor
 import com.intellij.ui.LoadingNode
 import com.intellij.ui.SimpleColoredComponent
 import com.intellij.ui.SimpleTextAttributes
@@ -28,10 +27,8 @@ import com.intellij.ui.speedSearch.SpeedSearchUtil
 import com.intellij.util.text.JBDateFormat
 import com.intellij.util.ui.EmptyIcon
 import com.intellij.util.ui.StartupUiUtil
-import com.intellij.util.ui.UIUtil
 import com.intellij.util.ui.tree.TreeUtil
 import com.unicorn.Uni
-import org.jetbrains.annotations.Nls
 import java.awt.Color
 import java.awt.Component
 import java.awt.Font
@@ -71,31 +68,8 @@ fun fixIconIfNeeded(icon: Icon?, selected: Boolean, hasFocus: Boolean): Icon? {
 fun getTreeCellRendererComponent(
   myTree: JTree,
   value: Any,
-  selected: Boolean,
-  expanded: Boolean,
-  leaf: Boolean,
   row: Int,
-  hasFocus: Boolean
 ): Component {
-
-  /**
-   * Defines whether the tree is selected or not
-   */
-  var mySelected = false
-  /**
-   * Defines whether the tree has focus or not
-   */
-  var myFocused = false
-  var myFocusedCalculated = false
-  val myUsedCustomSpeedSearchHighlighting = false
-
-  fun isFocused(): Boolean {
-    if (!myFocusedCalculated) {
-      myFocused = myTree.hasFocus()
-      myFocusedCalculated = true
-    }
-    return myFocused
-  }
 
   val result = object : SimpleColoredComponent() {
     init {
@@ -106,22 +80,6 @@ fun getTreeCellRendererComponent(
 
     override fun getFont(): Font =
       super.getFont() ?: myTree.font ?: Uni.log.fatalError { "front == null" }
-
-    /**
-     * When the item is selected then we use default tree's selection foreground.
-     * It guaranties readability of selected text in any LAF.
-     */
-    override fun append(fragment: @Nls String, attributes: SimpleTextAttributes, isMainText: Boolean) {
-      if (mySelected && isFocused()) {
-        super.append(
-          fragment,
-          SimpleTextAttributes(attributes.style, UIUtil.getTreeSelectionForeground(true)),
-          isMainText
-        )
-      } else {
-        super.append(fragment, attributes, isMainText)
-      }
-    }
 
     private inner class AccessibleColoredTreeCellRenderer : AccessibleSimpleColoredComponent()
 
@@ -135,26 +93,20 @@ fun getTreeCellRendererComponent(
     @Suppress("UnstableApiUsage")
     fun rendererComponentInner(
       value: Any,
-      selected: Boolean,
-      expanded: Boolean,
-      leaf: Boolean,
       row: Int,
-      hasFocus: Boolean
     ) {
       clear()
-      mySelected = selected
-      myFocusedCalculated = false
       // We paint background if and only if tree path is selected and tree has focus.
       // If path is selected and tree is not focused then we just paint focused border.
-      setPaintFocusBorder(selected)
-      background = if (selected && isFocused()) JBColor(0x3875D6, 0x2F65CA) else null
+      setPaintFocusBorder(false)
+      background = null
       foreground = RenderingUtil.getForeground(myTree)
       icon = if (value is LoadingNode) LOADING_NODE_ICON else null
       super.setOpaque(false)  // avoid erasing Nimbus focus frame
       super.setIconOpaque(false)
       val node = TreeUtil.getUserObject(value)
       if (node is NodeDescriptor<*>) {
-        icon = fixIconIfNeeded(node.icon, selected, hasFocus)
+        icon = fixIconIfNeeded(node.icon, false, false)
       }
       val presentation = when (node) {
         is PresentableNodeDescriptor<*> -> node.presentation
@@ -163,7 +115,7 @@ fun getTreeCellRendererComponent(
       }
       if (presentation is PresentationData) {
         val color = if (node is NodeDescriptor<*>) node.color else null
-        icon = fixIconIfNeeded(presentation.getIcon(false), selected, hasFocus)
+        icon = fixIconIfNeeded(presentation.getIcon(false), false, false)
         val coloredText = presentation.coloredText
         val forcedForeground: Color? = presentation.forcedTextForeground
         val scheme: EditorColorsScheme = EditorColorsManager.getInstance().schemeForCurrentUITheme
@@ -173,7 +125,7 @@ fun getTreeCellRendererComponent(
             val valueSting = value.toString()
             text = valueSting
           }
-          text = myTree.convertValueToText(text, selected, expanded, leaf, row, hasFocus)
+          text = myTree.convertValueToText(text, false, false, true, row, false)
           val textAttributesKey = presentation.textAttributesKey
           val simpleTextAttributes = if (textAttributesKey != null) {
             val textAttributes = scheme.getAttributes(textAttributesKey)
@@ -241,10 +193,10 @@ fun getTreeCellRendererComponent(
         super.append(text)
         toolTipText = null
       }
-      if (!myUsedCustomSpeedSearchHighlighting && value !is LoadingNode) {
+      if (value !is LoadingNode) {
         val speedSearch = SpeedSearchSupply.getSupply(myTree)
         if (speedSearch != null && !speedSearch.isObjectFilteredOut(value)) {
-          SpeedSearchUtil.applySpeedSearchHighlighting(myTree, this, true, selected)
+          SpeedSearchUtil.applySpeedSearchHighlighting(myTree, this, true, false)
         }
       }
 
@@ -303,7 +255,7 @@ fun getTreeCellRendererComponent(
   }
 
   try {
-    result.rendererComponentInner(value, selected, expanded, leaf, row, hasFocus)
+    result.rendererComponentInner(value, row)
   } catch (e: ProcessCanceledException) {
     throw e
   } catch (e: Exception) {

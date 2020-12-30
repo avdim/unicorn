@@ -190,11 +190,7 @@ private fun _createUniFilesComponent(
         val component = getTreeCellRendererComponent(
           myTree,
           obj,
-          false,
-          false,
-          true,
-          myTree.getRowForPath(path),
-          false
+          myTree.getRowForPath(path)
         )
         val icon = arrayOfNulls<Icon>(1)
         val text = arrayOfNulls<String>(1)
