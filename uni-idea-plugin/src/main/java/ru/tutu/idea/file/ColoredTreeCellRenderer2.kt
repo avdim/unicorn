@@ -1,156 +1,105 @@
 // Copyright 2000-2020 JetBrains s.r.o. Use of this source code is governed by the Apache 2.0 license that can be found in the LICENSE file.
-package ru.tutu.idea.file;
+package ru.tutu.idea.file
 
-import com.intellij.openapi.diagnostic.Logger;
-import com.intellij.ui.SimpleColoredComponent;
-import com.intellij.ui.SimpleTextAttributes;
-import com.intellij.ui.scale.JBUIScale;
-import com.intellij.util.ui.EmptyIcon;
-import com.intellij.util.ui.UIUtil;
-import org.jetbrains.annotations.Nls;
-import org.jetbrains.annotations.NotNull;
-
-import javax.accessibility.AccessibleContext;
-import javax.swing.*;
-import javax.swing.tree.TreeCellRenderer;
-import java.awt.*;
+import com.intellij.openapi.diagnostic.Logger
+import com.intellij.ui.SimpleColoredComponent
+import com.intellij.ui.SimpleTextAttributes
+import com.intellij.ui.scale.JBUIScale
+import com.intellij.util.ui.EmptyIcon
+import com.intellij.util.ui.UIUtil
+import com.unicorn.Uni
+import org.jetbrains.annotations.Nls
+import java.awt.Font
+import javax.accessibility.AccessibleContext
+import javax.swing.Icon
+import javax.swing.JTree
+import javax.swing.tree.TreeCellRenderer
 
 /**
  * @author Vladimir Kondratyev
  */
-public abstract class ColoredTreeCellRenderer2 extends SimpleColoredComponent implements TreeCellRenderer {
-  public static final Logger LOG = Logger.getInstance(ColoredTreeCellRenderer2.class);
-
-  public static final Icon LOADING_NODE_ICON = JBUIScale.scaleIcon(EmptyIcon.create(8, 16));
-
+abstract class ColoredTreeCellRenderer2 : SimpleColoredComponent(), TreeCellRenderer {
   /**
    * Defines whether the tree is selected or not
    */
-  public boolean mySelected;
+  var mySelected = false
+
   /**
    * Defines whether the tree has focus or not
    */
-  public boolean myFocused;
-  public boolean myFocusedCalculated;
-
-  public boolean myUsedCustomSpeedSearchHighlighting = false;
-
-  public JTree myTree;
-
-  public boolean myOpaque = true;
-
-  public JTree getTree() {
-    return myTree;
-  }
-
-  public final boolean isFocused() {
-    if (!myFocusedCalculated) {
-      myFocused = calcFocusedState();
-      myFocusedCalculated = true;
+  var myFocused = false
+  var myFocusedCalculated = false
+  var myUsedCustomSpeedSearchHighlighting = false
+  var myTree: JTree? = null //todo not nullable
+  var myOpaque = true
+  val isFocused: Boolean
+    get() {
+      if (!myFocusedCalculated) {
+        myFocused = calcFocusedState()
+        myFocusedCalculated = true
+      }
+      return myFocused
     }
-    return myFocused;
+
+  fun calcFocusedState(): Boolean {
+    return myTree!!.hasFocus()
   }
 
-  public boolean calcFocusedState() {
-    return myTree.hasFocus();
+  override fun setOpaque(isOpaque: Boolean) {
+    myOpaque = isOpaque
+    super.setOpaque(isOpaque)
   }
 
-  @Override
-  public void setOpaque(boolean isOpaque) {
-    myOpaque = isOpaque;
-    super.setOpaque(isOpaque);
-  }
-
-  @Override
-  public Font getFont() {
-    Font font = super.getFont();
-
-    // Cell renderers could have no parent and no explicit set font.
-    // Take tree font in this case.
-    if (font != null) return font;
-    JTree tree = getTree();
-    return tree != null ? tree.getFont() : null;
-  }
+  override fun getFont(): Font =
+    super.getFont() ?: myTree?.font ?: Uni.log.fatalError { "front == null" }
 
   /**
    * When the item is selected then we use default tree's selection foreground.
    * It guaranties readability of selected text in any LAF.
    */
-  @Override
-  public void append(@NotNull @Nls String fragment, @NotNull SimpleTextAttributes attributes, boolean isMainText) {
-    if (mySelected && isFocused()) {
-      super.append(fragment, new SimpleTextAttributes(attributes.getStyle(), UIUtil.getTreeSelectionForeground(true)), isMainText);
-    }
-    else {
-      super.append(fragment, attributes, isMainText);
+  override fun append(fragment: @Nls String, attributes: SimpleTextAttributes, isMainText: Boolean) {
+    if (mySelected && isFocused) {
+      super.append(
+        fragment,
+        SimpleTextAttributes(attributes.style, UIUtil.getTreeSelectionForeground(true)),
+        isMainText
+      )
+    } else {
+      super.append(fragment, attributes, isMainText)
     }
   }
 
-  @Override
-  public AccessibleContext getAccessibleContext() {
+  override fun getAccessibleContext(): AccessibleContext {
     if (accessibleContext == null) {
-      accessibleContext = new AccessibleColoredTreeCellRenderer();
+      accessibleContext = AccessibleColoredTreeCellRenderer()
     }
-    return accessibleContext;
+    return accessibleContext
   }
 
-  public class AccessibleColoredTreeCellRenderer extends AccessibleSimpleColoredComponent {
-  }
+  private inner class AccessibleColoredTreeCellRenderer : AccessibleSimpleColoredComponent()
 
   // The following method are overridden for performance reasons.
   // See the Implementation Note for more information.
   // javax.swing.tree.DefaultTreeCellRenderer
   // javax.swing.DefaultListCellRenderer
+  override fun validate() {}
+  override fun invalidate() {}
+  override fun revalidate() {}
+  override fun repaint(tm: Long, x: Int, y: Int, width: Int, height: Int) {}
+  public override fun firePropertyChange(propertyName: String, oldValue: Any?, newValue: Any?) {}
+  override fun firePropertyChange(propertyName: String, oldValue: Byte, newValue: Byte) {}
+  override fun firePropertyChange(propertyName: String, oldValue: Char, newValue: Char) {}
+  override fun firePropertyChange(propertyName: String, oldValue: Short, newValue: Short) {}
+  override fun firePropertyChange(propertyName: String, oldValue: Int, newValue: Int) {}
+  override fun firePropertyChange(propertyName: String, oldValue: Long, newValue: Long) {}
+  override fun firePropertyChange(propertyName: String, oldValue: Float, newValue: Float) {}
+  override fun firePropertyChange(propertyName: String, oldValue: Double, newValue: Double) {}
+  override fun firePropertyChange(propertyName: String, oldValue: Boolean, newValue: Boolean) {}
 
-  @Override
-  public void validate() {
-  }
-
-  @Override
-  public void invalidate() {
-  }
-
-  @Override
-  public void revalidate() {
-  }
-
-  @Override
-  public void repaint(long tm, int x, int y, int width, int height) {
-  }
-
-  @Override
-  public void firePropertyChange(String propertyName, Object oldValue, Object newValue) {
-  }
-
-  @Override
-  public void firePropertyChange(String propertyName, byte oldValue, byte newValue) {
-  }
-
-  @Override
-  public void firePropertyChange(String propertyName, char oldValue, char newValue) {
-  }
-
-  @Override
-  public void firePropertyChange(String propertyName, short oldValue, short newValue) {
-  }
-
-  @Override
-  public void firePropertyChange(String propertyName, int oldValue, int newValue) {
-  }
-
-  @Override
-  public void firePropertyChange(String propertyName, long oldValue, long newValue) {
-  }
-
-  @Override
-  public void firePropertyChange(String propertyName, float oldValue, float newValue) {
-  }
-
-  @Override
-  public void firePropertyChange(String propertyName, double oldValue, double newValue) {
-  }
-
-  @Override
-  public void firePropertyChange(String propertyName, boolean oldValue, boolean newValue) {
+  companion object {
+    val LOG = Logger.getInstance(
+      ColoredTreeCellRenderer2::class.java
+    )
+    val LOADING_NODE_ICON: Icon = JBUIScale.scaleIcon(EmptyIcon.create(8, 16))
   }
 }
