@@ -3,11 +3,9 @@ package ru.tutu.idea.file
 import com.intellij.ide.projectView.PresentationData
 import com.intellij.ide.projectView.ProjectViewNode
 import com.intellij.ide.ui.UISettings.Companion.instance
-import com.intellij.ide.util.treeView.AbstractTreeUi
 import com.intellij.ide.util.treeView.NodeDescriptor
 import com.intellij.ide.util.treeView.PresentableNodeDescriptor
 import com.intellij.navigation.NavigationItem
-import com.intellij.openapi.diagnostic.Logger
 import com.intellij.openapi.editor.colors.EditorColorsManager
 import com.intellij.openapi.editor.colors.EditorColorsScheme
 import com.intellij.openapi.fileEditor.impl.IdeDocumentHistoryImpl
@@ -57,13 +55,13 @@ open class ProjectViewRenderer2 : SimpleColoredComponent(), TreeCellRenderer {
       simpleTextAttributes: SimpleTextAttributes,
       color: Color?
     ): SimpleTextAttributes {
-      var simpleTextAttributes = simpleTextAttributes
+      var result = simpleTextAttributes
       if (color != null) {
         val textAttributes = simpleTextAttributes.toTextAttributes()
         textAttributes.foregroundColor = color
-        simpleTextAttributes = SimpleTextAttributes.fromTextAttributes(textAttributes)
+        result = SimpleTextAttributes.fromTextAttributes(textAttributes)
       }
-      return simpleTextAttributes
+      return result
     }
 
   }
@@ -71,17 +69,17 @@ open class ProjectViewRenderer2 : SimpleColoredComponent(), TreeCellRenderer {
   /**
    * Defines whether the tree is selected or not
    */
-  var mySelected = false
+  private var mySelected = false
 
   /**
    * Defines whether the tree has focus or not
    */
-  var myFocused = false
-  var myFocusedCalculated = false
-  var myUsedCustomSpeedSearchHighlighting = false
-  var myTree: JTree? = null //todo not nullable
-  var myOpaque = true
-  val isFocused: Boolean
+  private var myFocused = false
+  private var myFocusedCalculated = false
+  private var myUsedCustomSpeedSearchHighlighting = false
+  private var myTree: JTree? = null //todo not nullable
+  private var myOpaque = true
+  private val isFocused: Boolean
     get() {
       if (!myFocusedCalculated) {
         myFocused = calcFocusedState()
@@ -253,7 +251,7 @@ open class ProjectViewRenderer2 : SimpleColoredComponent(), TreeCellRenderer {
       super.append(text)
       toolTipText = null
     }
-    if (!myUsedCustomSpeedSearchHighlighting && !AbstractTreeUi.isLoadingNode(value)) {
+    if (!myUsedCustomSpeedSearchHighlighting && value !is LoadingNode) {
       val speedSearch = SpeedSearchSupply.getSupply(tree)
       if (speedSearch != null && !speedSearch.isObjectFilteredOut(value)) {
         SpeedSearchUtil.applySpeedSearchHighlighting(tree, this, true, selected)
