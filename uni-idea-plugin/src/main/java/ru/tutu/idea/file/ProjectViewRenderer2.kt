@@ -45,7 +45,7 @@ import javax.swing.tree.TreeCellRenderer
 
 const val NODE_TO_VIRTUAL_FILE = false//todo
 
-open class ProjectViewRenderer2 : SimpleColoredComponent(), TreeCellRenderer {
+open class ProjectViewRenderer2 : SimpleColoredComponent() {
 
   companion object {
     val LOADING_NODE_ICON: Icon = JBUIScale.scaleIcon(EmptyIcon.create(8, 16))
@@ -293,7 +293,7 @@ open class ProjectViewRenderer2 : SimpleColoredComponent(), TreeCellRenderer {
 
   }
 
-  override fun getTreeCellRendererComponent(
+  fun getTreeCellRendererComponent(
     tree: JTree,
     value: Any,
     selected: Boolean,

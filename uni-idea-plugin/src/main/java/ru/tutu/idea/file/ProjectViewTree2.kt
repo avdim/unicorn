@@ -19,7 +19,6 @@ open class ProjectViewTree2(model: TreeModel?) : DnDAwareTree(null as TreeModel?
   init {
     isLargeModel = true
     setModel(model)
-    setCellRenderer(ProjectViewRenderer2())
     HintUpdateSupply.installDataContextHintUpdateSupply(this)
   }
 
