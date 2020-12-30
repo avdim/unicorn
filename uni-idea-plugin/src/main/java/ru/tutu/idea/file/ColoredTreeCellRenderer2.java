@@ -65,72 +65,13 @@ public abstract class ColoredTreeCellRenderer2 extends SimpleColoredComponent im
   }
 
   @SuppressWarnings("UnstableApiUsage")
-  public void rendererComponentInner(JTree tree,
-                                      Object value,
-                                      boolean selected,
-                                      boolean expanded,
-                                      boolean leaf,
-                                      int row,
-                                      boolean hasFocus) {
-    myTree = tree;
-
-    clear();
-
-    mySelected = selected;
-    myFocusedCalculated = false;
-
-    // We paint background if and only if tree path is selected and tree has focus.
-    // If path is selected and tree is not focused then we just paint focused border.
-    if (UIUtil.isFullRowSelectionLAF()) {
-      setBackground(selected ? UIUtil.getTreeSelectionBackground() : null);
-    }
-    else if (WideSelectionTreeUI.isWideSelection(tree)) {
-      setPaintFocusBorder(false);
-      if (selected) {
-        setBackground(UIUtil.getTreeSelectionBackground(hasFocus));
-      }
-      else {
-        setBackground(null);
-      }
-    }
-    else if (selected) {
-      setPaintFocusBorder(true);
-      if (isFocused()) {
-        setBackground(UIUtil.getTreeSelectionBackground());
-      }
-      else {
-        setBackground(null);
-      }
-    }
-    else {
-      setBackground(null);
-    }
-
-    if (value instanceof LoadingNode) {
-      setForeground(JBColor.GRAY);
-      setIcon(LOADING_NODE_ICON);
-    }
-    else {
-      setForeground(RenderingUtil.getForeground(tree));
-      setIcon(null);
-    }
-
-    if (WideSelectionTreeUI.isWideSelection(tree)) {
-      super.setOpaque(false);  // avoid erasing Nimbus focus frame
-      super.setIconOpaque(false);
-    }
-    else {
-      super.setOpaque(myOpaque || selected && hasFocus || selected && isFocused()); // draw selection background even for non-opaque tree
-    }
-    customizeCellRenderer(tree, value, selected, expanded, leaf, row, hasFocus);
-
-    if (!myUsedCustomSpeedSearchHighlighting && !AbstractTreeUi.isLoadingNode(value)) {
-      SpeedSearchSupply speedSearch = SpeedSearchSupply.getSupply(tree);
-      if (speedSearch != null && !speedSearch.isObjectFilteredOut(value)){
-        SpeedSearchUtil.applySpeedSearchHighlighting(tree, this, true, selected);
-      }
-    }
-  }
+  public abstract void rendererComponentInner(JTree tree,
+                                              Object value,
+                                              boolean selected,
+                                              boolean expanded,
+                                              boolean leaf,
+                                              int row,
+                                              boolean hasFocus);
 
   public JTree getTree() {
     return myTree;
@@ -178,18 +119,6 @@ public abstract class ColoredTreeCellRenderer2 extends SimpleColoredComponent im
       super.append(fragment, attributes, isMainText);
     }
   }
-
-  /**
-   * This method is invoked only for customization of component.
-   * All component attributes are cleared when this method is being invoked.
-   */
-  public abstract void customizeCellRenderer(@NotNull JTree tree,
-                                             Object value,
-                                             boolean selected,
-                                             boolean expanded,
-                                             boolean leaf,
-                                             int row,
-                                             boolean hasFocus);
 
   @Override
   public AccessibleContext getAccessibleContext() {
