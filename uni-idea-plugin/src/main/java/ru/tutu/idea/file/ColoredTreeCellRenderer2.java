@@ -24,25 +24,25 @@ import java.awt.*;
  * @author Vladimir Kondratyev
  */
 public abstract class ColoredTreeCellRenderer2 extends SimpleColoredComponent implements TreeCellRenderer {
-  private static final Logger LOG = Logger.getInstance(ColoredTreeCellRenderer2.class);
+  public static final Logger LOG = Logger.getInstance(ColoredTreeCellRenderer2.class);
 
-  private static final Icon LOADING_NODE_ICON = JBUIScale.scaleIcon(EmptyIcon.create(8, 16));
+  public static final Icon LOADING_NODE_ICON = JBUIScale.scaleIcon(EmptyIcon.create(8, 16));
 
   /**
    * Defines whether the tree is selected or not
    */
-  protected boolean mySelected;
+  public boolean mySelected;
   /**
    * Defines whether the tree has focus or not
    */
-  private boolean myFocused;
-  private boolean myFocusedCalculated;
+  public boolean myFocused;
+  public boolean myFocusedCalculated;
 
-  protected boolean myUsedCustomSpeedSearchHighlighting = false;
+  public boolean myUsedCustomSpeedSearchHighlighting = false;
 
-  protected JTree myTree;
+  public JTree myTree;
 
-  private boolean myOpaque = true;
+  public boolean myOpaque = true;
 
   @Override
   public final Component getTreeCellRendererComponent(JTree tree,
@@ -65,7 +65,7 @@ public abstract class ColoredTreeCellRenderer2 extends SimpleColoredComponent im
   }
 
   @SuppressWarnings("UnstableApiUsage")
-  private void rendererComponentInner(JTree tree,
+  public void rendererComponentInner(JTree tree,
                                       Object value,
                                       boolean selected,
                                       boolean expanded,
@@ -136,7 +136,7 @@ public abstract class ColoredTreeCellRenderer2 extends SimpleColoredComponent im
     return myTree;
   }
 
-  protected final boolean isFocused() {
+  public final boolean isFocused() {
     if (!myFocusedCalculated) {
       myFocused = calcFocusedState();
       myFocusedCalculated = true;
@@ -144,7 +144,7 @@ public abstract class ColoredTreeCellRenderer2 extends SimpleColoredComponent im
     return myFocused;
   }
 
-  protected boolean calcFocusedState() {
+  public boolean calcFocusedState() {
     return myTree.hasFocus();
   }
 
@@ -199,7 +199,7 @@ public abstract class ColoredTreeCellRenderer2 extends SimpleColoredComponent im
     return accessibleContext;
   }
 
-  protected class AccessibleColoredTreeCellRenderer extends AccessibleSimpleColoredComponent {
+  public class AccessibleColoredTreeCellRenderer extends AccessibleSimpleColoredComponent {
   }
 
   // The following method are overridden for performance reasons.
@@ -224,7 +224,7 @@ public abstract class ColoredTreeCellRenderer2 extends SimpleColoredComponent im
   }
 
   @Override
-  protected void firePropertyChange(String propertyName, Object oldValue, Object newValue) {
+  public void firePropertyChange(String propertyName, Object oldValue, Object newValue) {
   }
 
   @Override
