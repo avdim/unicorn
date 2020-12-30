@@ -41,11 +41,11 @@ import static com.intellij.util.ui.tree.TreeUtil.getLastUserObject;
  * @author Anna
  * @author Konstantin Bulenkov
  */
-abstract class ProjectViewDropTarget2 implements DnDNativeTarget {
+public abstract class ProjectViewDropTarget2 implements DnDNativeTarget {
   private final JTree myTree;
   private final Project myProject;
 
-  ProjectViewDropTarget2(JTree tree, Project project) {
+  public ProjectViewDropTarget2(JTree tree, Project project) {
     myTree = tree;
     myProject = project;
   }
@@ -170,10 +170,10 @@ abstract class ProjectViewDropTarget2 implements DnDNativeTarget {
   }
 
   @Nullable
-  abstract PsiElement getPsiElement(@NotNull TreePath path);
+  public abstract PsiElement getPsiElement(@NotNull TreePath path);
 
   @Nullable
-  abstract Module getModule(@NotNull PsiElement element);
+  public abstract Module getModule(@NotNull PsiElement element);
 
   abstract class MoveCopyDropHandler implements DropHandler {
     @Override

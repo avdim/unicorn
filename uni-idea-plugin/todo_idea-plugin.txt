@@ -42,3 +42,4 @@ https://github.com/hhru/android-multimodule-plugin
 JetPack Compose:
 /Users/dim/Desktop/github/joreilly/BikeShare
 
+find file in file manager

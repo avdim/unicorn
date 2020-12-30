@@ -66,15 +66,20 @@ val UNI_VERSION = "0.12.5"
 // val LAST_COMMUNITY = IdeaVersion.Download("203.5784.10-EAP-SNAPSHOT")
 //val LAST_COMMUNITY = IdeaVersion.Download("2020.3", "IC")
 //val LAST_COMMUNITY = IdeaVersion.Download("203.6682.78-EAP-SNAPSHOT", "IC")
-val LAST_COMMUNITY = IdeaVersion.Download("203.6682.115-EAP-SNAPSHOT", "IC")
+val LAST_IDEA_STR = "203.6682.115-EAP-SNAPSHOT"
+val LAST_COMMUNITY = IdeaVersion.Download(LAST_IDEA_STR, "IC")
+val LAST_ULTIMATE = IdeaVersion.Download(LAST_IDEA_STR, "IU")
 
 val Project.IDEA_VERSION: IdeaVersion get() =
   when (UNI_BUILD_TYPE) {
-    is BuildType.Release, BuildType.Debug -> {
+    is BuildType.Debug -> {
 //      IdeaVersion.Download("2020.3", "IU")
       LAST_COMMUNITY
 //      IdeaVersion.Download("203.5981-EAP-CANDIDATE-SNAPSHOT", "IC")
       //IdeaVersion.Community("LATEST-EAP-SNAPSHOT")
+    }
+    is BuildType.Release -> {
+      LAST_ULTIMATE
     }
     is BuildType.IntegrationTest -> {
 //      IdeaVersion.Download("203.4818-EAP-CANDIDATE-SNAPSHOT")//jvm8 stable integration test
