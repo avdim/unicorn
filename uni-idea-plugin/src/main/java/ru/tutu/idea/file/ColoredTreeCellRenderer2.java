@@ -1,17 +1,12 @@
 // Copyright 2000-2020 JetBrains s.r.o. Use of this source code is governed by the Apache 2.0 license that can be found in the LICENSE file.
 package ru.tutu.idea.file;
 
-import com.intellij.ide.util.treeView.AbstractTreeUi;
 import com.intellij.openapi.diagnostic.Logger;
-import com.intellij.openapi.progress.ProcessCanceledException;
-import com.intellij.ui.*;
-import com.intellij.ui.render.RenderingUtil;
+import com.intellij.ui.SimpleColoredComponent;
+import com.intellij.ui.SimpleTextAttributes;
 import com.intellij.ui.scale.JBUIScale;
-import com.intellij.ui.speedSearch.SpeedSearchSupply;
-import com.intellij.ui.speedSearch.SpeedSearchUtil;
 import com.intellij.util.ui.EmptyIcon;
 import com.intellij.util.ui.UIUtil;
-import com.intellij.util.ui.tree.WideSelectionTreeUI;
 import org.jetbrains.annotations.Nls;
 import org.jetbrains.annotations.NotNull;
 
@@ -43,35 +38,6 @@ public abstract class ColoredTreeCellRenderer2 extends SimpleColoredComponent im
   public JTree myTree;
 
   public boolean myOpaque = true;
-
-  @Override
-  public final Component getTreeCellRendererComponent(JTree tree,
-                                                      Object value,
-                                                      boolean selected,
-                                                      boolean expanded,
-                                                      boolean leaf,
-                                                      int row,
-                                                      boolean hasFocus) {
-    try {
-      rendererComponentInner(tree, value, selected, expanded, leaf, row, hasFocus);
-    }
-    catch (ProcessCanceledException e) {
-      throw e;
-    }
-    catch (Exception e) {
-      try { LOG.error(e); } catch (Exception ignore) { }
-    }
-    return this;
-  }
-
-  @SuppressWarnings("UnstableApiUsage")
-  public abstract void rendererComponentInner(JTree tree,
-                                              Object value,
-                                              boolean selected,
-                                              boolean expanded,
-                                              boolean leaf,
-                                              int row,
-                                              boolean hasFocus);
 
   public JTree getTree() {
     return myTree;

@@ -7,8 +7,12 @@ import com.intellij.ide.util.treeView.AbstractTreeUi
 import com.intellij.ide.util.treeView.NodeDescriptor
 import com.intellij.ide.util.treeView.PresentableNodeDescriptor
 import com.intellij.navigation.NavigationItem
+import com.intellij.openapi.editor.colors.EditorColorsManager
+import com.intellij.openapi.editor.colors.EditorColorsScheme
 import com.intellij.openapi.fileEditor.impl.IdeDocumentHistoryImpl
+import com.intellij.openapi.progress.ProcessCanceledException
 import com.intellij.openapi.util.Comparing
+import com.intellij.openapi.util.IconLoader
 import com.intellij.openapi.util.registry.Registry
 import com.intellij.openapi.util.text.StringUtil
 import com.intellij.psi.PsiDirectory
@@ -21,24 +25,57 @@ import com.intellij.ui.render.RenderingUtil
 import com.intellij.ui.speedSearch.SpeedSearchSupply
 import com.intellij.ui.speedSearch.SpeedSearchUtil
 import com.intellij.util.text.JBDateFormat
+import com.intellij.util.ui.StartupUiUtil
 import com.intellij.util.ui.tree.TreeUtil
 import java.awt.Color
+import java.awt.Component
 import java.nio.file.Files
 import java.nio.file.Path
 import java.nio.file.attribute.BasicFileAttributes
+import javax.swing.Icon
 import javax.swing.JTree
 
 const val NODE_TO_VIRTUAL_FILE = false//todo
 
-open class ProjectViewRenderer2 : NodeRenderer2() {
+open class ProjectViewRenderer2 : ColoredTreeCellRenderer2() {
+
+  companion object {
+    val scheme: EditorColorsScheme
+      get() = EditorColorsManager.getInstance().schemeForCurrentUITheme
+
+    fun addColorToSimpleTextAttributes(
+      simpleTextAttributes: SimpleTextAttributes,
+      color: Color?
+    ): SimpleTextAttributes {
+      var simpleTextAttributes = simpleTextAttributes
+      if (color != null) {
+        val textAttributes = simpleTextAttributes.toTextAttributes()
+        textAttributes.foregroundColor = color
+        simpleTextAttributes = SimpleTextAttributes.fromTextAttributes(textAttributes)
+      }
+      return simpleTextAttributes
+    }
+
+  }
+
   init {
     isOpaque = false
     isIconOpaque = false
     isTransparentIconBackground = true
   }
 
+  private fun fixIconIfNeeded(icon: Icon?, selected: Boolean, hasFocus: Boolean): Icon? {
+    return if (icon != null && !StartupUiUtil.isUnderDarcula() && Registry.`is`(
+        "ide.project.view.change.icon.on.selection",
+        true
+      ) && selected && hasFocus
+    ) {
+      IconLoader.getDarkIcon(icon, true)
+    } else icon
+  }
+
   @Suppress("UnstableApiUsage")
-  override fun rendererComponentInner(
+  fun rendererComponentInner(
     tree: JTree,
     value: Any,
     selected: Boolean,
@@ -61,7 +98,7 @@ open class ProjectViewRenderer2 : NodeRenderer2() {
     super.setIconOpaque(false)
     val node = TreeUtil.getUserObject(value)
     if (node is NodeDescriptor<*>) {
-      icon = super.fixIconIfNeeded(node.icon, selected, hasFocus)
+      icon = fixIconIfNeeded(node.icon, selected, hasFocus)
     }
     val presentation = when (node) {
       is PresentableNodeDescriptor<*> -> node.presentation
@@ -70,7 +107,7 @@ open class ProjectViewRenderer2 : NodeRenderer2() {
     }
     if (presentation is PresentationData) {
       val color = if (node is NodeDescriptor<*>) node.color else null
-      icon = super.fixIconIfNeeded(presentation.getIcon(false), selected, hasFocus)
+      icon = fixIconIfNeeded(presentation.getIcon(false), selected, hasFocus)
       val coloredText = presentation.coloredText
       val forcedForeground: Color? = presentation.forcedTextForeground
       if (coloredText.isEmpty()) {
@@ -187,6 +224,30 @@ open class ProjectViewRenderer2 : NodeRenderer2() {
       }
     }
 
+  }
+
+  override fun getTreeCellRendererComponent(
+    tree: JTree,
+    value: Any,
+    selected: Boolean,
+    expanded: Boolean,
+    leaf: Boolean,
+    row: Int,
+    hasFocus: Boolean
+  ): Component {
+    try {
+      rendererComponentInner(tree, value, selected, expanded, leaf, row, hasFocus)
+    } catch (e: ProcessCanceledException) {
+      throw e
+    } catch (e: Exception) {
+      try {
+        LOG.error(e)
+      } catch (ignore: Exception) {
+      }
+
+    }
+
+    return this
   }
 
 }
