@@ -44,6 +44,7 @@ import javax.swing.JTree
 
 const val NODE_TO_VIRTUAL_FILE = false//todo
 val LOADING_NODE_ICON: Icon = JBUIScale.scaleIcon(EmptyIcon.create(8, 16))
+
 fun addColorToSimpleTextAttributes(
   simpleTextAttributes: SimpleTextAttributes,
   color: Color?
@@ -57,45 +58,20 @@ fun addColorToSimpleTextAttributes(
   return result
 }
 
+fun fixIconIfNeeded(icon: Icon?, selected: Boolean, hasFocus: Boolean): Icon? {
+  return if (icon != null && !StartupUiUtil.isUnderDarcula() && Registry.`is`(
+      "ide.project.view.change.icon.on.selection",
+      true
+    ) && selected && hasFocus
+  ) {
+    IconLoader.getDarkIcon(icon, true)
+  } else icon
+}
+
 open class ProjectViewRenderer2 {
-  /**
-   * Defines whether the tree is selected or not
-   */
-  private var mySelected = false
-
-  /**
-   * Defines whether the tree has focus or not
-   */
-  private var myFocused = false
-  private var myFocusedCalculated = false
-  private var myUsedCustomSpeedSearchHighlighting = false
-  private var myTree: JTree? = null //todo not nullable
-  private var myOpaque = true
-  private val isFocused: Boolean
-    get() {
-      if (!myFocusedCalculated) {
-        myFocused = calcFocusedState()
-        myFocusedCalculated = true
-      }
-      return myFocused
-    }
-
-  fun calcFocusedState(): Boolean {
-    return myTree!!.hasFocus()
-  }
-
-  private fun fixIconIfNeeded(icon: Icon?, selected: Boolean, hasFocus: Boolean): Icon? {
-    return if (icon != null && !StartupUiUtil.isUnderDarcula() && Registry.`is`(
-        "ide.project.view.change.icon.on.selection",
-        true
-      ) && selected && hasFocus
-    ) {
-      IconLoader.getDarkIcon(icon, true)
-    } else icon
-  }
 
   fun getTreeCellRendererComponent(
-    tree: JTree,
+    myTree: JTree,
     value: Any,
     selected: Boolean,
     expanded: Boolean,
@@ -104,26 +80,41 @@ open class ProjectViewRenderer2 {
     hasFocus: Boolean
   ): Component {
 
+    /**
+     * Defines whether the tree is selected or not
+     */
+    var mySelected = false
+    /**
+     * Defines whether the tree has focus or not
+     */
+    var myFocused = false
+    var myFocusedCalculated = false
+    val myUsedCustomSpeedSearchHighlighting = false
+
+    fun isFocused(): Boolean {
+      if (!myFocusedCalculated) {
+        myFocused = myTree.hasFocus()
+        myFocusedCalculated = true
+      }
+      return myFocused
+    }
+
     val result = object : SimpleColoredComponent() {
       init {
         isOpaque = false
         isIconOpaque = false
         isTransparentIconBackground = true
       }
-      override fun setOpaque(isOpaque: Boolean) {
-        myOpaque = isOpaque
-        super.setOpaque(isOpaque)
-      }
 
       override fun getFont(): Font =
-        super.getFont() ?: myTree?.font ?: Uni.log.fatalError { "front == null" }
+        super.getFont() ?: myTree.font ?: Uni.log.fatalError { "front == null" }
 
       /**
        * When the item is selected then we use default tree's selection foreground.
        * It guaranties readability of selected text in any LAF.
        */
       override fun append(fragment: @Nls String, attributes: SimpleTextAttributes, isMainText: Boolean) {
-        if (mySelected && isFocused) {
+        if (mySelected && isFocused()) {
           super.append(
             fragment,
             SimpleTextAttributes(attributes.style, UIUtil.getTreeSelectionForeground(true)),
@@ -145,7 +136,6 @@ open class ProjectViewRenderer2 {
 
       @Suppress("UnstableApiUsage")
       fun rendererComponentInner(
-        tree: JTree,
         value: Any,
         selected: Boolean,
         expanded: Boolean,
@@ -153,15 +143,14 @@ open class ProjectViewRenderer2 {
         row: Int,
         hasFocus: Boolean
       ) {
-        myTree = tree
         clear()
         mySelected = selected
         myFocusedCalculated = false
         // We paint background if and only if tree path is selected and tree has focus.
         // If path is selected and tree is not focused then we just paint focused border.
         setPaintFocusBorder(selected)
-        background = if (selected && isFocused) JBColor(0x3875D6, 0x2F65CA) else null
-        foreground = RenderingUtil.getForeground(tree)
+        background = if (selected && isFocused()) JBColor(0x3875D6, 0x2F65CA) else null
+        foreground = RenderingUtil.getForeground(myTree)
         icon = if (value is LoadingNode) LOADING_NODE_ICON else null
         super.setOpaque(false)  // avoid erasing Nimbus focus frame
         super.setIconOpaque(false)
@@ -186,7 +175,7 @@ open class ProjectViewRenderer2 {
               val valueSting = value.toString()
               text = valueSting
             }
-            text = tree.convertValueToText(text, selected, expanded, leaf, row, hasFocus)
+            text = myTree.convertValueToText(text, selected, expanded, leaf, row, hasFocus)
             val textAttributesKey = presentation.textAttributesKey
             val simpleTextAttributes = if (textAttributesKey != null) {
               val textAttributes = scheme.getAttributes(textAttributesKey)
@@ -255,9 +244,9 @@ open class ProjectViewRenderer2 {
           toolTipText = null
         }
         if (!myUsedCustomSpeedSearchHighlighting && value !is LoadingNode) {
-          val speedSearch = SpeedSearchSupply.getSupply(tree)
+          val speedSearch = SpeedSearchSupply.getSupply(myTree)
           if (speedSearch != null && !speedSearch.isObjectFilteredOut(value)) {
-            SpeedSearchUtil.applySpeedSearchHighlighting(tree, this, true, selected)
+            SpeedSearchUtil.applySpeedSearchHighlighting(myTree, this, true, selected)
           }
         }
 
@@ -316,7 +305,7 @@ open class ProjectViewRenderer2 {
     }
 
     try {
-      result.rendererComponentInner(tree, value, selected, expanded, leaf, row, hasFocus)
+      result.rendererComponentInner(value, selected, expanded, leaf, row, hasFocus)
     } catch (e: ProcessCanceledException) {
       throw e
     } catch (e: Exception) {
