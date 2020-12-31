@@ -48,9 +48,31 @@ public class ProjectTreeBuilder2 extends BaseProjectTreeBuilder2 {
       }
     });
 
-    connection.subscribe(BookmarksListener.TOPIC, new BookmarksListener() {});
+    connection.subscribe(BookmarksListener.TOPIC, new BookmarksListener() {
+    });
 
-    PsiManager.getInstance(project).addPsiTreeChangeListener(new ProjectTreeBuilderPsiListener(project), this);
+    final DefaultMutableTreeNode rootNode = getRootNode();
+    final AbstractTreeUpdater updater = getUpdater();
+
+    PsiManager.getInstance(project).addPsiTreeChangeListener(
+      new ProjectViewPsiTreeChangeListener(project) {
+        @Override
+        protected DefaultMutableTreeNode getRootNode() {
+          return rootNode;
+        }
+
+        @Override
+        protected AbstractTreeUpdater getUpdater() {
+          return updater;
+        }
+
+        @Override
+        protected boolean isFlattenPackages() {
+          AbstractTreeStructure structure = getTreeStructure();
+          return structure instanceof AbstractProjectTreeStructure && ((AbstractProjectTreeStructure) structure).isFlattenPackages();
+        }
+      },
+      this);
     FileStatusManager.getInstance(ProjectManager.getInstance().getDefaultProject()).addFileStatusListener(new MyFileStatusListener(), this);
     CopyPasteUtil.addDefaultListener(this, this::addSubtreeToUpdateByElement);
 
@@ -61,28 +83,6 @@ public class ProjectTreeBuilder2 extends BaseProjectTreeBuilder2 {
     initRootNode();
   }
 
-  protected class ProjectTreeBuilderPsiListener extends ProjectViewPsiTreeChangeListener {
-    public ProjectTreeBuilderPsiListener(final Project project) {
-      super(project);
-    }
-
-    @Override
-    protected DefaultMutableTreeNode getRootNode(){
-      return ProjectTreeBuilder2.this.getRootNode();
-    }
-
-    @Override
-    protected AbstractTreeUpdater getUpdater() {
-      return ProjectTreeBuilder2.this.getUpdater();
-    }
-
-    @Override
-    protected boolean isFlattenPackages(){
-      AbstractTreeStructure structure = getTreeStructure();
-      return structure instanceof AbstractProjectTreeStructure && ((AbstractProjectTreeStructure)structure).isFlattenPackages();
-    }
-  }
-
   private final class MyFileStatusListener implements FileStatusListener {
     @Override
     public void fileStatusesChanged() {
@@ -91,7 +91,7 @@ public class ProjectTreeBuilder2 extends BaseProjectTreeBuilder2 {
 
     @Override
     public void fileStatusChanged(@NotNull VirtualFile vFile) {
-       queueUpdate(false);
+      queueUpdate(false);
     }
   }
 
