@@ -77,8 +77,8 @@ open class ProjectTreeBuilder2(
     val rootNode = rootNode
     val updater = updater
     val listener = object : PsiTreeChangeListener {
-      val myModificationTracker: PsiModificationTracker = PsiManager.getInstance(project).modificationTracker
-      var myModificationCount: Long = myModificationTracker.modificationCount
+//      val myModificationTracker: PsiModificationTracker = PsiManager.getInstance(project).modificationTracker
+//      var myModificationCount: Long = myModificationTracker.modificationCount
       val isFlattenPackages: Boolean by lazy {
         val structure = getTreeStructure()
         structure is AbstractProjectTreeStructure && structure.isFlattenPackages
@@ -118,11 +118,11 @@ open class ProjectTreeBuilder2(
           addSubtreeToUpdateByRoot()
           return
         }
-        val newModificationCount = myModificationTracker.modificationCount
-        if (newModificationCount == myModificationCount) return
-        if (stopProcessingForThisModificationCount) {
-          myModificationCount = newModificationCount
-        }
+//        val newModificationCount = myModificationTracker.modificationCount
+//        if (newModificationCount == myModificationCount) return
+//        if (stopProcessingForThisModificationCount) {
+//          myModificationCount = newModificationCount
+//        }
         while (true) {
           if (parent == null) break
           if (parent is PsiFile) {
