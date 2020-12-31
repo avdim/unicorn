@@ -280,7 +280,6 @@ private fun _createUniFilesComponent(
 
   val treeBuilder: BaseProjectTreeBuilder2 =
     object : ProjectTreeBuilder2(
-      project,
       myTree,
       treeModel,
       treeStructure

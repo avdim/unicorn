@@ -33,7 +33,6 @@ import gnu.trove.THashSet
 
 @Suppress("UnstableApiUsage")
 open class ProjectTreeBuilder2(
-  project: Project,
   tree: JTree,
   treeModel: DefaultTreeModel,
   treeStructure: ProjectAbstractTreeStructureBase
