@@ -21,6 +21,10 @@ import com.intellij.ide.CopyPasteUtil
 import com.intellij.ide.scratch.ScratchUtil
 import com.intellij.openapi.fileTypes.FileTypes
 import com.intellij.openapi.project.Project
+import com.intellij.openapi.vfs.AsyncFileListener
+import com.intellij.openapi.vfs.VirtualFileManager
+import com.intellij.openapi.vfs.VirtualFileManagerListener
+import com.intellij.openapi.vfs.newvfs.events.VFileEvent
 import com.intellij.problems.ProblemListener
 import com.intellij.psi.*
 import com.intellij.psi.util.PsiModificationTracker
@@ -66,8 +70,30 @@ open class ProjectTreeBuilder2(
     connection.subscribe(BookmarksListener.TOPIC, object : BookmarksListener {})
     val rootNode = rootNode
     val updater = updater
+    VirtualFileManager.getInstance().addAsyncFileListener(
+      {
+        object : AsyncFileListener.ChangeApplier {
+          override fun afterVfsChange() {
+
+          }
+        }
+      },
+      Uni
+    )
+    VirtualFileManager.getInstance().addVirtualFileManagerListener(
+      object : VirtualFileManagerListener {
+        override fun afterRefreshFinish(asynchronous: Boolean) {
+
+        }
+
+        override fun beforeRefreshStart(asynchronous: Boolean) {
+
+        }
+      },
+      Uni
+    )
     val listener = object : PsiTreeChangeListener {
-//      val myModificationTracker: PsiModificationTracker = PsiManager.getInstance(project).modificationTracker
+      //      val myModificationTracker: PsiModificationTracker = PsiManager.getInstance(project).modificationTracker
 //      var myModificationCount: Long = myModificationTracker.modificationCount
       val isFlattenPackages: Boolean by lazy {
         val structure = getTreeStructure()
