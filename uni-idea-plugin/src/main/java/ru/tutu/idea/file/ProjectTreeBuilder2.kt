@@ -70,11 +70,12 @@ open class ProjectTreeBuilder2(
     connection.subscribe(BookmarksListener.TOPIC, object : BookmarksListener {})
     val rootNode = rootNode
     val updater = updater
+
     VirtualFileManager.getInstance().addAsyncFileListener(
       {
         object : AsyncFileListener.ChangeApplier {
           override fun afterVfsChange() {
-
+            Uni.log.debug { "afterVfsChange, $it" }
           }
         }
       },
@@ -83,15 +84,16 @@ open class ProjectTreeBuilder2(
     VirtualFileManager.getInstance().addVirtualFileManagerListener(
       object : VirtualFileManagerListener {
         override fun afterRefreshFinish(asynchronous: Boolean) {
-
+          Uni.log.debug { "afterRefreshFinish" }
         }
 
         override fun beforeRefreshStart(asynchronous: Boolean) {
-
+          Uni.log.debug { "beforeRefreshStart" }
         }
       },
       Uni
     )
+
     val listener = object : PsiTreeChangeListener {
       //      val myModificationTracker: PsiModificationTracker = PsiManager.getInstance(project).modificationTracker
 //      var myModificationCount: Long = myModificationTracker.modificationCount
