@@ -283,7 +283,6 @@ private fun _createUniFilesComponent(
       project,
       myTree,
       treeModel,
-      null,
       treeStructure
     ) {
       override fun createUpdater() = object : AbstractTreeUpdater(this) {

@@ -13,6 +13,7 @@ import com.intellij.ide.projectView.impl.ProjectAbstractTreeStructureBase;
 import com.intellij.ide.util.treeView.AbstractTreeStructure;
 import com.intellij.ide.util.treeView.AbstractTreeUpdater;
 import com.intellij.ide.util.treeView.NodeDescriptor;
+import com.intellij.openapi.application.ApplicationManager;
 import com.intellij.openapi.application.ModalityState;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.project.ProjectManager;
@@ -29,6 +30,7 @@ import com.intellij.psi.util.PsiUtilCore;
 import com.intellij.util.Alarm;
 import com.intellij.util.SmartList;
 import com.intellij.util.messages.MessageBusConnection;
+import com.unicorn.Uni;
 import gnu.trove.THashSet;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -37,9 +39,7 @@ import javax.swing.*;
 import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.DefaultTreeModel;
 import java.util.Collection;
-import java.util.Comparator;
 import java.util.Enumeration;
-import java.util.Set;
 
 @SuppressWarnings("UnstableApiUsage")
 public class ProjectTreeBuilder2 extends BaseProjectTreeBuilder2 {
@@ -49,7 +49,7 @@ public class ProjectTreeBuilder2 extends BaseProjectTreeBuilder2 {
                              @NotNull ProjectAbstractTreeStructureBase treeStructure) {
     super(/*project, */tree, treeModel, treeStructure);
 
-    final MessageBusConnection connection = project.getMessageBus().connect(this);
+    final MessageBusConnection connection = ApplicationManager.getApplication().getMessageBus().connect(Uni.INSTANCE);
 
     connection.subscribe(ProjectTopics.PROJECT_ROOTS, new ModuleRootListener() {
       @Override
