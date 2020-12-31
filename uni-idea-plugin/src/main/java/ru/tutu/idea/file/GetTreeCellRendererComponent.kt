@@ -40,19 +40,6 @@ import javax.swing.JTree
 const val NODE_TO_VIRTUAL_FILE = false//todo
 val LOADING_NODE_ICON: Icon = JBUIScale.scaleIcon(EmptyIcon.create(8, 16))
 
-fun addColorToSimpleTextAttributes(
-  simpleTextAttributes: SimpleTextAttributes,
-  color: Color?
-): SimpleTextAttributes {
-  var result = simpleTextAttributes
-  if (color != null) {
-    val textAttributes = simpleTextAttributes.toTextAttributes()
-    textAttributes.foregroundColor = color
-    result = SimpleTextAttributes.fromTextAttributes(textAttributes)
-  }
-  return result
-}
-
 fun getTreeCellRendererComponent(
   myTree: JTree,
   value: Any,
@@ -104,6 +91,20 @@ fun getTreeCellRendererComponent(
         val coloredText = presentation.coloredText
         val forcedForeground: Color? = presentation.forcedTextForeground
         val scheme: EditorColorsScheme = EditorColorsManager.getInstance().schemeForCurrentUITheme
+
+        fun addColorToSimpleTextAttributes(
+          simpleTextAttributes: SimpleTextAttributes,
+          color: Color?
+        ): SimpleTextAttributes {
+          var result = simpleTextAttributes
+          if (color != null) {
+            val textAttributes = simpleTextAttributes.toTextAttributes()
+            textAttributes.foregroundColor = color
+            result = SimpleTextAttributes.fromTextAttributes(textAttributes)
+          }
+          return result
+        }
+
         if (coloredText.isEmpty()) {
           var text = presentation.presentableText
           if (StringUtil.isEmpty(text)) {
