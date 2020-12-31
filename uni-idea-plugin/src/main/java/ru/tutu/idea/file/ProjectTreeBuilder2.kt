@@ -71,11 +71,27 @@ open class ProjectTreeBuilder2(
     val rootNode = rootNode
     val updater = updater
 
+    fun addSubtreeToUpdateByRoot() {
+      //этот код обновляет дерево целиком
+      if (updater != null && rootNode != null) {
+        updater.addSubtreeToUpdate(rootNode)
+      }
+    }
+
+    fun addSubtreeToUpdateByElementFile(element: PsiElement?): Boolean {
+      //todo этот код обновляет конкретные элементы в дереве. Я пока такую логику себе не затаскивал.
+      fun addSubtreeToUpdateByElement(element: PsiElement): Boolean {
+        return updater != null && updater.addSubtreeToUpdateByElement(element)
+      }
+      return element != null && addSubtreeToUpdateByElement(ObjectUtils.notNull(element.containingFile, element))
+    }
+
     VirtualFileManager.getInstance().addAsyncFileListener(
       {
         object : AsyncFileListener.ChangeApplier {
           override fun afterVfsChange() {
-            Uni.log.debug { "afterVfsChange, $it" }
+//            Uni.log.debug { "afterVfsChange, $it" }
+            addSubtreeToUpdateByRoot()
           }
         }
       },
@@ -84,131 +100,21 @@ open class ProjectTreeBuilder2(
     VirtualFileManager.getInstance().addVirtualFileManagerListener(
       object : VirtualFileManagerListener {
         override fun afterRefreshFinish(asynchronous: Boolean) {
-          Uni.log.debug { "afterRefreshFinish" }
+
         }
 
         override fun beforeRefreshStart(asynchronous: Boolean) {
-          Uni.log.debug { "beforeRefreshStart" }
+
         }
       },
       Uni
     )
-
-    val listener = object : PsiTreeChangeListener {
-      //      val myModificationTracker: PsiModificationTracker = PsiManager.getInstance(project).modificationTracker
-//      var myModificationCount: Long = myModificationTracker.modificationCount
-      val isFlattenPackages: Boolean by lazy {
-        val structure = getTreeStructure()
-        structure is AbstractProjectTreeStructure && structure.isFlattenPackages
-      }
-
-      override fun childRemoved(event: PsiTreeChangeEvent) {
-        val child = event.oldChild
-        if (child is PsiWhiteSpace) return  //optimization
-        childrenChanged(event.parent, true)
-      }
-
-      override fun childAdded(event: PsiTreeChangeEvent) {
-        val child = event.newChild
-        if (child is PsiWhiteSpace) return  //optimization
-        childrenChanged(event.parent, true)
-      }
-
-      override fun childReplaced(event: PsiTreeChangeEvent) {
-        val oldChild = event.oldChild
-        val newChild = event.newChild
-        if (oldChild is PsiWhiteSpace && newChild is PsiWhiteSpace) return  //optimization
-        childrenChanged(event.parent, true)
-      }
-
-      override fun childMoved(event: PsiTreeChangeEvent) {
-        childrenChanged(event.oldParent, false)
-        childrenChanged(event.newParent, true)
-      }
-
-      override fun childrenChanged(event: PsiTreeChangeEvent) {
-        childrenChanged(event.parent, true)
-      }
-
-      protected fun childrenChanged(parent: PsiElement?, stopProcessingForThisModificationCount: Boolean) {
-        var parent = parent
-        if (parent is PsiDirectory && isFlattenPackages) {
-          addSubtreeToUpdateByRoot()
-          return
-        }
-//        val newModificationCount = myModificationTracker.modificationCount
-//        if (newModificationCount == myModificationCount) return
-//        if (stopProcessingForThisModificationCount) {
-//          myModificationCount = newModificationCount
-//        }
-        while (true) {
-          if (parent == null) break
-          if (parent is PsiFile) {
-            val virtualFile = parent.virtualFile
-            if (virtualFile != null && virtualFile.fileType !== FileTypes.PLAIN_TEXT) {
-              // adding a class within a file causes a new node to appear in project view => entire dir should be updated
-              parent = parent.containingDirectory
-              if (parent == null) break
-            }
-          } else if (parent is PsiDirectory &&
-            ScratchUtil.isScratch(parent.virtualFile)
-          ) {
-            addSubtreeToUpdateByRoot()
-            break
-          }
-          if (addSubtreeToUpdateByElementFile(parent)) {
-            break
-          }
-          if (parent is PsiFile || parent is PsiDirectory) break
-          parent = parent.parent
-        }
-      }
-
-      override fun propertyChanged(event: PsiTreeChangeEvent) {
-        val propertyName = event.propertyName
-        val element = event.element
-        if (propertyName == PsiTreeChangeEvent.PROP_ROOTS) {
-          addSubtreeToUpdateByRoot()
-        } else if (propertyName == PsiTreeChangeEvent.PROP_WRITABLE) {
-          if (!addSubtreeToUpdateByElementFile(element) && element is PsiFile) {
-            addSubtreeToUpdateByElementFile(element.containingDirectory)
-          }
-        } else if (propertyName == PsiTreeChangeEvent.PROP_FILE_NAME || propertyName == PsiTreeChangeEvent.PROP_DIRECTORY_NAME) {
-          if (element is PsiDirectory && isFlattenPackages) {
-            addSubtreeToUpdateByRoot()
-            return
-          }
-          val parent = element.parent
-          if (parent == null || !addSubtreeToUpdateByElementFile(parent)) {
-            addSubtreeToUpdateByElementFile(element)
-          }
-        } else if (propertyName == PsiTreeChangeEvent.PROP_FILE_TYPES || propertyName == PsiTreeChangeEvent.PROP_UNLOADED_PSI) {
-          addSubtreeToUpdateByRoot()
-        }
-      }
-
-      protected fun addSubtreeToUpdateByRoot() {
-        val updater = updater
-        if (updater != null && rootNode != null) updater.addSubtreeToUpdate(rootNode)
-      }
-
-      protected fun addSubtreeToUpdateByElement(element: PsiElement): Boolean {
-        val updater = updater
-        return updater != null && updater.addSubtreeToUpdateByElement(element)
-      }
-
-      private fun addSubtreeToUpdateByElementFile(element: PsiElement?): Boolean {
-        return element != null && addSubtreeToUpdateByElement(ObjectUtils.notNull(element.containingFile, element))
-      }
-
-      override fun beforeChildAddition(event: PsiTreeChangeEvent) {}
-      override fun beforeChildRemoval(event: PsiTreeChangeEvent) {}
-      override fun beforeChildReplacement(event: PsiTreeChangeEvent) {}
-      override fun beforeChildMovement(event: PsiTreeChangeEvent) {}
-      override fun beforeChildrenChange(event: PsiTreeChangeEvent) {}
-      override fun beforePropertyChange(event: PsiTreeChangeEvent) {}
+    if (false) {
+      // Это старый код, который завязан на Project
+      PsiManager.getInstance(/*project*/ProjectManager.getInstance().defaultProject).addPsiTreeChangeListener(
+        createOldListener(::addSubtreeToUpdateByRoot, ::addSubtreeToUpdateByElementFile), this
+      )
     }
-    PsiManager.getInstance(project).addPsiTreeChangeListener(listener, this)
     FileStatusManager.getInstance(ProjectManager.getInstance().defaultProject).addFileStatusListener(
       object : FileStatusListener {
         override fun fileStatusesChanged() {
@@ -231,3 +137,106 @@ open class ProjectTreeBuilder2(
     initRootNode()
   }
 }
+
+@Suppress("unused")
+fun createOldListener(
+  addSubtreeToUpdateByRoot: () -> Unit,
+  addSubtreeToUpdateByElementFile: (element: PsiElement?) -> Boolean
+) =
+  object : PsiTreeChangeListener {
+    //      val myModificationTracker: PsiModificationTracker = PsiManager.getInstance(project).modificationTracker
+//      var myModificationCount: Long = myModificationTracker.modificationCount
+    val isFlattenPackages: Boolean = true
+
+    override fun childRemoved(event: PsiTreeChangeEvent) {
+      val child = event.oldChild
+      if (child is PsiWhiteSpace) return  //optimization
+      childrenChanged(event.parent, true)
+    }
+
+    override fun childAdded(event: PsiTreeChangeEvent) {
+      val child = event.newChild
+      if (child is PsiWhiteSpace) return  //optimization
+      childrenChanged(event.parent, true)
+    }
+
+    override fun childReplaced(event: PsiTreeChangeEvent) {
+      val oldChild = event.oldChild
+      val newChild = event.newChild
+      if (oldChild is PsiWhiteSpace && newChild is PsiWhiteSpace) return  //optimization
+      childrenChanged(event.parent, true)
+    }
+
+    override fun childMoved(event: PsiTreeChangeEvent) {
+      childrenChanged(event.oldParent, false)
+      childrenChanged(event.newParent, true)
+    }
+
+    override fun childrenChanged(event: PsiTreeChangeEvent) {
+      childrenChanged(event.parent, true)
+    }
+
+    protected fun childrenChanged(parent: PsiElement?, stopProcessingForThisModificationCount: Boolean) {
+      var parent = parent
+      if (parent is PsiDirectory && isFlattenPackages) {
+        addSubtreeToUpdateByRoot()
+        return
+      }
+//        val newModificationCount = myModificationTracker.modificationCount
+//        if (newModificationCount == myModificationCount) return
+//        if (stopProcessingForThisModificationCount) {
+//          myModificationCount = newModificationCount
+//        }
+      while (true) {
+        if (parent == null) break
+        if (parent is PsiFile) {
+          val virtualFile = parent.virtualFile
+          if (virtualFile != null && virtualFile.fileType !== FileTypes.PLAIN_TEXT) {
+            // adding a class within a file causes a new node to appear in project view => entire dir should be updated
+            parent = parent.containingDirectory
+            if (parent == null) break
+          }
+        } else if (parent is PsiDirectory &&
+          ScratchUtil.isScratch(parent.virtualFile)
+        ) {
+          addSubtreeToUpdateByRoot()
+          break
+        }
+        if (addSubtreeToUpdateByElementFile(parent)) {
+          break
+        }
+        if (parent is PsiFile || parent is PsiDirectory) break
+        parent = parent.parent
+      }
+    }
+
+    override fun propertyChanged(event: PsiTreeChangeEvent) {
+      val propertyName = event.propertyName
+      val element = event.element
+      if (propertyName == PsiTreeChangeEvent.PROP_ROOTS) {
+        addSubtreeToUpdateByRoot()
+      } else if (propertyName == PsiTreeChangeEvent.PROP_WRITABLE) {
+        if (!addSubtreeToUpdateByElementFile(element) && element is PsiFile) {
+          addSubtreeToUpdateByElementFile(element.containingDirectory)
+        }
+      } else if (propertyName == PsiTreeChangeEvent.PROP_FILE_NAME || propertyName == PsiTreeChangeEvent.PROP_DIRECTORY_NAME) {
+        if (element is PsiDirectory && isFlattenPackages) {
+          addSubtreeToUpdateByRoot()
+          return
+        }
+        val parent = element.parent
+        if (parent == null || !addSubtreeToUpdateByElementFile(parent)) {
+          addSubtreeToUpdateByElementFile(element)
+        }
+      } else if (propertyName == PsiTreeChangeEvent.PROP_FILE_TYPES || propertyName == PsiTreeChangeEvent.PROP_UNLOADED_PSI) {
+        addSubtreeToUpdateByRoot()
+      }
+    }
+
+    override fun beforeChildAddition(event: PsiTreeChangeEvent) {}
+    override fun beforeChildRemoval(event: PsiTreeChangeEvent) {}
+    override fun beforeChildReplacement(event: PsiTreeChangeEvent) {}
+    override fun beforeChildMovement(event: PsiTreeChangeEvent) {}
+    override fun beforeChildrenChange(event: PsiTreeChangeEvent) {}
+    override fun beforePropertyChange(event: PsiTreeChangeEvent) {}
+  }
