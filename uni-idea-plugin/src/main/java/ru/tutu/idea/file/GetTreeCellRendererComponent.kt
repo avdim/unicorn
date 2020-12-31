@@ -69,20 +69,17 @@ fun getTreeCellRendererComponent(
     override fun getFont(): Font =
       super.getFont() ?: myTree.font ?: Uni.log.fatalError { "front == null" }
 
-    private inner class AccessibleColoredTreeCellRenderer : AccessibleSimpleColoredComponent()
-
     override fun getAccessibleContext(): AccessibleContext {
       if (accessibleContext == null) {
-        accessibleContext = AccessibleColoredTreeCellRenderer()
+        accessibleContext = object : AccessibleSimpleColoredComponent() {
+
+        }
       }
       return accessibleContext
     }
 
     @Suppress("UnstableApiUsage")
-    fun rendererComponentInner(
-      value: Any,
-      row: Int,
-    ) {
+    fun rendererComponentInner(value: Any, row: Int) {
       clear()
       // We paint background if and only if tree path is selected and tree has focus.
       // If path is selected and tree is not focused then we just paint focused border.
