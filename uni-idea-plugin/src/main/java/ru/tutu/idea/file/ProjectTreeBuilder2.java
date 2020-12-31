@@ -3,7 +3,6 @@ package ru.tutu.idea.file;
 
 import com.intellij.ProjectTopics;
 import com.intellij.ide.CopyPasteUtil;
-import com.intellij.ide.bookmarks.Bookmark;
 import com.intellij.ide.bookmarks.BookmarksListener;
 import com.intellij.ide.projectView.ProjectViewPsiTreeChangeListener;
 import com.intellij.ide.projectView.impl.AbstractProjectTreeStructure;
@@ -20,9 +19,7 @@ import com.intellij.openapi.vcs.FileStatusListener;
 import com.intellij.openapi.vcs.FileStatusManager;
 import com.intellij.openapi.vfs.VirtualFile;
 import com.intellij.problems.ProblemListener;
-import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiManager;
-import com.intellij.psi.util.PsiUtilCore;
 import com.intellij.util.Alarm;
 import com.intellij.util.messages.MessageBusConnection;
 import com.unicorn.Uni;
@@ -51,7 +48,7 @@ public class ProjectTreeBuilder2 extends BaseProjectTreeBuilder2 {
       }
     });
 
-    connection.subscribe(BookmarksListener.TOPIC, new MyBookmarksListener());
+    connection.subscribe(BookmarksListener.TOPIC, new BookmarksListener() {});
 
     PsiManager.getInstance(project).addPsiTreeChangeListener(new ProjectTreeBuilderPsiListener(project), this);
     FileStatusManager.getInstance(ProjectManager.getInstance().getDefaultProject()).addFileStatusListener(new MyFileStatusListener(), this);
@@ -86,30 +83,6 @@ public class ProjectTreeBuilder2 extends BaseProjectTreeBuilder2 {
     }
   }
 
-  private final class MyBookmarksListener implements BookmarksListener {
-    @Override
-    public void bookmarkAdded(@NotNull Bookmark b) {
-      updateForFile(b.getFile());
-    }
-
-    @Override
-    public void bookmarkRemoved(@NotNull Bookmark b) {
-      updateForFile(b.getFile());
-    }
-
-    @Override
-    public void bookmarkChanged(@NotNull Bookmark b) {
-      updateForFile(b.getFile());
-    }
-
-    private void updateForFile(@NotNull VirtualFile file) {
-      PsiElement element = findPsi(file);
-      if (element != null) {
-        queueUpdateFrom(element, false);
-      }
-    }
-  }
-
   private final class MyFileStatusListener implements FileStatusListener {
     @Override
     public void fileStatusesChanged() {
@@ -120,10 +93,6 @@ public class ProjectTreeBuilder2 extends BaseProjectTreeBuilder2 {
     public void fileStatusChanged(@NotNull VirtualFile vFile) {
        queueUpdate(false);
     }
-  }
-
-  private PsiElement findPsi(@NotNull VirtualFile vFile) {
-    return PsiUtilCore.findFileSystemItem(null/*myProject*/, vFile);
   }
 
   private static class MyProblemListener implements ProblemListener {
