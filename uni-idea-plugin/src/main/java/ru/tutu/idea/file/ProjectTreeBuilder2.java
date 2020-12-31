@@ -15,6 +15,7 @@ import com.intellij.ide.util.treeView.AbstractTreeUpdater;
 import com.intellij.ide.util.treeView.NodeDescriptor;
 import com.intellij.openapi.application.ModalityState;
 import com.intellij.openapi.project.Project;
+import com.intellij.openapi.project.ProjectManager;
 import com.intellij.openapi.roots.ModuleRootEvent;
 import com.intellij.openapi.roots.ModuleRootListener;
 import com.intellij.openapi.vcs.FileStatusListener;
@@ -22,6 +23,7 @@ import com.intellij.openapi.vcs.FileStatusManager;
 import com.intellij.openapi.vfs.VirtualFile;
 import com.intellij.problems.ProblemListener;
 import com.intellij.psi.PsiElement;
+import com.intellij.psi.PsiFileSystemItem;
 import com.intellij.psi.PsiManager;
 import com.intellij.psi.util.PsiUtilCore;
 import com.intellij.util.Alarm;
@@ -44,9 +46,8 @@ public class ProjectTreeBuilder2 extends BaseProjectTreeBuilder2 {
   public ProjectTreeBuilder2(@NotNull Project project,
                              @NotNull JTree tree,
                              @NotNull DefaultTreeModel treeModel,
-                             @Nullable Comparator<NodeDescriptor<?>> comparator,
                              @NotNull ProjectAbstractTreeStructureBase treeStructure) {
-    super(project, tree, treeModel, treeStructure, comparator);
+    super(/*project, */tree, treeModel, treeStructure);
 
     final MessageBusConnection connection = project.getMessageBus().connect(this);
 
@@ -139,7 +140,7 @@ public class ProjectTreeBuilder2 extends BaseProjectTreeBuilder2 {
   }
 
   private PsiElement findPsi(@NotNull VirtualFile vFile) {
-    return PsiUtilCore.findFileSystemItem(myProject, vFile);
+    return PsiUtilCore.findFileSystemItem(null/*myProject*/, vFile);
   }
 
   private class MyProblemListener implements ProblemListener {
@@ -161,18 +162,19 @@ public class ProjectTreeBuilder2 extends BaseProjectTreeBuilder2 {
         if (myFilesToRefresh.add(fileToRefresh)) {
           myUpdateProblemAlarm.cancelAllRequests();
           myUpdateProblemAlarm.addRequest(() -> {
-            if (!myProject.isOpen()) return;
-            Set<VirtualFile> filesToRefresh;
-            synchronized (myFilesToRefresh) {
-              filesToRefresh = new THashSet<>(myFilesToRefresh);
-            }
-            final DefaultMutableTreeNode rootNode = getRootNode();
-            if (rootNode != null) {
-              updateNodesContaining(filesToRefresh, rootNode);
-            }
-            synchronized (myFilesToRefresh) {
-              myFilesToRefresh.removeAll(filesToRefresh);
-            }
+            return;
+//            if (!myProject.isOpen()) return;
+//            Set<VirtualFile> filesToRefresh;
+//            synchronized (myFilesToRefresh) {
+//              filesToRefresh = new THashSet<>(myFilesToRefresh);
+//            }
+//            final DefaultMutableTreeNode rootNode = getRootNode();
+//            if (rootNode != null) {
+//              updateNodesContaining(filesToRefresh, rootNode);
+//            }
+//            synchronized (myFilesToRefresh) {
+//              myFilesToRefresh.removeAll(filesToRefresh);
+//            }
           }, 200, ModalityState.NON_MODAL);
         }
       }

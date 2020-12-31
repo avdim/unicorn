@@ -42,16 +42,15 @@ import java.util.List;
  */
 @SuppressWarnings("UnstableApiUsage")
 public abstract class BaseProjectTreeBuilder2 extends AbstractTreeBuilder {
-  protected final Project myProject;
+//  protected final Project myProject;
 
-  public BaseProjectTreeBuilder2(@NotNull Project project,
+  public BaseProjectTreeBuilder2(/*@NotNull Project project,*/
                                  @NotNull JTree tree,
                                  @NotNull DefaultTreeModel treeModel,
-                                 @NotNull AbstractTreeStructure treeStructure,
-                                 @Nullable Comparator<NodeDescriptor<?>> comparator) {
-    init(tree, treeModel, treeStructure, comparator, DEFAULT_UPDATE_INACTIVE);
+                                 @NotNull AbstractTreeStructure treeStructure) {
+    init(tree, treeModel, treeStructure, null, DEFAULT_UPDATE_INACTIVE);
     getUi().setClearOnHideDelay(Registry.intValue("ide.tree.clearOnHideTime"));
-    myProject = project;
+//    myProject = project;
   }
 
   @NotNull
@@ -159,10 +158,10 @@ public abstract class BaseProjectTreeBuilder2 extends AbstractTreeBuilder {
     }
 
     final AsyncPromise<Object> result = new AsyncPromise<>();
-    UiActivityMonitor.getInstance().addActivity(myProject, new UiActivity.AsyncBgOperation("projectViewSelect"), updater.getModalityState());
+//    UiActivityMonitor.getInstance().addActivity(myProject, new UiActivity.AsyncBgOperation("projectViewSelect"), updater.getModalityState());
     batch(indicator -> {
       _select(element, file, requestFocus, nonStopCondition, result, indicator, null, false);
-      UiActivityMonitor.getInstance().removeActivity(myProject, new UiActivity.AsyncBgOperation("projectViewSelect"));
+//      UiActivityMonitor.getInstance().removeActivity(myProject, new UiActivity.AsyncBgOperation("projectViewSelect"));
     });
     return result;
   }
