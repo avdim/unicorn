@@ -1,136 +1,109 @@
 // Copyright 2000-2020 JetBrains s.r.o. Use of this source code is governed by the Apache 2.0 license that can be found in the LICENSE file.
-package ru.tutu.idea.file;
+package ru.tutu.idea.file
 
-import com.intellij.ProjectTopics;
-import com.intellij.ide.CopyPasteUtil;
-import com.intellij.ide.bookmarks.BookmarksListener;
-import com.intellij.ide.projectView.ProjectViewPsiTreeChangeListener;
-import com.intellij.ide.projectView.impl.AbstractProjectTreeStructure;
-import com.intellij.ide.projectView.impl.ProjectAbstractTreeStructureBase;
-import com.intellij.ide.util.treeView.AbstractTreeStructure;
-import com.intellij.ide.util.treeView.AbstractTreeUpdater;
-import com.intellij.openapi.application.ApplicationManager;
-import com.intellij.openapi.application.ModalityState;
-import com.intellij.openapi.project.Project;
-import com.intellij.openapi.project.ProjectManager;
-import com.intellij.openapi.roots.ModuleRootEvent;
-import com.intellij.openapi.roots.ModuleRootListener;
-import com.intellij.openapi.vcs.FileStatusListener;
-import com.intellij.openapi.vcs.FileStatusManager;
-import com.intellij.openapi.vfs.VirtualFile;
-import com.intellij.problems.ProblemListener;
-import com.intellij.psi.PsiManager;
-import com.intellij.util.Alarm;
-import com.intellij.util.messages.MessageBusConnection;
-import com.unicorn.Uni;
-import gnu.trove.THashSet;
-import org.jetbrains.annotations.NotNull;
+import javax.swing.JTree
+import javax.swing.tree.DefaultTreeModel
+import com.intellij.ide.projectView.impl.ProjectAbstractTreeStructureBase
+import ru.tutu.idea.file.BaseProjectTreeBuilder2
+import com.intellij.openapi.vcs.FileStatusListener
+import com.intellij.openapi.vfs.VirtualFile
+import com.intellij.util.Alarm
+import java.lang.Runnable
+import com.intellij.openapi.application.ModalityState
+import com.intellij.util.messages.MessageBusConnection
+import com.intellij.openapi.application.ApplicationManager
+import com.unicorn.Uni
+import com.intellij.openapi.roots.ModuleRootListener
+import com.intellij.ProjectTopics
+import com.intellij.openapi.roots.ModuleRootEvent
+import com.intellij.ide.bookmarks.BookmarksListener
+import javax.swing.tree.DefaultMutableTreeNode
+import com.intellij.ide.util.treeView.AbstractTreeUpdater
+import com.intellij.psi.PsiManager
+import ru.tutu.idea.file.ProjectViewPsiTreeChangeListener2
+import com.intellij.ide.util.treeView.AbstractTreeStructure
+import com.intellij.ide.projectView.impl.AbstractProjectTreeStructure
+import com.intellij.openapi.vcs.FileStatusManager
+import com.intellij.openapi.project.ProjectManager
+import com.intellij.ide.CopyPasteUtil
+import com.intellij.openapi.project.Project
+import com.intellij.problems.ProblemListener
+import com.intellij.psi.PsiElement
+import gnu.trove.THashSet
 
-import javax.swing.*;
-import javax.swing.tree.DefaultMutableTreeNode;
-import javax.swing.tree.DefaultTreeModel;
-import java.util.Collection;
-
-@SuppressWarnings("UnstableApiUsage")
-public class ProjectTreeBuilder2 extends BaseProjectTreeBuilder2 {
-  public ProjectTreeBuilder2(@NotNull Project project,
-                             @NotNull JTree tree,
-                             @NotNull DefaultTreeModel treeModel,
-                             @NotNull ProjectAbstractTreeStructureBase treeStructure) {
-    super(/*project, */tree, treeModel, treeStructure);
-
-    final MessageBusConnection connection = ApplicationManager.getApplication().getMessageBus().connect(Uni.INSTANCE);
-
-    connection.subscribe(ProjectTopics.PROJECT_ROOTS, new ModuleRootListener() {
-      @Override
-      public void rootsChanged(@NotNull ModuleRootEvent event) {
-        queueUpdate();
-      }
-    });
-
-    connection.subscribe(BookmarksListener.TOPIC, new BookmarksListener() {
-    });
-
-    final DefaultMutableTreeNode rootNode = getRootNode();
-    final AbstractTreeUpdater updater = getUpdater();
-
-    PsiManager.getInstance(project).addPsiTreeChangeListener(
-      new ProjectViewPsiTreeChangeListener2(project) {
-        @Override
-        protected DefaultMutableTreeNode getRootNode() {
-          return rootNode;
+@Suppress("UnstableApiUsage")
+open class ProjectTreeBuilder2(
+    project: Project,
+    tree: JTree,
+    treeModel: DefaultTreeModel,
+    treeStructure: ProjectAbstractTreeStructureBase
+) : BaseProjectTreeBuilder2( /*project, */tree, treeModel, treeStructure) {
+    private inner class MyFileStatusListener : FileStatusListener {
+        override fun fileStatusesChanged() {
+            queueUpdate(false)
         }
 
-        @Override
-        protected AbstractTreeUpdater getUpdater() {
-          return updater;
+        override fun fileStatusChanged(vFile: VirtualFile) {
+            queueUpdate(false)
+        }
+    }
+
+
+    private class MyProblemListener : ProblemListener {
+        private val myUpdateProblemAlarm = Alarm()
+        private val myFilesToRefresh: MutableCollection<VirtualFile> = THashSet()
+        override fun problemsAppeared(file: VirtualFile) {
+            queueUpdate(file)
         }
 
-        @Override
-        protected boolean isFlattenPackages() {
-          AbstractTreeStructure structure = getTreeStructure();
-          return structure instanceof AbstractProjectTreeStructure && ((AbstractProjectTreeStructure) structure).isFlattenPackages();
+        override fun problemsDisappeared(file: VirtualFile) {
+            queueUpdate(file)
         }
-      },
-      this);
-    FileStatusManager.getInstance(ProjectManager.getInstance().getDefaultProject()).addFileStatusListener(new MyFileStatusListener(), this);
-    CopyPasteUtil.addDefaultListener(this, this::addSubtreeToUpdateByElement);
 
-    connection.subscribe(ProblemListener.TOPIC, new MyProblemListener());
-
-    setCanYieldUpdate(true);
-
-    initRootNode();
-  }
-
-  private final class MyFileStatusListener implements FileStatusListener {
-    @Override
-    public void fileStatusesChanged() {
-      queueUpdate(false);
-    }
-
-    @Override
-    public void fileStatusChanged(@NotNull VirtualFile vFile) {
-      queueUpdate(false);
-    }
-  }
-
-  private static class MyProblemListener implements ProblemListener {
-    private final Alarm myUpdateProblemAlarm = new Alarm();
-    private final Collection<VirtualFile> myFilesToRefresh = new THashSet<>();
-
-    @Override
-    public void problemsAppeared(@NotNull VirtualFile file) {
-      queueUpdate(file);
-    }
-
-    @Override
-    public void problemsDisappeared(@NotNull VirtualFile file) {
-      queueUpdate(file);
-    }
-
-    private void queueUpdate(@NotNull VirtualFile fileToRefresh) {
-      synchronized (myFilesToRefresh) {
-        if (myFilesToRefresh.add(fileToRefresh)) {
-          myUpdateProblemAlarm.cancelAllRequests();
-          myUpdateProblemAlarm.addRequest(() -> {
-            return;
-//            if (!myProject.isOpen()) return;
-//            Set<VirtualFile> filesToRefresh;
-//            synchronized (myFilesToRefresh) {
-//              filesToRefresh = new THashSet<>(myFilesToRefresh);
-//            }
-//            final DefaultMutableTreeNode rootNode = getRootNode();
-//            if (rootNode != null) {
-//              updateNodesContaining(filesToRefresh, rootNode);
-//            }
-//            synchronized (myFilesToRefresh) {
-//              myFilesToRefresh.removeAll(filesToRefresh);
-//            }
-          }, 200, ModalityState.NON_MODAL);
+        private fun queueUpdate(fileToRefresh: VirtualFile) {
+            synchronized(myFilesToRefresh) {
+                if (myFilesToRefresh.add(fileToRefresh)) {
+                    myUpdateProblemAlarm.cancelAllRequests()
+                    myUpdateProblemAlarm.addRequest({}, 200, ModalityState.NON_MODAL)
+                }
+            }
         }
-      }
     }
-  }
 
+    init {
+        val connection = ApplicationManager.getApplication().messageBus.connect(Uni)
+        connection.subscribe(ProjectTopics.PROJECT_ROOTS, object : ModuleRootListener {
+            override fun rootsChanged(event: ModuleRootEvent) {
+                queueUpdate()
+            }
+        })
+        connection.subscribe(BookmarksListener.TOPIC, object : BookmarksListener {})
+        val rootNode = rootNode
+        val updater = updater
+        PsiManager.getInstance(project).addPsiTreeChangeListener(
+            object : ProjectViewPsiTreeChangeListener2(project) {
+                override val rootNode: DefaultMutableTreeNode?
+                    protected get() = rootNode
+                override val updater: AbstractTreeUpdater?
+                    protected get() = updater
+                override val isFlattenPackages: Boolean
+                    protected get() {
+                        val structure = getTreeStructure()
+                        return structure is AbstractProjectTreeStructure && structure.isFlattenPackages
+                    }
+            },
+            this
+        )
+        FileStatusManager.getInstance(ProjectManager.getInstance().defaultProject).addFileStatusListener(
+            MyFileStatusListener(), this
+        )
+        CopyPasteUtil.addDefaultListener(this, { element: PsiElement? ->
+            addSubtreeToUpdateByElement(
+                element!!
+            )
+        })
+        connection.subscribe(ProblemListener.TOPIC, MyProblemListener())
+        setCanYieldUpdate(true)
+        initRootNode()
+    }
 }
