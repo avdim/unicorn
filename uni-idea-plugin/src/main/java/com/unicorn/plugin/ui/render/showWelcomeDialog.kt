@@ -38,7 +38,7 @@ fun showWelcomeDialog() {
         cell {
           uniFiles(
             ProjectManager.getInstance().defaultProject,
-            listOf(githubDir.absolutePath)
+            listOf(githubDir.absolutePath, "/tmp")
           )
         }
       }
