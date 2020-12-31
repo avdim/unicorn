@@ -13,7 +13,8 @@ object ConfUniFiles {
   val DEFAULT_PATHS: List<File> =
     listOf(
       GITHUB_DIR,
-      HOME_DIR
+      HOME_DIR,
+      File("/tmp")
     )
       .filter { it.exists() }
       .take(2)

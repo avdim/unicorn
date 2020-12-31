@@ -5,14 +5,12 @@ import com.intellij.ProjectTopics;
 import com.intellij.ide.CopyPasteUtil;
 import com.intellij.ide.bookmarks.Bookmark;
 import com.intellij.ide.bookmarks.BookmarksListener;
-import com.intellij.ide.projectView.BaseProjectTreeBuilder;
 import com.intellij.ide.projectView.ProjectViewNode;
 import com.intellij.ide.projectView.ProjectViewPsiTreeChangeListener;
 import com.intellij.ide.projectView.impl.AbstractProjectTreeStructure;
 import com.intellij.ide.projectView.impl.ProjectAbstractTreeStructureBase;
 import com.intellij.ide.util.treeView.AbstractTreeStructure;
 import com.intellij.ide.util.treeView.AbstractTreeUpdater;
-import com.intellij.ide.util.treeView.NodeDescriptor;
 import com.intellij.openapi.application.ApplicationManager;
 import com.intellij.openapi.application.ModalityState;
 import com.intellij.openapi.project.Project;
@@ -24,7 +22,6 @@ import com.intellij.openapi.vcs.FileStatusManager;
 import com.intellij.openapi.vfs.VirtualFile;
 import com.intellij.problems.ProblemListener;
 import com.intellij.psi.PsiElement;
-import com.intellij.psi.PsiFileSystemItem;
 import com.intellij.psi.PsiManager;
 import com.intellij.psi.util.PsiUtilCore;
 import com.intellij.util.Alarm;
@@ -33,7 +30,6 @@ import com.intellij.util.messages.MessageBusConnection;
 import com.unicorn.Uni;
 import gnu.trove.THashSet;
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 
 import javax.swing.*;
 import javax.swing.tree.DefaultMutableTreeNode;
@@ -60,8 +56,8 @@ public class ProjectTreeBuilder2 extends BaseProjectTreeBuilder2 {
 
     connection.subscribe(BookmarksListener.TOPIC, new MyBookmarksListener());
 
-    PsiManager.getInstance(project).addPsiTreeChangeListener(createPsiTreeChangeListener(project), this);
-    FileStatusManager.getInstance(project).addFileStatusListener(new MyFileStatusListener(), this);
+    PsiManager.getInstance(project).addPsiTreeChangeListener(new ProjectTreeBuilderPsiListener(project), this);
+    FileStatusManager.getInstance(ProjectManager.getInstance().getDefaultProject()).addFileStatusListener(new MyFileStatusListener(), this);
     CopyPasteUtil.addDefaultListener(this, this::addSubtreeToUpdateByElement);
 
     connection.subscribe(ProblemListener.TOPIC, new MyProblemListener());
@@ -69,16 +65,6 @@ public class ProjectTreeBuilder2 extends BaseProjectTreeBuilder2 {
     setCanYieldUpdate(true);
 
     initRootNode();
-  }
-
-  /**
-   * Creates psi tree changes listener. This method will be invoked in constructor of ProjectTreeBuilder
-   * thus builder object will be not completely initialized
-   * @param project Project
-   * @return Listener
-   */
-  protected ProjectViewPsiTreeChangeListener createPsiTreeChangeListener(final Project project) {
-    return new ProjectTreeBuilderPsiListener(project);
   }
 
   protected class ProjectTreeBuilderPsiListener extends ProjectViewPsiTreeChangeListener {
