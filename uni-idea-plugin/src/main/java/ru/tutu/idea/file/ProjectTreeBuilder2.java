@@ -40,7 +40,7 @@ import java.util.Enumeration;
 import java.util.Set;
 
 @SuppressWarnings("UnstableApiUsage")
-public class ProjectTreeBuilder2 extends BaseProjectTreeBuilder {
+public class ProjectTreeBuilder2 extends BaseProjectTreeBuilder2 {
   public ProjectTreeBuilder2(@NotNull Project project,
                              @NotNull JTree tree,
                              @NotNull DefaultTreeModel treeModel,
