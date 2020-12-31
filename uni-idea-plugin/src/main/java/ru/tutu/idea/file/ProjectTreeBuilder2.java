@@ -55,7 +55,7 @@ public class ProjectTreeBuilder2 extends BaseProjectTreeBuilder2 {
     final AbstractTreeUpdater updater = getUpdater();
 
     PsiManager.getInstance(project).addPsiTreeChangeListener(
-      new ProjectViewPsiTreeChangeListener(project) {
+      new ProjectViewPsiTreeChangeListener2(project) {
         @Override
         protected DefaultMutableTreeNode getRootNode() {
           return rootNode;
