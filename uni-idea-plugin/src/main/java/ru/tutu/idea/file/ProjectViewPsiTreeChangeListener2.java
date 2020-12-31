@@ -30,7 +30,7 @@ import javax.swing.tree.DefaultMutableTreeNode;
 import static com.intellij.util.ObjectUtils.notNull;
 
 @SuppressWarnings("UnstableApiUsage")
-public abstract class ProjectViewPsiTreeChangeListener2 extends PsiTreeChangeAdapter2 {
+public abstract class ProjectViewPsiTreeChangeListener2 implements PsiTreeChangeListener {
   private final PsiModificationTracker myModificationTracker;
   private long myModificationCount;
 
@@ -156,4 +156,29 @@ public abstract class ProjectViewPsiTreeChangeListener2 extends PsiTreeChangeAda
   private boolean addSubtreeToUpdateByElementFile(PsiElement element) {
     return element != null && addSubtreeToUpdateByElement(notNull(element.getContainingFile(), element));
   }
+
+  @Override
+  public void beforeChildAddition(@NotNull PsiTreeChangeEvent event) {
+  }
+
+  @Override
+  public void beforeChildRemoval(@NotNull PsiTreeChangeEvent event) {
+  }
+
+  @Override
+  public void beforeChildReplacement(@NotNull PsiTreeChangeEvent event) {
+  }
+
+  @Override
+  public void beforeChildMovement(@NotNull PsiTreeChangeEvent event) {
+  }
+
+  @Override
+  public void beforeChildrenChange(@NotNull PsiTreeChangeEvent event) {
+  }
+
+  @Override
+  public void beforePropertyChange(@NotNull PsiTreeChangeEvent event) {
+  }
+
 }
