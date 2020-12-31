@@ -5,7 +5,6 @@ import com.intellij.ProjectTopics;
 import com.intellij.ide.CopyPasteUtil;
 import com.intellij.ide.bookmarks.Bookmark;
 import com.intellij.ide.bookmarks.BookmarksListener;
-import com.intellij.ide.projectView.ProjectViewNode;
 import com.intellij.ide.projectView.ProjectViewPsiTreeChangeListener;
 import com.intellij.ide.projectView.impl.AbstractProjectTreeStructure;
 import com.intellij.ide.projectView.impl.ProjectAbstractTreeStructureBase;
@@ -25,7 +24,6 @@ import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiManager;
 import com.intellij.psi.util.PsiUtilCore;
 import com.intellij.util.Alarm;
-import com.intellij.util.SmartList;
 import com.intellij.util.messages.MessageBusConnection;
 import com.unicorn.Uni;
 import gnu.trove.THashSet;
@@ -35,7 +33,6 @@ import javax.swing.*;
 import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.DefaultTreeModel;
 import java.util.Collection;
-import java.util.Enumeration;
 
 @SuppressWarnings("UnstableApiUsage")
 public class ProjectTreeBuilder2 extends BaseProjectTreeBuilder2 {
@@ -129,7 +126,7 @@ public class ProjectTreeBuilder2 extends BaseProjectTreeBuilder2 {
     return PsiUtilCore.findFileSystemItem(null/*myProject*/, vFile);
   }
 
-  private class MyProblemListener implements ProblemListener {
+  private static class MyProblemListener implements ProblemListener {
     private final Alarm myUpdateProblemAlarm = new Alarm();
     private final Collection<VirtualFile> myFilesToRefresh = new THashSet<>();
 
@@ -167,27 +164,4 @@ public class ProjectTreeBuilder2 extends BaseProjectTreeBuilder2 {
     }
   }
 
-  private void updateNodesContaining(@NotNull Collection<? extends VirtualFile> filesToRefresh, @NotNull DefaultMutableTreeNode rootNode) {
-    if (!(rootNode.getUserObject() instanceof ProjectViewNode)) return;
-    ProjectViewNode node = (ProjectViewNode)rootNode.getUserObject();
-    Collection<VirtualFile> containingFiles = null;
-    for (VirtualFile virtualFile : filesToRefresh) {
-      if (!virtualFile.isValid()) {
-        addSubtreeToUpdate(rootNode); // file must be deleted
-        return;
-      }
-      if (node.contains(virtualFile)) {
-        if (containingFiles == null) containingFiles = new SmartList<>();
-        containingFiles.add(virtualFile);
-      }
-    }
-    if (containingFiles != null) {
-      updateNode(rootNode);
-      Enumeration children = rootNode.children();
-      while (children.hasMoreElements()) {
-        DefaultMutableTreeNode child = (DefaultMutableTreeNode)children.nextElement();
-        updateNodesContaining(containingFiles, child);
-      }
-    }
-  }
 }
