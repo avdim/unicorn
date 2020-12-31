@@ -186,7 +186,7 @@ private fun _createUniFilesComponent(
 
       val toRender = ArrayList<Trinity<String, Icon, VirtualFile>>()
       myTree.selectionPaths?.forEach { path ->
-        val obj = TreeUtil.getLastUserObject(path)!!
+        val obj: Any = TreeUtil.getLastUserObject(path)!!
         val component = getTreeCellRendererComponent(
           myTree,
           obj,
@@ -279,7 +279,7 @@ private fun _createUniFilesComponent(
     }
 
   val treeBuilder: BaseProjectTreeBuilder =
-    object : ProjectTreeBuilder(
+    object : ProjectTreeBuilder2(
       project,
       myTree,
       treeModel,
