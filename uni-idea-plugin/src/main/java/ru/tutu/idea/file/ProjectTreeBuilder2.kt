@@ -34,16 +34,6 @@ open class ProjectTreeBuilder2(
   treeModel: DefaultTreeModel,
   treeStructure: ProjectAbstractTreeStructureBase
 ) : BaseProjectTreeBuilder2( /*project, */tree, treeModel, treeStructure) {
-  private inner class MyFileStatusListener : FileStatusListener {
-    override fun fileStatusesChanged() {
-      queueUpdate(false)
-    }
-
-    override fun fileStatusChanged(vFile: VirtualFile) {
-      queueUpdate(false)
-    }
-  }
-
 
   private class MyProblemListener : ProblemListener {
     private val myUpdateProblemAlarm = Alarm()
@@ -192,7 +182,16 @@ open class ProjectTreeBuilder2(
     }
     PsiManager.getInstance(project).addPsiTreeChangeListener(listener, this)
     FileStatusManager.getInstance(ProjectManager.getInstance().defaultProject).addFileStatusListener(
-      MyFileStatusListener(), this
+      object : FileStatusListener {
+        override fun fileStatusesChanged() {
+          queueUpdate(false)
+        }
+
+        override fun fileStatusChanged(vFile: VirtualFile) {
+          queueUpdate(false)
+        }
+      },
+      this
     )
     CopyPasteUtil.addDefaultListener(this, { element: PsiElement? ->
       addSubtreeToUpdateByElement(
