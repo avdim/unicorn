@@ -1,0 +1,1 @@
+secure files, yaml kts, githook. encrypt/decrypt and commit only encrypter
