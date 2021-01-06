@@ -343,7 +343,7 @@ private fun _createUniFilesComponent(
   }
 
   return object : JPanel(), DataProvider {
-    private val myCopyPasteDelegator = CopyPasteDelegator(project, viewComponent)
+    private val myCopyPasteDelegator = CopyPasteDelegator(ProjectManager.getInstance().defaultProject, viewComponent)
 
     init {
       layout = BorderLayout()
