@@ -300,7 +300,7 @@ private fun _createUniFilesComponent(
         }
       }
     }
-  treeBuilder.setNodeDescriptorComparator(GroupByTypeComparator2(project, FILES_PANE_ID))
+  treeBuilder.setNodeDescriptorComparator(GroupByTypeComparator2())
   fun initTree() {
     myTree.selectionModel.selectionMode = TreeSelectionModel.DISCONTIGUOUS_TREE_SELECTION
     myTree.isRootVisible = false

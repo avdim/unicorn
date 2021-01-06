@@ -4,11 +4,10 @@ package ru.tutu.idea.file
 import com.intellij.ide.util.treeView.NodeDescriptor
 import com.intellij.ide.projectView.ProjectViewNode
 import com.intellij.ide.util.treeView.AlphaComparator
-import com.intellij.openapi.project.Project
 import com.intellij.openapi.util.text.StringUtil
 import java.util.Comparator
 
-class GroupByTypeComparator2(private val project: Project?, private val myPaneId: String) :
+class GroupByTypeComparator2 :
   Comparator<NodeDescriptor<*>?> {
   private val _isAbbreviateQualifiedNames: Boolean = false
   private val _isSortByType: Boolean = false
