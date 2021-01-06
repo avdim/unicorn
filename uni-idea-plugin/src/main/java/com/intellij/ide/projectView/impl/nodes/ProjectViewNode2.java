@@ -8,6 +8,7 @@ import com.intellij.ide.projectView.ViewSettings;
 import com.intellij.ide.util.treeView.AbstractTreeNode;
 import com.intellij.openapi.diagnostic.Logger;
 import com.intellij.openapi.project.Project;
+import com.intellij.openapi.project.ProjectManager;
 import com.intellij.openapi.util.Comparing;
 import com.intellij.openapi.util.Condition;
 import com.intellij.openapi.util.NlsContexts;
@@ -45,12 +46,11 @@ public abstract class ProjectViewNode2<Value> extends AbstractTreeNode<Value> im
   /**
    * Creates an instance of the project view node.
    *
-   * @param project      the project containing the node.
    * @param value        the object (for example, a PSI element) represented by the project view node
    * @param viewSettings the settings of the project view.
    */
-  protected ProjectViewNode2(Project project, @NotNull Value value, ViewSettings viewSettings) {
-    super(project, value);
+  protected ProjectViewNode2(@NotNull Value value, ViewSettings viewSettings) {
+    super(ProjectManager.getInstance().getDefaultProject(), value);
 
     mySettings = viewSettings;
   }

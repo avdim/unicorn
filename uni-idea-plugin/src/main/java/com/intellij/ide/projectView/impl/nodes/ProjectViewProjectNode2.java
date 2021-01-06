@@ -4,7 +4,6 @@ package com.intellij.ide.projectView.impl.nodes;
 import com.intellij.ide.projectView.ViewSettings;
 import com.intellij.ide.projectView.impl.ModuleGroup;
 import com.intellij.ide.projectView.impl.ProjectRootsUtil;
-import com.intellij.ide.projectView.impl.nodes.*;
 import com.intellij.ide.util.treeView.AbstractTreeNode;
 import com.intellij.openapi.module.Module;
 import com.intellij.openapi.module.*;
@@ -23,7 +22,7 @@ import java.util.*;
 
 public class ProjectViewProjectNode2 extends AbstractProjectNode2 {
   public ProjectViewProjectNode2(@NotNull Project project, ViewSettings viewSettings) {
-    super(project, project, viewSettings);
+    super(project, viewSettings);
   }
 
   @Override

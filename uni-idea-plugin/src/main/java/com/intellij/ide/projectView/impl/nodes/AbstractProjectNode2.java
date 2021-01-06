@@ -2,7 +2,6 @@
 package com.intellij.ide.projectView.impl.nodes;
 
 import com.intellij.ide.projectView.PresentationData;
-import com.intellij.ide.projectView.ProjectViewNode;
 import com.intellij.ide.projectView.ViewSettings;
 import com.intellij.ide.projectView.impl.ModuleGroup;
 import com.intellij.ide.projectView.impl.ProjectViewPane;
@@ -22,8 +21,8 @@ import java.lang.reflect.InvocationTargetException;
 import java.util.*;
 
 public abstract class AbstractProjectNode2 extends ProjectViewNode2<Project> {
-  protected AbstractProjectNode2(Project project, @NotNull Project value, ViewSettings viewSettings) {
-    super(project, value, viewSettings);
+  protected AbstractProjectNode2(@NotNull Project value, ViewSettings viewSettings) {
+    super(value, viewSettings);
   }
 
   @NotNull
