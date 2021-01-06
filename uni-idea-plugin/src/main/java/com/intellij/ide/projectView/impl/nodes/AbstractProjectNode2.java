@@ -21,7 +21,7 @@ import org.jetbrains.annotations.Nullable;
 import java.lang.reflect.InvocationTargetException;
 import java.util.*;
 
-public abstract class AbstractProjectNode2 extends ProjectViewNode<Project> {
+public abstract class AbstractProjectNode2 extends ProjectViewNode2<Project> {
   protected AbstractProjectNode2(Project project, @NotNull Project value, ViewSettings viewSettings) {
     super(project, value, viewSettings);
   }
