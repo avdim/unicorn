@@ -19,6 +19,7 @@ import com.intellij.openapi.application.ApplicationManager
 import com.intellij.openapi.module.Module
 import com.intellij.openapi.module.ModuleUtilCore
 import com.intellij.openapi.project.Project
+import com.intellij.openapi.project.ProjectManager
 import com.intellij.openapi.roots.ModuleRootManager
 import com.intellij.openapi.ui.VerticalFlowLayout
 import com.intellij.openapi.util.Disposer
@@ -547,7 +548,7 @@ fun uniFilesRootNodes(
   rootDirs: List<VirtualFile> = ConfUniFiles.ROOT_DIRS
 ): Collection<AbstractTreeNode<*>> {
   return rootDirs.mapNotNull {
-    PsiManager.getInstance(project).findDirectory(it)
+    PsiManager.getInstance(ProjectManager.getInstance().defaultProject).findDirectory(it)
   }.map { psiDirectory: PsiDirectory ->
     TutuPsiDirectoryNode(
       project,
