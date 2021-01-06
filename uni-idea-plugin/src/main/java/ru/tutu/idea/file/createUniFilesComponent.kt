@@ -20,13 +20,10 @@ import com.intellij.openapi.module.Module
 import com.intellij.openapi.module.ModuleUtilCore
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.project.ProjectManager
-import com.intellij.openapi.roots.ModuleRootManager
 import com.intellij.openapi.ui.VerticalFlowLayout
 import com.intellij.openapi.util.Disposer
 import com.intellij.openapi.util.Pair
 import com.intellij.openapi.util.Trinity
-import com.intellij.openapi.vfs.JarFileSystem
-import com.intellij.openapi.vfs.LocalFileSystem
 import com.intellij.openapi.vfs.VirtualFile
 import com.intellij.pom.Navigatable
 import com.intellij.psi.PsiDirectory
@@ -447,32 +444,9 @@ private fun _createUniFilesComponent(
           }
 
           override fun deleteElement(dataContext: DataContext) {
-            fun getElementsToDelete(): Array<PsiElement> {// if is jar-file root
-              val elements = getSelectedPSIElements()
-              for (idx in elements.indices) {
-                val element = elements[idx]
-                if (element is PsiDirectory) {
-                  val virtualFile = element.virtualFile
-                  val path = virtualFile.path
-                  if (path.endsWith(JarFileSystem.JAR_SEPARATOR)) { // if is jar-file root
-                    val vFile = LocalFileSystem.getInstance().findFileByPath(
-                      path.substring(0, path.length - JarFileSystem.JAR_SEPARATOR.length)
-                    )
-                    if (vFile != null) {
-                      val psiFile = PsiManager.getInstance(project).findFile(vFile)
-                      if (psiFile != null) {
-                        elements[idx] = psiFile
-                      }
-                    }
-                  }
-                }
-              }
-              return elements
-            }
 
             val validElements: MutableList<PsiElement> = ArrayList()
-            val elementsToDelete = getElementsToDelete()
-            for (psiElement in elementsToDelete) {
+            for (psiElement in getSelectedPSIElements()) {
               if (psiElement.isValid) {
                 validElements.add(psiElement)
               }
@@ -480,7 +454,7 @@ private fun _createUniFilesComponent(
             val elements = PsiUtilCore.toPsiElementArray(validElements)
             val a = LocalHistory.getInstance().startAction(IdeBundle.message("progress.deleting"))
             try {
-              DeleteHandler.deletePsiElement(elements, project)
+              DeleteHandler2.deletePsiElement(elements, project)
             } finally {
               a.finish()
             }
