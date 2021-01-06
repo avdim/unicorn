@@ -24,6 +24,7 @@ import com.intellij.openapi.progress.ProgressManager;
 import com.intellij.openapi.progress.Task;
 import com.intellij.openapi.project.DumbService;
 import com.intellij.openapi.project.Project;
+import com.intellij.openapi.project.ProjectManager;
 import com.intellij.openapi.ui.DialogWrapper;
 import com.intellij.openapi.ui.Messages;
 import com.intellij.openapi.ui.ex.MessagesEx;
@@ -202,17 +203,17 @@ public final class DeleteHandler2 {
       // deleted from project view or something like that.
       @SuppressWarnings("deprecation") DataContext context = DataManager.getInstance().getDataContext();
       if (CommonDataKeys.EDITOR.getData(context) == null) {
-        CommandProcessor.getInstance().markCurrentCommandAsGlobal(project);
+        CommandProcessor.getInstance().markCurrentCommandAsGlobal(ProjectManager.getInstance().getDefaultProject());
       }
 
       if (ContainerUtil.and(elements, DeleteHandler2::isLocalFile)) {
-        doDeleteFiles(project, elements);
+        doDeleteFiles(ProjectManager.getInstance().getDefaultProject(), elements);
       }
       else {
         for (SmartPsiElementPointer<?> pointer : pointers) {
           PsiElement elementToDelete = pointer.getElement();
           if (elementToDelete == null) continue; //was already deleted
-          doDelete(project, elementToDelete);
+          doDelete(ProjectManager.getInstance().getDefaultProject(), elementToDelete);
         }
       }
     }), RefactoringBundle.message("safe.delete.command", RefactoringUIUtil.calculatePsiElementDescriptionList(elements)), null);
