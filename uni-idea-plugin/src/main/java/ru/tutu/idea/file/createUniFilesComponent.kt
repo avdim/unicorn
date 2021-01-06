@@ -227,13 +227,13 @@ private fun _createUniFilesComponent(
       val panel = JPanel(VerticalFlowLayout(0, 0))
       val maxItemsToShow = if (toRender.size < 20) toRender.size else 10
       for (trinity in toRender) {
-        val fileLabel = DragImageLabel(project, myTree, trinity.first, trinity.second, trinity.third)
+        val fileLabel = DragImageLabel(ProjectManager.getInstance().defaultProject, myTree, trinity.first, trinity.second, trinity.third)
         panel.add(fileLabel)
         count++
         if (count > maxItemsToShow) {
           panel.add(
             DragImageLabel(
-              project,
+              ProjectManager.getInstance().defaultProject,
               myTree,
               IdeBundle.message("label.more.files", paths.size - maxItemsToShow),
               EmptyIcon.ICON_16,
@@ -267,9 +267,9 @@ private fun _createUniFilesComponent(
     }
   val myDropTarget: DnDTarget? =
     if (!headlessEnvironment) {
-      object : ProjectViewDropTarget2(myTree, project) {
+      object : ProjectViewDropTarget2(myTree, ProjectManager.getInstance().defaultProject) {
         override fun getPsiElement(path: TreePath): PsiElement? {
-          return ContainerUtil.getFirstItem(JavaHelpers.getElementsFromNode(project, path.lastPathComponent))
+          return ContainerUtil.getFirstItem(JavaHelpers.getElementsFromNode(ProjectManager.getInstance().defaultProject, path.lastPathComponent))
         }
 
         override fun getModule(element: PsiElement): Module? {
