@@ -10,6 +10,7 @@ import com.intellij.openapi.module.Module;
 import com.intellij.openapi.module.*;
 import com.intellij.openapi.progress.ProcessCanceledException;
 import com.intellij.openapi.project.Project;
+import com.intellij.openapi.project.ProjectManager;
 import com.intellij.openapi.vfs.VirtualFile;
 import com.intellij.util.PlatformIcons;
 import com.intellij.util.containers.ContainerUtil;
@@ -22,7 +23,7 @@ import java.util.*;
 
 public abstract class AbstractProjectNode2 extends ProjectViewNode2<Project> {
   protected AbstractProjectNode2(@NotNull Project value, ViewSettings viewSettings) {
-    super(value, viewSettings);
+    super(ProjectManager.getInstance().getDefaultProject(), viewSettings);
   }
 
   @NotNull
