@@ -211,7 +211,14 @@ private fun _createUniFilesComponent(
         toRender.add(
           Trinity.create(
             iconAndText.second, iconAndText.first,
-            PsiCopyPasteManager.asVirtualFile(ContainerUtil.getFirstItem(JavaHelpers.getElementsFromNode(project, path.lastPathComponent)))
+            PsiCopyPasteManager.asVirtualFile(
+              ContainerUtil.getFirstItem(
+                JavaHelpers.getElementsFromNode(
+                  ProjectManager.getInstance().defaultProject,
+                  path.lastPathComponent
+                )
+              )
+            )
           )
         )
       }
