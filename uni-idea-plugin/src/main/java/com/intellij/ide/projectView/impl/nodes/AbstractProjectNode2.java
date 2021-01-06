@@ -22,7 +22,7 @@ import java.lang.reflect.InvocationTargetException;
 import java.util.*;
 
 public abstract class AbstractProjectNode2 extends ProjectViewNode2<Project> {
-  protected AbstractProjectNode2(@NotNull Project value, ViewSettings viewSettings) {
+  protected AbstractProjectNode2(ViewSettings viewSettings) {
     super(ProjectManager.getInstance().getDefaultProject(), viewSettings);
   }
 
