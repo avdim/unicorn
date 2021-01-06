@@ -426,36 +426,6 @@ private fun _createUniFilesComponent(
                   return PsiDirectory.EMPTY_ARRAY
                 }
               }
-            } else {
-              val path = getSelectedPath()
-              if (path != null) {
-                fun getSelectedDirectoriesInAmbiguousCase(userObject: Any): Array<PsiDirectory> {
-                  if (userObject is AbstractModuleNode) {
-                    val module = userObject.value
-                    if (module != null && !module.isDisposed) {
-                      val psiManager = PsiManager.getInstance(project)
-                      return ModuleRootManager.getInstance(module).sourceRoots.mapNotNull {
-                        psiManager.findDirectory(it)
-                      }.toTypedArray()
-                    }
-                  } else if (userObject is ProjectViewNode<*>) {
-                    val file = userObject.virtualFile
-                    if (file != null && file.isValid && file.isDirectory) {
-                      val directory = PsiManager.getInstance(project).findDirectory(file)
-                      if (directory != null) {
-                        return arrayOf(directory)
-                      }
-                    }
-                  }
-                  return emptyArray()
-                }
-
-                val component = path.lastPathComponent
-                if (component is DefaultMutableTreeNode) {
-                  return getSelectedDirectoriesInAmbiguousCase(component.userObject)
-                }
-                return getSelectedDirectoriesInAmbiguousCase(component)
-              }
             }
             return emptyArray()
           }
