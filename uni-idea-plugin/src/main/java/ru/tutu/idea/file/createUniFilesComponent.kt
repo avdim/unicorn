@@ -9,7 +9,6 @@ import com.intellij.ide.projectView.*
 import com.intellij.ide.projectView.impl.*
 import com.intellij.ide.projectView.impl.nodes.*
 import com.intellij.ide.ui.customization.CustomizationUtil
-import com.intellij.ide.util.DeleteHandler
 import com.intellij.ide.util.DirectoryChooserUtil
 import com.intellij.ide.util.treeView.*
 import com.intellij.injected.editor.VirtualFileWindow
@@ -454,7 +453,7 @@ private fun _createUniFilesComponent(
             val elements = PsiUtilCore.toPsiElementArray(validElements)
             val a = LocalHistory.getInstance().startAction(IdeBundle.message("progress.deleting"))
             try {
-              DeleteHandler2.deletePsiElement(elements, project)
+              DeleteHandler2.deletePsiElement(elements)
             } finally {
               a.finish()
             }

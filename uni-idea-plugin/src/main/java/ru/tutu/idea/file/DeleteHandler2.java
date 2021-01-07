@@ -98,15 +98,15 @@ public final class DeleteHandler2 {
       if (project == null) return;
       LocalHistoryAction a = LocalHistory.getInstance().startAction(IdeBundle.message("progress.deleting"));
       try {
-        deletePsiElement(elements, project);
+        deletePsiElement(elements);
       } finally {
         a.finish();
       }
     }
   }
 
-  public static void deletePsiElement(final PsiElement[] elementsToDelete, final Project project) {
-    deletePsiElement(elementsToDelete, project, true);
+  public static void deletePsiElement(final PsiElement[] elementsToDelete) {
+    deletePsiElement(elementsToDelete, ProjectManager.getInstance().getDefaultProject(), true);
   }
 
   public static void deletePsiElement(final PsiElement[] elementsToDelete, final Project project, boolean needConfirmation) {
