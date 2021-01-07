@@ -2,10 +2,7 @@
 package ru.tutu.idea.file
 
 import com.intellij.ide.projectView.ViewSettings
-import com.intellij.ide.projectView.impl.nodes.BasePsiNode
-import com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode
-import com.intellij.ide.projectView.impl.nodes.PsiFileNode
-import com.intellij.ide.projectView.impl.nodes.PsiFileSystemItemFilter
+import com.intellij.ide.projectView.impl.nodes.*
 import com.intellij.ide.util.treeView.AbstractTreeNode
 import com.intellij.openapi.project.Project
 import com.intellij.psi.PsiDirectory
@@ -17,7 +14,7 @@ class TutuPsiDirectoryNode @JvmOverloads constructor(
   value: PsiDirectory,
   viewSettings: ViewSettings?,
   filter: PsiFileSystemItemFilter? = null
-) : PsiDirectoryNode(project, value, viewSettings, filter) {
+) : PsiDirectoryNode2(project, value, viewSettings, filter) {
 
   override fun getChildrenImpl(): Collection<AbstractTreeNode<*>> {
     val baseDir = virtualFile!!
