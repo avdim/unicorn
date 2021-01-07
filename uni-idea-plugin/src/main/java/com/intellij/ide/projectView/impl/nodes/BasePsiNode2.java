@@ -27,7 +27,7 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.Objects;
 
-public abstract class BasePsiNode2<T extends PsiElement> extends AbstractPsiBasedNode<T> {
+public abstract class BasePsiNode2<T extends PsiElement> extends AbstractPsiBasedNode2<T> {
   @Nullable
   private final VirtualFile myVirtualFile;
 
