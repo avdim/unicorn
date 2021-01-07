@@ -198,7 +198,7 @@ public final class DeleteHandler2 {
       SmartPointerManager smartPointerManager = SmartPointerManager.getInstance(project);
       List<SmartPsiElementPointer<?>> pointers = ContainerUtil.map(elements, smartPointerManager::createSmartPsiElementPointer);
 
-      if (!makeWritable(project, elements)) return;
+      if (!makeWritable(ProjectManager.getInstance().getDefaultProject(), elements)) return;
 
       // deleted from project view or something like that.
       @SuppressWarnings("deprecation") DataContext context = DataManager.getInstance().getDataContext();
