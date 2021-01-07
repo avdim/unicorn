@@ -19,12 +19,12 @@ class TutuPsiDirectoryNode @JvmOverloads constructor(
   override fun getChildrenImpl(): Collection<AbstractTreeNode<*>> {
     val baseDir = virtualFile!!
     val psiManager = PsiManager.getInstance(project!!)
-    val nodes: MutableList<BasePsiNode<*>> = ArrayList()
+    val nodes: MutableList<BasePsiNode2<*>> = ArrayList()
     val files = baseDir.children
     for (file in files) {
       val psiFile = psiManager.findFile(file)
       if (psiFile != null) {
-        nodes.add(PsiFileNode(project, psiFile, settings))
+        nodes.add(PsiFileNode2(project, psiFile, settings))
       }
 
       val psiDir = psiManager.findDirectory(file)

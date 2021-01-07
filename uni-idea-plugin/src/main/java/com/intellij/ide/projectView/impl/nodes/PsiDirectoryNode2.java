@@ -46,7 +46,7 @@ import javax.swing.*;
 import java.util.Collection;
 import java.util.Set;
 
-public class PsiDirectoryNode2 extends BasePsiNode<PsiDirectory> implements NavigatableWithText {
+public class PsiDirectoryNode2 extends BasePsiNode2<PsiDirectory> implements NavigatableWithText {
   // the chain from a parent directory to this one usually contains only one virtual file
   private final Set<VirtualFile> chain = new SmartHashSet<>();
 
