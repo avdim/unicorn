@@ -176,7 +176,7 @@ public final class DeleteHandler2 {
       }
     }
 
-    deleteInCommand(project, elements);
+    deleteInCommand(elements);
   }
 
   private static boolean makeWritable(Project project, PsiElement[] elements) {
@@ -190,12 +190,10 @@ public final class DeleteHandler2 {
     return CommonRefactoringUtil.checkReadOnlyStatus(project, Arrays.asList(elements), directories, false);
   }
 
-  private static void deleteInCommand(Project project, PsiElement[] elements) {
+  private static void deleteInCommand(PsiElement[] elements) {
     CommandProcessor.getInstance().executeCommand(
       ProjectManager.getInstance().getDefaultProject(),
       () -> NonProjectFileWritingAccessProvider.disableChecksDuring(() -> {
-        SmartPointerManager smartPointerManager = SmartPointerManager.getInstance(project);
-        List<SmartPsiElementPointer<?>> pointers = ContainerUtil.map(elements, smartPointerManager::createSmartPsiElementPointer);
 
         if (!makeWritable(ProjectManager.getInstance().getDefaultProject(), elements)) return;
 
@@ -207,12 +205,6 @@ public final class DeleteHandler2 {
 
         if (ContainerUtil.and(elements, DeleteHandler2::isLocalFile)) {
           doDeleteFiles(ProjectManager.getInstance().getDefaultProject(), elements);
-        } else {
-          for (SmartPsiElementPointer<?> pointer : pointers) {
-            PsiElement elementToDelete = pointer.getElement();
-            if (elementToDelete == null) continue; //was already deleted
-            doDelete(ProjectManager.getInstance().getDefaultProject(), elementToDelete);
-          }
         }
       }), RefactoringBundle.message("safe.delete.command", RefactoringUIUtil.calculatePsiElementDescriptionList(elements)),
       null
