@@ -61,7 +61,8 @@ import java.util.Collection;
 import java.util.List;
 
 public final class DeleteHandler2 {
-  private DeleteHandler2() { }
+  private DeleteHandler2() {
+  }
 
   public static class DefaultDeleteProvider implements DeleteProvider {
     @Override
@@ -79,8 +80,7 @@ public final class DeleteHandler2 {
         final PsiElement data = CommonDataKeys.PSI_ELEMENT.getData(dataContext);
         if (data != null) {
           elements = new PsiElement[]{data};
-        }
-        else {
+        } else {
           final PsiFile data1 = CommonDataKeys.PSI_FILE.getData(dataContext);
           if (data1 != null) {
             elements = new PsiElement[]{data1};
@@ -99,8 +99,7 @@ public final class DeleteHandler2 {
       LocalHistoryAction a = LocalHistory.getInstance().startAction(IdeBundle.message("progress.deleting"));
       try {
         deletePsiElement(elements, project);
-      }
-      finally {
+      } finally {
         a.finish();
       }
     }
@@ -144,24 +143,22 @@ public final class DeleteHandler2 {
           return;
         }
       }
-    }
-    else {
+    } else {
       String warningMessage = DeleteUtil.generateWarningMessage("prompt.delete.elements", elements);
 
       boolean anyDirectories = false;
       String directoryName = null;
       for (PsiElement psiElement : elementsToDelete) {
-        if (psiElement instanceof PsiDirectory && !PsiUtilBase.isSymLink((PsiDirectory)psiElement)) {
+        if (psiElement instanceof PsiDirectory && !PsiUtilBase.isSymLink((PsiDirectory) psiElement)) {
           anyDirectories = true;
-          directoryName = ((PsiDirectory)psiElement).getName();
+          directoryName = ((PsiDirectory) psiElement).getName();
           break;
         }
       }
       if (anyDirectories) {
         if (elements.length == 1) {
           warningMessage += IdeBundle.message("warning.delete.all.files.and.subdirectories", directoryName);
-        }
-        else {
+        } else {
           warningMessage += IdeBundle.message("warning.delete.all.files.and.subdirectories.in.the.selected.directory");
         }
       }
@@ -173,8 +170,8 @@ public final class DeleteHandler2 {
 
       if (needConfirmation) {
         int result = Messages.showOkCancelDialog(project, warningMessage, IdeBundle.message("title.delete"),
-                                                 ApplicationBundle.message("button.delete"), CommonBundle.getCancelButtonText(),
-                                                 Messages.getQuestionIcon());
+          ApplicationBundle.message("button.delete"), CommonBundle.getCancelButtonText(),
+          Messages.getQuestionIcon());
         if (result != Messages.OK) return;
       }
     }
@@ -194,34 +191,37 @@ public final class DeleteHandler2 {
   }
 
   private static void deleteInCommand(Project project, PsiElement[] elements) {
-    CommandProcessor.getInstance().executeCommand(project, () -> NonProjectFileWritingAccessProvider.disableChecksDuring(() -> {
-      SmartPointerManager smartPointerManager = SmartPointerManager.getInstance(project);
-      List<SmartPsiElementPointer<?>> pointers = ContainerUtil.map(elements, smartPointerManager::createSmartPsiElementPointer);
+    CommandProcessor.getInstance().executeCommand(
+      ProjectManager.getInstance().getDefaultProject(),
+      () -> NonProjectFileWritingAccessProvider.disableChecksDuring(() -> {
+        SmartPointerManager smartPointerManager = SmartPointerManager.getInstance(project);
+        List<SmartPsiElementPointer<?>> pointers = ContainerUtil.map(elements, smartPointerManager::createSmartPsiElementPointer);
 
-      if (!makeWritable(ProjectManager.getInstance().getDefaultProject(), elements)) return;
+        if (!makeWritable(ProjectManager.getInstance().getDefaultProject(), elements)) return;
 
-      // deleted from project view or something like that.
-      @SuppressWarnings("deprecation") DataContext context = DataManager.getInstance().getDataContext();
-      if (CommonDataKeys.EDITOR.getData(context) == null) {
-        CommandProcessor.getInstance().markCurrentCommandAsGlobal(ProjectManager.getInstance().getDefaultProject());
-      }
-
-      if (ContainerUtil.and(elements, DeleteHandler2::isLocalFile)) {
-        doDeleteFiles(ProjectManager.getInstance().getDefaultProject(), elements);
-      }
-      else {
-        for (SmartPsiElementPointer<?> pointer : pointers) {
-          PsiElement elementToDelete = pointer.getElement();
-          if (elementToDelete == null) continue; //was already deleted
-          doDelete(ProjectManager.getInstance().getDefaultProject(), elementToDelete);
+        // deleted from project view or something like that.
+        @SuppressWarnings("deprecation") DataContext context = DataManager.getInstance().getDataContext();
+        if (CommonDataKeys.EDITOR.getData(context) == null) {
+          CommandProcessor.getInstance().markCurrentCommandAsGlobal(ProjectManager.getInstance().getDefaultProject());
         }
-      }
-    }), RefactoringBundle.message("safe.delete.command", RefactoringUIUtil.calculatePsiElementDescriptionList(elements)), null);
+
+        if (ContainerUtil.and(elements, DeleteHandler2::isLocalFile)) {
+          doDeleteFiles(ProjectManager.getInstance().getDefaultProject(), elements);
+        } else {
+          for (SmartPsiElementPointer<?> pointer : pointers) {
+            PsiElement elementToDelete = pointer.getElement();
+            if (elementToDelete == null) continue; //was already deleted
+            doDelete(ProjectManager.getInstance().getDefaultProject(), elementToDelete);
+          }
+        }
+      }), RefactoringBundle.message("safe.delete.command", RefactoringUIUtil.calculatePsiElementDescriptionList(elements)),
+      null
+    );
   }
 
   private static boolean isLocalFile(PsiElement e) {
     if (e instanceof PsiFileSystemItem) {
-      VirtualFile file = ((PsiFileSystemItem)e).getVirtualFile();
+      VirtualFile file = ((PsiFileSystemItem) e).getVirtualFile();
       if (file != null && file.isInLocalFileSystem()) return true;
     }
     return false;
@@ -229,7 +229,7 @@ public final class DeleteHandler2 {
 
   private static boolean clearFileReadOnlyFlags(Project project, PsiElement elementToDelete) {
     if (elementToDelete instanceof PsiDirectory) {
-      VirtualFile virtualFile = ((PsiDirectory)elementToDelete).getVirtualFile();
+      VirtualFile virtualFile = ((PsiDirectory) elementToDelete).getVirtualFile();
       if (virtualFile.isInLocalFileSystem() && !virtualFile.is(VFileProperty.SYMLINK)) {
         List<VirtualFile> readOnlyFiles = new ArrayList<>();
         CommonRefactoringUtil.collectReadOnlyFiles(virtualFile, readOnlyFiles);
@@ -247,9 +247,8 @@ public final class DeleteHandler2 {
           if (!success) return false;
         }
       }
-    }
-    else if (!elementToDelete.isWritable() &&
-             !(elementToDelete instanceof PsiFileSystemItem && PsiUtilBase.isSymLink((PsiFileSystemItem)elementToDelete))) {
+    } else if (!elementToDelete.isWritable() &&
+      !(elementToDelete instanceof PsiFileSystemItem && PsiUtilBase.isSymLink((PsiFileSystemItem) elementToDelete))) {
       final PsiFile file = elementToDelete.getContainingFile();
       if (file != null) {
         final VirtualFile virtualFile = file.getVirtualFile();
@@ -274,8 +273,7 @@ public final class DeleteHandler2 {
     try {
       //noinspection deprecation
       element.checkDelete();
-    }
-    catch (IncorrectOperationException e) {
+    } catch (IncorrectOperationException e) {
       Messages.showMessageDialog(project, e.getMessage(), CommonBundle.getErrorTitle(), Messages.getErrorIcon());
       return;
     }
@@ -283,8 +281,7 @@ public final class DeleteHandler2 {
     ApplicationManager.getApplication().runWriteAction(() -> {
       try {
         element.delete();
-      }
-      catch (IncorrectOperationException e) {
+      } catch (IncorrectOperationException e) {
         ApplicationManager.getApplication().invokeLater(
           () -> Messages.showMessageDialog(project, e.getMessage(), CommonBundle.getErrorTitle(), Messages.getErrorIcon()));
       }
@@ -299,14 +296,13 @@ public final class DeleteHandler2 {
     LocalFilesDeleteTask task = new LocalFilesDeleteTask(project, fileElements);
     ProgressManager.getInstance().run(task);
     if (task.error != null) {
-      String file = task.error instanceof FileSystemException ? ((FileSystemException)task.error).getFile() : null;
+      String file = task.error instanceof FileSystemException ? ((FileSystemException) task.error).getFile() : null;
       if (file != null) {
         String message = IoErrorText.message(task.error), yes = RevealFileAction.getActionName(), no = CommonBundle.getCloseButtonText();
         if (Messages.showYesNoDialog(project, message, CommonBundle.getErrorTitle(), yes, no, Messages.getErrorIcon()) == Messages.YES) {
           RevealFileAction.openFile(Paths.get(file));
         }
-      }
-      else {
+      } else {
         Messages.showMessageDialog(project, IoErrorText.message(task.error), CommonBundle.getErrorTitle(), Messages.getErrorIcon());
       }
     }
@@ -318,8 +314,7 @@ public final class DeleteHandler2 {
         for (PsiElement fileElement : task.processed) {
           try {
             fileElement.delete();
-          }
-          catch (IncorrectOperationException e) {
+          } catch (IncorrectOperationException e) {
             ApplicationManager.getApplication().invokeLater(
               () -> Messages.showMessageDialog(project, e.getMessage(), CommonBundle.getErrorTitle(), Messages.getErrorIcon()));
           }
@@ -335,8 +330,7 @@ public final class DeleteHandler2 {
         try {
           ReadOnlyAttributeUtil.setReadOnlyAttribute(virtualFile, false);
           success[0] = true;
-        }
-        catch (IOException e1) {
+        } catch (IOException e1) {
           Messages.showMessageDialog(project, e1.getMessage(), CommonBundle.getErrorTitle(), Messages.getErrorIcon());
         }
       };
@@ -379,7 +373,7 @@ public final class DeleteHandler2 {
         for (PsiElement e : myFileElements) {
           if (indicator.isCanceled()) break;
 
-          VirtualFile file = ((PsiFileSystemItem)e).getVirtualFile();
+          VirtualFile file = ((PsiFileSystemItem) e).getVirtualFile();
           aborted = file;
           Path path = file.toNioPath();
           indicator.setText(path.toString());
@@ -390,8 +384,7 @@ public final class DeleteHandler2 {
               if (SystemInfo.isWindows && attrs.isOther()) {  // a junction
                 visitFile(dir, null);
                 return FileVisitResult.SKIP_SUBTREE;
-              }
-              else {
+              } else {
                 return FileVisitResult.CONTINUE;
               }
             }
@@ -414,8 +407,7 @@ public final class DeleteHandler2 {
             aborted = null;
           }
         }
-      }
-      catch (Throwable t) {
+      } catch (Throwable t) {
         Logger.getInstance(getClass()).info(t);
         error = t;
       }
