@@ -41,9 +41,9 @@ class CopyTerminalTabToFile : ToolWindowContextMenuActionBase(), DumbAware {
     }
     file.writeText(terminalText)
     val vFile: VirtualFile = LocalFileSystem.getInstance().refreshAndFindFileByIoFile(file)!!
-    val fileEditor = FileEditorManager.getInstance(project).openFile(vFile, true).first()
 
     if (false) {
+      val fileEditor = FileEditorManager.getInstance(project).openFile(vFile, true).first()
 //      val file: VirtualFile =
 //        TerminalSessionVirtualFileImpl(tabInfo, terminalWidget, terminalView.terminalRunner.settingsProvider)
 //      tabInfo.setObject(file)

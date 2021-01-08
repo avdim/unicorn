@@ -82,15 +82,6 @@ public class AbstractTreeBuilder2 implements Disposable {
     return new AbstractTreeUi2();
   }
 
-  @Nullable
-  protected AbstractTreeUpdater2 createUpdater() {
-    if (isDisposed()) return null;
-
-    AbstractTreeUpdater2 updater = new AbstractTreeUpdater2(this);
-    updater.setModalityStateComponent(MergingUpdateQueue.ANY_COMPONENT);
-    return updater;
-  }
-
   public final void scrollTo(Object element) {
     scrollTo(element, null);
   }
@@ -144,6 +135,15 @@ public class AbstractTreeBuilder2 implements Disposable {
   @NotNull
   static AbstractTreeNode<Object> createSearchingTreeNodeWrapper() {
     return new AbstractTreeNodeWrapper();
+  }
+
+  @Nullable
+  protected AbstractTreeUpdater2 createUpdater() {
+    if (isDisposed()) return null;
+
+    AbstractTreeUpdater2 updater = new AbstractTreeUpdater2(this);
+    updater.setModalityStateComponent(MergingUpdateQueue.ANY_COMPONENT);
+    return updater;
   }
 
   @Nullable

@@ -2617,7 +2617,6 @@ public class AbstractTreeUi2 {
 
     final TreeConsumer2<Void> finalizeRunnable = new TreeConsumer2<Void>("AbstractTreeUi.queueBackgroundUpdate: finalize") {
       @Override
-
       public void perform() {
         invokeLaterIfNeeded(false, new TreeRunnable2("AbstractTreeUi.queueBackgroundUpdate: finalize later") {
           @Override
