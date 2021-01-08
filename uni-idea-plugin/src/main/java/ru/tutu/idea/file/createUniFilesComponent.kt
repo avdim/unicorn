@@ -548,7 +548,7 @@ fun uniFilesRootNodes(
   rootDirs: List<VirtualFile> = ConfUniFiles.ROOT_DIRS
 ): Collection<AbstractTreeNode<*>> {
   return rootDirs.mapNotNull {
-    PsiManager.getInstance(ProjectManager.getInstance().defaultProject).findDirectory(it)
+    PsiManager.getInstance(project).findDirectory(it)
   }.map { psiDirectory: PsiDirectory ->
     TutuPsiDirectoryNode(
       project,
