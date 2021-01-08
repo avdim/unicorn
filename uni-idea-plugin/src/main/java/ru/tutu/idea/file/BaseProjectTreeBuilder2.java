@@ -41,7 +41,7 @@ import java.util.List;
  * @deprecated use {@link com.intellij.ui.tree.AsyncTreeModel} and {@link com.intellij.ui.tree.StructureTreeModel} instead.
  */
 @SuppressWarnings("UnstableApiUsage")
-public abstract class BaseProjectTreeBuilder2 extends AbstractTreeBuilder {
+public abstract class BaseProjectTreeBuilder2 extends AbstractTreeBuilder2 {
 //  protected final Project myProject;
 
   public BaseProjectTreeBuilder2(/*@NotNull Project project,*/
@@ -152,7 +152,7 @@ public abstract class BaseProjectTreeBuilder2 extends AbstractTreeBuilder {
                                   VirtualFile file,
                                   boolean requestFocus,
                                   Condition<? super AbstractTreeNode<?>> nonStopCondition) {
-    AbstractTreeUpdater updater = getUpdater();
+    AbstractTreeUpdater2 updater = getUpdater();
     if (updater == null) {
       return Promises.rejectedPromise();
     }

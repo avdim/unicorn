@@ -282,28 +282,7 @@ private fun _createUniFilesComponent(
       null
     }
 
-  val treeBuilder: BaseProjectTreeBuilder2 =
-    object : ProjectTreeBuilder2(myTree, treeModel, treeStructure) {
-      override fun createUpdater() = object : AbstractTreeUpdater(this) {
-        override fun addSubtreeToUpdateByElement(element: Any): Boolean {
-          if (element is PsiDirectory) {
-            var dirToUpdateFrom: PsiDirectory? = element
-
-            var addedOk: Boolean
-            while (!super.addSubtreeToUpdateByElement(dirToUpdateFrom ?: treeStructure.rootElement)
-                .also { addedOk = it }
-            ) {
-              if (dirToUpdateFrom == null) {
-                break
-              }
-              dirToUpdateFrom = dirToUpdateFrom.parentDirectory
-            }
-            return addedOk
-          }
-          return super.addSubtreeToUpdateByElement(element)
-        }
-      }
-    }
+  val treeBuilder: ProjectTreeBuilder2 = ProjectTreeBuilder2(myTree, treeModel, treeStructure)
   treeBuilder.setNodeDescriptorComparator(GroupByTypeComparator2())
   fun initTree() {
     myTree.selectionModel.selectionMode = TreeSelectionModel.DISCONTIGUOUS_TREE_SELECTION
