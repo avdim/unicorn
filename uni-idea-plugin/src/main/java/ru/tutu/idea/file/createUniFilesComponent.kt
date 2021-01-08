@@ -142,7 +142,7 @@ private fun _createUniFilesComponent(
     val paths = myTree.selectionPaths ?: return emptyArray()
     val result = ArrayList<PsiElement>()
     for (path in paths) {
-      result.addAll(JavaHelpers.getElementsFromNode(project, path.lastPathComponent))
+      result.addAll(JavaHelpers.getElementsFromNode(ProjectManager.getInstance().defaultProject, path.lastPathComponent))
     }
     return PsiUtilCore.toPsiElementArray(result)
   }
