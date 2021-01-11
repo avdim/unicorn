@@ -28,6 +28,7 @@ import com.intellij.pom.StatePreservingNavigatable;
 import com.intellij.psi.PsiDirectory;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiFile;
+import com.intellij.psi.impl.smartPointers.DebugBlackFile;
 import com.intellij.psi.util.PsiUtilCore;
 import com.intellij.ui.IconManager;
 import com.intellij.ui.LayeredIcon;
@@ -265,6 +266,7 @@ public abstract class AbstractPsiBasedNode2<Value> extends ProjectViewNode<Value
   @Override
   public boolean validate() {
     final PsiElement psiElement = extractPsiFromValue();
+    DebugBlackFile.doDebug(getEqualityObject(), psiElement);
     if (psiElement == null || !psiElement.isValid()) {
       setValue(null);
     }

@@ -47,6 +47,10 @@ object Log {
     }
   }
 
+  inline fun info(payload: Payload){
+    info { payload }
+  }
+
   inline fun info(lambda: () -> Payload) {
     INFO_LEVEL_ENABLE {
       handleLog(
@@ -72,6 +76,10 @@ object Log {
         lambda()
       )
     }
+  }
+
+  inline fun error(payload:Payload) {
+    error { payload }
   }
 
   inline fun fatalError(t: Throwable? = null, lambda: () -> Payload): Nothing {
