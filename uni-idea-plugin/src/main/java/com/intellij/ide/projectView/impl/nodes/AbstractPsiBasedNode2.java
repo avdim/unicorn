@@ -6,11 +6,10 @@ import com.intellij.codeInsight.navigation.NavigationUtil;
 import com.intellij.ide.bookmarks.Bookmark;
 import com.intellij.ide.bookmarks.BookmarkManager;
 import com.intellij.ide.projectView.PresentationData;
-import com.intellij.ide.projectView.ProjectViewNode;
 import com.intellij.ide.projectView.ProjectViewSettings;
 import com.intellij.ide.projectView.ViewSettings;
+
 import com.intellij.ide.projectView.impl.CompoundProjectViewNodeDecorator;
-import com.intellij.ide.util.treeView.AbstractTreeNode;
 import com.intellij.ide.util.treeView.ValidateableNode;
 import com.intellij.navigation.NavigationItem;
 import com.intellij.openapi.application.ApplicationManager;
@@ -49,7 +48,7 @@ import java.util.Objects;
  * method that extract PsiElement from Value.
  * @param <Value> Value of node descriptor
  */
-public abstract class AbstractPsiBasedNode2<Value> extends ProjectViewNode<Value> implements ValidateableNode, StatePreservingNavigatable {
+public abstract class AbstractPsiBasedNode2<Value> extends ProjectViewNode2B<Value> implements ValidateableNode, StatePreservingNavigatable {
   private static final Logger LOG = Logger.getInstance(AbstractPsiBasedNode2.class.getName());
 
   protected AbstractPsiBasedNode2(final Project project,
@@ -62,18 +61,18 @@ public abstract class AbstractPsiBasedNode2<Value> extends ProjectViewNode<Value
   protected abstract PsiElement extractPsiFromValue();
 
   @Nullable
-  protected abstract Collection<AbstractTreeNode<?>> getChildrenImpl();
+  protected abstract Collection<AbstractTreeNod2<?>> getChildrenImpl();
 
   protected abstract void updateImpl(@NotNull PresentationData data);
 
   @Override
   @NotNull
-  public final Collection<? extends AbstractTreeNode<?>> getChildren() {
+  public final Collection<? extends AbstractTreeNod2<?>> getChildren() {
     return AstLoadingFilter.disallowTreeLoading(this::doGetChildren);
   }
 
   @NotNull
-  private Collection<? extends AbstractTreeNode<?>> doGetChildren() {
+  private Collection<? extends AbstractTreeNod2<?>> doGetChildren() {
     final PsiElement psiElement = extractPsiFromValue();
     if (psiElement == null) {
       return new ArrayList<>();
@@ -85,7 +84,7 @@ public abstract class AbstractPsiBasedNode2<Value> extends ProjectViewNode<Value
       return Collections.emptyList();
     }
 
-    Collection<AbstractTreeNode<?>> children = getChildrenImpl();
+    Collection<AbstractTreeNod2<?>> children = getChildrenImpl();
     return children != null ? children : Collections.emptyList();
   }
 
@@ -96,7 +95,7 @@ public abstract class AbstractPsiBasedNode2<Value> extends ProjectViewNode<Value
   }
 
   protected boolean isMarkReadOnly() {
-    final AbstractTreeNode<?> parent = getParent();
+    final AbstractTreeNod2<?> parent = getParent();
     if (parent == null) {
       return false;
     }
@@ -166,7 +165,7 @@ public abstract class AbstractPsiBasedNode2<Value> extends ProjectViewNode<Value
       }
       updateImpl(data);
       data.setIcon(patchIcon(myProject, data.getIcon(true), getVirtualFile()));
-      CompoundProjectViewNodeDecorator.get(myProject).decorate(this, data);
+//      CompoundProjectViewNodeDecorator.get(myProject).decorate(this, data);//todo
     });
   }
 

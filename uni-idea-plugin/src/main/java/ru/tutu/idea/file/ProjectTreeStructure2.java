@@ -11,7 +11,7 @@ import org.jetbrains.annotations.NotNull;
  * @author ven
  * */
 
-public abstract class ProjectTreeStructure2 extends AbstractProjectTreeStructure {
+public abstract class ProjectTreeStructure2 extends AbstractProjectTreeStructure2 {
   private final String myId;
 
   public ProjectTreeStructure2(@NotNull Project project, final String ID) {

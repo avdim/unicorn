@@ -5,11 +5,7 @@ import com.intellij.ide.projectView.PresentationData;
 import com.intellij.ide.projectView.ViewSettings;
 import com.intellij.ide.projectView.impl.CompoundIconProvider;
 import com.intellij.ide.projectView.impl.ProjectRootsUtil;
-import com.intellij.ide.projectView.impl.nodes.BasePsiNode;
-import com.intellij.ide.projectView.impl.nodes.ProjectViewDirectoryHelper;
-import com.intellij.ide.projectView.impl.nodes.PsiFileNode;
-import com.intellij.ide.projectView.impl.nodes.PsiFileSystemItemFilter;
-import com.intellij.ide.util.treeView.AbstractTreeNode;
+
 import com.intellij.idea.ActionsBundle;
 import com.intellij.openapi.fileTypes.FileTypeRegistry;
 import com.intellij.openapi.module.Module;
@@ -180,8 +176,8 @@ public class PsiDirectoryNode2 extends BasePsiNode2<PsiDirectory> implements Nav
   }
 
   @Override
-  public Collection<AbstractTreeNode<?>> getChildrenImpl() {
-    return ProjectViewDirectoryHelper.getInstance(myProject).getDirectoryChildren(getValue(), getSettings(), true, getFilter());
+  public Collection<AbstractTreeNod2<?>> getChildrenImpl() {
+    return ProjectViewDirectoryHelper2.getInstance(myProject).getDirectoryChildren(getValue(), getSettings(), true, getFilter());
   }
 
   @Override

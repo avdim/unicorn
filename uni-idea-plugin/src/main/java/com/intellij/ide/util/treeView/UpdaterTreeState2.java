@@ -150,7 +150,7 @@ public class UpdaterTreeState2 {
 
     final Set<Object> originallySelected = myUi.getSelectedElements();
 
-    myUi._select(toSelect, new TreeRunnable("UpdaterTreeState.restore") {
+    myUi._select(toSelect, new TreeRunnable2("UpdaterTreeState.restore") {
       @Override
       public void perform() {
         processUnsuccessfulSelections(toSelect, o -> {
@@ -160,10 +160,10 @@ public class UpdaterTreeState2 {
           return o;
         }, originallySelected);
 
-        processAdjusted(adjusted, originallySelected).doWhenDone(new TreeRunnable("UpdaterTreeState.restore: on done") {
+        processAdjusted(adjusted, originallySelected).doWhenDone(new TreeRunnable2("UpdaterTreeState.restore: on done") {
           @Override
           public void perform() {
-            myUi.expand(toExpand, new TreeRunnable("UpdaterTreeState.restore: after on done") {
+            myUi.expand(toExpand, new TreeRunnable2("UpdaterTreeState.restore: after on done") {
               @Override
               public void perform() {
                 myUi.clearUpdaterState();
@@ -249,7 +249,7 @@ public class UpdaterTreeState2 {
     final Object[] newSelection = ArrayUtil.toObjectArray(toSelect);
 
     if (newSelection.length > 0) {
-      myUi._select(newSelection, new TreeRunnable("UpdaterTreeState.processAjusted") {
+      myUi._select(newSelection, new TreeRunnable2("UpdaterTreeState.processAjusted") {
         @Override
         public void perform() {
           final Set<Object> hangByParent = new HashSet<>();
@@ -301,7 +301,7 @@ public class UpdaterTreeState2 {
       if (nextElement == null) {
         callback.setDone();
       } else {
-       myUi.select(nextElement, new TreeRunnable("UpdaterTreeState.processNextHang") {
+       myUi.select(nextElement, new TreeRunnable2("UpdaterTreeState.processNextHang") {
           @Override
           public void perform() {
             processNextHang(nextElement, callback);

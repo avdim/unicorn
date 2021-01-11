@@ -33,7 +33,7 @@
     <toolWindow id="logs" anchor="right" secondary="false" factoryClass="com.unicorn.plugin.log.LogWindow"
                 icon="/icons/unicorn.svg"/>
     <bundledKeymap file="Unicorn.xml"/>
-    <treeStructureProvider implementation="todo.MyTreeStructureProvider"/>
+<!--    <treeStructureProvider implementation="todo.MyTreeStructureProvider"/>-->
   </extensions>
 <!--  <actions>-->
 <!--    <group id="UniCorn.action-group" text="UniCorn">-->

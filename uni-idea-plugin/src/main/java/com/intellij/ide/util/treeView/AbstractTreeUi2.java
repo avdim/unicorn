@@ -5,6 +5,7 @@ import com.intellij.ide.IdeBundle;
 import com.intellij.ide.UiActivity;
 import com.intellij.ide.UiActivityMonitor;
 import com.intellij.ide.projectView.PresentationData;
+import com.intellij.ide.projectView.impl.nodes.AbstractTreeNod2;
 import com.intellij.openapi.application.Application;
 import com.intellij.openapi.application.ApplicationManager;
 import com.intellij.openapi.diagnostic.Logger;
@@ -97,7 +98,7 @@ public class AbstractTreeUi2 {
   private final Set<Runnable> myActiveWorkerTasks = new HashSet<>();
 
   private ProgressIndicator myProgress;
-  private AbstractTreeNode<Object> TREE_NODE_WRAPPER;
+  private AbstractTreeNod2<Object> TREE_NODE_WRAPPER;
 
   private boolean myRootNodeWasQueuedToInitialize;
   private boolean myRootNodeInitialized;
@@ -3047,7 +3048,7 @@ public class AbstractTreeUi2 {
 
               if (index == null) {
                 int selectedIndex = -1;
-                if (TreeBuilderUtil.isNodeOrChildSelected(myTree, childNode)) {
+                if (TreeBuilderUtil2.isNodeOrChildSelected(myTree, childNode)) {
                   selectedIndex = parentNode.getIndex(childNode);
                 }
 
@@ -4999,8 +5000,8 @@ public class AbstractTreeUi2 {
    * @return {@code true} if element is {@code null} or if it contains a {@code null} value
    */
   private static boolean isNodeNull(Object element) {
-    if (element instanceof AbstractTreeNode) {
-      AbstractTreeNode node = (AbstractTreeNode)element;
+    if (element instanceof AbstractTreeNod2) {
+      AbstractTreeNod2 node = (AbstractTreeNod2)element;
       element = node.getValue();
     }
     return element == null;
@@ -5022,18 +5023,18 @@ public class AbstractTreeUi2 {
   }
 
   @NotNull
-  static AbstractTreeNode<Object> createSearchingTreeNodeWrapper() {
+  static AbstractTreeNod2<Object> createSearchingTreeNodeWrapper() {
     return new AbstractTreeNodeWrapper();
   }
 
-  private static class AbstractTreeNodeWrapper extends AbstractTreeNode<Object> {
+  private static class AbstractTreeNodeWrapper extends AbstractTreeNod2<Object> {
     AbstractTreeNodeWrapper() {
       super(null, new Object());
     }
 
     @Override
     @NotNull
-    public Collection<AbstractTreeNode<?>> getChildren() {
+    public Collection<AbstractTreeNod2<?>> getChildren() {
       return Collections.emptyList();
     }
 
@@ -5045,7 +5046,7 @@ public class AbstractTreeUi2 {
     public boolean equals(Object object) {
       if (object == this) return true;
       // this hack allows to find a node in a map without checking a class type
-      return object instanceof AbstractTreeNode && Comparing.equal(getEqualityObject(), ((AbstractTreeNode)object).getEqualityObject());
+      return object instanceof AbstractTreeNod2 && Comparing.equal(getEqualityObject(), ((AbstractTreeNod2)object).getEqualityObject());
     }
   }
 

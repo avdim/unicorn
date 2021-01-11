@@ -18,6 +18,7 @@ import com.intellij.ide.projectView.impl.AbstractProjectTreeStructure
 import com.intellij.openapi.vcs.FileStatusManager
 import com.intellij.openapi.project.ProjectManager
 import com.intellij.ide.CopyPasteUtil
+import com.intellij.ide.projectView.impl.ProjectAbstractTreeStructureBase2
 import com.intellij.ide.scratch.ScratchUtil
 import com.intellij.openapi.fileTypes.FileTypes
 import com.intellij.openapi.project.Project
@@ -35,7 +36,7 @@ import gnu.trove.THashSet
 open class ProjectTreeBuilder2(
   tree: JTree,
   treeModel: DefaultTreeModel,
-  treeStructure: ProjectAbstractTreeStructureBase
+  treeStructure: ProjectAbstractTreeStructureBase2
 ) : BaseProjectTreeBuilder2( /*project, */tree, treeModel, treeStructure) {
 
   private class MyProblemListener : ProblemListener {

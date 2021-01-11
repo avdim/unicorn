@@ -5,7 +5,6 @@ import com.intellij.ide.projectView.PresentationData;
 import com.intellij.ide.projectView.ViewSettings;
 import com.intellij.ide.projectView.impl.ModuleGroup;
 import com.intellij.ide.projectView.impl.ProjectViewPane;
-import com.intellij.ide.util.treeView.AbstractTreeNode;
 import com.intellij.openapi.module.Module;
 import com.intellij.openapi.module.*;
 import com.intellij.openapi.progress.ProcessCanceledException;
@@ -27,7 +26,7 @@ public abstract class AbstractProjectNode2 extends ProjectViewNode2<Project> {
   }
 
   @NotNull
-  protected Collection<AbstractTreeNode<?>> modulesAndGroups(@NotNull Collection<? extends ModuleDescription> modules) {
+  protected Collection<AbstractTreeNod2<?>> modulesAndGroups(@NotNull Collection<? extends ModuleDescription> modules) {
     if (getSettings().isFlattenModules()) {
       return ContainerUtil.mapNotNull(modules, moduleDescription -> {
         try {
@@ -62,7 +61,7 @@ public abstract class AbstractProjectNode2 extends ProjectViewNode2<Project> {
       }
     }
 
-    List<AbstractTreeNode<?>> result = new ArrayList<>();
+    List<AbstractTreeNod2<?>> result = new ArrayList<>();
     try {
       if (modules.size() > 1) {
         if (commonGroupsPath != null && !commonGroupsPath.isEmpty()) {
@@ -92,11 +91,11 @@ public abstract class AbstractProjectNode2 extends ProjectViewNode2<Project> {
   }
 
   @NotNull
-  protected abstract AbstractTreeNode<?> createModuleGroup(@NotNull Module module)
+  protected abstract AbstractTreeNod2<?> createModuleGroup(@NotNull Module module)
     throws InvocationTargetException, NoSuchMethodException, InstantiationException, IllegalAccessException;
 
   @Nullable
-  private AbstractTreeNode<?> createModuleNode(final ModuleDescription moduleDescription)
+  private AbstractTreeNod2<?> createModuleNode(final ModuleDescription moduleDescription)
     throws InvocationTargetException, NoSuchMethodException, InstantiationException, IllegalAccessException {
     if (moduleDescription instanceof LoadedModuleDescription) {
       return createModuleGroup(((LoadedModuleDescription)moduleDescription).getModule());
@@ -107,12 +106,12 @@ public abstract class AbstractProjectNode2 extends ProjectViewNode2<Project> {
     return null;
   }
 
-  protected AbstractTreeNode<?> createUnloadedModuleNode(UnloadedModuleDescription moduleDescription) {
+  protected AbstractTreeNod2<?> createUnloadedModuleNode(UnloadedModuleDescription moduleDescription) {
     return null;
   }
 
   @NotNull
-  protected abstract AbstractTreeNode<?> createModuleGroupNode(@NotNull ModuleGroup moduleGroup)
+  protected abstract AbstractTreeNod2<?> createModuleGroupNode(@NotNull ModuleGroup moduleGroup)
     throws InvocationTargetException, NoSuchMethodException, InstantiationException, IllegalAccessException;
 
   @Override

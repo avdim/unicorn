@@ -3,7 +3,7 @@
 package com.intellij.ide.util.treeView;
 
 import com.intellij.ide.projectView.PresentationData;
-import com.intellij.ide.util.treeView.*;
+import com.intellij.ide.projectView.impl.nodes.AbstractTreeNod2;
 import com.intellij.openapi.Disposable;
 import com.intellij.openapi.application.Application;
 import com.intellij.openapi.application.ApplicationManager;
@@ -133,8 +133,8 @@ public class AbstractTreeBuilder2 implements Disposable {
 
 
   @NotNull
-  static AbstractTreeNode<Object> createSearchingTreeNodeWrapper() {
-    return new AbstractTreeNodeWrapper();
+  static AbstractTreeNod2<Object> createSearchingTreeNodeWrapper() {
+    return new AbstractTreeNodeWrapper2();
   }
 
   @Nullable
@@ -464,14 +464,14 @@ public class AbstractTreeBuilder2 implements Disposable {
     return promise;
   }
 
-  private static class AbstractTreeNodeWrapper extends AbstractTreeNode<Object> {
-    AbstractTreeNodeWrapper() {
+  private static class AbstractTreeNodeWrapper2 extends AbstractTreeNod2<Object> {
+    AbstractTreeNodeWrapper2() {
       super(null, TREE_WRAPPER_VALUE);
     }
 
     @Override
     @NotNull
-    public Collection<AbstractTreeNode<?>> getChildren() {
+    public Collection<AbstractTreeNod2<?>> getChildren() {
       return Collections.emptyList();
     }
 
@@ -483,7 +483,7 @@ public class AbstractTreeBuilder2 implements Disposable {
     public boolean equals(Object object) {
       if (object == this) return true;
       // this hack allows to find a node in a map without checking a class type
-      return object instanceof AbstractTreeNode && Comparing.equal(getEqualityObject(), ((AbstractTreeNode)object).getEqualityObject());
+      return object instanceof AbstractTreeNod2 && Comparing.equal(getEqualityObject(), ((AbstractTreeNod2)object).getEqualityObject());
     }
   }
 

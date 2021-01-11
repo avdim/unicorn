@@ -4,7 +4,7 @@ package com.intellij.ide.projectView.impl.nodes;
 import com.intellij.ide.projectView.ViewSettings;
 import com.intellij.ide.projectView.impl.ModuleGroup;
 import com.intellij.ide.projectView.impl.ProjectRootsUtil;
-import com.intellij.ide.util.treeView.AbstractTreeNode;
+
 import com.intellij.openapi.module.Module;
 import com.intellij.openapi.module.*;
 import com.intellij.openapi.module.impl.LoadedModuleDescriptionImpl;
@@ -32,7 +32,7 @@ public class ProjectViewProjectNode2 extends AbstractProjectNode2 {
   }
 
   @Override
-  public @NotNull Collection<AbstractTreeNode<?>> getChildren() {
+  public @NotNull Collection<AbstractTreeNod2<?>> getChildren() {
     Project project = myProject;
     if (project == null || project.isDisposed() || project.isDefault()) {
       return Collections.emptyList();
@@ -55,7 +55,7 @@ public class ProjectViewProjectNode2 extends AbstractProjectNode2 {
     }
 
 
-    List<AbstractTreeNode<?>> nodes = new ArrayList<>(modulesAndGroups(modules));
+    List<AbstractTreeNod2<?>> nodes = new ArrayList<>(modulesAndGroups(modules));
 
     String baseDirPath = project.getBasePath();
     VirtualFile baseDir = baseDirPath == null ? null : LocalFileSystem.getInstance().findFileByPath(baseDirPath);
@@ -71,7 +71,7 @@ public class ProjectViewProjectNode2 extends AbstractProjectNode2 {
           if (projectFileIndex.getModuleForFile(file, false) == null) {
             PsiFile psiFile = psiManager.findFile(file);
             if (psiFile != null) {
-              nodes.add(new PsiFileNode(getProject(), psiFile, getSettings()));
+              nodes.add(new PsiFileNode2(getProject(), psiFile, getSettings()));
             }
           }
         }
@@ -79,41 +79,41 @@ public class ProjectViewProjectNode2 extends AbstractProjectNode2 {
     }
 
     if (getSettings().isShowLibraryContents()) {
-      nodes.add(new ExternalLibrariesNode(project, getSettings()));
+      nodes.add(new ExternalLibrariesNode2(project, getSettings()));
     }
     return nodes;
   }
 
   @NotNull
   @Override
-  protected AbstractTreeNode<?> createModuleGroup(@NotNull final Module module) {
+  protected AbstractTreeNod2<?> createModuleGroup(@NotNull final Module module) {
     List<VirtualFile> roots = ProjectViewDirectoryHelper.getInstance(myProject).getTopLevelModuleRoots(module, getSettings());
     if (roots.size() == 1) {
       final PsiDirectory psi = PsiManager.getInstance(myProject).findDirectory(roots.get(0));
       if (psi != null) {
-        return new PsiDirectoryNode(myProject, psi, getSettings());
+        return new PsiDirectoryNode2(myProject, psi, getSettings());
       }
     }
 
-    return new ProjectViewModuleNode(getProject(), module, getSettings());
+    return new ProjectViewModuleNode2(getProject(), module, getSettings());
   }
 
   @Override
-  protected AbstractTreeNode<?> createUnloadedModuleNode(@NotNull UnloadedModuleDescription moduleDescription) {
+  protected AbstractTreeNod2<?> createUnloadedModuleNode(@NotNull UnloadedModuleDescription moduleDescription) {
     List<VirtualFile> roots = ProjectViewDirectoryHelper.getInstance(myProject).getTopLevelUnloadedModuleRoots(moduleDescription, getSettings());
     if (roots.size() == 1) {
       final PsiDirectory psi = PsiManager.getInstance(myProject).findDirectory(roots.get(0));
       if (psi != null) {
-        return new PsiDirectoryNode(myProject, psi, getSettings());
+        return new PsiDirectoryNode2(myProject, psi, getSettings());
       }
     }
 
-    return new ProjectViewUnloadedModuleNode(getProject(), moduleDescription, getSettings());
+    return new ProjectViewUnloadedModuleNode2(getProject(), moduleDescription, getSettings());
   }
 
   @NotNull
   @Override
-  protected AbstractTreeNode createModuleGroupNode(@NotNull final ModuleGroup moduleGroup) {
-    return new ProjectViewModuleGroupNode(getProject(), moduleGroup, getSettings());
+  protected AbstractTreeNod2 createModuleGroupNode(@NotNull final ModuleGroup moduleGroup) {
+    return new ProjectViewModuleGroupNode2(getProject(), moduleGroup, getSettings());
   }
 }

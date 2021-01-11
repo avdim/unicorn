@@ -8,7 +8,6 @@ import com.intellij.ide.projectView.ViewSettings;
 
 import com.intellij.openapi.diagnostic.Logger;
 import com.intellij.openapi.project.Project;
-import com.intellij.openapi.project.ProjectManager;
 import com.intellij.openapi.util.Comparing;
 import com.intellij.openapi.util.Condition;
 import com.intellij.openapi.util.NlsContexts;
@@ -36,9 +35,9 @@ import java.util.List;
  *
  */
 
-public abstract class ProjectViewNode2<Value> extends AbstractTreeNod2<Value> implements RootsProvider, SettingsProvider {
+public abstract class ProjectViewNode2B<Value> extends AbstractTreeNod2<Value> implements RootsProvider, SettingsProvider {
 
-  protected static final Logger LOG = Logger.getInstance(ProjectViewNode2.class);
+  protected static final Logger LOG = Logger.getInstance(ProjectViewNode2B.class);
 
   private final ViewSettings mySettings;
   private boolean myValidating;
@@ -46,11 +45,12 @@ public abstract class ProjectViewNode2<Value> extends AbstractTreeNod2<Value> im
   /**
    * Creates an instance of the project view node.
    *
+   * @param project      the project containing the node.
    * @param value        the object (for example, a PSI element) represented by the project view node
    * @param viewSettings the settings of the project view.
    */
-  protected ProjectViewNode2(@NotNull Value value, ViewSettings viewSettings) {
-    super(ProjectManager.getInstance().getDefaultProject(), value);
+  protected ProjectViewNode2B(Project project, @NotNull Value value, ViewSettings viewSettings) {
+    super(project, value);
 
     mySettings = viewSettings;
   }
@@ -145,7 +145,7 @@ public abstract class ProjectViewNode2<Value> extends AbstractTreeNod2<Value> im
 
     Collection<? extends AbstractTreeNod2<?>> kids = getChildren();
     for (final AbstractTreeNod2<?> kid : kids) {
-      ProjectViewNode2<?> node = (ProjectViewNode2<?>)kid;
+      ProjectViewNode2B<?> node = (ProjectViewNode2B<?>)kid;
       if (node.contains(file)) return true;
     }
     return false;

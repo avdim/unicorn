@@ -96,18 +96,18 @@ private fun _createUniFilesComponent(
         super.setFont(font.deriveFont(font.size /*+ 3f*/))
       }
     }
-  val treeStructure: ProjectAbstractTreeStructureBase =
+  val treeStructure: ProjectAbstractTreeStructureBase2 =
     object : ProjectTreeStructure2(project, FILES_PANE_ID), ProjectViewSettings {
-      override fun createRoot(project: Project, settings: ViewSettings): AbstractTreeNode<*> =
+      override fun createRoot(project: Project, settings: ViewSettings): AbstractTreeNod2<*> =
         object : ProjectViewProjectNode2(settings) {
           override fun canRepresent(element: Any): Boolean = true
-          override fun getChildren(): Collection<AbstractTreeNode<*>> {
+          override fun getChildren(): Collection<AbstractTreeNod2<*>> {
             return uniFilesRootNodes(project, settings, rootDirs = rootPaths)
           }
         }
 
       override fun getChildElements(element: Any): Array<Any> {
-        val treeNode = element as AbstractTreeNode<*>
+        val treeNode = element as AbstractTreeNod2<*>
         val elements = treeNode.children
         elements.forEach { it.setParent(treeNode) }
         return elements.toTypedArray()
@@ -330,7 +330,7 @@ private fun _createUniFilesComponent(
     override fun getData(dataId: String): Any? {
       if (PlatformDataKeys.TREE_EXPANDER.`is`(dataId)) return createTreeExpander(myTree)//todo lazy cache
 
-      val nodes = getSelectedNodes(AbstractTreeNode::class.java)
+      val nodes = getSelectedNodes(AbstractTreeNod2::class.java)
       val data = treeStructure.getDataFromProviders(nodes, dataId)
       if (data != null) {
         return data
@@ -445,7 +445,7 @@ private fun _createUniFilesComponent(
       if (PlatformDataKeys.PROJECT_CONTEXT.`is`(dataId)) {
         fun getSelectNodeElement(): Any? {
           val descriptor = TreeUtil.getLastUserObject(NodeDescriptor::class.java, getSelectedPath()) ?: return null
-          return if (descriptor is AbstractTreeNode<*>) descriptor.value else descriptor.element
+          return if (descriptor is AbstractTreeNod2<*>) descriptor.value else descriptor.element
         }
 
         val selected = getSelectNodeElement()
@@ -475,7 +475,7 @@ fun uniFilesRootNodes(
   project: Project,
   settings: ViewSettings?,
   rootDirs: List<VirtualFile> = ConfUniFiles.ROOT_DIRS
-): Collection<AbstractTreeNode<*>> {
+): Collection<AbstractTreeNod2<*>> {
   return rootDirs.mapNotNull {
     PsiManager.getInstance(project).findDirectory(it)
   }.map { psiDirectory: PsiDirectory ->

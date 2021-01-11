@@ -6,7 +6,7 @@ import com.intellij.ide.highlighter.ArchiveFileType;
 import com.intellij.ide.projectView.PresentationData;
 import com.intellij.ide.projectView.ViewSettings;
 import com.intellij.ide.projectView.impl.ProjectRootsUtil;
-import com.intellij.ide.util.treeView.AbstractTreeNode;
+
 import com.intellij.idea.ActionsBundle;
 import com.intellij.openapi.editor.colors.CodeInsightColors;
 import com.intellij.openapi.fileTypes.StdFileTypes;
@@ -38,13 +38,13 @@ public class PsiFileNode2 extends BasePsiNode2<PsiFile> implements NavigatableWi
   }
 
   @Override
-  public Collection<AbstractTreeNode<?>> getChildrenImpl() {
+  public Collection<AbstractTreeNod2<?>> getChildrenImpl() {
     Project project = getProject();
     VirtualFile jarRoot = getJarRoot();
     if (project != null && jarRoot != null) {
       PsiDirectory psiDirectory = PsiManager.getInstance(project).findDirectory(jarRoot);
       if (psiDirectory != null) {
-        return ProjectViewDirectoryHelper.getInstance(project).getDirectoryChildren(psiDirectory, getSettings(), true);
+        return ProjectViewDirectoryHelper2.getInstance(project).getDirectoryChildren(psiDirectory, getSettings(), true);
       }
     }
 
