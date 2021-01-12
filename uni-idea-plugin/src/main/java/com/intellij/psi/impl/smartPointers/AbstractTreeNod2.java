@@ -1,20 +1,28 @@
 // Copyright 2000-2020 JetBrains s.r.o. Use of this source code is governed by the Apache 2.0 license that can be found in the LICENSE file.
-package com.intellij.ide.projectView.impl.nodes;
+package com.intellij.psi.impl.smartPointers;
 
 import com.intellij.ide.projectView.PresentationData;
 import com.intellij.ide.util.treeView.NodeDescriptor;
 import com.intellij.ide.util.treeView.PresentableNodeDescriptor;
 import com.intellij.ide.util.treeView.TreeAnchorizer;
 import com.intellij.navigation.NavigationItem;
+import com.intellij.openapi.application.ApplicationManager;
+import com.intellij.openapi.application.ReadAction;
 import com.intellij.openapi.diagnostic.Logger;
 import com.intellij.openapi.editor.colors.TextAttributesKey;
 import com.intellij.openapi.ide.CopyPasteManager;
 import com.intellij.openapi.project.Project;
+import com.intellij.openapi.project.ProjectManager;
 import com.intellij.openapi.ui.Queryable;
 import com.intellij.openapi.util.Comparing;
+import com.intellij.openapi.util.Key;
 import com.intellij.openapi.vcs.FileStatus;
 import com.intellij.openapi.vcs.FileStatusManager;
 import com.intellij.openapi.vfs.VirtualFile;
+import com.intellij.psi.*;
+import com.intellij.psi.impl.smartPointers.*;
+import com.intellij.psi.util.PsiUtilCore;
+import com.intellij.reference.SoftReference;
 import com.intellij.ui.tree.LeafState;
 import org.jetbrains.annotations.NonNls;
 import org.jetbrains.annotations.NotNull;
@@ -22,6 +30,7 @@ import org.jetbrains.annotations.Nullable;
 import org.jetbrains.annotations.TestOnly;
 
 import java.awt.*;
+import java.lang.ref.Reference;
 import java.util.Collection;
 import java.util.Map;
 
@@ -148,7 +157,15 @@ public abstract class AbstractTreeNod2<T> extends PresentableNodeDescriptor<Abst
 
   public final T getValue() {
     Object value = getEqualityObject();
-    return value == null ? null : (T) TreeAnchorizer.getService().retrieveElement(value);
+    return value == null ? null : (T) retrieveElement(value);
+  }
+
+  @Nullable
+  public static Object retrieveElement(@NotNull final Object pointer) {
+    if (pointer instanceof SmartPsiElementPointer) {
+      return ReadAction.compute(() -> ((SmartPsiElementPointer<?>)pointer).getElement());
+    }
+    return pointer;
   }
 
   public final void setValue(T value) {
@@ -173,8 +190,89 @@ public abstract class AbstractTreeNod2<T> extends PresentableNodeDescriptor<Abst
    */
   private boolean setInternalValue(@NotNull T value) {
     if (value == TREE_WRAPPER_VALUE) return true;
-    myValue = TreeAnchorizer.getService().createAnchor(value);
+
+    myValue = createAnchor(value);
     return false;
+  }
+
+  public Object createAnchor(@NotNull Object element) {
+    if (element instanceof PsiElement) {
+      PsiElement psi = (PsiElement)element;
+      return ReadAction.compute(() -> {
+        if (!psi.isValid()) return psi;
+        return SmartPointerManager.getInstance(psi.getProject()).createSmartPsiElementPointer(psi);
+      });
+    }
+    return element;
+  }
+
+  @NotNull
+  public static <E extends PsiElement> SmartPsiElementPointer<E> createSmartPsiElementPointer(@NotNull E element) {
+    ApplicationManager.getApplication().assertReadAccessAllowed();
+    PsiFile containingFile = element.getContainingFile();
+    return createSmartPsiElementPointer(element, containingFile);
+  }
+
+  @NotNull
+  public static <E extends PsiElement> SmartPsiElementPointer<E> createSmartPsiElementPointer(@NotNull E element, PsiFile containingFile) {
+    return createSmartPsiElementPointer(element, containingFile, false);
+  }
+
+  private static <E extends PsiElement> SmartPsiElementPointerImpl2<E> getCachedPointer(@NotNull E element) {
+    Reference<SmartPsiElementPointerImpl2<?>> data = element.getUserData(CACHED_SMART_POINTER_KEY);
+    SmartPsiElementPointerImpl2<?> cachedPointer = SoftReference.dereference(data);
+    if (cachedPointer != null) {
+      PsiElement cachedElement = cachedPointer.getElement();
+      if (cachedElement != element) {
+        return null;
+      }
+    }
+    //noinspection unchecked
+    return (SmartPsiElementPointerImpl2<E>)cachedPointer;
+  }
+
+  @NotNull
+  public static <E extends PsiElement> SmartPsiElementPointer<E> createSmartPsiElementPointer(@NotNull E element,
+                                                                                       PsiFile containingFile,
+                                                                                       boolean forInjected) {
+    ensureValid(element, containingFile);
+//    SmartPointerTracker.processQueue();
+//    ensureMyProject(containingFile != null ? containingFile.getProject() : element.getProject());
+    SmartPsiElementPointerImpl2<E> pointer = getCachedPointer(element);
+    if (pointer != null &&
+      (!(pointer.getElementInfo() instanceof SelfElementInfo) || ((SelfElementInfo)pointer.getElementInfo()).isForInjected() == forInjected) &&
+      pointer.incrementAndGetReferenceCount(1) > 0) {
+      return pointer;
+    }
+
+    pointer = new SmartPsiElementPointerImpl2<E>((SmartPointerManagerImpl) SmartPointerManager.getInstance(ProjectManager.getInstance().getDefaultProject() ), element, containingFile, forInjected);
+    if (containingFile != null) {
+      trackPointer(pointer, containingFile.getViewProvider().getVirtualFile());
+    }
+    element.putUserData(CACHED_SMART_POINTER_KEY, new SoftReference<>(pointer));
+    return pointer;
+  }
+  private static final Key<Reference<SmartPsiElementPointerImpl2<?>>> CACHED_SMART_POINTER_KEY = Key.create("CACHED_SMART_POINTER_KEY_2");
+  private static void ensureValid(@NotNull PsiElement element, @Nullable PsiFile containingFile) {
+    boolean valid = containingFile != null ? containingFile.isValid() : element.isValid();
+    if (!valid) {
+      PsiUtilCore.ensureValid(element);
+      if (containingFile != null && !containingFile.isValid()) {
+        throw new PsiInvalidElementAccessException(containingFile, "Element " + element.getClass() + "(" + element.getLanguage() + ")" + " claims to be valid but returns invalid containing file ");
+      }
+    }
+  }
+
+  private static <E extends PsiElement> void trackPointer(@NotNull SmartPsiElementPointerImpl2<E> pointer, @NotNull VirtualFile containingFile) {
+    //todo bookmark:
+//    SmartPsiElementPointerImpl2 info = pointer.getElementInfo();
+//    if (!(info instanceof SelfElementInfo)) return;
+//
+//    SmartPointerTracker tracker = getTracker(containingFile);
+//    if (tracker == null) {
+//      tracker = getOrCreateTracker(containingFile);
+//    }
+//    tracker.addReference(pointer);
   }
 
   public final Object getEqualityObject() {

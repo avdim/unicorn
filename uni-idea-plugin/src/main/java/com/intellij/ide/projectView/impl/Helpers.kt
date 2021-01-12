@@ -2,7 +2,7 @@ package com.intellij.ide.projectView.impl
 
 import com.intellij.ide.DefaultTreeExpander
 import com.intellij.ide.TreeExpander
-import com.intellij.ide.projectView.impl.nodes.AbstractTreeNod2
+import com.intellij.psi.impl.smartPointers.AbstractTreeNod2
 import com.intellij.ide.util.treeView.*
 import com.intellij.openapi.actionSystem.DataContext
 import com.intellij.openapi.module.Module

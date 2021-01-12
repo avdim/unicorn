@@ -31,6 +31,7 @@ import com.intellij.psi.PsiDirectory;
 import com.intellij.psi.PsiFile;
 import com.intellij.psi.PsiManager;
 import com.intellij.psi.impl.file.PsiDirectoryFactory;
+import com.intellij.psi.impl.smartPointers.AbstractTreeNod2;
 import com.intellij.ui.SimpleTextAttributes;
 import com.intellij.util.IconUtil;
 import com.intellij.util.PlatformUtils;

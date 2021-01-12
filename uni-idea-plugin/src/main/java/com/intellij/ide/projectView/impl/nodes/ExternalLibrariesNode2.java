@@ -16,6 +16,7 @@ import com.intellij.openapi.vfs.VfsUtil;
 import com.intellij.openapi.vfs.VirtualFile;
 import com.intellij.psi.PsiDirectory;
 import com.intellij.psi.PsiManager;
+import com.intellij.psi.impl.smartPointers.AbstractTreeNod2;
 import com.intellij.util.PlatformIcons;
 import org.jetbrains.annotations.NotNull;
 

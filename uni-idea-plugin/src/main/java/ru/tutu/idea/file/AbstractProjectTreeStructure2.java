@@ -5,7 +5,7 @@ package ru.tutu.idea.file;
 import com.intellij.ide.projectView.ProjectViewNode;
 import com.intellij.ide.projectView.ViewSettings;
 import com.intellij.ide.projectView.impl.ProjectAbstractTreeStructureBase2;
-import com.intellij.ide.projectView.impl.nodes.AbstractTreeNod2;
+import com.intellij.psi.impl.smartPointers.AbstractTreeNod2;
 import com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode2;
 
 import com.intellij.openapi.project.Project;

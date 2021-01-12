@@ -20,6 +20,7 @@ import com.intellij.pom.NavigatableWithText;
 import com.intellij.psi.PsiDirectory;
 import com.intellij.psi.PsiFile;
 import com.intellij.psi.PsiManager;
+import com.intellij.psi.impl.smartPointers.AbstractTreeNod2;
 import org.jetbrains.annotations.NotNull;
 
 import javax.swing.*;

@@ -3,7 +3,7 @@
 package com.intellij.ide.util.treeView;
 
 import com.intellij.ide.projectView.PresentationData;
-import com.intellij.ide.projectView.impl.nodes.AbstractTreeNod2;
+import com.intellij.psi.impl.smartPointers.AbstractTreeNod2;
 import com.intellij.openapi.Disposable;
 import com.intellij.openapi.application.Application;
 import com.intellij.openapi.application.ApplicationManager;

@@ -7,6 +7,7 @@ import com.intellij.ide.projectView.ViewSettings;
 import com.intellij.openapi.module.Module;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.vfs.VirtualFile;
+import com.intellij.psi.impl.smartPointers.AbstractTreeNod2;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.Collection;

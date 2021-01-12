@@ -4,10 +4,11 @@ package com.intellij.ide;
 import com.intellij.ide.projectView.ProjectViewNode;
 import com.intellij.ide.projectView.ProjectViewNodeDecorator;
 import com.intellij.ide.projectView.ViewSettings;
-import com.intellij.ide.projectView.impl.nodes.AbstractTreeNod2;
+import com.intellij.psi.impl.smartPointers.AbstractTreeNod2;
 import com.intellij.ide.util.treeView.AbstractTreeNode;
 import com.intellij.openapi.extensions.ExtensionPointName;
 import com.intellij.openapi.extensions.ProjectExtensionPointName;
+import com.intellij.psi.impl.smartPointers.AbstractTreeNod2;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 

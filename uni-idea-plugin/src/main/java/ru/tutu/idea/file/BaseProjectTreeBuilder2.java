@@ -4,7 +4,7 @@ package ru.tutu.idea.file;
 
 import com.intellij.ide.favoritesTreeView.FavoriteTreeNodeDescriptor;
 import com.intellij.ide.projectView.ProjectViewNode;
-import com.intellij.ide.projectView.impl.nodes.AbstractTreeNod2;
+import com.intellij.psi.impl.smartPointers.AbstractTreeNod2;
 import com.intellij.ide.projectView.impl.nodes.ProjectViewNode2;
 import com.intellij.ide.projectView.impl.nodes.ProjectViewNode2B;
 import com.intellij.ide.util.treeView.*;
@@ -119,7 +119,7 @@ public abstract class BaseProjectTreeBuilder2 extends AbstractTreeBuilder2 {
         result.add(treeNode);
       }
       else if (defaultMutableTreeNode.getUserObject() instanceof FavoriteTreeNodeDescriptor) {
-        Uni.INSTANCE.getLog().debug("defaultMutableTreeNode.getUserObject() instanceof FavoriteTreeNodeDescriptor");//todo
+        Uni.INSTANCE.getLog().debug("defaultMutableTreeNode.getUserObject() instanceof FavoriteTreeNodeDescriptor");//todo bookmark
 //        AbstractTreeNod2 treeNode = ((FavoriteTreeNodeDescriptor)defaultMutableTreeNode.getUserObject()).getElement();
 //        result.add(treeNode);
       }

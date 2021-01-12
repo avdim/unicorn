@@ -4,7 +4,7 @@ package com.intellij.ide.projectView.impl;
 import com.intellij.ide.projectView.SettingsProvider;
 import com.intellij.ide.projectView.TreeStructureProvider;
 import com.intellij.ide.projectView.ViewSettings;
-import com.intellij.ide.projectView.impl.nodes.AbstractTreeNod2;
+import com.intellij.psi.impl.smartPointers.AbstractTreeNod2;
 import com.intellij.ide.util.treeView.AbstractTreeStructure;
 import com.intellij.ide.util.treeView.NodeDescriptor;
 import com.intellij.openapi.diagnostic.Logger;
@@ -45,7 +45,7 @@ public abstract class AbstractTreeStructureBase2 extends AbstractTreeStructure {
         ProgressManager.checkCanceled();
         try {
           //noinspection unchecked
-//          elements = provider.modify(treeNode, (Collection<AbstractTreeNode2<?>>)elements, settings); //todo
+//          elements = provider.modify(treeNode, (Collection<AbstractTreeNode2<?>>)elements, settings); //todo bookmark
 //          if (elements.contains(null)) {
 //            LOG.error("provider creates null child: " + provider);
 //          }
@@ -94,7 +94,7 @@ public abstract class AbstractTreeStructureBase2 extends AbstractTreeStructure {
     if (!providers.isEmpty()) {
       for (TreeStructureProvider treeStructureProvider : providers) {
 //        Uni.INSTANCE.getLog().debug("providers: " + providers);
-        //todo providers
+        //todo bookmark providers
 //        final Object fromProvider = treeStructureProvider.getData(selectedNodes, dataId);
 //        if (fromProvider != null) {
 //          return fromProvider;

@@ -27,6 +27,7 @@ import com.intellij.pom.StatePreservingNavigatable;
 import com.intellij.psi.PsiDirectory;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiFile;
+import com.intellij.psi.impl.smartPointers.AbstractTreeNod2;
 import com.intellij.psi.impl.smartPointers.DebugBlackFile;
 import com.intellij.psi.util.PsiUtilCore;
 import com.intellij.ui.IconManager;
@@ -165,7 +166,7 @@ public abstract class AbstractPsiBasedNode2<Value> extends ProjectViewNode2B<Val
       }
       updateImpl(data);
       data.setIcon(patchIcon(myProject, data.getIcon(true), getVirtualFile()));
-//      CompoundProjectViewNodeDecorator.get(myProject).decorate(this, data);//todo
+//      CompoundProjectViewNodeDecorator.get(myProject).decorate(this, data);//todo bookmark
     });
   }
 

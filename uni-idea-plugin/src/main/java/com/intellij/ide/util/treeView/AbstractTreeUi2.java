@@ -5,7 +5,7 @@ import com.intellij.ide.IdeBundle;
 import com.intellij.ide.UiActivity;
 import com.intellij.ide.UiActivityMonitor;
 import com.intellij.ide.projectView.PresentationData;
-import com.intellij.ide.projectView.impl.nodes.AbstractTreeNod2;
+import com.intellij.psi.impl.smartPointers.AbstractTreeNod2;
 import com.intellij.openapi.application.Application;
 import com.intellij.openapi.application.ApplicationManager;
 import com.intellij.openapi.diagnostic.Logger;

@@ -29,6 +29,7 @@ import com.intellij.psi.PsiDirectory
 import com.intellij.psi.PsiDirectoryContainer
 import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiManager
+import com.intellij.psi.impl.smartPointers.AbstractTreeNod2
 import com.intellij.psi.util.PsiUtilCore
 import com.intellij.ui.ScrollPaneFactory
 import com.intellij.ui.SimpleColoredComponent
