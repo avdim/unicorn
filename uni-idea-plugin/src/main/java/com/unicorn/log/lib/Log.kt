@@ -38,6 +38,12 @@ object Log {
     }
   }
 
+  inline fun debug(payload: Payload) {
+    debug {
+      payload
+    }
+  }
+
   inline fun todo(lambda: () -> Payload) {
     TODO_LEVEL_ENABLE {
       handleLog(
@@ -45,6 +51,10 @@ object Log {
         lambda()
       )
     }
+  }
+
+  inline fun info(payload: Payload){
+    info { payload }
   }
 
   inline fun info(lambda: () -> Payload) {
@@ -72,6 +82,10 @@ object Log {
         lambda()
       )
     }
+  }
+
+  inline fun error(payload:Payload) {
+    error { payload }
   }
 
   inline fun fatalError(t: Throwable? = null, lambda: () -> Payload): Nothing {

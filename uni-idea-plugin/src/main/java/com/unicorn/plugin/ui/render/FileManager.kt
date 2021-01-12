@@ -1,6 +1,7 @@
 package com.unicorn.plugin.ui.render
 
 import com.intellij.openapi.project.Project
+import com.intellij.openapi.project.ProjectManager
 import com.intellij.openapi.vfs.LocalFileSystem
 import com.intellij.openapi.vfs.VirtualFile
 import com.intellij.ui.layout.LayoutBuilder
@@ -43,7 +44,7 @@ fun fileManager(
         }
         column.paths.forEachIndexed { row: Int, path: String ->
           if (TODO_TEXT_FIELD_COMPLETION) textFieldCompletion(
-            project = project,
+            project = ProjectManager.getInstance().defaultProject,
             label = null,
             currentValue = path,
             autoCompletionVariants = File(path).listFiles()?.toList().orEmpty().map { it.path }

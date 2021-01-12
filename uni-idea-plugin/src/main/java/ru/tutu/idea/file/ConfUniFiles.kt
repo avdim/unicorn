@@ -13,10 +13,11 @@ object ConfUniFiles {
   val DEFAULT_PATHS: List<File> =
     listOf(
       GITHUB_DIR,
-      HOME_DIR
+      HOME_DIR,
+      File("/tmp")
     )
       .filter { it.exists() }
-      .take(2)
+      .take(3)
 
   val DEFAULT_NEW_PATH = "/"
   val ROOT_DIRS: List<VirtualFile> = DEFAULT_PATHS.map {

@@ -2,11 +2,11 @@ package com.intellij.ide.projectView.impl
 
 import com.intellij.ide.DefaultTreeExpander
 import com.intellij.ide.TreeExpander
+import com.intellij.psi.impl.smartPointers.AbstractTreeNod2
 import com.intellij.ide.util.treeView.*
 import com.intellij.openapi.actionSystem.DataContext
 import com.intellij.openapi.module.Module
 import com.intellij.openapi.util.registry.Registry
-import com.intellij.psi.PsiDirectory
 import com.intellij.refactoring.move.MoveHandler
 import com.intellij.ui.tree.AsyncTreeModel
 import com.intellij.util.concurrency.InvokerSupplier
@@ -17,11 +17,11 @@ import javax.swing.JTree
 fun extractValueFromNode(node: Any?): Any? {
   val userObject = TreeUtil.getUserObject(node)
   var element: Any? = null
-  if (userObject is AbstractTreeNode<*>) {
+  if (userObject is AbstractTreeNod2<*>) {
     element = userObject.value
   } else if (userObject is NodeDescriptor<*>) {
     element = userObject.element
-    if (element is AbstractTreeNode<*>) {
+    if (element is AbstractTreeNod2<*>) {
       element = element.value
     }
   } else if (userObject != null) {

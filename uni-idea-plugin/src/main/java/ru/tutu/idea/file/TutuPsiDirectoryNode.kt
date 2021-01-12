@@ -2,14 +2,11 @@
 package ru.tutu.idea.file
 
 import com.intellij.ide.projectView.ViewSettings
-import com.intellij.ide.projectView.impl.nodes.BasePsiNode
-import com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode
-import com.intellij.ide.projectView.impl.nodes.PsiFileNode
-import com.intellij.ide.projectView.impl.nodes.PsiFileSystemItemFilter
-import com.intellij.ide.util.treeView.AbstractTreeNode
+import com.intellij.ide.projectView.impl.nodes.*
 import com.intellij.openapi.project.Project
 import com.intellij.psi.PsiDirectory
 import com.intellij.psi.PsiManager
+import com.intellij.psi.impl.smartPointers.AbstractTreeNod2
 import java.util.*
 
 class TutuPsiDirectoryNode @JvmOverloads constructor(
@@ -17,17 +14,17 @@ class TutuPsiDirectoryNode @JvmOverloads constructor(
   value: PsiDirectory,
   viewSettings: ViewSettings?,
   filter: PsiFileSystemItemFilter? = null
-) : PsiDirectoryNode(project, value, viewSettings, filter) {
+) : PsiDirectoryNode2(project, value, viewSettings, filter) {
 
-  override fun getChildrenImpl(): Collection<AbstractTreeNode<*>> {
+  override fun getChildrenImpl(): Collection<AbstractTreeNod2<*>> {
     val baseDir = virtualFile!!
     val psiManager = PsiManager.getInstance(project!!)
-    val nodes: MutableList<BasePsiNode<*>> = ArrayList()
+    val nodes: MutableList<BasePsiNode2<*>> = ArrayList()
     val files = baseDir.children
     for (file in files) {
       val psiFile = psiManager.findFile(file)
       if (psiFile != null) {
-        nodes.add(PsiFileNode(project, psiFile, settings))
+        nodes.add(PsiFileNode2(project, psiFile, settings))
       }
 
       val psiDir = psiManager.findDirectory(file)

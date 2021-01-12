@@ -11,7 +11,6 @@ import com.intellij.openapi.editor.colors.EditorColorsScheme
 import com.intellij.openapi.fileEditor.impl.IdeDocumentHistoryImpl
 import com.intellij.openapi.progress.ProcessCanceledException
 import com.intellij.openapi.util.Comparing
-import com.intellij.openapi.util.IconLoader
 import com.intellij.openapi.util.registry.Registry
 import com.intellij.openapi.util.text.StringUtil
 import com.intellij.psi.PsiDirectory
@@ -26,7 +25,6 @@ import com.intellij.ui.speedSearch.SpeedSearchSupply
 import com.intellij.ui.speedSearch.SpeedSearchUtil
 import com.intellij.util.text.JBDateFormat
 import com.intellij.util.ui.EmptyIcon
-import com.intellij.util.ui.StartupUiUtil
 import com.intellij.util.ui.tree.TreeUtil
 import com.unicorn.Uni
 import java.awt.Color
@@ -41,29 +39,6 @@ import javax.swing.JTree
 
 const val NODE_TO_VIRTUAL_FILE = false//todo
 val LOADING_NODE_ICON: Icon = JBUIScale.scaleIcon(EmptyIcon.create(8, 16))
-
-fun addColorToSimpleTextAttributes(
-  simpleTextAttributes: SimpleTextAttributes,
-  color: Color?
-): SimpleTextAttributes {
-  var result = simpleTextAttributes
-  if (color != null) {
-    val textAttributes = simpleTextAttributes.toTextAttributes()
-    textAttributes.foregroundColor = color
-    result = SimpleTextAttributes.fromTextAttributes(textAttributes)
-  }
-  return result
-}
-
-fun fixIconIfNeeded(icon: Icon?, selected: Boolean, hasFocus: Boolean): Icon? {
-  return if (icon != null && !StartupUiUtil.isUnderDarcula() && Registry.`is`(
-      "ide.project.view.change.icon.on.selection",
-      true
-    ) && selected && hasFocus
-  ) {
-    IconLoader.getDarkIcon(icon, true)
-  } else icon
-}
 
 fun getTreeCellRendererComponent(
   myTree: JTree,
@@ -81,20 +56,17 @@ fun getTreeCellRendererComponent(
     override fun getFont(): Font =
       super.getFont() ?: myTree.font ?: Uni.log.fatalError { "front == null" }
 
-    private inner class AccessibleColoredTreeCellRenderer : AccessibleSimpleColoredComponent()
-
     override fun getAccessibleContext(): AccessibleContext {
       if (accessibleContext == null) {
-        accessibleContext = AccessibleColoredTreeCellRenderer()
+        accessibleContext = object : AccessibleSimpleColoredComponent() {
+
+        }
       }
       return accessibleContext
     }
 
     @Suppress("UnstableApiUsage")
-    fun rendererComponentInner(
-      value: Any,
-      row: Int,
-    ) {
+    fun rendererComponentInner(value: Any, row: Int) {
       clear()
       // We paint background if and only if tree path is selected and tree has focus.
       // If path is selected and tree is not focused then we just paint focused border.
@@ -106,7 +78,7 @@ fun getTreeCellRendererComponent(
       super.setIconOpaque(false)
       val node = TreeUtil.getUserObject(value)
       if (node is NodeDescriptor<*>) {
-        icon = fixIconIfNeeded(node.icon, false, false)
+        icon = node.icon
       }
       val presentation = when (node) {
         is PresentableNodeDescriptor<*> -> node.presentation
@@ -115,10 +87,24 @@ fun getTreeCellRendererComponent(
       }
       if (presentation is PresentationData) {
         val color = if (node is NodeDescriptor<*>) node.color else null
-        icon = fixIconIfNeeded(presentation.getIcon(false), false, false)
+        icon = presentation.getIcon(false)
         val coloredText = presentation.coloredText
         val forcedForeground: Color? = presentation.forcedTextForeground
         val scheme: EditorColorsScheme = EditorColorsManager.getInstance().schemeForCurrentUITheme
+
+        fun addColorToSimpleTextAttributes(
+          simpleTextAttributes: SimpleTextAttributes,
+          color: Color?
+        ): SimpleTextAttributes {
+          var result = simpleTextAttributes
+          if (color != null) {
+            val textAttributes = simpleTextAttributes.toTextAttributes()
+            textAttributes.foregroundColor = color
+            result = SimpleTextAttributes.fromTextAttributes(textAttributes)
+          }
+          return result
+        }
+
         if (coloredText.isEmpty()) {
           var text = presentation.presentableText
           if (StringUtil.isEmpty(text)) {
