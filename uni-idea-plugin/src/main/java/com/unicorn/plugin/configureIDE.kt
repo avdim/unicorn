@@ -85,7 +85,13 @@ suspend fun configureIDE() {
   UISettings.instance.state.showPinnedTabsInASeparateRow = true
 
   UISettings.instance.state.showToolWindowsNumbers = true
-  UISettings.instance.state.wideScreenSupport = true
+
+  UISettings.instance.smoothScrolling//=false todo val //UI: smooth scrolling
+  UISettings.instance.showTreeIndentGuides = true
+  UISettings.instance.showMemoryIndicator = true
+  UISettings.instance.recentLocationsLimit// = 50 todo val
+  UISettings.instance.wideScreenSupport = true
+  UISettings.instance.compactTreeIndents = true
 
   EditorSettingsExternalizable.getInstance().isCamelWords = true //option Use "CamelHumps" words
   EditorSettingsExternalizable.getInstance().isMouseClickSelectionHonorsCamelWords = false
@@ -110,12 +116,6 @@ suspend fun configureIDE() {
   } else {
     Uni.log.error { "keymap UNICORN_KEYMAP = $UNICORN_KEYMAP not found" }
   }
-
-  UISettings.instance.smoothScrolling//=false todo val //UI: smooth scrolling
-  UISettings.instance.showTreeIndentGuides = true
-  UISettings.instance.showMemoryIndicator = true
-  UISettings.instance.recentLocationsLimit// = 50 todo val
-  UISettings.instance.wideScreenSupport = false
 
   if (true) {
     docReference<ViewInplaceCommentsAction>()
