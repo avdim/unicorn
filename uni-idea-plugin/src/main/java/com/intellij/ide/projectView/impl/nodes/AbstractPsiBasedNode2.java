@@ -166,7 +166,6 @@ public abstract class AbstractPsiBasedNode2<Value> extends ProjectViewNode2B<Val
       }
       updateImpl(data);
       data.setIcon(patchIcon(myProject, data.getIcon(true), getVirtualFile()));
-//      CompoundProjectViewNodeDecorator.get(myProject).decorate(this, data);//todo bookmark
     });
   }
 
