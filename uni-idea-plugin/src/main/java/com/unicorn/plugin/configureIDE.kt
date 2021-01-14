@@ -73,11 +73,20 @@ suspend fun configureIDE() {
 
   // Tab settings
   UISettings.instance.editorTabPlacement = SwingConstants.LEFT
-  UISettings.instance.editorTabPlacement = SwingConstants.CENTER
-  UISettings.instance.editorTabLimit = 1
+  if (false) {
+    UISettings.instance.editorTabPlacement = SwingConstants.CENTER
+  }
+  UISettings.instance.editorTabLimit = 15
   UISettings.instance.recentFilesLimit
   UISettings.instance.recentLocationsLimit
   UISettings.instance.state.openTabsAtTheEnd = true //option "open new tabs at the end"
+  UISettings.instance.state.showCloseButton = false
+  UISettings.instance.state.showFileIconInTabs = true
+  UISettings.instance.state.showPinnedTabsInASeparateRow = true
+
+  UISettings.instance.state.showToolWindowsNumbers = true
+  UISettings.instance.state.wideScreenSupport = true
+
   EditorSettingsExternalizable.getInstance().isCamelWords = true //option Use "CamelHumps" words
   EditorSettingsExternalizable.getInstance().isMouseClickSelectionHonorsCamelWords = false
 
