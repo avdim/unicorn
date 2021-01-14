@@ -24,6 +24,7 @@ import com.intellij.psi.impl.smartPointers.*;
 import com.intellij.psi.util.PsiUtilCore;
 import com.intellij.reference.SoftReference;
 import com.intellij.ui.tree.LeafState;
+import com.unicorn.Uni;
 import org.jetbrains.annotations.NonNls;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -264,7 +265,7 @@ public abstract class AbstractTreeNod2<T> extends PresentableNodeDescriptor<Abst
   }
 
   private static <E extends PsiElement> void trackPointer(@NotNull SmartPsiElementPointerImpl2<E> pointer, @NotNull VirtualFile containingFile) {
-    //todo bookmark:
+    Uni.getLog().error("should not use: trackPointer(pointer= " + pointer +  ", containingFile: " + containingFile);
 //    SmartPsiElementPointerImpl2 info = pointer.getElementInfo();
 //    if (!(info instanceof SelfElementInfo)) return;
 //

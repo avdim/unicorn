@@ -119,7 +119,7 @@ public abstract class BaseProjectTreeBuilder2 extends AbstractTreeBuilder2 {
         result.add(treeNode);
       }
       else if (defaultMutableTreeNode.getUserObject() instanceof FavoriteTreeNodeDescriptor) {
-        Uni.INSTANCE.getLog().debug("defaultMutableTreeNode.getUserObject() instanceof FavoriteTreeNodeDescriptor");//todo bookmark
+        Uni.getLog().error("should not use: instanceof FavoriteTreeNodeDescriptor");
 //        AbstractTreeNod2 treeNode = ((FavoriteTreeNodeDescriptor)defaultMutableTreeNode.getUserObject()).getElement();
 //        result.add(treeNode);
       }
