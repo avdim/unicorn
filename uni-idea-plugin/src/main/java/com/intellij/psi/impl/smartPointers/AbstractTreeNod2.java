@@ -24,6 +24,7 @@ import com.intellij.psi.impl.smartPointers.*;
 import com.intellij.psi.util.PsiUtilCore;
 import com.intellij.reference.SoftReference;
 import com.intellij.ui.tree.LeafState;
+import com.unicorn.Uni;
 import org.jetbrains.annotations.NonNls;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -163,7 +164,10 @@ public abstract class AbstractTreeNod2<T> extends PresentableNodeDescriptor<Abst
   @Nullable
   public static Object retrieveElement(@NotNull final Object pointer) {
     if (pointer instanceof SmartPsiElementPointer) {
-      return ReadAction.compute(() -> ((SmartPsiElementPointer<?>)pointer).getElement());
+      if(!(pointer instanceof SmartPsiElementPointerImpl2)) {
+        Uni.getLog().error("!(pointer instanceof SmartPsiElementPointerImpl2)");
+      }
+      return ReadAction.compute(() -> ((SmartPsiElementPointerImpl2<?>)pointer).getElement());//по факту тут тотлько SmartPsiElementPointerImpl2
     }
     return pointer;
   }
@@ -200,7 +204,16 @@ public abstract class AbstractTreeNod2<T> extends PresentableNodeDescriptor<Abst
       PsiElement psi = (PsiElement)element;
       return ReadAction.compute(() -> {
         if (!psi.isValid()) return psi;
-        return SmartPointerManager.getInstance(psi.getProject()).createSmartPsiElementPointer(psi);
+        SmartPsiElementPointer<PsiElement> psiResult;
+        SmartPsiElementPointer<PsiElement> oldPsiResult = SmartPointerManager.getInstance(psi.getProject()).createSmartPsiElementPointer(psi);
+        SmartPsiElementPointer<PsiElement> newPsiResult = createSmartPsiElementPointer(psi);
+        if (true) {
+          psiResult = newPsiResult;
+        } else {
+          psiResult = oldPsiResult;
+        }
+
+        return psiResult;
       });
     }
     return element;
@@ -240,7 +253,7 @@ public abstract class AbstractTreeNod2<T> extends PresentableNodeDescriptor<Abst
 //    ensureMyProject(containingFile != null ? containingFile.getProject() : element.getProject());
     SmartPsiElementPointerImpl2<E> pointer = getCachedPointer(element);
     if (pointer != null &&
-      (!(pointer.getElementInfo() instanceof SelfElementInfo) || ((SelfElementInfo)pointer.getElementInfo()).isForInjected() == forInjected) &&
+      (!(pointer.getElementInfo() instanceof SelfElementInfo2) || ((SelfElementInfo2)pointer.getElementInfo()).isForInjected() == forInjected) &&
       pointer.incrementAndGetReferenceCount(1) > 0) {
       return pointer;
     }
@@ -264,7 +277,7 @@ public abstract class AbstractTreeNod2<T> extends PresentableNodeDescriptor<Abst
   }
 
   private static <E extends PsiElement> void trackPointer(@NotNull SmartPsiElementPointerImpl2<E> pointer, @NotNull VirtualFile containingFile) {
-    //todo bookmark:
+//    Uni.getLog().error("should not use: trackPointer(pointer= " + pointer +  ", containingFile: " + containingFile);
 //    SmartPsiElementPointerImpl2 info = pointer.getElementInfo();
 //    if (!(info instanceof SelfElementInfo)) return;
 //

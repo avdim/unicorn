@@ -1,19 +1,13 @@
 // Copyright 2000-2020 JetBrains s.r.o. Use of this source code is governed by the Apache 2.0 license that can be found in the LICENSE file.
 package com.intellij.ide.projectView.impl;
 
-import com.intellij.ide.projectView.SettingsProvider;
 import com.intellij.ide.projectView.TreeStructureProvider;
-import com.intellij.ide.projectView.ViewSettings;
-import com.intellij.psi.impl.smartPointers.AbstractTreeNod2;
 import com.intellij.ide.util.treeView.AbstractTreeStructure;
 import com.intellij.ide.util.treeView.NodeDescriptor;
 import com.intellij.openapi.diagnostic.Logger;
-import com.intellij.openapi.progress.ProcessCanceledException;
-import com.intellij.openapi.progress.ProgressManager;
 import com.intellij.openapi.project.DumbService;
-import com.intellij.openapi.project.IndexNotReadyException;
 import com.intellij.openapi.project.Project;
-import com.intellij.openapi.util.registry.Registry;
+import com.intellij.psi.impl.smartPointers.AbstractTreeNod2;
 import com.intellij.util.ArrayUtil;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -37,30 +31,6 @@ public abstract class AbstractTreeStructureBase2 extends AbstractTreeStructure {
     Collection<? extends AbstractTreeNod2<?>> elements = treeNode.getChildren();
     if (elements.contains(null)) {
       LOG.error("node contains null child: " + treeNode + "; " + treeNode.getClass());
-    }
-    List<TreeStructureProvider> providers = Registry.is("allow.tree.structure.provider.in.dumb.mode") ? getProviders() : getProvidersDumbAware();
-    if (providers != null && !providers.isEmpty()) {
-      ViewSettings settings = treeNode instanceof SettingsProvider ? ((SettingsProvider)treeNode).getSettings() : ViewSettings.DEFAULT;
-      for (TreeStructureProvider provider : providers) {
-        ProgressManager.checkCanceled();
-        try {
-          //noinspection unchecked
-//          elements = provider.modify(treeNode, (Collection<AbstractTreeNode2<?>>)elements, settings); //todo bookmark
-//          if (elements.contains(null)) {
-//            LOG.error("provider creates null child: " + provider);
-//          }
-        }
-        catch (IndexNotReadyException e) {
-          LOG.debug("TreeStructureProvider.modify requires indices", e);
-          throw new ProcessCanceledException(e);
-        }
-        catch (ProcessCanceledException e) {
-          throw e;
-        }
-        catch (Exception e) {
-          LOG.error(e);
-        }
-      }
     }
     elements.forEach(node -> node.setParent(treeNode));
     return ArrayUtil.toObjectArray(elements);
@@ -90,17 +60,6 @@ public abstract class AbstractTreeStructureBase2 extends AbstractTreeStructure {
 
   @Nullable
   public Object getDataFromProviders(@NotNull List<AbstractTreeNod2<?>> selectedNodes, @NotNull String dataId) {
-    List<TreeStructureProvider> providers = getProvidersDumbAware();
-    if (!providers.isEmpty()) {
-      for (TreeStructureProvider treeStructureProvider : providers) {
-//        Uni.INSTANCE.getLog().debug("providers: " + providers);
-        //todo bookmark providers
-//        final Object fromProvider = treeStructureProvider.getData(selectedNodes, dataId);
-//        if (fromProvider != null) {
-//          return fromProvider;
-//        }
-      }
-    }
     return null;
   }
 

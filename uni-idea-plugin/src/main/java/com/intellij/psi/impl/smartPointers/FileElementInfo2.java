@@ -20,7 +20,7 @@ import com.intellij.psi.impl.smartPointers.SmartPointerManagerImpl;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-class FileElementInfo2 extends SmartPointerElementInfo {
+class FileElementInfo2 extends SmartPointerElementInf2 {
   @NotNull
   private final VirtualFile myVirtualFile;
   @NotNull
@@ -57,7 +57,7 @@ class FileElementInfo2 extends SmartPointerElementInfo {
   }
 
   @Override
-  boolean pointsToTheSameElementAs(@NotNull SmartPointerElementInfo other,
+  boolean pointsToTheSameElementAs(@NotNull SmartPointerElementInf2 other,
                                    @NotNull SmartPointerManagerImpl manager) {
     return other instanceof FileElementInfo2 && Comparing.equal(myVirtualFile, ((FileElementInfo2)other).myVirtualFile);
   }

@@ -17,6 +17,7 @@ import ru.tutu.idea.file.ConfUniFiles
 
 object Uni : Disposable {
   val USE_FILE_TREE_PROVIDER = false
+  @JvmStatic
   val log = Log
   val buildConfig = BuildConfig
   var selectedFile: VirtualFile? = null
