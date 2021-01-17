@@ -11,7 +11,6 @@ import java.util.Arrays;
 import java.util.List;
 
 public abstract class ProjectAbstractTreeStructureBase2 extends AbstractTreeStructureBase2 {
-  private List<TreeStructureProvider> myProviders;
 
   protected ProjectAbstractTreeStructureBase2(Project project) {
     super(project);
@@ -19,10 +18,7 @@ public abstract class ProjectAbstractTreeStructureBase2 extends AbstractTreeStru
 
   @Override
   public List<TreeStructureProvider> getProviders() {
-    if (myProviders == null) {
-      return TreeStructureProvider.EP.getExtensions(myProject);
-    }
-    return myProviders;
+    return TreeStructureProvider.EP.getExtensions(myProject);
   }
 
 }

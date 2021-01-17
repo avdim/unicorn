@@ -257,11 +257,6 @@ public abstract class AbstractPsiBasedNode2<Value> extends ProjectViewNode2B<Val
     return item != null && item.canNavigateToSource();
   }
 
-  @Nullable
-  protected String calcTooltip() {
-    return null;
-  }
-
   @Override
   public boolean validate() {
     final PsiElement psiElement = extractPsiFromValue();
