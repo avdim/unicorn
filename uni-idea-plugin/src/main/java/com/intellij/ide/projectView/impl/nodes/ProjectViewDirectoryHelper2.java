@@ -56,11 +56,6 @@ public class ProjectViewDirectoryHelper2 {
     myIndex = index;
   }
 
-  public Project getProject() {
-    return myProject;
-  }
-
-
   public boolean skipDirectory() {
     return true;
   }

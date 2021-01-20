@@ -16,9 +16,4 @@ public abstract class ProjectAbstractTreeStructureBase2 extends AbstractTreeStru
     super(project);
   }
 
-  @Override
-  public List<TreeStructureProvider> getProviders() {
-    return TreeStructureProvider.EP.getExtensions(myProject);
-  }
-
 }

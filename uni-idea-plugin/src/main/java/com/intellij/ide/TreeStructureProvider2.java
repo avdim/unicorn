@@ -21,9 +21,6 @@ import java.util.Collection;
  */
 public interface TreeStructureProvider2 {
 
-  /**
-   * @deprecated Use {@link #EP}
-   */
   @Deprecated
   ExtensionPointName<TreeStructureProvider2> EP_NAME = ExtensionPointName.create("com.intellij.treeStructureProvider");
 

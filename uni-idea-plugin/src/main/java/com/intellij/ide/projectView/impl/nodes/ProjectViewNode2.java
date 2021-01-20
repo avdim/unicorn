@@ -3,33 +3,26 @@ package com.intellij.ide.projectView.impl.nodes;
 
 import com.intellij.ide.projectView.RootsProvider;
 import com.intellij.ide.projectView.SettingsProvider;
-import com.intellij.ide.projectView.TreeStructureProvider;
 import com.intellij.ide.projectView.ViewSettings;
 
 import com.intellij.openapi.diagnostic.Logger;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.project.ProjectManager;
 import com.intellij.openapi.util.Comparing;
-import com.intellij.openapi.util.Condition;
 import com.intellij.openapi.util.NlsContexts;
 import com.intellij.openapi.util.registry.Registry;
 import com.intellij.openapi.vfs.VfsUtilCore;
 import com.intellij.openapi.vfs.VirtualFile;
 import com.intellij.problems.WolfTheProblemSolver;
 import com.intellij.psi.PsiElement;
-import com.intellij.psi.PsiFile;
 import com.intellij.psi.PsiFileSystemItem;
 import com.intellij.psi.impl.smartPointers.AbstractTreeNod2;
 import com.intellij.psi.util.PsiUtilCore;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import java.lang.reflect.Constructor;
-import java.lang.reflect.InvocationTargetException;
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
-import java.util.List;
 
 /**
  * A node in the project view tree.
@@ -42,7 +35,6 @@ public abstract class ProjectViewNode2<Value> extends AbstractTreeNod2<Value> im
   protected static final Logger LOG = Logger.getInstance(ProjectViewNode2.class);
 
   private final ViewSettings mySettings;
-  private boolean myValidating;
 
   /**
    * Creates an instance of the project view node.
@@ -78,40 +70,6 @@ public abstract class ProjectViewNode2<Value> extends AbstractTreeNod2<Value> im
   @Override
   public final ViewSettings getSettings() {
     return mySettings;
-  }
-
-  public static List<AbstractTreeNod2<?>> wrap(Collection<?> objects,
-                                               Project project,
-                                               Class<? extends AbstractTreeNod2<?>> nodeClass,
-                                               ViewSettings settings) {
-    try {
-      ArrayList<AbstractTreeNod2<?>> result = new ArrayList<>();
-      for (Object object : objects) {
-        result.add(createTreeNode(nodeClass, project, object, settings));
-      }
-      return result;
-    }
-    catch (Exception e) {
-      LOG.error(e);
-      return new ArrayList<>();
-    }
-  }
-
-  @NotNull
-  public static AbstractTreeNod2<?> createTreeNode(Class<? extends AbstractTreeNod2<?>> nodeClass,
-                                                   Project project,
-                                                   Object value,
-                                                   ViewSettings settings) throws InstantiationException {
-    Object[] parameters = {project, value, settings};
-    for (Constructor<? extends AbstractTreeNod2<?>> constructor : (Constructor<? extends AbstractTreeNod2<?>>[])nodeClass.getConstructors()) {
-      if (constructor.getParameterCount() != 3) continue;
-      try {
-        return constructor.newInstance(parameters);
-      }
-      catch (InstantiationException | InvocationTargetException | IllegalArgumentException | IllegalAccessException ignored) {
-      }
-    }
-    throw new InstantiationException("no constructor found in " + nodeClass);
   }
 
   public boolean someChildContainsFile(final VirtualFile file) {
@@ -188,80 +146,10 @@ public abstract class ProjectViewNode2<Value> extends AbstractTreeNod2<Value> im
     });
   }
 
-  /**
-   * Efficiently checks if there are nodes under the project view node which match the specified condition. Should
-   * return true if it's not possible to perform the check efficiently (for example, if recursive traversal of
-   * all child nodes is required to check the condition).
-   *
-   * @param condition the condition to check the nodes.
-   */
-  public boolean canHaveChildrenMatching(Condition<? super PsiFile> condition) {
-    return true;
-  }
-
   @Nullable
   @NlsContexts.PopupTitle
   public String getTitle() {
     return null;
-  }
-
-  public boolean isSortByFirstChild() {
-    return false;
-  }
-
-  public int getTypeSortWeight(boolean sortByType) {
-    return 0;
-  }
-
-  /**
-   * When nodes are sorted by type all objects with same weigh will be sorted using
-   * some common algorithm (e.g alpha comparator). This method allows to perform custom
-   * sorting for such objects. And default comparison will be applied only if nodes are equal
-   * from custom comparator's point of view. Also comparison will be applied only if both objects
-   * have not null comparable keys.
-   * @return Comparable object.
-   */
-  @Nullable
-  public Comparable getTypeSortKey() {
-    return null;
-  }
-
-  /**
-   * When nodes aren't sorted by type all objects with same weigh will be sorted using
-   * some common algorithm (e.g alpha comparator). This method allows to perform custom
-   * sorting for such objects. And default comparison will be applied only if nodes are equal
-   * from custom comparator's point of view. Also comparison will be applied only if both objects
-   * have not null comparable keys.
-   * @return Comparable object.
-   */
-  @Nullable
-  public Comparable getSortKey() {
-    return null;
-  }
-
-  @Nullable
-  public Comparable getManualOrderKey() {
-    return null;
-  }
-
-  @Nullable
-  public String getQualifiedNameSortKey() {
-    return null;
-  }
-
-  public boolean shouldDrillDownOnEmptyElement() {
-    return false;
-  }
-
-  public boolean validate() {
-    setValidating(true);
-    try {
-      update();
-    }
-    finally {
-      setValidating(false);
-    }
-    return getValue() != null;
   }
 
   @Override
@@ -274,11 +162,7 @@ public abstract class ProjectViewNode2<Value> extends AbstractTreeNod2<Value> im
     return !isValidating();
   }
 
-  private void setValidating(boolean validating) {
-    myValidating = validating;
-  }
-
   public boolean isValidating() {
-    return myValidating;
+    return false;
   }
 }
