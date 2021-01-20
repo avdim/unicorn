@@ -68,11 +68,6 @@ public class AbstractTreeBuilder2 implements Disposable {
     if (ui != null) ui.userScrollTo(element, onDone == null ? null : new UserRunnable(onDone));
   }
 
-  public final void select(final Object element) {
-    AbstractTreeUi2 ui = getUi();
-    if (ui != null) ui.userSelect(new Object[]{element}, null, false, true);
-  }
-
   public final void select(final Object element, @Nullable final Runnable onDone) {
     AbstractTreeUi2 ui = getUi();
     if (ui != null) ui.userSelect(new Object[]{element}, new UserRunnable(onDone), false, true);
@@ -81,16 +76,6 @@ public class AbstractTreeBuilder2 implements Disposable {
   public final void select(final Object element, @Nullable final Runnable onDone, boolean addToSelection) {
     AbstractTreeUi2 ui = getUi();
     if (ui != null) ui.userSelect(new Object[]{element}, new UserRunnable(onDone), addToSelection, true);
-  }
-
-  public final void select(final Object[] elements, @Nullable final Runnable onDone) {
-    AbstractTreeUi2 ui = getUi();
-    if (ui != null) ui.userSelect(elements, new UserRunnable(onDone), false, true);
-  }
-
-  public final void select(final Object[] elements, @Nullable final Runnable onDone, boolean addToSelection) {
-    AbstractTreeUi2 ui = getUi();
-    if (ui != null) ui.userSelect(elements, new UserRunnable(onDone), addToSelection, true);
   }
 
   public final void expand(Object element, @Nullable Runnable onDone) {
@@ -150,10 +135,6 @@ public class AbstractTreeBuilder2 implements Disposable {
   protected boolean validateNode(@NotNull Object child) {
     AbstractTreeStructure structure = getTreeStructure();
     return structure != null && structure.isValid(child);
-  }
-
-  protected boolean isDisposeOnCollapsing() {
-    return true;
   }
 
   public final JTree getTree() {
@@ -349,10 +330,6 @@ public class AbstractTreeBuilder2 implements Disposable {
     return ui == null ? ActionCallback.REJECTED : ui.getReady(requestor);
   }
 
-  protected void sortChildren(Comparator<? super TreeNode> nodeComparator, List<? extends TreeNode> children) {
-    children.sort(nodeComparator);
-  }
-
   public void setPassthroughMode(boolean passthrough) {
     AbstractTreeUi2 ui = getUi();
     if (ui != null) ui.setPassthroughMode(passthrough);
@@ -444,16 +421,6 @@ public class AbstractTreeBuilder2 implements Disposable {
     }
 
     return null;
-  }
-
-  public <T> boolean select(@NotNull Class nodeClass, @NotNull TreeVisitor<T> visitor, @Nullable Runnable onDone, boolean addToSelection) {
-    final Object element = accept(nodeClass, visitor);
-    if (element != null) {
-      select(element, onDone, addToSelection);
-      return true;
-    }
-
-    return false;
   }
 
   private static boolean isUnitTestingMode() {

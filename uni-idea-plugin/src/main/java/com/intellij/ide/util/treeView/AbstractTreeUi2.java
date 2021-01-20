@@ -3561,7 +3561,7 @@ public class AbstractTreeUi2 {
     if (descriptor.getChildrenSortingStamp() >= getComparatorStamp() && !forceSort) return;
     if (!children.isEmpty()) {
       try {
-        getBuilder().sortChildren(myNodeComparator, children);
+        children.sort(myNodeComparator);
       }
       catch (IllegalArgumentException exception) {
         StringBuilder sb = new StringBuilder("cannot sort children in ").append(toString());
@@ -4704,7 +4704,7 @@ public class AbstractTreeUi2 {
         pathToSelect = new TreePath(node.getPath());
       }
 
-      if (getBuilder().isDisposeOnCollapsing()) {
+      if (true) {//isDisposeOnCollapsing
         runDone(new TreeRunnable2("AbstractTreeUi.MyExpansionListener.treeCollapsed") {
           @Override
           public void perform() {
