@@ -228,7 +228,7 @@ public class AbstractTreeUpdater2 implements Disposable, Activatable {
         public void perform() {
           try {
             AbstractTreeUi2 ui = myTreeBuilder.getUi();
-            if (ui != null) ui.updateSubtreeNow(eachPass, false);
+            if (ui != null) ui.updateSubtreeNow(eachPass);
           }
           catch (ProcessCanceledException ignored) {
           }
