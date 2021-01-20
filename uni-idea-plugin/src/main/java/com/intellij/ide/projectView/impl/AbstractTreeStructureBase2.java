@@ -11,7 +11,6 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.Collection;
-import java.util.List;
 
 public abstract class AbstractTreeStructureBase2 extends AbstractTreeStructure {
   private static final Logger LOG = Logger.getInstance(AbstractTreeStructureBase2.class);
@@ -53,7 +52,7 @@ public abstract class AbstractTreeStructureBase2 extends AbstractTreeStructure {
   }
 
   @Nullable
-  public Object getDataFromProviders(@NotNull List<AbstractTreeNod2<?>> selectedNodes, @NotNull String dataId) {
+  public Object getDataFromProviders() {
     return null;
   }
 
