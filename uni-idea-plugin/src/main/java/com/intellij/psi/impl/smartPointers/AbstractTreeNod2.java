@@ -4,7 +4,6 @@ package com.intellij.psi.impl.smartPointers;
 import com.intellij.ide.projectView.PresentationData;
 import com.intellij.ide.util.treeView.NodeDescriptor;
 import com.intellij.ide.util.treeView.PresentableNodeDescriptor;
-import com.intellij.ide.util.treeView.TreeAnchorizer;
 import com.intellij.navigation.NavigationItem;
 import com.intellij.openapi.application.ApplicationManager;
 import com.intellij.openapi.application.ReadAction;
@@ -20,15 +19,12 @@ import com.intellij.openapi.vcs.FileStatus;
 import com.intellij.openapi.vcs.FileStatusManager;
 import com.intellij.openapi.vfs.VirtualFile;
 import com.intellij.psi.*;
-import com.intellij.psi.impl.smartPointers.*;
 import com.intellij.psi.util.PsiUtilCore;
 import com.intellij.reference.SoftReference;
 import com.intellij.ui.tree.LeafState;
 import com.unicorn.Uni;
-import org.jetbrains.annotations.NonNls;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-import org.jetbrains.annotations.TestOnly;
 
 import java.awt.*;
 import java.lang.ref.Reference;
@@ -176,14 +172,9 @@ public abstract class AbstractTreeNod2<T> extends PresentableNodeDescriptor<Abst
     boolean debug = !myNodeWrapper && LOG.isDebugEnabled();
     int hash = !debug ? 0 : hashCode();
     myNullValueSet = value == null || setInternalValue(value);
-    recordValueSetTrace(myNullValueSet);
     if (debug && hash != hashCode()) {
       LOG.warn("hash code changed: " + myValue);
     }
-  }
-
-  protected void recordValueSetTrace(boolean nullValue) {
-
   }
 
   /**
@@ -260,7 +251,7 @@ public abstract class AbstractTreeNod2<T> extends PresentableNodeDescriptor<Abst
 
     pointer = new SmartPsiElementPointerImpl2<E>((SmartPointerManagerImpl) SmartPointerManager.getInstance(ProjectManager.getInstance().getDefaultProject() ), element, containingFile, forInjected);
     if (containingFile != null) {
-      trackPointer(pointer, containingFile.getViewProvider().getVirtualFile());
+      trackPointer();
     }
     element.putUserData(CACHED_SMART_POINTER_KEY, new SoftReference<>(pointer));
     return pointer;
@@ -276,7 +267,7 @@ public abstract class AbstractTreeNod2<T> extends PresentableNodeDescriptor<Abst
     }
   }
 
-  private static <E extends PsiElement> void trackPointer(@NotNull SmartPsiElementPointerImpl2<E> pointer, @NotNull VirtualFile containingFile) {
+  private static <E extends PsiElement> void trackPointer() {
 //    Uni.getLog().error("should not use: trackPointer(pointer= " + pointer +  ", containingFile: " + containingFile);
 //    SmartPsiElementPointerImpl2 info = pointer.getElementInfo();
 //    if (!(info instanceof SelfElementInfo)) return;
@@ -292,36 +283,8 @@ public abstract class AbstractTreeNod2<T> extends PresentableNodeDescriptor<Abst
     return myNullValueSet ? null : myValue;
   }
 
-  @Nullable
-  @TestOnly
-  public String toTestString(@Nullable Queryable.PrintInfo printInfo) {
-    if (getValue() instanceof Queryable) {
-      String text = Queryable.Util.print((Queryable)getValue(), printInfo, this);
-      if (text != null) return text;
-    }
-
-    return getTestPresentation();
-  }
-
   @Override
   public void apply(@NotNull Map<String, String> info) {
-  }
-
-  /**
-   * @deprecated use {@link #toTestString(Queryable.PrintInfo)} instead
-   */
-  @Deprecated
-  @Nullable
-  @NonNls
-  @TestOnly
-  public String getTestPresentation() {
-    if (myName != null) {
-      return myName;
-    }
-    if (getValue() != null){
-      return getValue().toString();
-    }
-    return null;
   }
 
   public Color getFileStatusColor(final FileStatus status) {

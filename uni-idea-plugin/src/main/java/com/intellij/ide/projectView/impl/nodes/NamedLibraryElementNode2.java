@@ -152,10 +152,4 @@ public class NamedLibraryElementNode2 extends ProjectViewNode2B<NamedLibraryElem
     return ActionsBundle.message("action.LibrarySettings.navigate");
   }
 
-  @SuppressWarnings("deprecation")
-  @Override
-  public String getTestPresentation() {
-    NamedLibraryElement library = getValue();
-    return "Library: " + (library != null ? library.getName() : "(null)");
-  }
 }

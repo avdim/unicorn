@@ -50,13 +50,6 @@ public class AbstractTreeUpdater2 implements Disposable, Activatable {
     Disposer.register(this, uiNotifyConnector);
   }
 
-  /**
-   * @param delay update delay in milliseconds.
-   */
-  public void setDelay(int delay) {
-    myUpdateQueue.setMergingTimeSpan(delay);
-  }
-
   void setPassThroughMode(boolean passThroughMode) {
     myUpdateQueue.setPassThrough(passThroughMode);
   }
@@ -223,7 +216,7 @@ public class AbstractTreeUpdater2 implements Disposable, Activatable {
 
       final TreeUpdatePass eachPass = myNodeQueue.removeFirst();
 
-      beforeUpdate(eachPass).doWhenDone(new TreeRunnable2("AbstractTreeUpdater.performUpdate") {
+      beforeUpdate().doWhenDone(new TreeRunnable2("AbstractTreeUpdater.performUpdate") {
         @Override
         public void perform() {
           try {
@@ -270,7 +263,7 @@ public class AbstractTreeUpdater2 implements Disposable, Activatable {
     return myTreeBuilder.getUi() == null;
   }
 
-  protected ActionCallback beforeUpdate(TreeUpdatePass pass) {
+  protected ActionCallback beforeUpdate() {
     return ActionCallback.DONE;
   }
 
@@ -361,14 +354,6 @@ public class AbstractTreeUpdater2 implements Disposable, Activatable {
         request.reject();
       }
     });
-  }
-
-  public synchronized void requestRelease() {
-    myReleaseRequested = true;
-
-    reset();
-
-    myUpdateQueue.deactivate();
   }
 
   public void reset() {

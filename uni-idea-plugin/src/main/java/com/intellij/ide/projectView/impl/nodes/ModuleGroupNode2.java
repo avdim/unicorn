@@ -122,11 +122,6 @@ public abstract class ModuleGroupNode2 extends ProjectViewNode2B<ModuleGroup> im
   }
 
   @Override
-  public String getTestPresentation() {
-    return "Group: " + getPresentableName();
-  }
-
-  @Override
   public String getToolTip() {
     return IdeBundle.message("tooltip.module.group");
   }

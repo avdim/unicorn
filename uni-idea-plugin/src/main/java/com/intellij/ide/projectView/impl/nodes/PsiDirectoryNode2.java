@@ -181,12 +181,6 @@ public class PsiDirectoryNode2 extends BasePsiNode2<PsiDirectory> implements Nav
     return ProjectViewDirectoryHelper2.getInstance(myProject).getDirectoryChildren(getValue(), getSettings(), true, getFilter());
   }
 
-  @Override
-  @SuppressWarnings("deprecation")
-  public String getTestPresentation() {
-    return "PsiDirectory: " + getValue().getName();
-  }
-
   public boolean isFQNameShown() {
     return ProjectViewDirectoryHelper.getInstance(getProject()).isShowFQName(getSettings(), getParentValue(), getValue());
   }

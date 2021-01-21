@@ -436,10 +436,6 @@ public class AbstractTreeUi2 {
     });
   }
 
-  public ProgressIndicator getProgress() {
-    return myProgress;
-  }
-
   private void releaseNow() {
     try (LockToken ignored = acquireLock()) {
       myTree.removeTreeExpansionListener(myExpansionListener);
@@ -3501,10 +3497,6 @@ public class AbstractTreeUi2 {
     return myRootNodeWasQueuedToInitialize && myRootNodeInitialized;
   }
 
-  public void select(final Object @NotNull [] elements, @Nullable final Runnable onDone) {
-    select(elements, onDone, false);
-  }
-
   public void select(final Object @NotNull [] elements, @Nullable final Runnable onDone, boolean addToSelection) {
     select(elements, onDone, addToSelection, false);
   }
@@ -3736,10 +3728,6 @@ public class AbstractTreeUi2 {
         }
       }, deferred, i == 0, scrollToVisible, canSmartExpand);
     }
-  }
-
-  public void select(@Nullable Object element, @Nullable final Runnable onDone) {
-    select(element, onDone, false);
   }
 
   public void select(@Nullable Object element, @Nullable final Runnable onDone, boolean addToSelection) {

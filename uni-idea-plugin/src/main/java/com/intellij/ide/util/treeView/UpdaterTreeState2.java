@@ -360,8 +360,4 @@ public class UpdaterTreeState2 {
     }
   }
 
-  public void removeFromSelection(Object element) {
-    myToSelect.remove(element);
-    myAdjustedSelection.remove(element);
-  }
 }

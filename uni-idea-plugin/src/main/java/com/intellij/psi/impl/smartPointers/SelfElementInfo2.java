@@ -59,16 +59,6 @@ public class SelfElementInfo2 extends SmartPointerElementInf2 {
     }
   }
 
-  boolean updateRangeToPsi(@NotNull Segment pointerRange, PsiElement cachedElement) {
-    Pair<Identikit.ByAnchor, PsiElement> pair = findAnchor(cachedElement);
-    TextRange range = (pair != null ? pair.second : cachedElement).getTextRange();
-    if (range != null && range.intersects(pointerRange)) {
-      switchTo(cachedElement, pair);
-      return true;
-    }
-    return false;
-  }
-
 
   void setRange(@Nullable Segment range) {
     if (range == null) {
@@ -83,18 +73,6 @@ public class SelfElementInfo2 extends SmartPointerElementInf2 {
 
   boolean hasRange() {
     return myStartOffset >= 0;
-  }
-
-  int getPsiStartOffset() {
-    return myStartOffset;
-  }
-
-  int getPsiEndOffset() {
-    return myEndOffset;
-  }
-
-  boolean isGreedy() {
-    return myForInjected || myIdentikit.isForPsiFile();
   }
 
   @Override
@@ -153,18 +131,6 @@ public class SelfElementInfo2 extends SmartPointerElementInf2 {
       }
 
       return null;
-    });
-  }
-
-  @Nullable
-  public static PsiDirectory restoreDirectoryFromVirtual(@NotNull VirtualFile virtualFile, @NotNull final Project project) {
-    return ReadAction.compute(() -> {
-      if (project.isDisposed()) return null;
-      VirtualFile child = restoreVFile(virtualFile);
-      if (child == null || !child.isValid()) return null;
-      PsiDirectory file = PsiManager.getInstance(project).findDirectory(child);
-      if (file == null || !file.isValid()) return null;
-      return file;
     });
   }
 
@@ -236,17 +202,4 @@ public class SelfElementInfo2 extends SmartPointerElementInf2 {
     return "psi:range=" + calcPsiRange() + ",type=" + myIdentikit;
   }
 
-  public static Segment calcActualRangeAfterDocumentEvents(@NotNull PsiFile containingFile, @NotNull Document document, @NotNull Segment segment, boolean isSegmentGreedy) {
-    Project project = containingFile.getProject();
-    PsiDocumentManagerBase documentManager = (PsiDocumentManagerBase)PsiDocumentManager.getInstance(project);
-    List<DocumentEvent> events = documentManager.getEventsSinceCommit(document);
-    if (!events.isEmpty()) {
-      SmartPointerManagerImpl pointerManager = (SmartPointerManagerImpl)SmartPointerManager.getInstance(project);
-      SmartPointerTracker tracker = pointerManager.getTracker(containingFile.getViewProvider().getVirtualFile());
-      if (tracker != null) {
-        return tracker.getUpdatedRange(containingFile, segment, isSegmentGreedy, (FrozenDocument)documentManager.getLastCommittedDocument(document), events);
-      }
-    }
-    return null;
-  }
 }

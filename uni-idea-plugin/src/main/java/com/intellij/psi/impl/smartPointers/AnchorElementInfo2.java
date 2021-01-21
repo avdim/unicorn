@@ -111,11 +111,6 @@ class AnchorElementInfo2 extends SelfElementInfo2 {
     }
   }
 
-  void switchToTreeRange(@NotNull PsiElement element) {
-    switchToAnchor(element);
-    myStubElementTypeAndId = pack(-1, null);
-  }
-
   @Override
   public Segment getRange(@NotNull SmartPointerManagerImpl manager) {
     if (getStubId() != -1) {
