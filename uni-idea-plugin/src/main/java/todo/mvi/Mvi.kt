@@ -4,7 +4,7 @@ import com.unicorn.plugin.mvi.Column
 import com.unicorn.plugin.mvi.UniWindowState
 import ru.avdim.mvi.Store
 import ru.avdim.mvi.createStore
-import ru.tutu.idea.file.ConfUniFiles
+import com.intellij.my.file.ConfUniFiles
 
 inline fun <T> Collection<T>.transformI(index: Int, lambda: (T) -> T): List<T> =
   mapIndexed { i, element ->

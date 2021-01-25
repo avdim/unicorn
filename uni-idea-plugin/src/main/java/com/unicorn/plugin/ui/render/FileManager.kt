@@ -6,7 +6,7 @@ import com.intellij.openapi.vfs.LocalFileSystem
 import com.intellij.openapi.vfs.VirtualFile
 import com.intellij.ui.layout.LayoutBuilder
 import com.unicorn.plugin.performActionById
-import ru.tutu.idea.file.uniFiles
+import com.intellij.my.file.uniFiles
 import com.unicorn.plugin.mvi.Column
 import com.unicorn.plugin.mvi.UniWindowState
 import todo.mvi.Intent

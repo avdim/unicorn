@@ -1,4 +1,4 @@
-package ru.tutu.idea.file
+package com.intellij.my.file
 
 import com.intellij.openapi.vfs.VirtualFile
 import com.unicorn.plugin.virtualFile

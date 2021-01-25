@@ -1,6 +1,6 @@
 @file:Suppress("UnstableApiUsage")//todo remove
 
-package ru.tutu.idea.file
+package com.intellij.my.file
 
 import com.intellij.history.LocalHistory
 import com.intellij.ide.*

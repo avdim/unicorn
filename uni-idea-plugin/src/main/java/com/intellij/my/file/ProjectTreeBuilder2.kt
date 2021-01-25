@@ -1,9 +1,8 @@
 // Copyright 2000-2020 JetBrains s.r.o. Use of this source code is governed by the Apache 2.0 license that can be found in the LICENSE file.
-package ru.tutu.idea.file
+package com.intellij.my.file
 
 import javax.swing.JTree
 import javax.swing.tree.DefaultTreeModel
-import com.intellij.ide.projectView.impl.ProjectAbstractTreeStructureBase
 import com.intellij.openapi.vcs.FileStatusListener
 import com.intellij.openapi.vfs.VirtualFile
 import com.intellij.util.Alarm
@@ -14,21 +13,17 @@ import com.intellij.openapi.roots.ModuleRootListener
 import com.intellij.ProjectTopics
 import com.intellij.openapi.roots.ModuleRootEvent
 import com.intellij.ide.bookmarks.BookmarksListener
-import com.intellij.ide.projectView.impl.AbstractProjectTreeStructure
 import com.intellij.openapi.vcs.FileStatusManager
 import com.intellij.openapi.project.ProjectManager
 import com.intellij.ide.CopyPasteUtil
 import com.intellij.ide.projectView.impl.ProjectAbstractTreeStructureBase2
 import com.intellij.ide.scratch.ScratchUtil
 import com.intellij.openapi.fileTypes.FileTypes
-import com.intellij.openapi.project.Project
 import com.intellij.openapi.vfs.AsyncFileListener
 import com.intellij.openapi.vfs.VirtualFileManager
 import com.intellij.openapi.vfs.VirtualFileManagerListener
-import com.intellij.openapi.vfs.newvfs.events.VFileEvent
 import com.intellij.problems.ProblemListener
 import com.intellij.psi.*
-import com.intellij.psi.util.PsiModificationTracker
 import com.intellij.util.ObjectUtils
 import gnu.trove.THashSet
 

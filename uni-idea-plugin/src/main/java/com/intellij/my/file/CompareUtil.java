@@ -1,4 +1,4 @@
-package ru.tutu.idea.file;
+package com.intellij.my.file;
 
 import static com.intellij.openapi.util.text.StringUtil.naturalCompare;
 

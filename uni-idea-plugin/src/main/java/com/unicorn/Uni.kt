@@ -13,7 +13,7 @@ import com.unicorn.plugin.action.Actions
 import com.unicorn.plugin.configureIDE
 import com.unicorn.plugin.getToolWindow
 import kotlinx.coroutines.*
-import ru.tutu.idea.file.ConfUniFiles
+import com.intellij.my.file.ConfUniFiles
 
 object Uni : Disposable {
   val USE_FILE_TREE_PROVIDER = false

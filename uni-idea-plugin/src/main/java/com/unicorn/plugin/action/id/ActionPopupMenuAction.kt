@@ -6,7 +6,7 @@ import com.intellij.openapi.actionSystem.AnActionEvent
 import com.intellij.openapi.project.DumbAware
 import com.unicorn.plugin.toolWindowAction
 import com.unicorn.plugin.ui.showDialog
-import ru.tutu.idea.file.ConfUniFiles
+import com.intellij.my.file.ConfUniFiles
 
 class ActionPopupMenuAction : UniAction(), DumbAware {
 

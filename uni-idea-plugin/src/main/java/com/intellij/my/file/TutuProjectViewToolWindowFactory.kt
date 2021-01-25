@@ -1,4 +1,4 @@
-package ru.tutu.idea.file
+package com.intellij.my.file
 
 import com.intellij.openapi.application.ex.ApplicationInfoEx
 import com.intellij.openapi.project.DumbAware

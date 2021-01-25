@@ -1,4 +1,4 @@
-package ru.tutu.idea.file
+package com.intellij.my.file
 
 import com.intellij.ide.projectView.PresentationData
 import com.intellij.ide.projectView.ProjectViewNode

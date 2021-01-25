@@ -91,7 +91,7 @@
   <!--todo:-->
   <extensions defaultExtensionNs="com.intellij">
     <toolWindow id="uni-file-manager" anchor="right" secondary="false"
-                factoryClass="ru.tutu.idea.file.TutuProjectViewToolWindowFactory"/>
+                factoryClass="com.intellij.my.file.TutuProjectViewToolWindowFactory"/>
     <appStarter implementation="todo.AppStarter"/>
   </extensions>
 

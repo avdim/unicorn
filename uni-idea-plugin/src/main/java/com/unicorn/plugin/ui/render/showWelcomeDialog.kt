@@ -10,8 +10,8 @@ import com.intellij.ui.layout.LayoutBuilder
 import com.unicorn.BuildConfig
 import com.unicorn.Uni
 import com.unicorn.plugin.ui.showPanelDialog
-import ru.tutu.idea.file.ConfUniFiles
-import ru.tutu.idea.file.uniFiles
+import com.intellij.my.file.ConfUniFiles
+import com.intellij.my.file.uniFiles
 import java.io.File
 
 val propertyGraph = PropertyGraph()

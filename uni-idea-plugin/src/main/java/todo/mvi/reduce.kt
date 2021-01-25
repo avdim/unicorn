@@ -1,9 +1,5 @@
 package todo.mvi
 
-import ru.tutu.idea.file.ConfUniFiles
-import com.unicorn.plugin.mvi.Column
-import com.unicorn.plugin.mvi.UniWindowState
-
 sealed class Intent {
   class EditPath(val col: Int, val row: Int, val path: String) : Intent()
   class AddPath(val col: Int) : Intent()
