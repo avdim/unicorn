@@ -188,29 +188,10 @@ public abstract class ProjectViewNode2B<Value> extends AbstractTreeNod2<Value> i
     });
   }
 
-  /**
-   * Efficiently checks if there are nodes under the project view node which match the specified condition. Should
-   * return true if it's not possible to perform the check efficiently (for example, if recursive traversal of
-   * all child nodes is required to check the condition).
-   *
-   * @param condition the condition to check the nodes.
-   */
-  public boolean canHaveChildrenMatching(Condition<? super PsiFile> condition) {
-    return true;
-  }
-
   @Nullable
   @NlsContexts.PopupTitle
   public String getTitle() {
     return null;
-  }
-
-  public boolean isSortByFirstChild() {
-    return false;
-  }
-
-  public int getTypeSortWeight(boolean sortByType) {
-    return 0;
   }
 
   /**

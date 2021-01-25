@@ -16,7 +16,6 @@
 package com.intellij.ide.projectView.impl.nodes;
 
 import com.intellij.ide.projectView.PresentationData;
-import com.intellij.ide.projectView.ProjectViewNode;
 import com.intellij.ide.projectView.ViewSettings;
 import com.intellij.idea.ActionsBundle;
 import com.intellij.openapi.module.Module;

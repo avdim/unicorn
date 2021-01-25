@@ -132,11 +132,6 @@ public abstract class ModuleGroupNode2 extends ProjectViewNode2B<ModuleGroup> im
   }
 
   @Override
-  public int getTypeSortWeight(final boolean sortByType) {
-    return 1;
-  }
-
-  @Override
   public boolean canDrop(TreeNode @NotNull [] sourceNodes) {
     final List<Module> modules = extractModules(sourceNodes);
     return !modules.isEmpty();

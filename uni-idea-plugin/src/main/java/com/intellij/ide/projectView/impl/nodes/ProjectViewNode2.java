@@ -146,12 +146,6 @@ public abstract class ProjectViewNode2<Value> extends AbstractTreeNod2<Value> im
     });
   }
 
-  @Nullable
-  @NlsContexts.PopupTitle
-  public String getTitle() {
-    return null;
-  }
-
   @Override
   protected boolean shouldPostprocess() {
     return !isValidating();

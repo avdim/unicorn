@@ -44,11 +44,6 @@ public final class ProjectViewUnloadedModuleNode2 extends ProjectViewNode2B<Unlo
   }
 
   @Override
-  public int getTypeSortWeight(final boolean sortByType) {
-    return 2;
-  }
-
-  @Override
   public void update(@NotNull PresentationData presentation) {
     UnloadedModuleDescription module = getValue();
     if (module == null) {

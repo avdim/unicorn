@@ -358,11 +358,6 @@ public class PsiDirectoryNode2 extends BasePsiNode2<PsiDirectory> implements Nav
   }
 
   @Override
-  public int getTypeSortWeight(final boolean sortByType) {
-    return 3;
-  }
-
-  @Override
   public boolean shouldDrillDownOnEmptyElement() {
     return true;
   }
