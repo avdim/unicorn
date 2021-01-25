@@ -99,8 +99,8 @@ private fun _createUniFilesComponent(
     }
   val treeStructure: ProjectAbstractTreeStructureBase2 =
     object : ProjectTreeStructure2(project, FILES_PANE_ID), ProjectViewSettings {
-      override fun createRoot(settings: ViewSettings): AbstractTreeNod2<*> =
-        object : ProjectViewProjectNode2(settings) {
+      override fun createRoot(): AbstractTreeNod2<*> =
+        object : ProjectViewProjectNode2() {
           override fun canRepresent(element: Any): Boolean = true
           override fun getChildren(): Collection<AbstractTreeNod2<*>> {
             return uniFilesRootNodes(project, settings, rootDirs = rootPaths)

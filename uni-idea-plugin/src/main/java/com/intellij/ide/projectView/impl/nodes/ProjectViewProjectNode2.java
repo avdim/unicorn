@@ -22,8 +22,8 @@ import org.jetbrains.annotations.NotNull;
 import java.util.*;
 
 public class ProjectViewProjectNode2 extends AbstractProjectNode2 {
-  public ProjectViewProjectNode2(ViewSettings viewSettings) {
-    super(viewSettings);
+  public ProjectViewProjectNode2() {
+    super();
   }
 
   @Override

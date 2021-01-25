@@ -13,16 +13,16 @@ import com.intellij.openapi.util.ActionCallback;
 import com.intellij.psi.PsiDocumentManager;
 import org.jetbrains.annotations.NotNull;
 
-public abstract class AbstractProjectTreeStructure2 extends ProjectAbstractTreeStructureBase2 implements ViewSettings {
+public abstract class AbstractProjectTreeStructure2 extends ProjectAbstractTreeStructureBase2 {
   private final AbstractTreeNod2 myRoot;
 
   public AbstractProjectTreeStructure2(@NotNull Project project) {
     super(project);
-    myRoot = createRoot(this);
+    myRoot = createRoot();
   }
 
-  protected AbstractTreeNod2 createRoot(@NotNull ViewSettings settings) {
-    return new ProjectViewProjectNode2(this);
+  protected AbstractTreeNod2 createRoot() {
+    return new ProjectViewProjectNode2();
   }
 
   @NotNull

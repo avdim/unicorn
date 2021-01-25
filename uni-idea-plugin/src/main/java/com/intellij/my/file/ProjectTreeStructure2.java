@@ -17,49 +17,4 @@ public abstract class ProjectTreeStructure2 extends AbstractProjectTreeStructure
     super(project);
     myId = ID;
   }
-
-  @Override
-  public boolean isFlattenPackages() {
-    return ProjectView.getInstance(myProject).isFlattenPackages(myId);
-  }
-
-  @Override
-  public boolean isShowMembers() {
-    return ProjectView.getInstance(myProject).isShowMembers(myId);
-  }
-
-  @Override
-  public boolean isHideEmptyMiddlePackages() {
-    return ProjectView.getInstance(myProject).isHideEmptyMiddlePackages(myId);
-  }
-
-  @Override
-  public boolean isCompactDirectories() {
-    return ProjectView.getInstance(myProject).isCompactDirectories(myId);
-  }
-
-  @Override
-  public boolean isAbbreviatePackageNames() {
-    return ProjectView.getInstance(myProject).isAbbreviatePackageNames(myId);
-  }
-
-  @Override
-  public boolean isShowLibraryContents() {
-    return ProjectView.getInstance(myProject).isShowLibraryContents(myId);
-  }
-
-  @Override
-  public boolean isShowModules() {
-    return ProjectView.getInstance(myProject).isShowModules(myId);
-  }
-
-  @Override
-  public boolean isFlattenModules() {
-    return ProjectView.getInstance(myProject).isFlattenModules(myId);
-  }
-
-  @Override
-  public boolean isShowURL() {
-    return ProjectView.getInstance(myProject).isShowURL(myId);
-  }
 }

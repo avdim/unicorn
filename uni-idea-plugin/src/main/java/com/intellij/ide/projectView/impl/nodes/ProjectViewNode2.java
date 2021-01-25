@@ -34,18 +34,60 @@ public abstract class ProjectViewNode2<Value> extends AbstractTreeNod2<Value> im
 
   protected static final Logger LOG = Logger.getInstance(ProjectViewNode2.class);
 
-  private final ViewSettings mySettings;
+  private static final ViewSettings mySettings = new ViewSettings() {
+    @Override
+    public boolean isFlattenPackages() {
+      return false;
+    }
+
+    @Override
+    public boolean isShowMembers() {
+      return false;
+    }
+
+    @Override
+    public boolean isHideEmptyMiddlePackages() {
+      return false;
+    }
+
+    @Override
+    public boolean isCompactDirectories() {
+      return false;
+    }
+
+    @Override
+    public boolean isAbbreviatePackageNames() {
+      return false;
+    }
+
+    @Override
+    public boolean isShowLibraryContents() {
+      return true;
+    }
+
+    @Override
+    public boolean isShowModules() {
+      return false;
+    }
+
+    @Override
+    public boolean isFlattenModules() {
+      return false;
+    }
+
+    @Override
+    public boolean isShowURL() {
+      return true;
+    }
+  };
 
   /**
    * Creates an instance of the project view node.
    *
    * @param value        the object (for example, a PSI element) represented by the project view node
-   * @param viewSettings the settings of the project view.
    */
-  protected ProjectViewNode2(@NotNull Value value, ViewSettings viewSettings) {
+  protected ProjectViewNode2(@NotNull Value value) {
     super(ProjectManager.getInstance().getDefaultProject(), value);
-
-    mySettings = viewSettings;
   }
 
   /**
