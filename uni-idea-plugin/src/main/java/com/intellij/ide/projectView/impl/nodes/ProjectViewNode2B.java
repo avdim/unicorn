@@ -152,17 +152,6 @@ public abstract class ProjectViewNode2B<Value> extends AbstractTreeNod2<Value> i
     return null;
   }
 
-  public boolean validate() {
-    setValidating(true);
-    try {
-      update();
-    }
-    finally {
-      setValidating(false);
-    }
-    return getValue() != null;
-  }
-
   @Override
   protected boolean shouldPostprocess() {
     return !isValidating();
@@ -171,10 +160,6 @@ public abstract class ProjectViewNode2B<Value> extends AbstractTreeNod2<Value> i
   @Override
   protected boolean shouldApply() {
     return !isValidating();
-  }
-
-  private void setValidating(boolean validating) {
-    myValidating = validating;
   }
 
   public boolean isValidating() {

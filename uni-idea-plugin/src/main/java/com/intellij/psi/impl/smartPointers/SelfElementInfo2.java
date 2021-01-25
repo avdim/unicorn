@@ -5,7 +5,6 @@ import com.intellij.lang.Language;
 import com.intellij.openapi.application.ReadAction;
 import com.intellij.openapi.editor.Document;
 import com.intellij.openapi.editor.event.DocumentEvent;
-import com.intellij.openapi.editor.impl.FrozenDocument;
 import com.intellij.openapi.fileEditor.FileDocumentManager;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.util.*;
@@ -35,28 +34,6 @@ public class SelfElementInfo2 extends SmartPointerElementInf2 {
 
     myFile = containingFile.getViewProvider().getVirtualFile();
     setRange(range);
-  }
-
-  void switchToAnchor(@NotNull PsiElement element) {
-    switchTo(element, findAnchor(element));
-  }
-
-  @Nullable
-  private Pair<Identikit.ByAnchor, PsiElement> findAnchor(@NotNull PsiElement element) {
-    Language language = myIdentikit.getFileLanguage();
-    if (language == null) return null;
-    return Identikit.withAnchor(element, language);
-  }
-
-  private void switchTo(@NotNull PsiElement element, @Nullable Pair<Identikit.ByAnchor, PsiElement> pair) {
-    if (pair != null) {
-      assert pair.first.hashCode() == myIdentikit.hashCode();
-      myIdentikit = pair.first;
-      setRange(pair.second.getTextRange());
-    }
-    else {
-      setRange(element.getTextRange());
-    }
   }
 
 
@@ -112,11 +89,6 @@ public class SelfElementInfo2 extends SmartPointerElementInf2 {
     Language language = myIdentikit.getFileLanguage();
     if (language == null) return null;
     return restoreFileFromVirtual(getVirtualFile(), manager.getProject(), language);
-  }
-
-  @Override
-  void cleanup() {
-    setRange(null);
   }
 
   @Nullable

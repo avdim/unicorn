@@ -90,11 +90,6 @@ public abstract class ModuleGroupNode2 extends ProjectViewNode2B<ModuleGroup> im
     return false;
   }
 
-  @Override
-  public boolean validate() {
-    return getValue() != null;
-  }
-
   @NotNull
   protected abstract List<Module> getModulesByFile(@NotNull VirtualFile file);
 

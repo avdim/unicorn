@@ -3497,10 +3497,6 @@ public class AbstractTreeUi2 {
     return myRootNodeWasQueuedToInitialize && myRootNodeInitialized;
   }
 
-  public void select(final Object @NotNull [] elements, @Nullable final Runnable onDone, boolean addToSelection) {
-    select(elements, onDone, addToSelection, false);
-  }
-
   public void select(final Object @NotNull [] elements, @Nullable final Runnable onDone, boolean addToSelection, boolean deferred) {
     _select(elements, onDone, addToSelection, true, false, true, deferred, false, false);
   }
@@ -3639,13 +3635,7 @@ public class AbstractTreeUi2 {
   }
 
   private void clearSelection() {
-    boolean mySelectionIsBeingAdjusted = true;
-    try {
-      myTree.clearSelection();
-    }
-    finally {
-      mySelectionIsBeingAdjusted = false;
-    }
+    myTree.clearSelection();
   }
 
   private void restoreSelection(@NotNull Set<Object> selection) {

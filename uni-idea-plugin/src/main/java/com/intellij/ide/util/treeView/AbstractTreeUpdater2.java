@@ -36,7 +36,6 @@ public class AbstractTreeUpdater2 implements Disposable, Activatable {
   private final MergingUpdateQueue myUpdateQueue;
 
   private long myUpdateCount;
-  private boolean myReleaseRequested;
 
   public AbstractTreeUpdater2(@NotNull AbstractTreeBuilder2 treeBuilder) {
     myTreeBuilder = treeBuilder;
@@ -91,8 +90,6 @@ public class AbstractTreeUpdater2 implements Disposable, Activatable {
    */
   @Deprecated
   synchronized void addSubtreeToUpdate(@NotNull TreeUpdatePass toAdd) {
-    if (myReleaseRequested) return;
-
     assert !toAdd.isExpired();
 
     final AbstractTreeUi2 ui = myTreeBuilder.getUi();

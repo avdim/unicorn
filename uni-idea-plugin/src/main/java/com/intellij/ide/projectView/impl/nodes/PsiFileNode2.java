@@ -137,31 +137,6 @@ public class PsiFileNode2 extends BasePsiNode2<PsiFile> implements NavigatableWi
     return true;
   }
 
-  @Nullable
-  public static String extension(@Nullable PsiFile file) {
-    if (file != null) {
-      VirtualFile vFile = file.getVirtualFile();
-      if (vFile != null) {
-        return vFile.getFileType().getDefaultExtension();
-      }
-    }
-
-    return null;
-  }
-
-  public static class ExtensionSortKey implements Comparable<ExtensionSortKey> {
-    private final String myExtension;
-
-    public ExtensionSortKey(@NotNull String extension) {
-      myExtension = extension;
-    }
-
-    @Override
-    public int compareTo(ExtensionSortKey o) {
-      return o == null ? 0 : myExtension.compareTo(o.myExtension);
-    }
-  }
-
   @Override
   public boolean canRepresent(final Object element) {
     if (super.canRepresent(element)) return true;

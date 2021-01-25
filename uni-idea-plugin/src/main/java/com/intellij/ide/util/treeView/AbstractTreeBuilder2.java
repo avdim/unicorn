@@ -73,11 +73,6 @@ public class AbstractTreeBuilder2 implements Disposable {
     if (ui != null) ui.userSelect(new Object[]{element}, new UserRunnable(onDone), false, true);
   }
 
-  public final void select(final Object element, @Nullable final Runnable onDone, boolean addToSelection) {
-    AbstractTreeUi2 ui = getUi();
-    if (ui != null) ui.userSelect(new Object[]{element}, new UserRunnable(onDone), addToSelection, true);
-  }
-
   public final void expand(Object element, @Nullable Runnable onDone) {
     AbstractTreeUi2 ui = getUi();
     if (ui != null) ui.expand(element, new UserRunnable(onDone));
@@ -393,11 +388,6 @@ public class AbstractTreeBuilder2 implements Disposable {
   public static AbstractTreeBuilder2 getBuilderFor(@NotNull JTree tree) {
     Reference<AbstractTreeBuilder2> ref = (Reference)tree.getClientProperty(TREE_BUILDER);
     return SoftReference.dereference(ref);
-  }
-
-  @Nullable
-  public final <T> Object accept(@NotNull Class<?> nodeClass, @NotNull TreeVisitor<T> visitor) {
-    return accept(nodeClass, getRootElement(), visitor);
   }
 
   @Nullable
