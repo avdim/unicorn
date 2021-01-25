@@ -209,11 +209,6 @@ class InjectedSelfElementInfo2 extends SmartPointerElementInf2 {
     return null;
   }
 
-  @Override
-  void cleanup() {
-    SmartPointerManager.getInstance(getProject()).removePointer(myInjectedFileRangeInHostFile);
-  }
-
   @Nullable
   @Override
   Document getDocumentToSynchronize() {

@@ -37,8 +37,4 @@ public class ProjectViewModuleNode2 extends AbstractModuleNode2 {
     return 10;
   }
 
-  @Override
-  public int getTypeSortWeight(final boolean sortByType) {
-    return 2;
-  }
 }

@@ -16,7 +16,6 @@
 package com.intellij.ide.projectView.impl.nodes;
 
 import com.intellij.ide.projectView.PresentationData;
-import com.intellij.ide.projectView.ProjectViewNode;
 import com.intellij.ide.projectView.ViewSettings;
 import com.intellij.idea.ActionsBundle;
 import com.intellij.openapi.module.Module;
@@ -108,9 +107,4 @@ public abstract class AbstractModuleNode2 extends ProjectViewNode2B<Module> impl
     return module != null && !module.isDisposed() && ProjectSettingsService.getInstance(myProject).canOpenModuleSettings();
   }
 
-  @SuppressWarnings("deprecation")
-  @Override
-  public String getTestPresentation() {
-    return "Module";
-  }
 }

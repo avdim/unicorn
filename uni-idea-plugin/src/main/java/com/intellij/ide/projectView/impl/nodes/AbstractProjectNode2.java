@@ -122,11 +122,6 @@ public abstract class AbstractProjectNode2 extends ProjectViewNode2<Project> {
   }
 
   @Override
-  public String getTestPresentation() {
-    return "Project";
-  }
-
-  @Override
   public boolean contains(@NotNull VirtualFile vFile) {
     assert myProject != null;
     return ProjectViewPane.canBeSelectedInProjectView(myProject, vFile);

@@ -24,14 +24,4 @@ abstract class TreeRunnable2 extends NamedRunnable {
     }
   }
 
-  abstract static class TreeConsumer<T> extends TreeRunnable2 implements Consumer<T> {
-    TreeConsumer(@NotNull String name) {
-      super(name);
-    }
-
-    @Override
-    public final void accept(T t) {
-      run();
-    }
-  }
 }

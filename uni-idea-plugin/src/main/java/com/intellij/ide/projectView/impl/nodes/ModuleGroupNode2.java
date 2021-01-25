@@ -90,11 +90,6 @@ public abstract class ModuleGroupNode2 extends ProjectViewNode2B<ModuleGroup> im
     return false;
   }
 
-  @Override
-  public boolean validate() {
-    return getValue() != null;
-  }
-
   @NotNull
   protected abstract List<Module> getModulesByFile(@NotNull VirtualFile file);
 
@@ -122,11 +117,6 @@ public abstract class ModuleGroupNode2 extends ProjectViewNode2B<ModuleGroup> im
   }
 
   @Override
-  public String getTestPresentation() {
-    return "Group: " + getPresentableName();
-  }
-
-  @Override
   public String getToolTip() {
     return IdeBundle.message("tooltip.module.group");
   }
@@ -134,11 +124,6 @@ public abstract class ModuleGroupNode2 extends ProjectViewNode2B<ModuleGroup> im
   @Override
   public int getWeight() {
     return 0;
-  }
-
-  @Override
-  public int getTypeSortWeight(final boolean sortByType) {
-    return 1;
   }
 
   @Override

@@ -1,11 +1,9 @@
 // Copyright 2000-2020 JetBrains s.r.o. Use of this source code is governed by the Apache 2.0 license that can be found in the LICENSE file.
 package com.intellij.ide.projectView.impl;
 
-import com.intellij.ide.projectView.TreeStructureProvider;
 import com.intellij.ide.util.treeView.AbstractTreeStructure;
 import com.intellij.ide.util.treeView.NodeDescriptor;
 import com.intellij.openapi.diagnostic.Logger;
-import com.intellij.openapi.project.DumbService;
 import com.intellij.openapi.project.Project;
 import com.intellij.psi.impl.smartPointers.AbstractTreeNod2;
 import com.intellij.util.ArrayUtil;
@@ -13,8 +11,6 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.Collection;
-import java.util.Collections;
-import java.util.List;
 
 public abstract class AbstractTreeStructureBase2 extends AbstractTreeStructure {
   private static final Logger LOG = Logger.getInstance(AbstractTreeStructureBase2.class);
@@ -56,24 +52,8 @@ public abstract class AbstractTreeStructureBase2 extends AbstractTreeStructure {
   }
 
   @Nullable
-  public abstract List<TreeStructureProvider> getProviders();
-
-  @Nullable
-  public Object getDataFromProviders(@NotNull List<AbstractTreeNod2<?>> selectedNodes, @NotNull String dataId) {
+  public Object getDataFromProviders() {
     return null;
   }
 
-  @NotNull
-  private List<TreeStructureProvider> getProvidersDumbAware() {
-    if (myProject == null) {
-      return Collections.emptyList();
-    }
-
-    final List<TreeStructureProvider> providers = getProviders();
-    if (providers == null) {
-      return Collections.emptyList();
-    }
-
-    return DumbService.getInstance(myProject).filterByDumbAwareness(providers);
-  }
 }

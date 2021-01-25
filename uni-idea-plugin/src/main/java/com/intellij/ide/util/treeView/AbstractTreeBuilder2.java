@@ -2,15 +2,12 @@
 
 package com.intellij.ide.util.treeView;
 
-import com.intellij.ide.projectView.PresentationData;
-import com.intellij.psi.impl.smartPointers.AbstractTreeNod2;
 import com.intellij.openapi.Disposable;
 import com.intellij.openapi.application.Application;
 import com.intellij.openapi.application.ApplicationManager;
 import com.intellij.openapi.progress.ProgressIndicator;
 import com.intellij.openapi.progress.Progressive;
 import com.intellij.openapi.util.ActionCallback;
-import com.intellij.openapi.util.Comparing;
 import com.intellij.reference.SoftReference;
 import com.intellij.util.Consumer;
 import com.intellij.util.concurrency.EdtExecutorService;
@@ -28,7 +25,6 @@ import javax.swing.*;
 import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.DefaultTreeModel;
 import javax.swing.tree.TreeNode;
-import javax.swing.tree.TreePath;
 import java.lang.ref.Reference;
 import java.lang.ref.WeakReference;
 import java.util.*;
@@ -43,21 +39,6 @@ public class AbstractTreeBuilder2 implements Disposable {
   private AbstractTreeUi2 myUi;
   @NonNls private static final String TREE_BUILDER = "TreeBuilder";
   protected static final boolean DEFAULT_UPDATE_INACTIVE = true;
-
-  public AbstractTreeBuilder2(@NotNull JTree tree,
-                              @NotNull DefaultTreeModel treeModel,
-                              AbstractTreeStructure treeStructure,
-                              @Nullable Comparator<? super NodeDescriptor<?>> comparator) {
-    this(tree, treeModel, treeStructure, comparator, DEFAULT_UPDATE_INACTIVE);
-  }
-
-  public AbstractTreeBuilder2(@NotNull JTree tree,
-                              @NotNull DefaultTreeModel treeModel,
-                              AbstractTreeStructure treeStructure,
-                              @Nullable Comparator<? super NodeDescriptor<?>> comparator,
-                              boolean updateIfInactive) {
-    init(tree, treeModel, treeStructure, comparator, updateIfInactive);
-  }
 
   protected AbstractTreeBuilder2() {
 
@@ -82,18 +63,9 @@ public class AbstractTreeBuilder2 implements Disposable {
     return new AbstractTreeUi2();
   }
 
-  public final void scrollTo(Object element) {
-    scrollTo(element, null);
-  }
-
   public final void scrollTo(Object element, Runnable onDone) {
     AbstractTreeUi2 ui = getUi();
     if (ui != null) ui.userScrollTo(element, onDone == null ? null : new UserRunnable(onDone));
-  }
-
-  public final void select(final Object element) {
-    AbstractTreeUi2 ui = getUi();
-    if (ui != null) ui.userSelect(new Object[]{element}, null, false, true);
   }
 
   public final void select(final Object element, @Nullable final Runnable onDone) {
@@ -101,27 +73,7 @@ public class AbstractTreeBuilder2 implements Disposable {
     if (ui != null) ui.userSelect(new Object[]{element}, new UserRunnable(onDone), false, true);
   }
 
-  public final void select(final Object element, @Nullable final Runnable onDone, boolean addToSelection) {
-    AbstractTreeUi2 ui = getUi();
-    if (ui != null) ui.userSelect(new Object[]{element}, new UserRunnable(onDone), addToSelection, true);
-  }
-
-  public final void select(final Object[] elements, @Nullable final Runnable onDone) {
-    AbstractTreeUi2 ui = getUi();
-    if (ui != null) ui.userSelect(elements, new UserRunnable(onDone), false, true);
-  }
-
-  public final void select(final Object[] elements, @Nullable final Runnable onDone, boolean addToSelection) {
-    AbstractTreeUi2 ui = getUi();
-    if (ui != null) ui.userSelect(elements, new UserRunnable(onDone), addToSelection, true);
-  }
-
   public final void expand(Object element, @Nullable Runnable onDone) {
-    AbstractTreeUi2 ui = getUi();
-    if (ui != null) ui.expand(element, new UserRunnable(onDone));
-  }
-
-  public final void expand(Object[] element, @Nullable Runnable onDone) {
     AbstractTreeUi2 ui = getUi();
     if (ui != null) ui.expand(element, new UserRunnable(onDone));
   }
@@ -131,11 +83,6 @@ public class AbstractTreeBuilder2 implements Disposable {
     if (ui != null) ui.collapseChildren(element, new UserRunnable(onDone));
   }
 
-
-  @NotNull
-  static AbstractTreeNod2<Object> createSearchingTreeNodeWrapper() {
-    return new AbstractTreeNodeWrapper2();
-  }
 
   @Nullable
   protected AbstractTreeUpdater2 createUpdater() {
@@ -155,16 +102,6 @@ public class AbstractTreeBuilder2 implements Disposable {
   public final boolean addSubtreeToUpdateByElement(@NotNull Object element) {
     AbstractTreeUpdater2 updater = getUpdater();
     return updater != null && updater.addSubtreeToUpdateByElement(element);
-  }
-
-  public final void addSubtreeToUpdate(DefaultMutableTreeNode node) {
-    AbstractTreeUi2 ui = getUi();
-    if (ui != null) ui.addSubtreeToUpdate(node);
-  }
-
-  public final void addSubtreeToUpdate(DefaultMutableTreeNode node, Runnable afterUpdate) {
-    AbstractTreeUi2 ui = getUi();
-    if (ui != null) ui.addSubtreeToUpdate(node, afterUpdate);
   }
 
   @Nullable
@@ -190,18 +127,9 @@ public class AbstractTreeBuilder2 implements Disposable {
   }
 
 
-  protected void updateNode(final DefaultMutableTreeNode node) {
-    AbstractTreeUi2 ui = getUi();
-    if (ui != null) ui.doUpdateNode(node);
-  }
-
   protected boolean validateNode(@NotNull Object child) {
     AbstractTreeStructure structure = getTreeStructure();
     return structure != null && structure.isValid(child);
-  }
-
-  protected boolean isDisposeOnCollapsing(NodeDescriptor nodeDescriptor) {
-    return true;
   }
 
   public final JTree getTree() {
@@ -212,11 +140,6 @@ public class AbstractTreeBuilder2 implements Disposable {
   public final AbstractTreeStructure getTreeStructure() {
     AbstractTreeUi2 ui = getUi();
     return ui == null ? null : ui.getTreeStructure();
-  }
-
-  public final void setTreeStructure(@NotNull AbstractTreeStructure structure) {
-    AbstractTreeUi2 ui = getUi();
-    if (ui != null) ui.setTreeStructure(structure);
   }
 
   @Nullable
@@ -248,9 +171,8 @@ public class AbstractTreeBuilder2 implements Disposable {
     return queueUpdateFrom(getRootElement(), true, withStructure);
   }
 
-  @NotNull
-  public final ActionCallback queueUpdateFrom(final Object element, final boolean forceResort) {
-    return queueUpdateFrom(element, forceResort, true);
+  public final void queueUpdateFrom(final Object element, final boolean forceResort) {
+    queueUpdateFrom(element, forceResort, true);
   }
 
   @NotNull
@@ -330,24 +252,10 @@ public class AbstractTreeBuilder2 implements Disposable {
     return getUi() == null;
   }
 
-  final boolean wasRootNodeInitialized() {
-    AbstractTreeUi2 ui = getUi();
-    return ui != null && ui.wasRootNodeInitialized();
-  }
-
-  public final boolean isNodeBeingBuilt(final TreePath path) {
-    AbstractTreeUi2 ui = getUi();
-    return ui != null && ui.isNodeBeingBuilt(path);
-  }
-
   @Nullable
   protected Object findNodeByElement(@NotNull Object element) {
     AbstractTreeUi2 ui = getUi();
     return ui == null ? null : ui.findNodeByElement(element);
-  }
-
-  public static boolean isLoadingNode(final DefaultMutableTreeNode node) {
-    return AbstractTreeUi.isLoadingNode(node);
   }
 
   void runOnYieldingDone(@NotNull Runnable onDone) {
@@ -412,19 +320,9 @@ public class AbstractTreeBuilder2 implements Disposable {
   }
 
   @NotNull
-  public final ActionCallback getInitialized() {
-    AbstractTreeUi2 ui = getUi();
-    return ui == null ? ActionCallback.REJECTED : ui.getInitialized();
-  }
-
-  @NotNull
   public final ActionCallback getReady(Object requestor) {
     AbstractTreeUi2 ui = getUi();
     return ui == null ? ActionCallback.REJECTED : ui.getReady(requestor);
-  }
-
-  protected void sortChildren(Comparator<? super TreeNode> nodeComparator, DefaultMutableTreeNode node, List<? extends TreeNode> children) {
-    children.sort(nodeComparator);
   }
 
   public void setPassthroughMode(boolean passthrough) {
@@ -432,21 +330,18 @@ public class AbstractTreeBuilder2 implements Disposable {
     if (ui != null) ui.setPassthroughMode(passthrough);
   }
 
-  public void expandAll(@Nullable Runnable onDone) {
+  public void cancelUpdate() {
     AbstractTreeUi2 ui = getUi();
-    if (ui != null) ui.expandAll(onDone);
+    if (ui != null) {
+      ui.cancelUpdate();
+    }
   }
 
-  @NotNull
-  public ActionCallback cancelUpdate() {
+  public void batch(@NotNull Progressive progressive) {
     AbstractTreeUi2 ui = getUi();
-    return ui == null ? ActionCallback.REJECTED : ui.cancelUpdate();
-  }
-
-  @NotNull
-  public ActionCallback batch(@NotNull Progressive progressive) {
-    AbstractTreeUi2 ui = getUi();
-    return ui == null ? ActionCallback.REJECTED : ui.batch(progressive);
+    if (ui != null) {
+      ui.batch(progressive);
+    }
   }
 
   @NotNull
@@ -462,29 +357,6 @@ public class AbstractTreeBuilder2 implements Disposable {
       .doWhenDone((Consumer<Object>)o -> promise.setResult(o))
       .doWhenRejected(s -> promise.setError(s));
     return promise;
-  }
-
-  private static class AbstractTreeNodeWrapper2 extends AbstractTreeNod2<Object> {
-    AbstractTreeNodeWrapper2() {
-      super(null, TREE_WRAPPER_VALUE);
-    }
-
-    @Override
-    @NotNull
-    public Collection<AbstractTreeNod2<?>> getChildren() {
-      return Collections.emptyList();
-    }
-
-    @Override
-    public void update(@NotNull PresentationData presentation) {
-    }
-
-    @Override
-    public boolean equals(Object object) {
-      if (object == this) return true;
-      // this hack allows to find a node in a map without checking a class type
-      return object instanceof AbstractTreeNod2 && Comparing.equal(getEqualityObject(), ((AbstractTreeNod2)object).getEqualityObject());
-    }
   }
 
   public final AbstractTreeUi2 getUi() {
@@ -507,35 +379,6 @@ public class AbstractTreeBuilder2 implements Disposable {
     return ui != null && descriptor.update();
   }
 
-  @Nullable
-  public final DefaultTreeModel getTreeModel() {
-    AbstractTreeUi2 ui = getUi();
-    return ui == null ? null : ui.getTreeModel();
-  }
-
-  @NotNull
-  public final Set<Object> getSelectedElements() {
-    AbstractTreeUi2 ui = getUi();
-    return ui == null ? Collections.emptySet() : ui.getSelectedElements();
-  }
-
-  @NotNull
-  public final <T> Set<T> getSelectedElements(@NotNull Class<T> elementClass) {
-    Set<T> result = new LinkedHashSet<>();
-    for (Object o : getSelectedElements()) {
-      Object each = transformElement(o);
-      if (elementClass.isInstance(each)) {
-        //noinspection unchecked
-        result.add((T)each);
-      }
-    }
-    return result;
-  }
-
-  protected Object transformElement(Object object) {
-    return object;
-  }
-
   public final void setCanYieldUpdate(boolean yield) {
     AbstractTreeUi2 ui = getUi();
     if (ui != null) ui.setCanYield(yield);
@@ -545,11 +388,6 @@ public class AbstractTreeBuilder2 implements Disposable {
   public static AbstractTreeBuilder2 getBuilderFor(@NotNull JTree tree) {
     Reference<AbstractTreeBuilder2> ref = (Reference)tree.getClientProperty(TREE_BUILDER);
     return SoftReference.dereference(ref);
-  }
-
-  @Nullable
-  public final <T> Object accept(@NotNull Class<?> nodeClass, @NotNull TreeVisitor<T> visitor) {
-    return accept(nodeClass, getRootElement(), visitor);
   }
 
   @Nullable
@@ -573,21 +411,6 @@ public class AbstractTreeBuilder2 implements Disposable {
     }
 
     return null;
-  }
-
-  public <T> boolean select(@NotNull Class nodeClass, @NotNull TreeVisitor<T> visitor, @Nullable Runnable onDone, boolean addToSelection) {
-    final Object element = accept(nodeClass, visitor);
-    if (element != null) {
-      select(element, onDone, addToSelection);
-      return true;
-    }
-
-    return false;
-  }
-
-  public void scrollSelectionToVisible(@Nullable Runnable onDone, boolean shouldBeCentered) {
-    AbstractTreeUi2 ui = getUi();
-    if (ui != null) ui.scrollSelectionToVisible(onDone, shouldBeCentered);
   }
 
   private static boolean isUnitTestingMode() {
@@ -621,18 +444,4 @@ public class AbstractTreeBuilder2 implements Disposable {
     }
   }
 
-  public boolean isSelectionBeingAdjusted() {
-    AbstractTreeUi2 ui = getUi();
-    return ui != null && ui.isSelectionBeingAdjusted();
-  }
-
-  public boolean isToBuildChildrenInBackground(Object element) {
-    AbstractTreeUi2 ui = getUi();
-    return ui != null && ui.isToBuildChildrenInBackground(element);
-  }
-
-  public final boolean isConsistent() {
-    AbstractTreeUi2 ui = getUi();
-    return ui != null && ui.isConsistent();
-  }
 }

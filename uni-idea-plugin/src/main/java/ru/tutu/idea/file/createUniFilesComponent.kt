@@ -332,7 +332,7 @@ private fun _createUniFilesComponent(
       if (PlatformDataKeys.TREE_EXPANDER.`is`(dataId)) return createTreeExpander(myTree)//todo lazy cache
 
       val nodes = getSelectedNodes(AbstractTreeNod2::class.java)
-      val data = treeStructure.getDataFromProviders(nodes, dataId)
+      val data = treeStructure.getDataFromProviders()
       if (data != null) {
         return data
       }

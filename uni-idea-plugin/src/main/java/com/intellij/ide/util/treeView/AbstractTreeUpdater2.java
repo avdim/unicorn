@@ -36,7 +36,6 @@ public class AbstractTreeUpdater2 implements Disposable, Activatable {
   private final MergingUpdateQueue myUpdateQueue;
 
   private long myUpdateCount;
-  private boolean myReleaseRequested;
 
   public AbstractTreeUpdater2(@NotNull AbstractTreeBuilder2 treeBuilder) {
     myTreeBuilder = treeBuilder;
@@ -48,13 +47,6 @@ public class AbstractTreeUpdater2 implements Disposable, Activatable {
     final UiNotifyConnector uiNotifyConnector = new UiNotifyConnector(component, myUpdateQueue);
     Disposer.register(this, myUpdateQueue);
     Disposer.register(this, uiNotifyConnector);
-  }
-
-  /**
-   * @param delay update delay in milliseconds.
-   */
-  public void setDelay(int delay) {
-    myUpdateQueue.setMergingTimeSpan(delay);
   }
 
   void setPassThroughMode(boolean passThroughMode) {
@@ -98,8 +90,6 @@ public class AbstractTreeUpdater2 implements Disposable, Activatable {
    */
   @Deprecated
   synchronized void addSubtreeToUpdate(@NotNull TreeUpdatePass toAdd) {
-    if (myReleaseRequested) return;
-
     assert !toAdd.isExpired();
 
     final AbstractTreeUi2 ui = myTreeBuilder.getUi();
@@ -223,12 +213,12 @@ public class AbstractTreeUpdater2 implements Disposable, Activatable {
 
       final TreeUpdatePass eachPass = myNodeQueue.removeFirst();
 
-      beforeUpdate(eachPass).doWhenDone(new TreeRunnable2("AbstractTreeUpdater.performUpdate") {
+      beforeUpdate().doWhenDone(new TreeRunnable2("AbstractTreeUpdater.performUpdate") {
         @Override
         public void perform() {
           try {
             AbstractTreeUi2 ui = myTreeBuilder.getUi();
-            if (ui != null) ui.updateSubtreeNow(eachPass, false);
+            if (ui != null) ui.updateSubtreeNow(eachPass);
           }
           catch (ProcessCanceledException ignored) {
           }
@@ -270,7 +260,7 @@ public class AbstractTreeUpdater2 implements Disposable, Activatable {
     return myTreeBuilder.getUi() == null;
   }
 
-  protected ActionCallback beforeUpdate(TreeUpdatePass pass) {
+  protected ActionCallback beforeUpdate() {
     return ActionCallback.DONE;
   }
 
@@ -361,14 +351,6 @@ public class AbstractTreeUpdater2 implements Disposable, Activatable {
         request.reject();
       }
     });
-  }
-
-  public synchronized void requestRelease() {
-    myReleaseRequested = true;
-
-    reset();
-
-    myUpdateQueue.deactivate();
   }
 
   public void reset() {

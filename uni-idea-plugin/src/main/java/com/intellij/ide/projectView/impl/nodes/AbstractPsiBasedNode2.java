@@ -257,7 +257,6 @@ public abstract class AbstractPsiBasedNode2<Value> extends ProjectViewNode2B<Val
     return item != null && item.canNavigateToSource();
   }
 
-  @Override
   public boolean validate() {
     final PsiElement psiElement = extractPsiFromValue();
     DebugBlackFile.doDebug(getEqualityObject(), psiElement);

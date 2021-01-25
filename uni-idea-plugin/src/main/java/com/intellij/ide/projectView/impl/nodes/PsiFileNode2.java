@@ -9,7 +9,6 @@ import com.intellij.ide.projectView.impl.ProjectRootsUtil;
 
 import com.intellij.idea.ActionsBundle;
 import com.intellij.openapi.editor.colors.CodeInsightColors;
-import com.intellij.openapi.fileTypes.StdFileTypes;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.roots.OrderEntry;
 import com.intellij.openapi.roots.libraries.LibraryUtil;
@@ -136,43 +135,6 @@ public class PsiFileNode2 extends BasePsiNode2<PsiFile> implements NavigatableWi
   @Override
   protected boolean isMarkReadOnly() {
     return true;
-  }
-
-  @Override
-  public Comparable<ExtensionSortKey> getTypeSortKey() {
-    String extension = extension(getValue());
-    return extension == null ? null : new ExtensionSortKey(extension);
-  }
-
-  @Nullable
-  public static String extension(@Nullable PsiFile file) {
-    if (file != null) {
-      VirtualFile vFile = file.getVirtualFile();
-      if (vFile != null) {
-        return vFile.getFileType().getDefaultExtension();
-      }
-    }
-
-    return null;
-  }
-
-  public static class ExtensionSortKey implements Comparable<ExtensionSortKey> {
-    private final String myExtension;
-
-    public ExtensionSortKey(@NotNull String extension) {
-      myExtension = extension;
-    }
-
-    @Override
-    public int compareTo(ExtensionSortKey o) {
-      return o == null ? 0 : myExtension.compareTo(o.myExtension);
-    }
-  }
-
-  @Override
-  public boolean shouldDrillDownOnEmptyElement() {
-    final PsiFile file = getValue();
-    return file != null && file.getFileType() == StdFileTypes.JAVA;
   }
 
   @Override
