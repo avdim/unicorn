@@ -14,7 +14,7 @@ val DEBUG_JVM = true//todo false
 /**
  * Минимальная версия JDK. В production использую 11. А для целей отладки подойдёт и 8-ая.
  */
-val MIN_JDK_VERSION: JdkVersion = if (true/*DEBUG_JVM*/) JdkVersion.JDK8 else JdkVersion.JDK11
+val MIN_JDK_VERSION: JdkVersion = if (false/*DEBUG_JVM*/) JdkVersion.JDK8 else JdkVersion.JDK11
 
 /**
  * Если хочется потестировать EAP или DEV версии kotlin.
@@ -22,7 +22,8 @@ val MIN_JDK_VERSION: JdkVersion = if (true/*DEBUG_JVM*/) JdkVersion.JDK8 else Jd
  */
 val USE_KOTLIN_DEV_REPOSITORY = true
 
-val KOTLIN_VERSION = "1.4.21"
+//val KOTLIN_VERSION = "1.4.21"
+val KOTLIN_VERSION = "1.4.21-2"
 val SERIALIZATION_VERSION = "1.0.1"
 val COROUTINE_VERSION = "1.4.2"
 val KTOR_VERSION = "1.5.0"
@@ -40,7 +41,9 @@ val COMPILER_ARGS = listOf<String>()
 val INTELLIJ_GRADLE = "0.6.5"
 // https://maven.pkg.jetbrains.space/public/p/compose/dev/org/jetbrains/compose/org.jetbrains.compose.gradle.plugin/
 //val DESKTOP_COMPOSE = "0.3.0-build135"
-val DESKTOP_COMPOSE = "0.3.0-build136"
+//val DESKTOP_COMPOSE = "0.3.0-build136"
+//val DESKTOP_COMPOSE = "0.3.0-build140"
+val DESKTOP_COMPOSE = "0.0.0-vsync-build30"
 
 val Project.UNI_BUILD_TYPE: BuildType get() =
   when (safeArgument("uniBuildType")) {

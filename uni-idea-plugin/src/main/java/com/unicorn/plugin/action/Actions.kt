@@ -79,6 +79,7 @@ object Actions {
               ActionData("com.unicorn.plugin.action.id.GetGithubTokenAction", GetGithubTokenAction()),
               ActionData("bootRuntime2.main.ChooseBootRuntimeAction", ChooseBootRuntimeAction()),
               ActionData("com.unicorn.plugin.action.id.ComposeOfficialSample", ComposeOfficialSampleAction()),
+              ActionData("com.unicorn.plugin.action.id.ComposeOfficialSample2", ComposeOfficialSample2Action()),
               ActionData("com.unicorn.plugin.action.id.ComposePanelAction", ComposePanelAction()),
             )
           )
