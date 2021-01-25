@@ -10,7 +10,6 @@ import com.intellij.openapi.util.registry.Registry;
 import com.intellij.ui.*;
 import com.intellij.ui.tree.TreePathBackgroundSupplier;
 import com.intellij.util.ArrayUtil;
-import com.intellij.util.ThreeState;
 import com.intellij.util.ui.*;
 import com.intellij.util.ui.tree.TreeUtil;
 import org.jetbrains.annotations.ApiStatus;
@@ -45,17 +44,8 @@ public class Tree2 extends JTree implements ComponentWithEmptyText, ComponentWit
 
   private Dimension myHoldSize;
   private final MySelectionModel mySelectionModel = new MySelectionModel();
-  private ThreeState myHorizontalAutoScrolling = ThreeState.UNSURE;
 
   private TreePath rollOverPath;
-
-  public Tree2() {
-    this(new DefaultMutableTreeNode());
-  }
-
-  public Tree2(TreeNode root) {
-    this(new DefaultTreeModel(root, false));
-  }
 
   public Tree2(TreeModel treemodel) {
     super(treemodel);
@@ -115,19 +105,6 @@ public class Tree2 extends JTree implements ComponentWithEmptyText, ComponentWit
 
   public boolean isEmpty() {
     return 0 >= getRowCount();
-  }
-
-  protected boolean isWideSelection() {
-    return true;
-  }
-
-  /**
-   * @return a strategy which determines if a wide selection should be drawn for a target row (it's number is
-   * {@link Condition#value(Object) given} as an argument to the strategy)
-   */
-  @NotNull
-  protected Condition<Integer> getWideSelectionBackgroundCondition() {
-    return Conditions.alwaysTrue();
   }
 
   @Override
@@ -239,13 +216,6 @@ public class Tree2 extends JTree implements ComponentWithEmptyText, ComponentWit
     finally {
       mySelectionModel.unholdSelection();
     }
-  }
-
-  public void setPaintBusy(boolean paintBusy) {
-    if (myBusy == paintBusy) return;
-
-    myBusy = paintBusy;
-    updateBusy();
   }
 
   private void updateBusy() {
@@ -381,18 +351,6 @@ public class Tree2 extends JTree implements ComponentWithEmptyText, ComponentWit
     super.processMouseEvent(e2);
 
     if (e != e2 && e2.isConsumed()) e.consume();
-  }
-
-  /**
-   * Returns true if {@code mouseX} falls
-   * in the area of row that is used to expand/collapse the node and
-   * the node at {@code row} does not represent a leaf.
-   */
-  @ApiStatus.Experimental
-  protected boolean isLocationInExpandControl(@Nullable TreePath path, int mouseX) {
-    if (path == null) return false;
-    Rectangle bounds = getRowBounds(getRowForPath(path));
-    return TreeUtil.isLocationInExpandControl(this, path, mouseX, bounds.y + bounds.height / 2);
   }
 
   /**
@@ -790,16 +748,6 @@ public class Tree2 extends JTree implements ComponentWithEmptyText, ComponentWit
     }
   }
 
-  public void setHoldSize(boolean hold) {
-    if (hold && myHoldSize == null) {
-      myHoldSize = getPreferredSize();
-    }
-    else if (!hold && myHoldSize != null) {
-      myHoldSize = null;
-      revalidate();
-    }
-  }
-
   @Override
   public Dimension getPreferredSize() {
     Dimension size = super.getPreferredSize();
@@ -817,46 +765,6 @@ public class Tree2 extends JTree implements ComponentWithEmptyText, ComponentWit
     if (path == null) return; // nothing to scroll
     makeVisible(path); // expand parent paths if needed
     TreeUtil.scrollToVisible(this, path, false);
-  }
-
-  public boolean isHorizontalAutoScrollingEnabled() {
-    return myHorizontalAutoScrolling != ThreeState.UNSURE ? myHorizontalAutoScrolling == ThreeState.YES : Registry.is("ide.tree.horizontal.default.autoscrolling", false);
-  }
-
-  public void setHorizontalAutoScrollingEnabled(boolean enabled) {
-    myHorizontalAutoScrolling = enabled ? ThreeState.YES : ThreeState.NO;
-  }
-
-  /**
-   * Returns the deepest visible component
-   * that will be rendered at the specified location.
-   *
-   * @param x horizontal location in the tree
-   * @param y vertical location in the tree
-   * @return the deepest visible component of the renderer
-   */
-  @Nullable
-  public Component getDeepestRendererComponentAt(int x, int y) {
-    int row = getRowForLocation(x, y);
-    if (row >= 0) {
-      TreeCellRenderer renderer = getCellRenderer();
-      if (renderer != null) {
-        TreePath path = getPathForRow(row);
-        Object node = path.getLastPathComponent();
-        Component component = renderer.getTreeCellRendererComponent(
-          this, node,
-          isRowSelected(row),
-          isExpanded(row),
-          getModel().isLeaf(node),
-          row, true);
-        Rectangle bounds = getPathBounds(path);
-        if (bounds != null) {
-          component.setBounds(bounds); // initialize size to layout complex renderer
-          return SwingUtilities.getDeepestComponentAt(component, x - bounds.x, y - bounds.y);
-        }
-      }
-    }
-    return null;
   }
 
   @Override

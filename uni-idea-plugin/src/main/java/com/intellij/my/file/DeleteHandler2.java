@@ -64,47 +64,6 @@ public final class DeleteHandler2 {
   private DeleteHandler2() {
   }
 
-  public static class DefaultDeleteProvider implements DeleteProvider {
-    @Override
-    public boolean canDeleteElement(@NotNull DataContext dataContext) {
-      if (CommonDataKeys.PROJECT.getData(dataContext) == null) {
-        return false;
-      }
-      final PsiElement[] elements = getPsiElements(dataContext);
-      return shouldEnableDeleteAction(elements);
-    }
-
-    private static PsiElement @Nullable [] getPsiElements(DataContext dataContext) {
-      PsiElement[] elements = LangDataKeys.PSI_ELEMENT_ARRAY.getData(dataContext);
-      if (elements == null) {
-        final PsiElement data = CommonDataKeys.PSI_ELEMENT.getData(dataContext);
-        if (data != null) {
-          elements = new PsiElement[]{data};
-        } else {
-          final PsiFile data1 = CommonDataKeys.PSI_FILE.getData(dataContext);
-          if (data1 != null) {
-            elements = new PsiElement[]{data1};
-          }
-        }
-      }
-      return elements;
-    }
-
-    @Override
-    public void deleteElement(@NotNull DataContext dataContext) {
-      PsiElement[] elements = getPsiElements(dataContext);
-      if (elements == null) return;
-      Project project = CommonDataKeys.PROJECT.getData(dataContext);
-      if (project == null) return;
-      LocalHistoryAction a = LocalHistory.getInstance().startAction(IdeBundle.message("progress.deleting"));
-      try {
-        deletePsiElement(elements);
-      } finally {
-        a.finish();
-      }
-    }
-  }
-
   public static void deletePsiElement(final PsiElement[] elementsToDelete) {
     deletePsiElement(elementsToDelete, ProjectManager.getInstance().getDefaultProject(), true);
   }
@@ -257,27 +216,6 @@ public final class DeleteHandler2 {
       }
     }
     return true;
-  }
-
-  private static void doDelete(Project project, PsiElement element) {
-    if (!clearFileReadOnlyFlags(project, element)) return;
-
-    try {
-      //noinspection deprecation
-      element.checkDelete();
-    } catch (IncorrectOperationException e) {
-      Messages.showMessageDialog(project, e.getMessage(), CommonBundle.getErrorTitle(), Messages.getErrorIcon());
-      return;
-    }
-
-    ApplicationManager.getApplication().runWriteAction(() -> {
-      try {
-        element.delete();
-      } catch (IncorrectOperationException e) {
-        ApplicationManager.getApplication().invokeLater(
-          () -> Messages.showMessageDialog(project, e.getMessage(), CommonBundle.getErrorTitle(), Messages.getErrorIcon()));
-      }
-    });
   }
 
   private static void doDeleteFiles(Project project, PsiElement[] fileElements) {

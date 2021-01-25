@@ -18,10 +18,10 @@ public abstract class AbstractProjectTreeStructure2 extends ProjectAbstractTreeS
 
   public AbstractProjectTreeStructure2(@NotNull Project project) {
     super(project);
-    myRoot = createRoot(project, this);
+    myRoot = createRoot(this);
   }
 
-  protected AbstractTreeNod2 createRoot(@NotNull Project project, @NotNull ViewSettings settings) {
+  protected AbstractTreeNod2 createRoot(@NotNull ViewSettings settings) {
     return new ProjectViewProjectNode2(this);
   }
 

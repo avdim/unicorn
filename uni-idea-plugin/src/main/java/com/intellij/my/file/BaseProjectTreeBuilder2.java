@@ -127,26 +127,6 @@ public abstract class BaseProjectTreeBuilder2 extends AbstractTreeBuilder2 {
     return result;
   }
 
-  /**
-   * @deprecated Use {@link #selectAsync}
-   */
-  @Deprecated
-  @NotNull
-  public ActionCallback select(Object element, VirtualFile file, final boolean requestFocus) {
-    return Promises.toActionCallback(_select(element, file, requestFocus, Conditions.alwaysTrue()));
-  }
-
-  @NotNull
-  public Promise<Object> selectAsync(Object element, VirtualFile file, final boolean requestFocus) {
-    return _select(element, file, requestFocus, Conditions.alwaysTrue());
-  }
-
-  public ActionCallback selectInWidth(Object element,
-                                      boolean requestFocus,
-                                      Condition<? super AbstractTreeNod2<?>> nonStopCondition) {
-    return Promises.toActionCallback(_select(element, null, requestFocus, nonStopCondition));
-  }
-
   @NotNull
   private Promise<Object> _select(Object element,
                                   VirtualFile file,
@@ -245,7 +225,7 @@ public abstract class BaseProjectTreeBuilder2 extends AbstractTreeBuilder2 {
   }
 
   @SuppressWarnings("WeakerAccess")
-  protected boolean canExpandPathTo(@NotNull AbstractTreeNod2<?> root, final Object element) {
+  protected boolean canExpandPathTo() {
     return true;
   }
 
@@ -268,7 +248,7 @@ public abstract class BaseProjectTreeBuilder2 extends AbstractTreeBuilder2 {
       return async;
     }
 
-    if (!canExpandPathTo(root, element)) {
+    if (!canExpandPathTo()) {
       async.setError("cannot expand");
       return async;
     }
