@@ -18,7 +18,6 @@ import com.intellij.openapi.roots.ProjectFileIndex;
 import com.intellij.openapi.roots.ProjectRootManager;
 import com.intellij.openapi.roots.libraries.LibraryUtil;
 import com.intellij.openapi.roots.ui.configuration.ProjectSettingsService;
-import com.intellij.openapi.util.Comparing;
 import com.intellij.openapi.util.registry.Registry;
 import com.intellij.openapi.util.text.StringUtil;
 import com.intellij.openapi.vfs.LocalFileSystem;
@@ -26,7 +25,6 @@ import com.intellij.openapi.vfs.VfsUtil;
 import com.intellij.openapi.vfs.VfsUtilCore;
 import com.intellij.openapi.vfs.VirtualFile;
 import com.intellij.pom.NavigatableWithText;
-import com.intellij.projectImport.ProjectAttachProcessor;
 import com.intellij.psi.PsiDirectory;
 import com.intellij.psi.PsiFile;
 import com.intellij.psi.PsiManager;
@@ -324,42 +322,6 @@ public class PsiDirectoryNode2 extends BasePsiNode2<PsiDirectory> implements Nav
       return PsiDirectoryFactory.getInstance(getProject()).getQualifiedName(directory, true);
     }
     return super.getTitle();
-  }
-
-  @Override
-  public Comparable getSortKey() {
-    if (ProjectAttachProcessor.canAttachToProject()) {
-      // primary module is always on top; attached modules are sorted alphabetically
-      final VirtualFile file = getVirtualFile();
-      if (Comparing.equal(file, myProject.getBaseDir())) {
-        return "";    // sorts before any other name
-      }
-      return toString();
-    }
-    return null;
-  }
-
-  @Override
-  public Comparable getTypeSortKey() {
-    VirtualFile file = getVirtualFile();
-    if (file != null) {
-      String extension = file.getExtension();
-      if (extension != null) {
-        return new PsiFileNode.ExtensionSortKey(extension);
-      }
-    }
-    return null;
-  }
-
-  @Override
-  public String getQualifiedNameSortKey() {
-    final PsiDirectoryFactory factory = PsiDirectoryFactory.getInstance(getProject());
-    return factory.getQualifiedName(getValue(), true);
-  }
-
-  @Override
-  public boolean shouldDrillDownOnEmptyElement() {
-    return true;
   }
 
   @Override

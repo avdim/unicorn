@@ -9,7 +9,6 @@ import com.intellij.ide.projectView.impl.ProjectRootsUtil;
 
 import com.intellij.idea.ActionsBundle;
 import com.intellij.openapi.editor.colors.CodeInsightColors;
-import com.intellij.openapi.fileTypes.StdFileTypes;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.roots.OrderEntry;
 import com.intellij.openapi.roots.libraries.LibraryUtil;
@@ -138,12 +137,6 @@ public class PsiFileNode2 extends BasePsiNode2<PsiFile> implements NavigatableWi
     return true;
   }
 
-  @Override
-  public Comparable<ExtensionSortKey> getTypeSortKey() {
-    String extension = extension(getValue());
-    return extension == null ? null : new ExtensionSortKey(extension);
-  }
-
   @Nullable
   public static String extension(@Nullable PsiFile file) {
     if (file != null) {
@@ -167,12 +160,6 @@ public class PsiFileNode2 extends BasePsiNode2<PsiFile> implements NavigatableWi
     public int compareTo(ExtensionSortKey o) {
       return o == null ? 0 : myExtension.compareTo(o.myExtension);
     }
-  }
-
-  @Override
-  public boolean shouldDrillDownOnEmptyElement() {
-    final PsiFile file = getValue();
-    return file != null && file.getFileType() == StdFileTypes.JAVA;
   }
 
   @Override
