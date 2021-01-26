@@ -28,6 +28,7 @@ import com.intellij.openapi.project.ProjectManager;
 import com.intellij.openapi.ui.DialogWrapper;
 import com.intellij.openapi.ui.Messages;
 import com.intellij.openapi.ui.ex.MessagesEx;
+import com.intellij.openapi.util.NlsSafe;
 import com.intellij.openapi.util.Ref;
 import com.intellij.openapi.util.SystemInfo;
 import com.intellij.openapi.vfs.VFileProperty;
@@ -44,6 +45,7 @@ import com.intellij.refactoring.safeDelete.SafeDeleteProcessor;
 import com.intellij.refactoring.util.CommonRefactoringUtil;
 import com.intellij.refactoring.util.RefactoringUIUtil;
 import com.intellij.testFramework.LightVirtualFile;
+import com.intellij.ui.UIBundle;
 import com.intellij.util.IncorrectOperationException;
 import com.intellij.util.SmartList;
 import com.intellij.util.containers.ContainerUtil;
@@ -52,7 +54,9 @@ import com.intellij.util.ui.IoErrorText;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
+import java.io.IOError;
 import java.io.IOException;
+import java.io.UncheckedIOException;
 import java.nio.file.*;
 import java.nio.file.attribute.BasicFileAttributes;
 import java.util.ArrayList;
@@ -218,6 +222,49 @@ public final class DeleteHandler2 {
     return true;
   }
 
+  public static @NlsSafe @NotNull String errorMessage(@NotNull Throwable t) {
+    String message = t.getMessage();
+
+    if (t instanceof UncheckedIOException || t instanceof IOError) {
+      t = t.getCause();
+    }
+
+    if (message == null || message.trim().isEmpty()) {
+      return UIBundle.message("io.error.unknown");
+    }
+
+    if (t instanceof AccessDeniedException) {
+      String reason = ((AccessDeniedException)t).getReason();
+      if (reason != null) {
+        return UIBundle.message("io.error.access.denied.reason", message, reason);
+      }
+      else {
+        return UIBundle.message("io.error.access.denied", message);
+      }
+    }
+    if (t instanceof DirectoryNotEmptyException) {
+      return UIBundle.message("io.error.dir.not.empty", message);
+    }
+    if (t instanceof FileAlreadyExistsException) {
+      return UIBundle.message("io.error.already.exists", message);
+    }
+    if (t instanceof NoSuchFileException) {
+      return UIBundle.message("io.error.no.such.file", message);
+    }
+    if (t instanceof NotDirectoryException) {
+      return UIBundle.message("io.error.not.dir", message);
+    }
+    if (t instanceof NotLinkException) {
+      return UIBundle.message("io.error.not.link", message);
+    }
+
+    if (t instanceof FileSystemException && message.equals(((FileSystemException)t).getFile())) {
+      return t.getClass().getSimpleName() + ": " + message;
+    }
+
+    return message;
+  }
+
   private static void doDeleteFiles(Project project, PsiElement[] fileElements) {
     for (PsiElement file : fileElements) {
       if (!clearFileReadOnlyFlags(project, file)) return;
@@ -228,12 +275,12 @@ public final class DeleteHandler2 {
     if (task.error != null) {
       String file = task.error instanceof FileSystemException ? ((FileSystemException) task.error).getFile() : null;
       if (file != null) {
-        String message = IoErrorText.message(task.error), yes = RevealFileAction.getActionName(), no = CommonBundle.getCloseButtonText();
+        String message = errorMessage(task.error), yes = RevealFileAction.getActionName(), no = CommonBundle.getCloseButtonText();
         if (Messages.showYesNoDialog(project, message, CommonBundle.getErrorTitle(), yes, no, Messages.getErrorIcon()) == Messages.YES) {
           RevealFileAction.openFile(Paths.get(file));
         }
       } else {
-        Messages.showMessageDialog(project, IoErrorText.message(task.error), CommonBundle.getErrorTitle(), Messages.getErrorIcon());
+        Messages.showMessageDialog(project, errorMessage(task.error), CommonBundle.getErrorTitle(), Messages.getErrorIcon());
       }
     }
     if (task.aborted != null) {
