@@ -207,9 +207,7 @@ public class AbstractTreeUi2 {
   protected void init(@NotNull AbstractTreeBuilder2 builder,
                       @NotNull JTree tree,
                       @NotNull DefaultTreeModel treeModel,
-                      AbstractTreeStructure treeStructure,
-                      @Nullable Comparator<? super NodeDescriptor<?>> comparator,
-                      boolean updateIfInactive) {
+                      AbstractTreeStructure treeStructure) {
     myBuilder = builder;
     myTree = tree;
     myTreeModel = treeModel;
@@ -220,8 +218,8 @@ public class AbstractTreeUi2 {
     myTree.setModel(myTreeModel);
     setRootNode((DefaultMutableTreeNode)treeModel.getRoot());
     myTreeStructure = treeStructure;
-    myNodeDescriptorComparator = comparator;
-    myUpdateIfInactive = updateIfInactive;
+    myNodeDescriptorComparator = null;
+    myUpdateIfInactive = AbstractTreeBuilder2.DEFAULT_UPDATE_INACTIVE;
 
     UIUtil.invokeLaterIfNeeded(new TreeRunnable2("AbstractTreeUi.init") {
       @Override
@@ -3471,8 +3469,8 @@ public class AbstractTreeUi2 {
     addSubtreeToUpdate(root, true);
   }
 
-  public boolean addSubtreeToUpdate(@NotNull final DefaultMutableTreeNode root, boolean updateStructure) {
-    return addSubtreeToUpdate(root, null, updateStructure);
+  public void addSubtreeToUpdate(@NotNull final DefaultMutableTreeNode root, boolean updateStructure) {
+    addSubtreeToUpdate(root, null, updateStructure);
   }
 
   public boolean addSubtreeToUpdate(@NotNull final DefaultMutableTreeNode root, @Nullable final Runnable runAfterUpdate, final boolean updateStructure) {

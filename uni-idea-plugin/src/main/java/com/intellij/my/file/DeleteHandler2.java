@@ -314,20 +314,6 @@ public final class DeleteHandler2 {
     return success[0];
   }
 
-  public static boolean shouldEnableDeleteAction(PsiElement[] elements) {
-    if (elements == null || elements.length == 0) return false;
-    for (PsiElement element : elements) {
-      VirtualFile virtualFile = PsiUtilCore.getVirtualFile(element);
-      if (virtualFile == null || virtualFile instanceof LightVirtualFile) {
-        return false;
-      }
-      if (!WritingAccessProvider.isPotentiallyWritable(virtualFile, element.getProject())) {
-        return false;
-      }
-    }
-    return true;
-  }
-
   private static class LocalFilesDeleteTask extends Task.Modal {
     private final PsiElement[] myFileElements;
 

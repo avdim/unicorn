@@ -93,7 +93,7 @@ public abstract class AbstractProjectNode2 extends ProjectViewNode2<Project> {
 
   @NotNull
   protected abstract AbstractTreeNod2<?> createModuleGroup(@NotNull Module module)
-    throws InvocationTargetException, NoSuchMethodException, InstantiationException, IllegalAccessException;
+    ;
 
   @Nullable
   private AbstractTreeNod2<?> createModuleNode(final ModuleDescription moduleDescription)
@@ -113,7 +113,7 @@ public abstract class AbstractProjectNode2 extends ProjectViewNode2<Project> {
 
   @NotNull
   protected abstract AbstractTreeNod2<?> createModuleGroupNode(@NotNull ModuleGroup moduleGroup)
-    throws InvocationTargetException, NoSuchMethodException, InstantiationException, IllegalAccessException;
+    ;
 
   @Override
   public void update(@NotNull PresentationData presentation) {

@@ -89,7 +89,7 @@ public class UpdaterTreeState2 {
     return ArrayUtil.toObjectArray(myToExpand.keySet());
   }
 
-  public boolean process(@NotNull Runnable runnable) {
+  public void process(@NotNull Runnable runnable) {
     try {
       setProcessingNow(true);
       runnable.run();
@@ -97,14 +97,7 @@ public class UpdaterTreeState2 {
     finally {
       setProcessingNow(false);
     }
-
-    return isEmpty();
   }
-
-  public boolean isEmpty() {
-    return myToExpand.isEmpty() && myToSelect.isEmpty() && myAdjustedSelection.isEmpty();
-  }
-
 
   boolean isProcessingNow() {
     return myProcessingCount > 0;

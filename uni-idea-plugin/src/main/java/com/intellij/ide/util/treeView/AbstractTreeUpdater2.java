@@ -320,10 +320,6 @@ public class AbstractTreeUpdater2 implements Disposable, Activatable {
     return "AbstractTreeUpdater updateCount=" + myUpdateCount + " queue=[" + myUpdateQueue + "] " + " nodeQueue=" + myNodeQueue + " builder=" + myTreeBuilder;
   }
 
-  public void flush() {
-    myUpdateQueue.sendFlush();
-  }
-
   synchronized boolean isEnqueuedToUpdate(DefaultMutableTreeNode node) {
     for (TreeUpdatePass pass : myNodeQueue) {
       if (pass.willUpdate(node)) return true;

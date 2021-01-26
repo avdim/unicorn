@@ -33,7 +33,6 @@ public abstract class ProjectViewNode2B<Value> extends AbstractTreeNod2<Value> i
   protected static final Logger LOG = Logger.getInstance(ProjectViewNode2B.class);
 
   private final ViewSettings mySettings;
-  private boolean myValidating;
 
   /**
    * Creates an instance of the project view node.
@@ -163,6 +162,6 @@ public abstract class ProjectViewNode2B<Value> extends AbstractTreeNod2<Value> i
   }
 
   public boolean isValidating() {
-    return myValidating;
+    return false;
   }
 }

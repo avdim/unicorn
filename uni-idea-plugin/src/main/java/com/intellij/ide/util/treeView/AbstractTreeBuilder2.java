@@ -50,7 +50,7 @@ public class AbstractTreeBuilder2 implements Disposable {
     tree.putClientProperty(TREE_BUILDER, new WeakReference<>(this));
 
     myUi = createUi();
-    myUi.init(this, tree, treeModel, treeStructure, null, AbstractTreeBuilder2.DEFAULT_UPDATE_INACTIVE);
+    myUi.init(this, tree, treeModel, treeStructure);
 
     setPassthroughMode(isUnitTestingMode());
   }
@@ -385,29 +385,6 @@ public class AbstractTreeBuilder2 implements Disposable {
   public static AbstractTreeBuilder2 getBuilderFor(@NotNull JTree tree) {
     Reference<AbstractTreeBuilder2> ref = (Reference)tree.getClientProperty(TREE_BUILDER);
     return SoftReference.dereference(ref);
-  }
-
-  @Nullable
-  private <T> Object accept(@NotNull Class<?> nodeClass, Object element, @NotNull TreeVisitor<T> visitor) {
-    if (element == null) {
-      return null;
-    }
-
-    AbstractTreeStructure structure = getTreeStructure();
-    if (structure == null) return null;
-
-    //noinspection unchecked
-    if (nodeClass.isAssignableFrom(element.getClass()) && visitor.visit((T)element)) {
-      return element;
-    }
-
-    final Object[] children = structure.getChildElements(element);
-    for (Object each : children) {
-      final Object childObject = accept(nodeClass, each, visitor);
-      if (childObject != null) return childObject;
-    }
-
-    return null;
   }
 
   private static boolean isUnitTestingMode() {

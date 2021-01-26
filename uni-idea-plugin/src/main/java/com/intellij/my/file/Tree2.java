@@ -39,10 +39,7 @@ public class Tree2 extends JTree implements ComponentWithEmptyText, ComponentWit
   private final ExpandableItemsHandler<Integer> myExpandableItemsHandler;
 
   private AsyncProcessIcon myBusyIcon;
-  private boolean myBusy;
   private Rectangle myLastVisibleRec;
-
-  private Dimension myHoldSize;
   private final MySelectionModel mySelectionModel = new MySelectionModel();
 
   private TreePath rollOverPath;
@@ -186,15 +183,8 @@ public class Tree2 extends JTree implements ComponentWithEmptyText, ComponentWit
         for (TreePath each : paths) {
           Rectangle selection = getPathBounds(each);
           if (selection != null && (g.getClipBounds().intersects(selection) || g.getClipBounds().contains(selection))) {
-            if (myBusy && myBusyIcon != null) {
-              Rectangle busyIconBounds = myBusyIcon.getBounds();
-              if (selection.contains(busyIconBounds) || selection.intersects(busyIconBounds)) {
-                canHoldSelection = false;
-                break;
-              }
-            }
             canHoldSelection = true;
-            if (!myBusy || myBusyIcon == null) break;
+            break;
           }
         }
       }
@@ -219,42 +209,15 @@ public class Tree2 extends JTree implements ComponentWithEmptyText, ComponentWit
   }
 
   private void updateBusy() {
-    if (myBusy) {
-      if (myBusyIcon == null) {
-        myBusyIcon = new AsyncProcessIcon(toString());
-        myBusyIcon.setOpaque(false);
-        myBusyIcon.setPaintPassiveIcon(false);
-        add(myBusyIcon);
-        myBusyIcon.addMouseListener(new MouseAdapter() {
-          @Override
-          public void mousePressed(MouseEvent e) {
-            if (!UIUtil.isActionClick(e)) return;
-            AbstractTreeBuilder2 builder = AbstractTreeBuilder2.getBuilderFor(Tree2.this);
-            if (builder != null) {
-              builder.cancelUpdate();
-            }
-          }
-        });
-      }
-    }
-
     if (myBusyIcon != null) {
-      if (myBusy) {
-        if (shouldShowBusyIconIfNeeded()) {
-          myBusyIcon.resume();
-          myBusyIcon.setToolTipText(IdeBundle.message("tooltip.text.update.is.in.progress.click.to.cancel"));
+      myBusyIcon.suspend();
+      myBusyIcon.setToolTipText(null);
+      //noinspection SSBasedInspection
+      SwingUtilities.invokeLater(() -> {
+        if (myBusyIcon != null) {
+          repaint();
         }
-      }
-      else {
-        myBusyIcon.suspend();
-        myBusyIcon.setToolTipText(null);
-        //noinspection SSBasedInspection
-        SwingUtilities.invokeLater(() -> {
-          if (myBusyIcon != null) {
-            repaint();
-          }
-        });
-      }
+      });
       updateBusyIconLocation();
     }
   }
@@ -702,23 +665,6 @@ public class Tree2 extends JTree implements ComponentWithEmptyText, ComponentWit
   public final void setLineStyleAngled() {
   }
 
-  public <T> T @NotNull [] getSelectedNodes(Class<T> nodeType, @Nullable NodeFilter<? super T> filter) {
-    TreePath[] paths = getSelectionPaths();
-    if (paths == null) return ArrayUtil.newArray(nodeType, 0);
-
-    ArrayList<T> nodes = new ArrayList<>();
-    for (TreePath path : paths) {
-      Object last = path.getLastPathComponent();
-      if (nodeType.isAssignableFrom(last.getClass())) {
-        if (filter != null && !filter.accept((T)last)) continue;
-        nodes.add((T)last);
-      }
-    }
-    T[] result = ArrayUtil.newArray(nodeType, nodes.size());
-    nodes.toArray(result);
-    return result;
-  }
-
   public interface NodeFilter<T> {
     boolean accept(T node);
   }
@@ -750,14 +696,7 @@ public class Tree2 extends JTree implements ComponentWithEmptyText, ComponentWit
 
   @Override
   public Dimension getPreferredSize() {
-    Dimension size = super.getPreferredSize();
-
-    if (myHoldSize != null) {
-      size.width = Math.max(size.width, myHoldSize.width);
-      size.height = Math.max(size.height, myHoldSize.height);
-    }
-
-    return size;
+    return super.getPreferredSize();
   }
 
   @Override
