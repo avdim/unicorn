@@ -34,8 +34,10 @@ java {
   if (true) {
     toolchain {
       languageVersion.set(JavaLanguageVersion.of(11))
-      vendor.set(JvmVendorSpec.BELLSOFT)
-      implementation.set(JvmImplementation.VENDOR_SPECIFIC)
+      if (false) {
+        vendor.set(JvmVendorSpec.BELLSOFT)
+        implementation.set(JvmImplementation.VENDOR_SPECIFIC)
+      }
     }
   } else {
     sourceCompatibility = JavaVersion.VERSION_11
