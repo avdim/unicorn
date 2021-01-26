@@ -2,17 +2,13 @@
 package com.intellij.my.file;
 
 import com.intellij.CommonBundle;
-import com.intellij.history.LocalHistory;
-import com.intellij.history.LocalHistoryAction;
 import com.intellij.ide.DataManager;
-import com.intellij.ide.DeleteProvider;
 import com.intellij.ide.IdeBundle;
 import com.intellij.ide.actions.RevealFileAction;
 import com.intellij.ide.util.DeleteUtil;
 import com.intellij.lang.LangBundle;
 import com.intellij.openapi.actionSystem.CommonDataKeys;
 import com.intellij.openapi.actionSystem.DataContext;
-import com.intellij.openapi.actionSystem.LangDataKeys;
 import com.intellij.openapi.application.ApplicationBundle;
 import com.intellij.openapi.application.ApplicationManager;
 import com.intellij.openapi.application.ApplicationNamesInfo;
@@ -35,7 +31,10 @@ import com.intellij.openapi.vfs.VFileProperty;
 import com.intellij.openapi.vfs.VfsUtil;
 import com.intellij.openapi.vfs.VirtualFile;
 import com.intellij.openapi.vfs.WritingAccessProvider;
-import com.intellij.psi.*;
+import com.intellij.psi.PsiDirectory;
+import com.intellij.psi.PsiElement;
+import com.intellij.psi.PsiFile;
+import com.intellij.psi.PsiFileSystemItem;
 import com.intellij.psi.util.PsiTreeUtil;
 import com.intellij.psi.util.PsiUtilBase;
 import com.intellij.psi.util.PsiUtilCore;
@@ -50,7 +49,6 @@ import com.intellij.util.IncorrectOperationException;
 import com.intellij.util.SmartList;
 import com.intellij.util.containers.ContainerUtil;
 import com.intellij.util.io.ReadOnlyAttributeUtil;
-import com.intellij.util.ui.IoErrorText;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -333,7 +331,7 @@ public final class DeleteHandler2 {
   private static class LocalFilesDeleteTask extends Task.Modal {
     private final PsiElement[] myFileElements;
 
-    List<PsiElement> processed = new ArrayList<>();
+    final List<PsiElement> processed = new ArrayList<>();
     VirtualFile aborted = null;
     Throwable error = null;
 

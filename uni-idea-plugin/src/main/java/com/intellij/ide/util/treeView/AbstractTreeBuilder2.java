@@ -24,7 +24,6 @@ import org.jetbrains.concurrency.Promises;
 import javax.swing.*;
 import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.DefaultTreeModel;
-import javax.swing.tree.TreeNode;
 import java.lang.ref.Reference;
 import java.lang.ref.WeakReference;
 import java.util.*;
@@ -46,14 +45,12 @@ public class AbstractTreeBuilder2 implements Disposable {
 
   protected void init(@NotNull JTree tree,
                       @NotNull DefaultTreeModel treeModel,
-                      AbstractTreeStructure treeStructure,
-                      @Nullable final Comparator<? super NodeDescriptor<?>> comparator,
-                      final boolean updateIfInactive) {
+                      AbstractTreeStructure treeStructure) {
 
     tree.putClientProperty(TREE_BUILDER, new WeakReference<>(this));
 
     myUi = createUi();
-    myUi.init(this, tree, treeModel, treeStructure, comparator, updateIfInactive);
+    myUi.init(this, tree, treeModel, treeStructure, null, AbstractTreeBuilder2.DEFAULT_UPDATE_INACTIVE);
 
     setPassthroughMode(isUnitTestingMode());
   }

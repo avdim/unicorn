@@ -2372,8 +2372,8 @@ public class AbstractTreeUi2 {
 
   static class ElementNode extends DefaultMutableTreeNode {
 
-    Set<Object> myElements = new HashSet<>();
-    AbstractTreeUi2 myUi;
+    final Set<Object> myElements = new HashSet<>();
+    final AbstractTreeUi2 myUi;
 
     ElementNode(AbstractTreeUi2 ui, NodeDescriptor descriptor) {
       super(descriptor);
@@ -4600,7 +4600,7 @@ public class AbstractTreeUi2 {
     boolean myWasExpanded;
     boolean myForceUpdate;
     boolean myDescriptorIsUpToDate;
-    boolean myUpdateChildren;
+    final boolean myUpdateChildren;
 
     UpdateInfo(NodeDescriptor descriptor,
                       TreeUpdatePass pass,

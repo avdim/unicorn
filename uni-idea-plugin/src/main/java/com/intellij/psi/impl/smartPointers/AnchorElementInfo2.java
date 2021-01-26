@@ -32,7 +32,7 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 class AnchorElementInfo2 extends SelfElementInfo2 {
-  private volatile long myStubElementTypeAndId; // stubId in the lower 32 bits; stubElementTypeIndex in the high 32 bits packed together for atomicity
+  private final long myStubElementTypeAndId; // stubId in the lower 32 bits; stubElementTypeIndex in the high 32 bits packed together for atomicity
 
   AnchorElementInfo2(@NotNull PsiElement anchor, @NotNull PsiFile containingFile, @NotNull Identikit.ByAnchor identikit) {
     super(ProperTextRange.create(anchor.getTextRange()), identikit, containingFile, false);
