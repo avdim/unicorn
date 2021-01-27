@@ -3,10 +3,10 @@
 package com.intellij.my.file;
 
 import com.intellij.ide.projectView.ProjectViewNode;
+import com.intellij.ide.projectView.impl.nodes.ProjectViewNode2;
+import com.intellij.ide.projectView.impl.nodes.ProjectViewNode2B;
 import com.intellij.ide.util.treeView.AbstractTreeStructure;
 import com.intellij.ide.util.treeView.NodeDescriptor;
-import com.intellij.openapi.project.Project;
-import com.intellij.openapi.project.ProjectManager;
 import com.intellij.openapi.util.ActionCallback;
 import com.intellij.psi.PsiDocumentManager;
 import com.intellij.psi.impl.smartPointers.AbstractTreeNod2;
@@ -93,6 +93,12 @@ public abstract class AbstractProjectTreeStructure2 extends AbstractTreeStructur
   public boolean isAlwaysLeaf(@NotNull Object element) {
     if (element instanceof ProjectViewNode) {
       return ((ProjectViewNode)element).isAlwaysLeaf();
+    }
+    if (element instanceof ProjectViewNode2) {
+      return ((ProjectViewNode2)element).isAlwaysLeaf();
+    }
+    if (element instanceof ProjectViewNode2B) {
+      return ((ProjectViewNode2B)element).isAlwaysLeaf();
     }
     return super.isAlwaysLeaf(element);
   }
