@@ -10,7 +10,6 @@ import com.intellij.ide.projectView.impl.nodes.ProjectViewNode2B;
 import com.intellij.ide.util.treeView.*;
 import com.intellij.openapi.progress.ProgressIndicator;
 import com.intellij.openapi.progress.util.StatusBarProgress;
-import com.intellij.openapi.util.ActionCallback;
 import com.intellij.openapi.util.Condition;
 import com.intellij.openapi.util.Conditions;
 import com.intellij.openapi.util.Ref;
@@ -47,7 +46,7 @@ public abstract class BaseProjectTreeBuilder2 extends AbstractTreeBuilder2 {
                                  @NotNull JTree tree,
                                  @NotNull DefaultTreeModel treeModel,
                                  @NotNull AbstractTreeStructure treeStructure) {
-    init(tree, treeModel, treeStructure, null, DEFAULT_UPDATE_INACTIVE);
+    init(tree, treeModel, treeStructure);
     getUi().setClearOnHideDelay(Registry.intValue("ide.tree.clearOnHideTime"));
 //    myProject = project;
   }

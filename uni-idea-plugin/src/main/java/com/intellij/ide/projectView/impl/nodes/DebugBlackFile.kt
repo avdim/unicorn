@@ -9,7 +9,7 @@ object DebugBlackFile {
   fun doDebug(equalityObject: Any, psiElement: PsiElement?) {
     if (equalityObject is SmartPsiElementPointer/*Impl*/<*>) {
       if (psiElement == null) {
-        Uni.log.warning { "equalityObject.element: ${equalityObject.element}" };
+        Uni.log.warning { "equalityObject.element: ${equalityObject.element}" }
         //debug (equalityObject as SmartPsiElementPointerImpl<*>).let{it.myElementInfo.restoreElement(it.myManager)}
       }
       if (equalityObject is SmartPsiElementPointerImpl2<*>) {

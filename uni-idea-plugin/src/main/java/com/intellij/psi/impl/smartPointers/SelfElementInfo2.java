@@ -19,7 +19,7 @@ import java.util.List;
 
 public class SelfElementInfo2 extends SmartPointerElementInf2 {
   private static final FileDocumentManager ourFileDocManager = FileDocumentManager.getInstance();
-  private volatile Identikit myIdentikit;
+  private final Identikit myIdentikit;
   private final VirtualFile myFile;
   private final boolean myForInjected;
   private int myStartOffset;

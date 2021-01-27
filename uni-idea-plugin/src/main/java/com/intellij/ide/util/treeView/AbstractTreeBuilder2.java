@@ -24,7 +24,6 @@ import org.jetbrains.concurrency.Promises;
 import javax.swing.*;
 import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.DefaultTreeModel;
-import javax.swing.tree.TreeNode;
 import java.lang.ref.Reference;
 import java.lang.ref.WeakReference;
 import java.util.*;
@@ -46,14 +45,12 @@ public class AbstractTreeBuilder2 implements Disposable {
 
   protected void init(@NotNull JTree tree,
                       @NotNull DefaultTreeModel treeModel,
-                      AbstractTreeStructure treeStructure,
-                      @Nullable final Comparator<? super NodeDescriptor<?>> comparator,
-                      final boolean updateIfInactive) {
+                      AbstractTreeStructure treeStructure) {
 
     tree.putClientProperty(TREE_BUILDER, new WeakReference<>(this));
 
     myUi = createUi();
-    myUi.init(this, tree, treeModel, treeStructure, comparator, updateIfInactive);
+    myUi.init(this, tree, treeModel, treeStructure);
 
     setPassthroughMode(isUnitTestingMode());
   }
@@ -388,29 +385,6 @@ public class AbstractTreeBuilder2 implements Disposable {
   public static AbstractTreeBuilder2 getBuilderFor(@NotNull JTree tree) {
     Reference<AbstractTreeBuilder2> ref = (Reference)tree.getClientProperty(TREE_BUILDER);
     return SoftReference.dereference(ref);
-  }
-
-  @Nullable
-  private <T> Object accept(@NotNull Class<?> nodeClass, Object element, @NotNull TreeVisitor<T> visitor) {
-    if (element == null) {
-      return null;
-    }
-
-    AbstractTreeStructure structure = getTreeStructure();
-    if (structure == null) return null;
-
-    //noinspection unchecked
-    if (nodeClass.isAssignableFrom(element.getClass()) && visitor.visit((T)element)) {
-      return element;
-    }
-
-    final Object[] children = structure.getChildElements(element);
-    for (Object each : children) {
-      final Object childObject = accept(nodeClass, each, visitor);
-      if (childObject != null) return childObject;
-    }
-
-    return null;
   }
 
   private static boolean isUnitTestingMode() {

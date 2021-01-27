@@ -42,11 +42,10 @@ open class ProjectViewTree2(model: TreeModel?) : DnDAwareTree2(null as TreeModel
     if (obj is AbstractTreeNod2<*>) {
       val value = obj.value
       if (value is PsiElement) {
-        val psi = value
-        if (!psi.isValid) {
+        if (!value.isValid) {
           return JBColor.RED
         }
-        val file = PsiUtilCore.getVirtualFile(psi)
+        val file = PsiUtilCore.getVirtualFile(value)
         if (file != null) {
           if (file.isDirectory) {
             return JBColor.WHITE
