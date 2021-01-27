@@ -19,6 +19,8 @@ object Uni : Disposable {
   val USE_FILE_TREE_PROVIDER = false
   @JvmStatic
   val log = Log
+  @JvmStatic
+  val todoDefaultProject by lazy { ProjectManager.getInstance().defaultProject }//todo
   val buildConfig = BuildConfig
   var selectedFile: VirtualFile? = null
   val job = Job()
