@@ -97,8 +97,8 @@ private fun _createUniFilesComponent(
         super.setFont(font.deriveFont(font.size /*+ 3f*/))
       }
     }
-  val treeStructure: ProjectAbstractTreeStructureBase2 =
-    object : ProjectTreeStructure2(project), ProjectViewSettings {
+  val treeStructure =
+    object : AbstractProjectTreeStructure2(), ProjectViewSettings {
       override fun createRoot(): AbstractTreeNod2<*> =
         object : ProjectViewProjectNode2() {
           override fun canRepresent(element: Any): Boolean = true

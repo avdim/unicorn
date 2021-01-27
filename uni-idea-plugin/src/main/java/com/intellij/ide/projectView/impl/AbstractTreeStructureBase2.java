@@ -5,6 +5,7 @@ import com.intellij.ide.util.treeView.AbstractTreeStructure;
 import com.intellij.ide.util.treeView.NodeDescriptor;
 import com.intellij.openapi.diagnostic.Logger;
 import com.intellij.openapi.project.Project;
+import com.intellij.openapi.project.ProjectManager;
 import com.intellij.psi.impl.smartPointers.AbstractTreeNod2;
 import com.intellij.util.ArrayUtil;
 import org.jetbrains.annotations.NotNull;
@@ -14,11 +15,7 @@ import java.util.Collection;
 
 public abstract class AbstractTreeStructureBase2 extends AbstractTreeStructure {
   private static final Logger LOG = Logger.getInstance(AbstractTreeStructureBase2.class);
-  protected final Project myProject;
-
-  protected AbstractTreeStructureBase2(Project project) {
-    myProject = project;
-  }
+  protected final Project myProject = ProjectManager.getInstance().getDefaultProject();
 
   @Override
   public Object @NotNull [] getChildElements(@NotNull Object element) {

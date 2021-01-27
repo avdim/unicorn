@@ -3,27 +3,22 @@
 package com.intellij.my.file;
 
 import com.intellij.ide.projectView.ProjectViewNode;
-import com.intellij.ide.projectView.ViewSettings;
-import com.intellij.ide.projectView.impl.ProjectAbstractTreeStructureBase2;
-import com.intellij.psi.impl.smartPointers.AbstractTreeNod2;
-import com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode2;
-
-import com.intellij.openapi.project.Project;
+import com.intellij.ide.projectView.impl.AbstractTreeStructureBase2;
 import com.intellij.openapi.util.ActionCallback;
 import com.intellij.psi.PsiDocumentManager;
+import com.intellij.psi.impl.smartPointers.AbstractTreeNod2;
 import org.jetbrains.annotations.NotNull;
 
-public abstract class AbstractProjectTreeStructure2 extends ProjectAbstractTreeStructureBase2 {
+public abstract class AbstractProjectTreeStructure2 extends AbstractTreeStructureBase2 {
   private final AbstractTreeNod2 myRoot;
 
-  public AbstractProjectTreeStructure2(@NotNull Project project) {
-    super(project);
+  public AbstractProjectTreeStructure2() {
     myRoot = createRoot();
   }
 
-  protected AbstractTreeNod2 createRoot() {
+  abstract protected AbstractTreeNod2 createRoot(); /*{
     return new ProjectViewProjectNode2();
-  }
+  }*/
 
   @NotNull
   @Override
