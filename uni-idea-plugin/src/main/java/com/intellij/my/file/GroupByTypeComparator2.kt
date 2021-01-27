@@ -1,20 +1,21 @@
 // Copyright 2000-2020 JetBrains s.r.o. Use of this source code is governed by the Apache 2.0 license that can be found in the LICENSE file.
 package com.intellij.my.file
 
-import com.intellij.ide.util.treeView.NodeDescriptor
 import com.intellij.ide.projectView.ProjectViewNode
+import com.intellij.ide.projectView.impl.nodes.ProjectViewNode2
 import com.intellij.ide.util.treeView.AlphaComparator
 import com.intellij.openapi.util.text.StringUtil
+import com.intellij.psi.impl.smartPointers.NodeDescriptor2
 import java.util.Comparator
 
 class GroupByTypeComparator2 :
-  Comparator<NodeDescriptor<*>?> {
+  Comparator<NodeDescriptor2<*>?> {
   private val _isAbbreviateQualifiedNames: Boolean = false
   private val _isSortByType: Boolean = false
   private val _isManualOrder: Boolean = false
   private val _isFoldersAlwaysOnTop: Boolean = false
 
-  override fun compare(descriptor1: NodeDescriptor<*>?, descriptor2: NodeDescriptor<*>?): Int {
+  override fun compare(descriptor1: NodeDescriptor2<*>?, descriptor2: NodeDescriptor2<*>?): Int {
     var descriptor1 = descriptor1
     var descriptor2 = descriptor2
     descriptor1 = getNodeDescriptor(descriptor1)
@@ -65,19 +66,23 @@ class GroupByTypeComparator2 :
     return if (descriptor1 == null) {
       -1
     } else {
-      if (descriptor2 == null) 1 else AlphaComparator.INSTANCE.compare(descriptor1, descriptor2)
+      if (descriptor2 == null) {
+        1
+      } else {
+        AlphaComparator2.compare(descriptor1, descriptor2)
+      }
     }
   }
 
-  private fun getNodeDescriptor(descriptor: NodeDescriptor<*>?): NodeDescriptor<*>? {
+  private fun getNodeDescriptor(descriptor: NodeDescriptor2<*>?): NodeDescriptor2<*>? {
     var current = descriptor
-    if (!_isSortByType && current is ProjectViewNode<*> && current.isSortByFirstChild) {
-      val children = current.children
-      if (!children.isEmpty()) {
-        current = children.iterator().next()
-        current!!.update()
-      }
-    }
+//    if (!_isSortByType && current is ProjectViewNode<*> && current.isSortByFirstChild) {
+//      val children = current.children
+//      if (!children.isEmpty()) {
+//        current = children.iterator().next()
+//        current!!.update()
+//      }
+//    }
     return current
   }
 

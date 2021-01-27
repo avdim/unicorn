@@ -2,8 +2,6 @@
 package com.intellij.psi.impl.smartPointers;
 
 import com.intellij.ide.projectView.PresentationData;
-import com.intellij.ide.util.treeView.NodeDescriptor;
-import com.intellij.ide.util.treeView.PresentableNodeDescriptor;
 import com.intellij.navigation.NavigationItem;
 import com.intellij.openapi.application.ApplicationManager;
 import com.intellij.openapi.application.ReadAction;
@@ -148,7 +146,7 @@ public abstract class AbstractTreeNod2<T> extends PresentableNodeDescriptor2<Abs
   }
 
   @Override
-  public final NodeDescriptor getParentDescriptor() {
+  public final NodeDescriptor2 getParentDescriptor() {
     return myParent;
   }
 

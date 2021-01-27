@@ -15,11 +15,11 @@ import org.jetbrains.annotations.Nullable;
 
 import java.awt.*;
 
-public abstract class PresentableNodeDescriptor2<E> extends NodeDescriptor<E> {
+public abstract class PresentableNodeDescriptor2<E> extends NodeDescriptor2<E> {
   private PresentationData myTemplatePresentation;
   private PresentationData myUpdatedPresentation;
 
-  protected PresentableNodeDescriptor2(Project project, @Nullable NodeDescriptor parentDescriptor) {
+  protected PresentableNodeDescriptor2(Project project, @Nullable NodeDescriptor2 parentDescriptor) {
     super(project, parentDescriptor);
   }
 
@@ -38,7 +38,7 @@ public abstract class PresentableNodeDescriptor2<E> extends NodeDescriptor<E> {
   }
 
   @Override
-  public void applyFrom(@NotNull NodeDescriptor desc) {
+  public void applyFrom(@NotNull NodeDescriptor2 desc) {
     if (desc instanceof PresentableNodeDescriptor2) {
       apply(((PresentableNodeDescriptor2<?>)desc).getPresentation());
     }
@@ -132,8 +132,8 @@ public abstract class PresentableNodeDescriptor2<E> extends NodeDescriptor<E> {
     return null;
   }
 
-  public boolean isParentOf(@NotNull NodeDescriptor eachNode) {
-    NodeDescriptor eachParent = eachNode.getParentDescriptor();
+  public boolean isParentOf(@NotNull NodeDescriptor2 eachNode) {
+    NodeDescriptor2 eachParent = eachNode.getParentDescriptor();
     while (eachParent != null) {
       if (eachParent == this) return true;
       eachParent = eachParent.getParentDescriptor();
@@ -141,8 +141,8 @@ public abstract class PresentableNodeDescriptor2<E> extends NodeDescriptor<E> {
     return false;
   }
 
-  public boolean isAncestorOrSelf(NodeDescriptor selectedNode) {
-    NodeDescriptor<?> node = selectedNode;
+  public boolean isAncestorOrSelf(NodeDescriptor2 selectedNode) {
+    NodeDescriptor2<?> node = selectedNode;
     while (node != null) {
       if (equals(node)) return true;
       node = node.getParentDescriptor();

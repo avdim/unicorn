@@ -2,12 +2,14 @@
 
 package com.intellij.ide.util.treeView;
 
+import com.intellij.my.file.AbstractProjectTreeStructure2;
 import com.intellij.openapi.Disposable;
 import com.intellij.openapi.application.Application;
 import com.intellij.openapi.application.ApplicationManager;
 import com.intellij.openapi.progress.ProgressIndicator;
 import com.intellij.openapi.progress.Progressive;
 import com.intellij.openapi.util.ActionCallback;
+import com.intellij.psi.impl.smartPointers.NodeDescriptor2;
 import com.intellij.reference.SoftReference;
 import com.intellij.util.Consumer;
 import com.intellij.util.concurrency.EdtExecutorService;
@@ -45,7 +47,7 @@ public class AbstractTreeBuilder2 implements Disposable {
 
   protected void init(@NotNull JTree tree,
                       @NotNull DefaultTreeModel treeModel,
-                      AbstractTreeStructure treeStructure) {
+                      AbstractProjectTreeStructure2 treeStructure) {
 
     tree.putClientProperty(TREE_BUILDER, new WeakReference<>(this));
 
@@ -107,7 +109,7 @@ public class AbstractTreeBuilder2 implements Disposable {
     return ui == null ? null : ui.getRootNode();
   }
 
-  public final void setNodeDescriptorComparator(Comparator<? super NodeDescriptor<?>> nodeDescriptorComparator) {
+  public final void setNodeDescriptorComparator(Comparator<? super NodeDescriptor2<?>> nodeDescriptorComparator) {
     AbstractTreeUi2 ui = getUi();
     if (ui != null) {
       ui.setNodeDescriptorComparator(nodeDescriptorComparator);
@@ -119,7 +121,7 @@ public class AbstractTreeBuilder2 implements Disposable {
    * 1.TreeStructure always returns & receives "treeStructure" element returned by getTreeStructureElement
    * 2.Paths contain "model" element returned by getElement
    */
-  protected Object getTreeStructureElement(NodeDescriptor nodeDescriptor) {
+  protected Object getTreeStructureElement(NodeDescriptor2 nodeDescriptor) {
     return nodeDescriptor == null ? null : nodeDescriptor.getElement();
   }
 
@@ -232,11 +234,11 @@ public class AbstractTreeBuilder2 implements Disposable {
     if (ui != null) ui.doExpandNodeChildren(node);
   }
 
-  protected boolean isAutoExpandNode(final NodeDescriptor nodeDescriptor) {
+  protected boolean isAutoExpandNode(final NodeDescriptor2 nodeDescriptor) {
     return !isDisposed() && getRootElement() == getTreeStructureElement(nodeDescriptor);
   }
 
-  protected boolean isAlwaysShowPlus(final NodeDescriptor descriptor) {
+  protected boolean isAlwaysShowPlus(final NodeDescriptor2 descriptor) {
     return false;
   }
 
@@ -371,7 +373,7 @@ public class AbstractTreeBuilder2 implements Disposable {
     myUi = null;
   }
 
-  protected boolean updateNodeDescriptor(@NotNull NodeDescriptor descriptor) {
+  protected boolean updateNodeDescriptor(@NotNull NodeDescriptor2 descriptor) {
     AbstractTreeUi2 ui = getUi();
     return ui != null && descriptor.update();
   }

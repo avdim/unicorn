@@ -31,7 +31,7 @@ import gnu.trove.THashSet
 open class ProjectTreeBuilder2(
   tree: JTree,
   treeModel: DefaultTreeModel,
-  treeStructure: AbstractTreeStructure
+  treeStructure: AbstractProjectTreeStructure2
 ) : BaseProjectTreeBuilder2( /*project, */tree, treeModel, treeStructure) {
 
   private class MyProblemListener : ProblemListener {
