@@ -43,7 +43,8 @@ val INTELLIJ_GRADLE = "0.6.5"
 //val DESKTOP_COMPOSE = "0.3.0-build135"
 //val DESKTOP_COMPOSE = "0.3.0-build136"
 //val DESKTOP_COMPOSE = "0.3.0-build140"
-val DESKTOP_COMPOSE = "0.0.0-vsync-build30"
+//val DESKTOP_COMPOSE = "0.0.0-vsync-build30"
+val DESKTOP_COMPOSE = "0.3.0-build146"
 
 val Project.UNI_BUILD_TYPE: BuildType get() =
   when (safeArgument("uniBuildType")) {
@@ -71,8 +72,9 @@ val UNI_VERSION = "0.12.5"
 //val LAST_COMMUNITY = IdeaVersion.Download("203.6682.78-EAP-SNAPSHOT", "IC")
 //val LAST_IDEA_STR = "203.6682.115-EAP-SNAPSHOT"
 //val LAST_IDEA_STR = "2020.3.1"
-val LAST_IDEA_STR = "2020.3.2"
+//val LAST_IDEA_STR = "2020.3.2"
 //val LAST_IDEA_STR = "211.4961.30-EAP-SNAPSHOT"
+val LAST_IDEA_STR = "211.4961.33-EAP-SNAPSHOT"
 val LAST_COMMUNITY = IdeaVersion.Download(LAST_IDEA_STR, "IC")
 val LAST_ULTIMATE = IdeaVersion.Download(LAST_IDEA_STR, "IU")
 
