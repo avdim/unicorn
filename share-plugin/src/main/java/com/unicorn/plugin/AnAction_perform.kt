@@ -9,7 +9,7 @@ import com.intellij.testFramework.TestActionEvent
 
 fun AnAction.perform(
   context: DataContext = DataContext.EMPTY_CONTEXT,
-  event: AnActionEvent = TestActionEvent()
+  event: AnActionEvent = TestActionEvent2()
 ) {
   //https://intellij-support.jetbrains.com/hc/en-us/community/posts/206130119-Triggering-AnAction-instances-
 //    val actionToolbar = ComponentUtil.getParentOfType(
