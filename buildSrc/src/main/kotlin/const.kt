@@ -54,7 +54,7 @@ val Project.UNI_BUILD_TYPE: BuildType get() =
 
 val Project.myIdeaSandboxDir:String get() = when (UNI_BUILD_TYPE) {
     BuildType.Release -> {
-      HOME_DIR.resolve("Desktop/uni_release_system").absolutePath
+      HOME_DIR.resolve("Desktop/uni_release_system").absolutePath //todo относительный путь
     }
     BuildType.Debug -> {
       tmpDir()//"/tmp/idea_sandbox"
@@ -71,9 +71,8 @@ val UNI_VERSION = "0.12.5"
 //val LAST_COMMUNITY = IdeaVersion.Download("203.6682.78-EAP-SNAPSHOT", "IC")
 //val LAST_IDEA_STR = "203.6682.115-EAP-SNAPSHOT"
 //val LAST_IDEA_STR = "2020.3.1"
-//val LAST_IDEA_STR = "203.7148.15-EAP-SNAPSHOT"
-//val LAST_IDEA_STR = "203.7148.40-EAP-SNAPSHOT"
-val LAST_IDEA_STR = "2020.3.2"
+//val LAST_IDEA_STR = "2020.3.2"
+val LAST_IDEA_STR = "211.4961.30-EAP-SNAPSHOT"
 val LAST_COMMUNITY = IdeaVersion.Download(LAST_IDEA_STR, "IC")
 val LAST_ULTIMATE = IdeaVersion.Download(LAST_IDEA_STR, "IU")
 

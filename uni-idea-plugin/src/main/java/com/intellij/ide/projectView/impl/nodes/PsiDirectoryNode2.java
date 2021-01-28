@@ -34,6 +34,7 @@ import com.intellij.ui.SimpleTextAttributes;
 import com.intellij.util.IconUtil;
 import com.intellij.util.PlatformUtils;
 import com.intellij.util.containers.SmartHashSet;
+import com.unicorn.Uni;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -232,6 +233,7 @@ public class PsiDirectoryNode2 extends BasePsiNode2<PsiDirectory> implements Nav
 
   @Override
   public boolean canRepresent(final Object element) {
+    //Сюда код не доходил при отладке
     VirtualFile file = getVirtualFile(element);
     if (file != null) {
       synchronized (chain) {
@@ -239,8 +241,13 @@ public class PsiDirectoryNode2 extends BasePsiNode2<PsiDirectory> implements Nav
       }
     }
     if (super.canRepresent(element)) return true;
-    return ProjectViewDirectoryHelper.getInstance(getProject())
-      .canRepresent(element, getValue(), getParentValue(), getSettings());
+    if (element instanceof VirtualFile && getParentValue() instanceof PsiDirectory) {
+      return ProjectViewDirectoryHelper.getInstance(getProject())
+        .canRepresent((VirtualFile) element, getValue(), (PsiDirectory) getParentValue(), getSettings());
+    } else {
+      Uni.getLog().error("canRepresent return false. element:" + element + ", getValue(): " + getValue() + ", getParentValue(): " + getParentValue());
+      return false;
+    }
   }
 
   @Override

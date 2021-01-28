@@ -75,6 +75,10 @@ object Log {
     }
   }
 
+  inline fun warning(payload: Payload) {
+    warning { payload }
+  }
+
   inline fun error(lambda: () -> Payload) {
     ERROR_LEVEL_ENABLE {
       handleLog(
