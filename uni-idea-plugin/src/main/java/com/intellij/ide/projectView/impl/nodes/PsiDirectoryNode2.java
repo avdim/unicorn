@@ -47,13 +47,15 @@ public class PsiDirectoryNode2 extends BasePsiNode2<PsiDirectory> implements Nav
   private final Set<VirtualFile> chain = new SmartHashSet<>();
 
   private final PsiFileSystemItemFilter myFilter;
+  private final @NotNull Project project2;
 
-  public PsiDirectoryNode2(Project project, @NotNull PsiDirectory value, ViewSettings viewSettings) {
+  public PsiDirectoryNode2(@NotNull Project project, @NotNull PsiDirectory value, ViewSettings viewSettings) {
     this(project, value, viewSettings, null);
   }
 
-  public PsiDirectoryNode2(Project project, @NotNull PsiDirectory value, ViewSettings viewSettings, @Nullable PsiFileSystemItemFilter filter) {
+  public PsiDirectoryNode2(@NotNull Project project, @NotNull PsiDirectory value, ViewSettings viewSettings, @Nullable PsiFileSystemItemFilter filter) {
     super(project, value, viewSettings);
+    project2 = project;
     myFilter = filter;
   }
 
@@ -72,8 +74,6 @@ public class PsiDirectoryNode2 extends BasePsiNode2<PsiDirectory> implements Nav
 
   @Override
   protected void updateImpl(@NotNull PresentationData data) {
-    Project project = getProject();
-    assert project != null : this;
     PsiDirectory psiDirectory = getValue();
     assert psiDirectory != null : this;
     VirtualFile directoryFile = psiDirectory.getVirtualFile();
@@ -90,8 +90,8 @@ public class PsiDirectoryNode2 extends BasePsiNode2<PsiDirectory> implements Nav
       }
     }
 
-    if (ProjectRootsUtil.isModuleContentRoot(directoryFile, project)) {
-      ProjectFileIndex fi = ProjectRootManager.getInstance(project).getFileIndex();
+    if (ProjectRootsUtil.isModuleContentRoot(directoryFile, project2)) {
+      ProjectFileIndex fi = ProjectRootManager.getInstance(project2).getFileIndex();
       Module module = fi.getModuleForFile(directoryFile);
 
       data.setPresentableText(directoryFile.getName());
@@ -100,12 +100,8 @@ public class PsiDirectoryNode2 extends BasePsiNode2<PsiDirectory> implements Nav
           if (ModuleType.isInternal(module) || !shouldShowModuleName()) {
             data.addText(directoryFile.getName() + " ", SimpleTextAttributes.REGULAR_ATTRIBUTES);
           }
-          else if (moduleNameMatchesDirectoryName(module, directoryFile, fi)) {
-            data.addText(directoryFile.getName(), SimpleTextAttributes.REGULAR_BOLD_ATTRIBUTES);
-          }
           else {
-            data.addText(directoryFile.getName() + " ", SimpleTextAttributes.REGULAR_ATTRIBUTES);
-            data.addText("[" + module.getName() + "]", SimpleTextAttributes.REGULAR_BOLD_ATTRIBUTES);
+            data.addText(directoryFile.getName() + " ", SimpleTextAttributes.REGULAR_ATTRIBUTES);// or REGULAR_BOLD_ATTRIBUTES
           }
         }
         else {
@@ -113,7 +109,7 @@ public class PsiDirectoryNode2 extends BasePsiNode2<PsiDirectory> implements Nav
         }
 
         boolean shouldShowUrl = getSettings().isShowURL() && (parentValue instanceof Module || parentValue instanceof Project);
-        data.setLocationString(ProjectViewDirectoryHelper.getInstance(project).getLocationString(psiDirectory,
+        data.setLocationString(ProjectViewDirectoryHelper.getInstance(project2).getLocationString(psiDirectory,
                                                                                                  shouldShowUrl,
                                                                                                  shouldShowSourcesRoot()));
         setupIcon(data, psiDirectory);
@@ -131,7 +127,7 @@ public class PsiDirectoryNode2 extends BasePsiNode2<PsiDirectory> implements Nav
     }
 
     data.setPresentableText(name);
-    data.setLocationString(ProjectViewDirectoryHelper.getInstance(project).getLocationString(psiDirectory, false, false));
+    data.setLocationString(ProjectViewDirectoryHelper.getInstance(project2).getLocationString(psiDirectory, false, false));
 
     setupIcon(data, psiDirectory);
   }
@@ -140,33 +136,10 @@ public class PsiDirectoryNode2 extends BasePsiNode2<PsiDirectory> implements Nav
     return Registry.is("ide.hide.real.module.name");
   }
 
-  private static boolean moduleNameMatchesDirectoryName(@NotNull Module module, @NotNull VirtualFile directoryFile, @NotNull ProjectFileIndex fileIndex) {
-    if (canRealModuleNameBeHidden()) return true;
-    String moduleName = module.getName();
-    String directoryName = directoryFile.getName();
-    if (moduleName.equalsIgnoreCase(directoryName)) {
-      return true;
-    }
-    if (ModuleGrouperKt.isQualifiedModuleNamesEnabled(module.getProject()) && StringUtil.endsWithIgnoreCase(moduleName, directoryName)) {
-      int parentPrefixLength = moduleName.length() - directoryName.length() - 1;
-      if (parentPrefixLength > 0 && moduleName.charAt(parentPrefixLength) == '.') {
-        VirtualFile parentDirectory = directoryFile.getParent();
-        if (ProjectRootsUtil.isModuleContentRoot(parentDirectory, module.getProject())) {
-          Module parentModule = fileIndex.getModuleForFile(parentDirectory);
-          if (parentModule != null && parentModule.getName().length() == parentPrefixLength
-              && moduleName.startsWith(parentModule.getName())) {
-            return true;
-          }
-        }
-      }
-    }
-    return false;
-  }
-
   protected void setupIcon(PresentationData data, PsiDirectory psiDirectory) {
     final VirtualFile virtualFile = psiDirectory.getVirtualFile();
     if (PlatformUtils.isAppCode()) {
-      final Icon icon = IconUtil.getIcon(virtualFile, 0, myProject);
+      final Icon icon = IconUtil.getIcon(virtualFile, 0, project2);
       data.setIcon(icon);
     }
     else {
@@ -177,11 +150,11 @@ public class PsiDirectoryNode2 extends BasePsiNode2<PsiDirectory> implements Nav
 
   @Override
   public Collection<AbstractTreeNod2<?>> getChildrenImpl() {
-    return ProjectViewDirectoryHelper2.getInstance(myProject).getDirectoryChildren(getValue(), getSettings(), true, getFilter());
+    return ProjectViewDirectoryHelper2.getInstance(project2).getDirectoryChildren(getValue(), getSettings(), true, getFilter());
   }
 
   public boolean isFQNameShown() {
-    return ProjectViewDirectoryHelper.getInstance(getProject()).isShowFQName(getSettings(), getParentValue(), getValue());
+    return ProjectViewDirectoryHelper.getInstance(project2).isShowFQName(getSettings(), getParentValue(), getValue());
   }
 
   @Override
@@ -200,7 +173,7 @@ public class PsiDirectoryNode2 extends BasePsiNode2<PsiDirectory> implements Nav
       return false;
     }
 
-    final Project project = value.getProject();
+    final @Nullable Project project = value.getProject();
     PsiFileSystemItemFilter filter = getFilter();
     if (filter != null) {
       PsiFile psiFile = PsiManager.getInstance(project).findFile(file);
@@ -242,7 +215,7 @@ public class PsiDirectoryNode2 extends BasePsiNode2<PsiDirectory> implements Nav
     }
     if (super.canRepresent(element)) return true;
     if (element instanceof VirtualFile && getParentValue() instanceof PsiDirectory) {
-      return ProjectViewDirectoryHelper.getInstance(getProject())
+      return ProjectViewDirectoryHelper.getInstance(project2)
         .canRepresent((VirtualFile) element, getValue(), (PsiDirectory) getParentValue(), getSettings());
     } else {
       Uni.getLog().error("canRepresent return false. element:" + element + ", getValue(): " + getValue() + ", getParentValue(): " + getParentValue());
@@ -261,12 +234,10 @@ public class PsiDirectoryNode2 extends BasePsiNode2<PsiDirectory> implements Nav
   @Override
   public boolean canNavigate() {
     VirtualFile file = getVirtualFile();
-    Project project = getProject();
-
-    ProjectSettingsService service = ProjectSettingsService.getInstance(myProject);
-    return file != null && (ProjectRootsUtil.isModuleContentRoot(file, project) && service.canOpenModuleSettings() ||
-                            ProjectRootsUtil.isModuleSourceRoot(file, project)  && service.canOpenContentEntriesSettings() ||
-                            ProjectRootsUtil.isLibraryRoot(file, project) && service.canOpenModuleLibrarySettings());
+    ProjectSettingsService service = ProjectSettingsService.getInstance(project2);
+    return file != null && (ProjectRootsUtil.isModuleContentRoot(file, project2) && service.canOpenModuleSettings() ||
+                            ProjectRootsUtil.isModuleSourceRoot(file, project2)  && service.canOpenContentEntriesSettings() ||
+                            ProjectRootsUtil.isLibraryRoot(file, project2) && service.canOpenModuleLibrarySettings());
   }
 
   @Override
@@ -279,12 +250,11 @@ public class PsiDirectoryNode2 extends BasePsiNode2<PsiDirectory> implements Nav
     Module module = ModuleUtilCore.findModuleForPsiElement(getValue());
     if (module != null) {
       final VirtualFile file = getVirtualFile();
-      final Project project = getProject();
-      ProjectSettingsService service = ProjectSettingsService.getInstance(myProject);
-      if (ProjectRootsUtil.isModuleContentRoot(file, project)) {
+      ProjectSettingsService service = ProjectSettingsService.getInstance(project2);
+      if (ProjectRootsUtil.isModuleContentRoot(file, project2)) {
         service.openModuleSettings(module);
       }
-      else if (ProjectRootsUtil.isLibraryRoot(file, project)) {
+      else if (ProjectRootsUtil.isLibraryRoot(file, project2)) {
         final OrderEntry orderEntry = LibraryUtil.findLibraryEntry(file, module.getProject());
         if (orderEntry != null) {
           service.openLibraryOrSdkSettings(orderEntry);
@@ -299,13 +269,11 @@ public class PsiDirectoryNode2 extends BasePsiNode2<PsiDirectory> implements Nav
   @Override
   public String getNavigateActionText(boolean focusEditor) {
     VirtualFile file = getVirtualFile();
-    Project project = getProject();
-
-    if (file != null && project != null) {
-      if (ProjectRootsUtil.isModuleContentRoot(file, project) || ProjectRootsUtil.isModuleSourceRoot(file, project)) {
+    if (file != null) {
+      if (ProjectRootsUtil.isModuleContentRoot(file, project2) || ProjectRootsUtil.isModuleSourceRoot(file, project2)) {
         return ActionsBundle.message("action.ModuleSettings.navigate");
       }
-      if (ProjectRootsUtil.isLibraryRoot(file, project)) {
+      if (ProjectRootsUtil.isLibraryRoot(file, project2)) {
         return ActionsBundle.message("action.LibrarySettings.navigate");
       }
     }
@@ -326,7 +294,7 @@ public class PsiDirectoryNode2 extends BasePsiNode2<PsiDirectory> implements Nav
   public String getTitle() {
     final PsiDirectory directory = getValue();
     if (directory != null) {
-      return PsiDirectoryFactory.getInstance(getProject()).getQualifiedName(directory, true);
+      return PsiDirectoryFactory.getInstance(project2).getQualifiedName(directory, true);
     }
     return super.getTitle();
   }
