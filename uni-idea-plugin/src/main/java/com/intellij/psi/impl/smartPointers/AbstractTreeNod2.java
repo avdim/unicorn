@@ -14,7 +14,6 @@ import com.intellij.openapi.ui.Queryable;
 import com.intellij.openapi.util.Comparing;
 import com.intellij.openapi.util.Key;
 import com.intellij.openapi.vcs.FileStatus;
-import com.intellij.openapi.vcs.FileStatusManager;
 import com.intellij.openapi.vfs.VirtualFile;
 import com.intellij.psi.*;
 import com.intellij.psi.util.PsiUtilCore;
@@ -81,8 +80,7 @@ public abstract class AbstractTreeNod2<T> extends PresentableNodeDescriptor2<Abs
 
   private void setForcedForeground(@NotNull PresentationData presentation) {
     final FileStatus status = getFileStatus();
-    Color fgColor = getFileStatusColor(status);
-    fgColor = fgColor == null ? status.getColor() : fgColor;
+    Color fgColor = status.getColor();
 
     if (valueIsCut()) {
       fgColor = CopyPasteManager.CUT_COLOR;
@@ -95,7 +93,7 @@ public abstract class AbstractTreeNod2<T> extends PresentableNodeDescriptor2<Abs
 
   @Override
   protected boolean shouldUpdateData() {
-    return !myProject.isDisposed() && getEqualityObject() != null;
+    return getEqualityObject() != null;
   }
 
   @NotNull
@@ -285,16 +283,6 @@ public abstract class AbstractTreeNod2<T> extends PresentableNodeDescriptor2<Abs
 
   @Override
   public void apply(@NotNull Map<String, String> info) {
-  }
-
-  public Color getFileStatusColor(final FileStatus status) {
-    if (FileStatus.NOT_CHANGED.equals(status) && myProject != null && !myProject.isDefault()) {
-      final VirtualFile vf = getVirtualFile();
-      if (vf != null && vf.isDirectory()) {
-        return FileStatusManager.getInstance(myProject).getRecursiveStatus(vf).getColor();
-      }
-    }
-    return status.getColor();
   }
 
   protected VirtualFile getVirtualFile() {

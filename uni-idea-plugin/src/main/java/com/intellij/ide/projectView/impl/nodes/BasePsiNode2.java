@@ -38,7 +38,7 @@ public abstract class BasePsiNode2<T extends PsiElement> extends AbstractPsiBase
 
   @Override
   public FileStatus getFileStatus() {
-    return computeFileStatus(getVirtualFile());
+    return computeFileStatus(myVirtualFile);
   }
 
   @Override
