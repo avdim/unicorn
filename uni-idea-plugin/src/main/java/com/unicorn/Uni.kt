@@ -14,6 +14,7 @@ import com.unicorn.plugin.configureIDE
 import com.unicorn.plugin.getToolWindow
 import kotlinx.coroutines.*
 import com.intellij.my.file.ConfUniFiles
+import com.intellij.openapi.application.impl.CoroutineExceptionHandlerImpl
 
 object Uni : Disposable {
   val USE_FILE_TREE_PROVIDER = false
@@ -24,7 +25,10 @@ object Uni : Disposable {
   val buildConfig = BuildConfig
   var selectedFile: VirtualFile? = null
   val job = Job()
-  val scope: CoroutineScope = MainScope() + job
+  val scope: CoroutineScope = MainScope() + job + CoroutineExceptionHandler { coroutineContext, throwable ->
+    throwable.printStackTrace()
+    Uni.log.error { "coroutine exception in coroutineContext: $coroutineContext, throwable: $throwable" }
+  }
   val PLUGIN_NAME = "UniCorn"
 
   init {
