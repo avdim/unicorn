@@ -2,8 +2,6 @@
 package com.intellij.psi.impl.smartPointers;
 
 import com.intellij.ide.projectView.PresentationData;
-import com.intellij.ide.util.treeView.NodeDescriptor;
-import com.intellij.ide.util.treeView.PresentableNodeDescriptor;
 import com.intellij.navigation.NavigationItem;
 import com.intellij.openapi.application.ApplicationManager;
 import com.intellij.openapi.application.ReadAction;
@@ -31,7 +29,7 @@ import java.lang.ref.Reference;
 import java.util.Collection;
 import java.util.Map;
 
-public abstract class AbstractTreeNod2<T> extends PresentableNodeDescriptor<AbstractTreeNod2<T>>
+public abstract class AbstractTreeNod2<T> extends PresentableNodeDescriptor2<AbstractTreeNod2<T>>
   implements NavigationItem, Queryable.Contributor, LeafState.Supplier {
 
   private static final TextAttributesKey FILESTATUS_ERRORS = TextAttributesKey.createTextAttributesKey("FILESTATUS_ERRORS");
@@ -59,7 +57,7 @@ public abstract class AbstractTreeNod2<T> extends PresentableNodeDescriptor<Abst
   }
 
   @Override
-  public PresentableNodeDescriptor getChildToHighlightAt(int index) {
+  public PresentableNodeDescriptor2 getChildToHighlightAt(int index) {
     final Collection<? extends AbstractTreeNod2<?>> kids = getChildren();
     int i = 0;
     for (final AbstractTreeNod2<?> kid : kids) {
@@ -148,7 +146,7 @@ public abstract class AbstractTreeNod2<T> extends PresentableNodeDescriptor<Abst
   }
 
   @Override
-  public final NodeDescriptor getParentDescriptor() {
+  public final NodeDescriptor2 getParentDescriptor() {
     return myParent;
   }
 

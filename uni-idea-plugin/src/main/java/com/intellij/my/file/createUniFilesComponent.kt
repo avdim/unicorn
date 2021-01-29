@@ -30,6 +30,7 @@ import com.intellij.psi.PsiDirectoryContainer
 import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiManager
 import com.intellij.psi.impl.smartPointers.AbstractTreeNod2
+import com.intellij.psi.impl.smartPointers.NodeDescriptor2
 import com.intellij.psi.util.PsiUtilCore
 import com.intellij.ui.ScrollPaneFactory
 import com.intellij.ui.SimpleColoredComponent
@@ -97,8 +98,8 @@ private fun _createUniFilesComponent(
         super.setFont(font.deriveFont(font.size /*+ 3f*/))
       }
     }
-  val treeStructure: ProjectAbstractTreeStructureBase2 =
-    object : ProjectTreeStructure2(project), ProjectViewSettings {
+  val treeStructure =
+    object : AbstractProjectTreeStructure2(), ProjectViewSettings {
       override fun createRoot(): AbstractTreeNod2<*> =
         object : ProjectViewProjectNode2() {
           override fun canRepresent(element: Any): Boolean = true
@@ -127,7 +128,7 @@ private fun _createUniFilesComponent(
     return TreeUtil.getSelectedPathIfOne(myTree)
   }
 
-  fun <T : NodeDescriptor<*>> getSelectedNodes(nodeClass: Class<T>): List<T> {
+  fun <T : NodeDescriptor2<*>> getSelectedNodes(nodeClass: Class<T>): List<T> {
     val paths: Array<out TreePath> = myTree.selectionPaths ?: return emptyList()
     val result = ArrayList<T>()
     for (path in paths) {
@@ -377,7 +378,7 @@ private fun _createUniFilesComponent(
           override fun getOrChooseDirectory(): PsiDirectory? = DirectoryChooserUtil.getOrChooseDirectory(this)
           override fun getDirectories(): Array<PsiDirectory> {
             val directories = ArrayList<PsiDirectory>()
-            for (node in getSelectedNodes(PsiDirectoryNode::class.java)) {
+            for (node in getSelectedNodes(PsiDirectoryNode2::class.java)) {
               directories.add(node.value)
             }
             if (directories.isNotEmpty()) {
@@ -478,7 +479,7 @@ fun uniFilesRootNodes(
   rootDirs: List<VirtualFile> = ConfUniFiles.ROOT_DIRS
 ): Collection<AbstractTreeNod2<*>> {
   return rootDirs.mapNotNull {
-    PsiManager.getInstance(project).findDirectory(it)
+    PsiManager.getInstance(Uni.todoDefaultProject).findDirectory(it)
   }.map { psiDirectory: PsiDirectory ->
     TutuPsiDirectoryNode(
       project,

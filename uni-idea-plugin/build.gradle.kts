@@ -62,6 +62,7 @@ dependencies {
   implementation("io.ktor:ktor-client-core:$KTOR_VERSION")
   implementation("io.ktor:ktor-client-apache:$KTOR_VERSION")
   implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:$COROUTINE_VERSION")
+  implementation("org.jetbrains.kotlinx:kotlinx-coroutines-debug:$COROUTINE_VERSION")
   implementation("org.jetbrains.kotlinx:kotlinx-coroutines-swing:$COROUTINE_VERSION")
   implementation(project(":share-plugin"))
   implementation(project(":repo"))

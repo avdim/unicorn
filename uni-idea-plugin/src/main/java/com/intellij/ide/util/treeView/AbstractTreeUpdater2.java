@@ -30,7 +30,7 @@ import java.util.*;
 public class AbstractTreeUpdater2 implements Disposable, Activatable {
   private static final Logger LOG = Logger.getInstance(AbstractTreeUpdater2.class);
 
-  private final LinkedList<TreeUpdatePass> myNodeQueue = new LinkedList<>();
+  private final LinkedList<TreeUpdatePass2> myNodeQueue = new LinkedList<>();
   private final AbstractTreeBuilder2 myTreeBuilder;
   private final List<Runnable> myRunAfterUpdate = new ArrayList<>();
   private final MergingUpdateQueue myUpdateQueue;
@@ -74,14 +74,14 @@ public class AbstractTreeUpdater2 implements Disposable, Activatable {
    */
   @Deprecated
   public synchronized void addSubtreeToUpdate(@NotNull DefaultMutableTreeNode rootNode) {
-    addSubtreeToUpdate(new TreeUpdatePass(rootNode).setUpdateStamp(-1));
+    addSubtreeToUpdate(new TreeUpdatePass2(rootNode).setUpdateStamp(-1));
   }
 
   /**
    * @deprecated use {@link AbstractTreeBuilder#queueUpdateFrom(Object, boolean)}
    */
   @Deprecated
-  synchronized void requeue(@NotNull TreeUpdatePass toAdd) {
+  synchronized void requeue(@NotNull TreeUpdatePass2 toAdd) {
     addSubtreeToUpdate(toAdd.setUpdateStamp(-1));
   }
 
@@ -89,7 +89,7 @@ public class AbstractTreeUpdater2 implements Disposable, Activatable {
    * @deprecated use {@link AbstractTreeBuilder#queueUpdateFrom(Object, boolean)}
    */
   @Deprecated
-  synchronized void addSubtreeToUpdate(@NotNull TreeUpdatePass toAdd) {
+  synchronized void addSubtreeToUpdate(@NotNull TreeUpdatePass2 toAdd) {
     assert !toAdd.isExpired();
 
     final AbstractTreeUi2 ui = myTreeBuilder.getUi();
@@ -99,8 +99,8 @@ public class AbstractTreeUpdater2 implements Disposable, Activatable {
       toAdd.expire();
     }
     else {
-      for (Iterator<TreeUpdatePass> iterator = myNodeQueue.iterator(); iterator.hasNext();) {
-        final TreeUpdatePass passInQueue = iterator.next();
+      for (Iterator<TreeUpdatePass2> iterator = myNodeQueue.iterator(); iterator.hasNext();) {
+        final TreeUpdatePass2 passInQueue = iterator.next();
 
         boolean isMatchingPass =
           toAdd.isUpdateStructure() == passInQueue.isUpdateStructure() && toAdd.isUpdateChildren() == passInQueue.isUpdateChildren();
@@ -136,8 +136,8 @@ public class AbstractTreeUpdater2 implements Disposable, Activatable {
     long newUpdateCount = toAdd.getUpdateStamp() == -1 ? myUpdateCount : myUpdateCount + 1;
 
     if (!toAdd.isExpired()) {
-      final Collection<TreeUpdatePass> yielding = ui.getYeildingPasses();
-      for (TreeUpdatePass eachYielding : yielding) {
+      final Collection<TreeUpdatePass2> yielding = ui.getYeildingPasses();
+      for (TreeUpdatePass2 eachYielding : yielding) {
         final DefaultMutableTreeNode eachNode = eachYielding.getCurrentNode();
         if (eachNode != null) {
           if (eachNode.isNodeAncestor(toAdd.getNode())) {
@@ -211,7 +211,7 @@ public class AbstractTreeUpdater2 implements Disposable, Activatable {
     while (!myNodeQueue.isEmpty()) {
       if (isInPostponeMode()) break;
 
-      final TreeUpdatePass eachPass = myNodeQueue.removeFirst();
+      final TreeUpdatePass2 eachPass = myNodeQueue.removeFirst();
 
       beforeUpdate().doWhenDone(new TreeRunnable2("AbstractTreeUpdater.performUpdate") {
         @Override
@@ -296,7 +296,7 @@ public class AbstractTreeUpdater2 implements Disposable, Activatable {
     return myUpdateCount;
   }
 
-  boolean isRerunNeededFor(TreeUpdatePass pass) {
+  boolean isRerunNeededFor(TreeUpdatePass2 pass) {
     return pass.getUpdateStamp() < getUpdateCount();
   }
 
@@ -321,7 +321,7 @@ public class AbstractTreeUpdater2 implements Disposable, Activatable {
   }
 
   synchronized boolean isEnqueuedToUpdate(DefaultMutableTreeNode node) {
-    for (TreeUpdatePass pass : myNodeQueue) {
+    for (TreeUpdatePass2 pass : myNodeQueue) {
       if (pass.willUpdate(node)) return true;
     }
     return false;
@@ -350,16 +350,16 @@ public class AbstractTreeUpdater2 implements Disposable, Activatable {
   }
 
   public void reset() {
-    TreeUpdatePass[] passes;
+    TreeUpdatePass2[] passes;
     synchronized (this) {
-      passes = myNodeQueue.toArray(new TreeUpdatePass[0]);
+      passes = myNodeQueue.toArray(new TreeUpdatePass2[0]);
       myNodeQueue.clear();
     }
     myUpdateQueue.cancelAllUpdates();
 
     AbstractTreeUi2 ui = myTreeBuilder.getUi();
     if (ui != null) {
-      for (TreeUpdatePass each : passes) {
+      for (TreeUpdatePass2 each : passes) {
         ui.addToCancelled(each.getNode());
       }
     }

@@ -18,6 +18,7 @@ import com.intellij.openapi.vfs.VirtualFile;
 import com.intellij.psi.PsiDirectory;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiFile;
+import com.intellij.psi.impl.smartPointers.NodeDescriptor2;
 import com.intellij.psi.util.PsiUtilCore;
 import com.intellij.util.ObjectUtils;
 import com.unicorn.Uni;
@@ -45,7 +46,7 @@ public abstract class BaseProjectTreeBuilder2 extends AbstractTreeBuilder2 {
   public BaseProjectTreeBuilder2(/*@NotNull Project project,*/
                                  @NotNull JTree tree,
                                  @NotNull DefaultTreeModel treeModel,
-                                 @NotNull AbstractTreeStructure treeStructure) {
+                                 @NotNull AbstractProjectTreeStructure2 treeStructure) {
     init(tree, treeModel, treeStructure);
     getUi().setClearOnHideDelay(Registry.intValue("ide.tree.clearOnHideTime"));
 //    myProject = project;
@@ -73,19 +74,19 @@ public abstract class BaseProjectTreeBuilder2 extends AbstractTreeBuilder2 {
   }
 
   @Override
-  protected boolean isAlwaysShowPlus(NodeDescriptor nodeDescriptor) {
+  protected boolean isAlwaysShowPlus(NodeDescriptor2 nodeDescriptor) {
     return nodeDescriptor instanceof AbstractTreeNod2 && ((AbstractTreeNod2)nodeDescriptor).isAlwaysShowPlus();
   }
 
   @Override
-  protected boolean isAutoExpandNode(NodeDescriptor nodeDescriptor) {
+  protected boolean isAutoExpandNode(NodeDescriptor2 nodeDescriptor) {
     return nodeDescriptor.getParentDescriptor() == null ||
            nodeDescriptor instanceof AbstractTreeNod2 && ((AbstractTreeNod2)nodeDescriptor).isAlwaysExpand();
   }
 
   @Override
   protected final void expandNodeChildren(@NotNull final DefaultMutableTreeNode node) {
-    final NodeDescriptor userObject = (NodeDescriptor)node.getUserObject();
+    final NodeDescriptor2 userObject = (NodeDescriptor2)node.getUserObject();
     if (userObject == null) return;
     Object element = userObject.getElement();
     VirtualFile virtualFile = getFileToRefresh(element);
