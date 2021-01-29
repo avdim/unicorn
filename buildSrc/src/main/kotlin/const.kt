@@ -54,11 +54,12 @@ val Project.UNI_BUILD_TYPE: BuildType get() =
   }
 
 val Project.myIdeaSandboxDir:String get() = when (UNI_BUILD_TYPE) {
-    BuildType.Release -> {
-      HOME_DIR.resolve("Desktop/uni_release_system").absolutePath //todo относительный путь
-    }
-    BuildType.Debug -> {
-      tmpDir()//"/tmp/idea_sandbox"
+    BuildType.Release, BuildType.Debug -> {
+      //HOME_DIR.resolve("Desktop/uni_release_system").absolutePath
+      //tmpDir()//"/tmp/idea_sandbox"
+      val file = projectDir.resolve(".idea_system_${IDEA_VERSION.postfixName}")
+      file.mkdirs()
+      file.absolutePath
     }
     else -> tmpDir()
   }

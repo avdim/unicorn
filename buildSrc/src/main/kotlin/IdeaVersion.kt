@@ -1,3 +1,5 @@
+import java.io.File
+
 sealed class IdeaVersion {
   abstract val type: String?
 
@@ -8,3 +10,12 @@ sealed class IdeaVersion {
   }
 
 }
+
+val IdeaVersion.postfixName: String get() =
+  when(this) {
+    is IdeaVersion.Download -> "$version-$type".toLowerCase()
+    is IdeaVersion.Local -> {
+      val shortPath = localPath.split(File.pathSeparator).map { it.take(3) }.joinToString("-")
+      "local-$type-$shortPath".toLowerCase()
+    }
+  }
