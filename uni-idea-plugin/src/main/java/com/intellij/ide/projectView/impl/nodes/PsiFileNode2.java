@@ -39,12 +39,11 @@ public class PsiFileNode2 extends BasePsiNode2<PsiFile> implements NavigatableWi
 
   @Override
   public Collection<AbstractTreeNod2<?>> getChildrenImpl() {
-    Project project = getProject();
     VirtualFile jarRoot = getJarRoot();
-    if (project != null && jarRoot != null) {
-      PsiDirectory psiDirectory = PsiManager.getInstance(project).findDirectory(jarRoot);
+    if (jarRoot != null) {
+      PsiDirectory psiDirectory = PsiManager.getInstance(myProject).findDirectory(jarRoot);
       if (psiDirectory != null) {
-        return ProjectViewDirectoryHelper2.getInstance(project).getDirectoryChildren(psiDirectory, getSettings(), true);
+        return ProjectViewDirectoryHelper2.getInstance(myProject).getDirectoryChildren(psiDirectory, getSettings(), true);
       }
     }
 
@@ -84,10 +83,9 @@ public class PsiFileNode2 extends BasePsiNode2<PsiFile> implements NavigatableWi
 
   private boolean isNavigatableLibraryRoot() {
     VirtualFile jarRoot = getJarRoot();
-    final Project project = getProject();
-    if (jarRoot != null && project != null && ProjectRootsUtil.isLibraryRoot(jarRoot, project)) {
-      final OrderEntry orderEntry = LibraryUtil.findLibraryEntry(jarRoot, project);
-      return orderEntry != null && ProjectSettingsService.getInstance(project).canOpenLibraryOrSdkSettings(orderEntry);
+    if (jarRoot != null && ProjectRootsUtil.isLibraryRoot(jarRoot, myProject)) {
+      final OrderEntry orderEntry = LibraryUtil.findLibraryEntry(jarRoot, myProject);
+      return orderEntry != null && ProjectSettingsService.getInstance(myProject).canOpenLibraryOrSdkSettings(orderEntry);
     }
     return false;
   }
@@ -104,8 +102,8 @@ public class PsiFileNode2 extends BasePsiNode2<PsiFile> implements NavigatableWi
   @Override
   public void navigate(boolean requestFocus) {
     final VirtualFile jarRoot = getJarRoot();
-    final Project project = getProject();
-    if (requestFocus && jarRoot != null && project != null && ProjectRootsUtil.isLibraryRoot(jarRoot, project)) {
+    final Project project = myProject;
+    if (requestFocus && jarRoot != null && ProjectRootsUtil.isLibraryRoot(jarRoot, project)) {
       final OrderEntry orderEntry = LibraryUtil.findLibraryEntry(jarRoot, project);
       if (orderEntry != null) {
         ProjectSettingsService.getInstance(project).openLibraryOrSdkSettings(orderEntry);

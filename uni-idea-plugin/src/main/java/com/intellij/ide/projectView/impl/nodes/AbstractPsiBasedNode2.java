@@ -21,6 +21,8 @@ import com.intellij.openapi.project.Project;
 import com.intellij.openapi.util.Iconable;
 import com.intellij.openapi.vcs.FileStatus;
 import com.intellij.openapi.vcs.FileStatusManager;
+import com.intellij.openapi.vcs.impl.FileStatusProvider;
+import com.intellij.openapi.vfs.NonPhysicalFileSystem;
 import com.intellij.openapi.vfs.VFileProperty;
 import com.intellij.openapi.vfs.VirtualFile;
 import com.intellij.pom.StatePreservingNavigatable;
@@ -47,6 +49,7 @@ import java.util.Objects;
 /**
  * Class for node descriptors based on PsiElements. Subclasses should define
  * method that extract PsiElement from Value.
+ *
  * @param <Value> Value of node descriptor
  */
 public abstract class AbstractPsiBasedNode2<Value> extends ProjectViewNode2B<Value> implements ValidateableNode, StatePreservingNavigatable {
@@ -80,8 +83,8 @@ public abstract class AbstractPsiBasedNode2<Value> extends ProjectViewNode2B<Val
     }
     if (!psiElement.isValid()) {
       LOG.error(new IllegalStateException("Node contains invalid PSI: "
-                                          + "\n" + getClass() + " [" + this + "]"
-                                          + "\n" + psiElement.getClass() + " [" + psiElement + "]"));
+        + "\n" + getClass() + " [" + this + "]"
+        + "\n" + psiElement.getClass() + " [" + psiElement + "]"));
       return Collections.emptyList();
     }
 
@@ -101,7 +104,7 @@ public abstract class AbstractPsiBasedNode2<Value> extends ProjectViewNode2B<Val
       return false;
     }
     if (parent instanceof AbstractPsiBasedNode2) {
-      final PsiElement psiElement = ((AbstractPsiBasedNode2<?>)parent).extractPsiFromValue();
+      final PsiElement psiElement = ((AbstractPsiBasedNode2<?>) parent).extractPsiFromValue();
       return psiElement instanceof PsiDirectory;
     }
 
@@ -112,14 +115,15 @@ public abstract class AbstractPsiBasedNode2<Value> extends ProjectViewNode2B<Val
 
   @Override
   public FileStatus getFileStatus() {
-    return computeFileStatus(getVirtualFileForValue(), Objects.requireNonNull(getProject()));
+    return computeFileStatus(getVirtualFileForValue());
   }
 
-  protected static FileStatus computeFileStatus(@Nullable VirtualFile virtualFile, @NotNull Project project) {
-    if (virtualFile == null) {
-      return FileStatus.NOT_CHANGED;
+  protected static FileStatus computeFileStatus(@Nullable VirtualFile virtualFile) {
+//  also look at FileStatusProvider and VcsFileStatusProvider
+    if (virtualFile != null && virtualFile.getFileSystem() instanceof NonPhysicalFileSystem) {
+      return FileStatus.SUPPRESSED;  // do not leak light files via cache
     }
-    return FileStatusManager.getInstance(project).getStatus(virtualFile);
+    return FileStatus.NOT_CHANGED;
   }
 
   @Nullable
@@ -152,8 +156,7 @@ public abstract class AbstractPsiBasedNode2<Value> extends ProjectViewNode2B<Val
       try {
         Icon icon = value.getIcon(flags);
         data.setIcon(icon);
-      }
-      catch (IndexNotReadyException ignored) {
+      } catch (IndexNotReadyException ignored) {
       }
       data.setPresentableText(myName);
 
@@ -161,11 +164,10 @@ public abstract class AbstractPsiBasedNode2<Value> extends ProjectViewNode2B<Val
         if (isDeprecated()) {
           data.setAttributesKey(CodeInsightColors.DEPRECATED_ATTRIBUTES);
         }
-      }
-      catch (IndexNotReadyException ignored) {
+      } catch (IndexNotReadyException ignored) {
       }
       updateImpl(data);
-      data.setIcon(patchIcon(myProject, data.getIcon(true), getVirtualFile()));
+      data.setIcon(patchIcon(data.getIcon(true), getVirtualFile()));
     });
   }
 
@@ -173,7 +175,7 @@ public abstract class AbstractPsiBasedNode2<Value> extends ProjectViewNode2B<Val
   protected int getIconableFlags() {
     int flags = 0;
     ViewSettings settings = getSettings();
-    if (settings instanceof ProjectViewSettings && ((ProjectViewSettings)settings).isShowVisibilityIcons()) {
+    if (settings instanceof ProjectViewSettings && ((ProjectViewSettings) settings).isShowVisibilityIcons()) {
       flags |= Iconable.ICON_FLAG_VISIBILITY;
     }
     if (isMarkReadOnly()) {
@@ -183,18 +185,10 @@ public abstract class AbstractPsiBasedNode2<Value> extends ProjectViewNode2B<Val
   }
 
   @Nullable
-  public static Icon patchIcon(@NotNull Project project, @Nullable Icon original, @Nullable VirtualFile file) {
+  public static Icon patchIcon(@Nullable Icon original, @Nullable VirtualFile file) {
     if (file == null || original == null) return original;
 
     Icon icon = original;
-
-    final Bookmark bookmarkAtFile = BookmarkManager.getInstance(project).findFileBookmark(file);
-    if (bookmarkAtFile != null) {
-      final RowIcon composite = IconManager.getInstance().createRowIcon(2, RowIcon.Alignment.CENTER);
-      composite.setIcon(icon, 0);
-      composite.setIcon(bookmarkAtFile.getIcon(), 1);
-      icon = composite;
-    }
 
     if (file.is(VFileProperty.SYMLINK)) {
       icon = LayeredIcon.create(icon, PlatformIcons.SYMLINK_ICON);
@@ -233,8 +227,7 @@ public abstract class AbstractPsiBasedNode2<Value> extends ProjectViewNode2B<Val
     if (canNavigate()) {
       if (requestFocus || preserveState) {
         NavigationUtil.openFileWithPsiElement(extractPsiFromValue(), requestFocus, requestFocus);
-      }
-      else {
+      } else {
         getNavigationItem().navigate(false);
       }
     }

@@ -19,8 +19,8 @@ public abstract class PresentableNodeDescriptor2<E> extends NodeDescriptor2<E> {
   private PresentationData myTemplatePresentation;
   private PresentationData myUpdatedPresentation;
 
-  protected PresentableNodeDescriptor2(Project project, @Nullable NodeDescriptor2 parentDescriptor) {
-    super(project, parentDescriptor);
+  protected PresentableNodeDescriptor2(@Nullable NodeDescriptor2 parentDescriptor) {
+    super(parentDescriptor);
   }
 
   @Override

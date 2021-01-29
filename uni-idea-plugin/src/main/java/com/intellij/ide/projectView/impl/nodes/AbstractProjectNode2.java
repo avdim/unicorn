@@ -118,7 +118,7 @@ public abstract class AbstractProjectNode2 extends ProjectViewNode2<Project> {
   @Override
   public void update(@NotNull PresentationData presentation) {
     presentation.setIcon(PlatformIcons.PROJECT_ICON);
-    presentation.setPresentableText(getProject().getName());
+    presentation.setPresentableText(myProject.getName());
   }
 
   @Override

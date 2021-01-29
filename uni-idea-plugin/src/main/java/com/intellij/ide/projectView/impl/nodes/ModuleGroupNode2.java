@@ -41,12 +41,12 @@ public abstract class ModuleGroupNode2 extends ProjectViewNode2B<ModuleGroup> im
   @Override
   @NotNull
   public Collection<AbstractTreeNod2<?>> getChildren() {
-    final Collection<ModuleGroup> childGroups = getValue().childGroups(getProject());
+    final Collection<ModuleGroup> childGroups = getValue().childGroups(myProject);
     final List<AbstractTreeNod2<?>> result = new ArrayList<>();
     for (final ModuleGroup childGroup : childGroups) {
       result.add(createModuleGroupNode(childGroup));
     }
-    Collection<Module> modules = getValue().modulesInGroup(getProject());
+    Collection<Module> modules = getValue().modulesInGroup(myProject);
     try {
       for (Module module : modules) {
         result.add(createModuleNode(module));
@@ -81,7 +81,7 @@ public abstract class ModuleGroupNode2 extends ProjectViewNode2B<ModuleGroup> im
       if (archiveFile != null) modules = getModulesByFile(archiveFile);
     }
     List<String> thisGroupPath = getValue().getGroupPathList();
-    ModuleGrouper grouper = ModuleGrouper.instanceFor(getProject());
+    ModuleGrouper grouper = ModuleGrouper.instanceFor(myProject);
     for (Module module : modules) {
       if (ContainerUtil.startsWith(grouper.getGroupPath(module), thisGroupPath)) {
         return true;

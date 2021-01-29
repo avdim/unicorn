@@ -36,7 +36,7 @@ public class SyntheticLibraryElementNode2 extends ProjectViewNode2B<SyntheticLib
   @Override
   public Collection<AbstractTreeNod2<?>> getChildren() {
     SyntheticLibrary library = getLibrary();
-    Project project = Objects.requireNonNull(getProject());
+    Project project = Objects.requireNonNull(myProject);
     Set<VirtualFile> excludedRoots = library.getExcludedRoots();
     List<VirtualFile> children = ContainerUtil.filter(library.getAllRoots(), file -> file.isValid() && !excludedRoots.contains(file));
     return ProjectViewDirectoryHelper2.getInstance(project).createFileAndDirectoryNodes(children, getSettings());

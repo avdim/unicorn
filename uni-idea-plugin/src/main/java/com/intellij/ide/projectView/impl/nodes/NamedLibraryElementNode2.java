@@ -40,7 +40,7 @@ public class NamedLibraryElementNode2 extends ProjectViewNode2B<NamedLibraryElem
     NamedLibraryElement libraryElement = getValue();
     if (libraryElement != null) {
       LibraryOrSdkOrderEntry entry = libraryElement.getOrderEntry();
-      Project project = getProject();
+      Project project = myProject;
       final PsiManager psiManager = PsiManager.getInstance(project);
       VirtualFile[] files =
         entry instanceof LibraryOrderEntry ? LibraryGroupNode.getLibraryRoots((LibraryOrderEntry)entry) : entry.getRootFiles(OrderRootType.CLASSES);

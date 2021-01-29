@@ -15,7 +15,6 @@ public abstract class NodeDescriptor2<E> {
   public static final NodeDescriptor2<?>[] EMPTY_ARRAY = new NodeDescriptor2[0];
   public static final int DEFAULT_WEIGHT = 30;
 
-  protected final Project myProject;
   private final NodeDescriptor2<?> myParentDescriptor;
 
   protected @NlsSafe String myName;
@@ -35,8 +34,7 @@ public abstract class NodeDescriptor2<E> {
 
   private boolean myWasDeclaredAlwaysLeaf;
 
-  public NodeDescriptor2(@Nullable Project project, @Nullable NodeDescriptor2<?> parentDescriptor) {
-    myProject = project;
+  public NodeDescriptor2(@Nullable NodeDescriptor2<?> parentDescriptor) {
     myParentDescriptor = parentDescriptor;
   }
 
@@ -93,11 +91,6 @@ public abstract class NodeDescriptor2<E> {
 
   public final Color getColor() {
     return myColor;
-  }
-
-  @Nullable
-  public final Project getProject() {
-    return myProject;
   }
 
   public boolean expandOnDoubleClick() {

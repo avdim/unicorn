@@ -65,12 +65,12 @@ public class ProjectViewProjectNode2 extends AbstractProjectNode2 {
       for (VirtualFile file : files) {
         if (!file.isDirectory()) {
           if (projectFileIndex == null) {
-            projectFileIndex = ProjectFileIndex.SERVICE.getInstance(getProject());
+            projectFileIndex = ProjectFileIndex.SERVICE.getInstance(myProject);
           }
           if (projectFileIndex.getModuleForFile(file, false) == null) {
             PsiFile psiFile = psiManager.findFile(file);
             if (psiFile != null) {
-              nodes.add(new PsiFileNode2(getProject(), psiFile, getSettings()));
+              nodes.add(new PsiFileNode2(myProject, psiFile, getSettings()));
             }
           }
         }
@@ -94,7 +94,7 @@ public class ProjectViewProjectNode2 extends AbstractProjectNode2 {
       }
     }
 
-    return new ProjectViewModuleNode2(getProject(), module, getSettings());
+    return new ProjectViewModuleNode2(myProject, module, getSettings());
   }
 
   @Override
@@ -107,12 +107,12 @@ public class ProjectViewProjectNode2 extends AbstractProjectNode2 {
       }
     }
 
-    return new ProjectViewUnloadedModuleNode2(getProject(), moduleDescription, getSettings());
+    return new ProjectViewUnloadedModuleNode2(myProject, moduleDescription, getSettings());
   }
 
   @NotNull
   @Override
   protected AbstractTreeNod2 createModuleGroupNode(@NotNull final ModuleGroup moduleGroup) {
-    return new ProjectViewModuleGroupNode2(getProject(), moduleGroup, getSettings());
+    return new ProjectViewModuleGroupNode2(myProject, moduleGroup, getSettings());
   }
 }

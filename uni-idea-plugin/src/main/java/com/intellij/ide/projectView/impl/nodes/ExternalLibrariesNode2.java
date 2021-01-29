@@ -31,7 +31,7 @@ public class ExternalLibrariesNode2 extends ProjectViewNode2B<String> {
 
   @Override
   public boolean contains(@NotNull VirtualFile file) {
-    Project project = Objects.requireNonNull(getProject());
+    Project project = Objects.requireNonNull(myProject);
     ProjectFileIndex index = ProjectFileIndex.getInstance(project);
     return index.isInLibrary(file) && someChildContainsFile(file, false);
   }
@@ -39,7 +39,7 @@ public class ExternalLibrariesNode2 extends ProjectViewNode2B<String> {
   @NotNull
   @Override
   public Collection<? extends AbstractTreeNod2<?>> getChildren() {
-    Project project = Objects.requireNonNull(getProject());
+    Project project = Objects.requireNonNull(myProject);
     List<AbstractTreeNod2<?>> children = new ArrayList<>();
     ProjectFileIndex fileIndex = ProjectFileIndex.getInstance(project);
     Module[] modules = ModuleManager.getInstance(project).getModules();

@@ -177,7 +177,7 @@ public abstract class ProjectViewNode2<Value> extends AbstractTreeNod2<Value> im
   protected boolean hasProblemFileBeneath() {
     if (!Registry.is("projectView.showHierarchyErrors")) return false;
 
-    Project project = getProject();
+    Project project = myProject;
     WolfTheProblemSolver wolf = project == null ? null : WolfTheProblemSolver.getInstance(project);
     return wolf != null && wolf.hasProblemFilesBeneath(virtualFile -> {
       Value value;

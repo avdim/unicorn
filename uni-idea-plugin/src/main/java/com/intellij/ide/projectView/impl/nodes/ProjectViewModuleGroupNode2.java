@@ -48,13 +48,13 @@ public class ProjectViewModuleGroupNode2 extends ModuleGroupNode2 {
       }
     }
 
-    return new ProjectViewModuleNode2(getProject(), module, getSettings());
+    return new ProjectViewModuleNode2(myProject, module, getSettings());
   }
 
   @NotNull
   @Override
   protected ModuleGroupNode2 createModuleGroupNode(@NotNull ModuleGroup moduleGroup) {
-    return new ProjectViewModuleGroupNode2(getProject(), moduleGroup, getSettings());
+    return new ProjectViewModuleGroupNode2(myProject, moduleGroup, getSettings());
   }
 
 
