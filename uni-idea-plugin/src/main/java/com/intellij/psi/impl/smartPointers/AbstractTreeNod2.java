@@ -33,16 +33,14 @@ public abstract class AbstractTreeNod2<T> extends PresentableNodeDescriptor2<Abs
 
   private static final TextAttributesKey FILESTATUS_ERRORS = TextAttributesKey.createTextAttributesKey("FILESTATUS_ERRORS");
   private static final Logger LOG = Logger.getInstance(AbstractTreeNod2.class);
-  public final @NotNull Project myProject;
   private AbstractTreeNod2<?> myParent;
   private Object myValue;
   private boolean myNullValueSet;
   private final boolean myNodeWrapper;
   public static final Object TREE_WRAPPER_VALUE = new Object();
 
-  protected AbstractTreeNod2(Project project, @NotNull T value) {
+  protected AbstractTreeNod2(@NotNull T value) {
     super(null);
-    myProject = project;
     myNodeWrapper = setInternalValue(value);
   }
 

@@ -4761,7 +4761,7 @@ public class AbstractTreeUi2 {
 
   private static class AbstractTreeNodeWrapper2 extends AbstractTreeNod2<Object> {
     AbstractTreeNodeWrapper2() {
-      super(null, new Object());
+      super(new Object());
     }
 
     @Override

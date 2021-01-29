@@ -101,7 +101,7 @@ private fun _createUniFilesComponent(
   val treeStructure =
     object : AbstractProjectTreeStructure2(), ProjectViewSettings {
       override fun createRoot(): AbstractTreeNod2<*> =
-        object : ProjectViewProjectNode2() {
+        object : AbstractProjectNode2() {
           override fun canRepresent(element: Any): Boolean = true
           override fun getChildren(): Collection<AbstractTreeNod2<*>> {
             return uniFilesRootNodes(project, settings, rootDirs = rootPaths)
