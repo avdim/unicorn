@@ -39,27 +39,6 @@ public class ProjectViewModuleGroupNode2 extends ModuleGroupNode2 {
 
   @NotNull
   @Override
-  protected AbstractTreeNod2 createModuleNode(@NotNull Module module) {
-    final VirtualFile[] roots = ModuleRootManager.getInstance(module).getContentRoots();
-    if (roots.length == 1) {
-      final PsiDirectory psi = PsiManager.getInstance(myProject).findDirectory(roots[0]);
-      if (psi != null) {
-        return new PsiDirectoryNode2(myProject, psi, getSettings());
-      }
-    }
-
-    return new ProjectViewModuleNode2(myProject, module, getSettings());
-  }
-
-  @NotNull
-  @Override
-  protected ModuleGroupNode2 createModuleGroupNode(@NotNull ModuleGroup moduleGroup) {
-    return new ProjectViewModuleGroupNode2(myProject, moduleGroup, getSettings());
-  }
-
-
-  @NotNull
-  @Override
   protected List<Module> getModulesByFile(@NotNull VirtualFile file) {
     return ContainerUtil.createMaybeSingletonList(ProjectRootManager.getInstance(myProject).getFileIndex().getModuleForFile(file, false));
   }

@@ -33,12 +33,6 @@ public abstract class ModuleGroupNode2 extends ProjectViewNode2B<ModuleGroup> im
     super(project, value, viewSettings);
   }
 
-  @NotNull
-  protected abstract AbstractTreeNod2 createModuleNode(@NotNull Module module) throws
-                                                                      InstantiationException, IllegalAccessException, InvocationTargetException, NoSuchMethodException;
-  @NotNull
-  protected abstract ModuleGroupNode2 createModuleGroupNode(@NotNull ModuleGroup moduleGroup);
-
   @Override
   @NotNull
   public Collection<AbstractTreeNod2<?>> getChildren() {
