@@ -20,6 +20,7 @@ import com.intellij.psi.PsiFileSystemItem;
 import com.intellij.psi.impl.smartPointers.AbstractTreeNod2;
 import com.intellij.util.PlatformIcons;
 import com.intellij.util.containers.ContainerUtil;
+import com.unicorn.Uni;
 import org.jetbrains.annotations.NotNull;
 
 import javax.swing.tree.DefaultMutableTreeNode;
@@ -41,21 +42,21 @@ public abstract class ModuleGroupNode2 extends ProjectViewNode2B<ModuleGroup> im
   @Override
   @NotNull
   public Collection<AbstractTreeNod2<?>> getChildren() {
-    final Collection<ModuleGroup> childGroups = getValue().childGroups(myProject);
+//    final Collection<ModuleGroup> childGroups = getValue().childGroups(myProject);
     final List<AbstractTreeNod2<?>> result = new ArrayList<>();
-    for (final ModuleGroup childGroup : childGroups) {
-      result.add(createModuleGroupNode(childGroup));
-    }
-    Collection<Module> modules = getValue().modulesInGroup(myProject);
-    try {
-      for (Module module : modules) {
-        result.add(createModuleNode(module));
-      }
-    }
-    catch (ReflectiveOperationException e) {
-      LOG.error(e);
-    }
-
+//    for (final ModuleGroup childGroup : childGroups) {
+//      result.add(createModuleGroupNode(childGroup));
+//    }
+//    Collection<Module> modules = getValue().modulesInGroup(myProject);
+//    try {
+//      for (Module module : modules) {
+//        result.add(createModuleNode(module));
+//      }
+//    }
+//    catch (ReflectiveOperationException e) {
+//      LOG.error(e);
+//    }
+    Uni.getLog().warning("empty (ModuleGroupNode2).getChildren()");
     return result;
   }
 

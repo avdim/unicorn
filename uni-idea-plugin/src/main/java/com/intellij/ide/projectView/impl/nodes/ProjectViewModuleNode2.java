@@ -29,7 +29,8 @@ public class ProjectViewModuleNode2 extends AbstractModuleNode2 {
     }
 
     final List<VirtualFile> contentRoots = ProjectViewDirectoryHelper.getInstance(myProject).getTopLevelModuleRoots(module, getSettings());
-    return ProjectViewDirectoryHelper2.getInstance(myProject).createFileAndDirectoryNodes(contentRoots, getSettings());
+    Collection<AbstractTreeNod2<?>> result = ProjectViewDirectoryHelper2.getInstance(myProject).createFileAndDirectoryNodes(contentRoots, getSettings());
+    return result;
   }
 
   @Override
