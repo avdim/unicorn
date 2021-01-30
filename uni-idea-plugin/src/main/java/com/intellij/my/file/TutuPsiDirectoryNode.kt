@@ -10,15 +10,15 @@ import com.intellij.psi.impl.smartPointers.AbstractTreeNod2
 import java.util.*
 
 class TutuPsiDirectoryNode @JvmOverloads constructor(
-  project: Project,
+  val project: Project,
   value: PsiDirectory,
   viewSettings: ViewSettings?,
   filter: PsiFileSystemItemFilter? = null
-) : PsiDirectoryNode2(project, value, viewSettings, filter) {
+) : PsiDirectoryNode2(value, viewSettings, filter) {
 
   override fun getChildrenImpl(): Collection<AbstractTreeNod2<*>> {
     val baseDir = virtualFile!!
-    val psiManager = PsiManager.getInstance(project2)
+    val psiManager = PsiManager.getInstance(project)
     val nodes: MutableList<BasePsiNode2<*>> = ArrayList()
     val files = baseDir.children
     for (file in files) {
@@ -29,7 +29,7 @@ class TutuPsiDirectoryNode @JvmOverloads constructor(
 
       val psiDir = psiManager.findDirectory(file)
       if (psiDir != null) {
-        nodes.add(TutuPsiDirectoryNode(project2, psiDir, settings))
+        nodes.add(TutuPsiDirectoryNode(project, psiDir, settings))
       }
     }
     return nodes

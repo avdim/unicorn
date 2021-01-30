@@ -48,11 +48,9 @@ public class PsiDirectoryNode2 extends BasePsiNode2<PsiDirectory> implements Nav
   private final Set<VirtualFile> chain = new SmartHashSet<>();
 
   private final PsiFileSystemItemFilter myFilter;
-  public final @NotNull Project project2;
 
-  public PsiDirectoryNode2(@NotNull Project project, @NotNull PsiDirectory value, ViewSettings viewSettings, @Nullable PsiFileSystemItemFilter filter) {
+  public PsiDirectoryNode2(@NotNull PsiDirectory value, ViewSettings viewSettings, @Nullable PsiFileSystemItemFilter filter) {
     super(value, viewSettings);
-    project2 = project;
     myFilter = filter;
   }
 
@@ -215,7 +213,7 @@ public class PsiDirectoryNode2 extends BasePsiNode2<PsiDirectory> implements Nav
             if (FileTypeRegistry.getInstance().isFileIgnored(directoryFile)) continue;
           }
 
-          children.add(new PsiDirectoryNode2(project, subdir, settings, filter));
+          children.add(new PsiDirectoryNode2(subdir, settings, filter));
         }
       }
       processPsiDirectoryChildren(psiDirectory.getFiles(), children, fileIndex, moduleFileIndex, settings,
@@ -237,17 +235,17 @@ public class PsiDirectoryNode2 extends BasePsiNode2<PsiDirectory> implements Nav
         continue;
       }
       if (moduleFileIndex != null && !moduleFileIndex.isInContent(subdir.getVirtualFile())) {
-        container.add(new PsiDirectoryNode2(project, subdir, viewSettings, filter));
+        container.add(new PsiDirectoryNode2(subdir, viewSettings, filter));
         continue;
       }
       if (viewSettings.isHideEmptyMiddlePackages()) {
         if (!isEmptyMiddleDirectory()) {
 
-          container.add(new PsiDirectoryNode2(project, subdir, viewSettings, filter));
+          container.add(new PsiDirectoryNode2(subdir, viewSettings, filter));
         }
       }
       else {
-        container.add(new PsiDirectoryNode2(project, subdir, viewSettings, filter));
+        container.add(new PsiDirectoryNode2(subdir, viewSettings, filter));
       }
       addAllSubpackages(container, subdir, moduleFileIndex, viewSettings, filter);
     }
@@ -297,7 +295,7 @@ public class PsiDirectoryNode2 extends BasePsiNode2<PsiDirectory> implements Nav
               continue;
             }
           }
-          container.add(new PsiDirectoryNode2(child.getProject(), (PsiDirectory)child, viewSettings, filter));
+          container.add(new PsiDirectoryNode2((PsiDirectory)child, viewSettings, filter));
         }
       }
     }
