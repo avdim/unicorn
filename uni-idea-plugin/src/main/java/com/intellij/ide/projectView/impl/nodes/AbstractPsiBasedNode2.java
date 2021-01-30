@@ -319,7 +319,7 @@ public abstract class AbstractPsiBasedNode2<Value> extends ProjectViewNode2B<Val
     for (Project proj : openProjects) {
       element.getProject();
       CommandProcessor.getInstance().executeCommand(proj, () -> {
-        if (openAsNativeFinal || !activatePsiElementIfOpen(element, searchForOpen, requestFocus)) {
+        if (openAsNativeFinal || !activatePsiElementIfOpen(proj, element, searchForOpen, requestFocus)) {
           final NavigationItem navigationItem = (NavigationItem) element;
           if (!navigationItem.canNavigate()) {
             resultRef.set(Boolean.FALSE);
@@ -426,7 +426,7 @@ public abstract class AbstractPsiBasedNode2<Value> extends ProjectViewNode2B<Val
     return false;
   }
 
-  private static boolean activatePsiElementIfOpen(@NotNull PsiElement elt, boolean searchForOpen, boolean requestFocus) {
+  private static boolean activatePsiElementIfOpen(Project project, @NotNull PsiElement elt, boolean searchForOpen, boolean requestFocus) {
     if (!elt.isValid()) return false;
     elt = elt.getNavigationElement();
     final PsiFile file = elt.getContainingFile();
@@ -435,9 +435,9 @@ public abstract class AbstractPsiBasedNode2<Value> extends ProjectViewNode2B<Val
     VirtualFile vFile = file.getVirtualFile();
     if (vFile == null) return false;
 
-    if (!EditorHistoryManager.getInstance(elt.getProject()).hasBeenOpen(vFile)) return false;
+    if (!EditorHistoryManager.getInstance(project).hasBeenOpen(vFile)) return false;
 
-    final FileEditorManager fem = FileEditorManager.getInstance(elt.getProject());
+    final FileEditorManager fem = FileEditorManager.getInstance(project);
     if (!fem.isFileOpen(vFile)) {
       fem.openFile(vFile, requestFocus, searchForOpen);
     }
