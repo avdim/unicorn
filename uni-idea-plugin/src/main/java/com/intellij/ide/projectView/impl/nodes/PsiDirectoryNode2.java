@@ -45,7 +45,7 @@ public class PsiDirectoryNode2 extends BasePsiNode2<PsiDirectory> implements Nav
   private final Set<VirtualFile> chain = new SmartHashSet<>();
 
   private final PsiFileSystemItemFilter myFilter;
-  private final @NotNull Project project2;
+  public final @NotNull Project project2;
 
   public PsiDirectoryNode2(@NotNull Project project, @NotNull PsiDirectory value, ViewSettings viewSettings, @Nullable PsiFileSystemItemFilter filter) {
     super(value, viewSettings);

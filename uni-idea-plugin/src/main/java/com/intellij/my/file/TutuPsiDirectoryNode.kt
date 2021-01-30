@@ -10,11 +10,11 @@ import com.intellij.psi.impl.smartPointers.AbstractTreeNod2
 import java.util.*
 
 class TutuPsiDirectoryNode @JvmOverloads constructor(
-  val project2: Project,
+  project: Project,
   value: PsiDirectory,
   viewSettings: ViewSettings?,
   filter: PsiFileSystemItemFilter? = null
-) : PsiDirectoryNode2(project2, value, viewSettings, filter) {
+) : PsiDirectoryNode2(project, value, viewSettings, filter) {
 
   override fun getChildrenImpl(): Collection<AbstractTreeNod2<*>> {
     val baseDir = virtualFile!!
