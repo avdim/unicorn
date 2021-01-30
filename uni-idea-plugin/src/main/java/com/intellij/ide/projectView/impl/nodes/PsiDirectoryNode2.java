@@ -6,20 +6,15 @@ import com.intellij.ide.projectView.ProjectViewSettings;
 import com.intellij.ide.projectView.ViewSettings;
 import com.intellij.ide.projectView.impl.CompoundIconProvider;
 import com.intellij.ide.projectView.impl.ProjectRootsUtil;
-
 import com.intellij.ide.util.treeView.AbstractTreeUi;
-import com.intellij.idea.ActionsBundle;
 import com.intellij.openapi.fileTypes.FileTypeRegistry;
-import com.intellij.openapi.module.*;
 import com.intellij.openapi.module.Module;
+import com.intellij.openapi.module.ModuleUtilCore;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.project.ProjectBundle;
 import com.intellij.openapi.roots.*;
 import com.intellij.openapi.roots.impl.DirectoryIndex;
-import com.intellij.openapi.roots.impl.DirectoryInfo;
-import com.intellij.openapi.roots.libraries.LibraryUtil;
 import com.intellij.openapi.roots.ui.configuration.ModuleSourceRootEditHandler;
-import com.intellij.openapi.roots.ui.configuration.ProjectSettingsService;
 import com.intellij.openapi.util.Comparing;
 import com.intellij.openapi.util.io.FileUtil;
 import com.intellij.openapi.util.registry.Registry;
@@ -27,10 +22,8 @@ import com.intellij.openapi.vfs.LocalFileSystem;
 import com.intellij.openapi.vfs.VfsUtil;
 import com.intellij.openapi.vfs.VfsUtilCore;
 import com.intellij.openapi.vfs.VirtualFile;
-import com.intellij.openapi.vfs.pointers.VirtualFilePointer;
 import com.intellij.pom.NavigatableWithText;
 import com.intellij.psi.*;
-import com.intellij.psi.impl.file.PsiDirectoryFactory;
 import com.intellij.psi.impl.smartPointers.AbstractTreeNod2;
 import com.intellij.psi.search.PsiElementProcessor;
 import com.intellij.psi.util.PsiUtilCore;
@@ -49,8 +42,6 @@ import org.jetbrains.jps.model.java.JavaSourceRootProperties;
 import javax.swing.*;
 import java.util.*;
 
-import static com.intellij.openapi.project.ProjectUtil.isProjectOrWorkspaceFile;
-
 @SuppressWarnings("UnstableApiUsage")
 public class PsiDirectoryNode2 extends BasePsiNode2<PsiDirectory> implements NavigatableWithText {
   // the chain from a parent directory to this one usually contains only one virtual file
@@ -58,26 +49,16 @@ public class PsiDirectoryNode2 extends BasePsiNode2<PsiDirectory> implements Nav
 
   private final PsiFileSystemItemFilter myFilter;
   public final @NotNull Project project2;
-  private final DirectoryIndex myIndex;
 
   public PsiDirectoryNode2(@NotNull Project project, @NotNull PsiDirectory value, ViewSettings viewSettings, @Nullable PsiFileSystemItemFilter filter) {
     super(value, viewSettings);
     project2 = project;
-    myIndex = DirectoryIndex.getInstance(project2);
     myFilter = filter;
   }
 
   @Nullable
   public PsiFileSystemItemFilter getFilter() {
     return myFilter;
-  }
-
-  protected boolean shouldShowModuleName() {
-    return !PlatformUtils.isCidr();
-  }
-
-  protected boolean shouldShowSourcesRoot() {
-    return true;
   }
 
   @Override
@@ -391,12 +372,15 @@ public class PsiDirectoryNode2 extends BasePsiNode2<PsiDirectory> implements Nav
 
   private boolean shouldBeShown(@NotNull VirtualFile dir, ViewSettings settings) {
     if (!dir.isValid()) return false;
-    DirectoryInfo directoryInfo = myIndex.getInfoForFile(dir);
-    boolean cond = directoryInfo.isInProject(dir);
-    boolean a = shouldShowExcludedFiles(settings) || !isProjectOrWorkspaceFile(dir);
-    boolean b = shouldShowExcludedFiles(settings) && directoryInfo.isExcluded(dir);
-    boolean result = cond ? a : b;
-    return result;
+    Uni.getLog().warning("shouldBeShown in empty");
+    return true;
+//    DirectoryInfo directoryInfo = myIndex.getInfoForFile(dir);
+//    boolean cond = directoryInfo.isInProject(dir);
+//    boolean shouldShowExcludedFiles = shouldShowExcludedFiles(settings);
+//    boolean a = shouldShowExcludedFiles || !isProjectOrWorkspaceFile(dir);
+//    boolean b = shouldShowExcludedFiles && directoryInfo.isExcluded(dir);
+//    boolean result = cond ? a : b;
+//    return result;
   }
 
   private static boolean shouldShowExcludedFiles(ViewSettings settings) {
