@@ -17,6 +17,7 @@ import com.intellij.openapi.roots.ProjectFileIndex;
 import com.intellij.openapi.roots.ProjectRootManager;
 import com.intellij.openapi.roots.libraries.LibraryUtil;
 import com.intellij.openapi.roots.ui.configuration.ProjectSettingsService;
+import com.intellij.openapi.util.io.FileUtil;
 import com.intellij.openapi.util.registry.Registry;
 import com.intellij.openapi.vfs.LocalFileSystem;
 import com.intellij.openapi.vfs.VfsUtil;
@@ -126,10 +127,6 @@ public class PsiDirectoryNode2 extends BasePsiNode2<PsiDirectory> implements Nav
     setupIcon(data, psiDirectory);
   }
 
-  protected static boolean canRealModuleNameBeHidden() {
-    return Registry.is("ide.hide.real.module.name");
-  }
-
   protected void setupIcon(PresentationData data, PsiDirectory psiDirectory) {
     final VirtualFile virtualFile = psiDirectory.getVirtualFile();
     if (PlatformUtils.isAppCode()) {
@@ -148,7 +145,7 @@ public class PsiDirectoryNode2 extends BasePsiNode2<PsiDirectory> implements Nav
   }
 
   public boolean isFQNameShown() {
-    return ProjectViewDirectoryHelper.getInstance(project2).isShowFQName(getSettings(), getParentValue(), getValue());
+    return false;
   }
 
   @Override
@@ -209,8 +206,10 @@ public class PsiDirectoryNode2 extends BasePsiNode2<PsiDirectory> implements Nav
     }
     if (super.canRepresent(element)) return true;
     if (element instanceof VirtualFile && getParentValue() instanceof PsiDirectory) {
-      return ProjectViewDirectoryHelper.getInstance(project2)
-        .canRepresent((VirtualFile) element, getValue(), (PsiDirectory) getParentValue(), getSettings());
+      Uni.getLog().error("canRepresent return true");
+      return true;
+//      return ProjectViewDirectoryHelper.getInstance(project2)
+//        .canRepresent((VirtualFile) element, getValue(), (PsiDirectory) getParentValue(), getSettings());
     } else {
       Uni.getLog().error("canRepresent return false. element:" + element + ", getValue(): " + getValue() + ", getParentValue(): " + getParentValue());
       return false;
@@ -228,10 +227,12 @@ public class PsiDirectoryNode2 extends BasePsiNode2<PsiDirectory> implements Nav
   @Override
   public boolean canNavigate() {
     VirtualFile file = getVirtualFile();
-    ProjectSettingsService service = ProjectSettingsService.getInstance(project2);
-    return file != null && (ProjectRootsUtil.isModuleContentRoot(file, project2) && service.canOpenModuleSettings() ||
-                            ProjectRootsUtil.isModuleSourceRoot(file, project2)  && service.canOpenContentEntriesSettings() ||
-                            ProjectRootsUtil.isLibraryRoot(file, project2) && service.canOpenModuleLibrarySettings());
+    return file != null;
+//    ProjectSettingsService service = ProjectSettingsService.getInstance(project2);
+//    boolean result = file != null && (ProjectRootsUtil.isModuleContentRoot(file, project2) && service.canOpenModuleSettings() ||
+//      ProjectRootsUtil.isModuleSourceRoot(file, project2) && service.canOpenContentEntriesSettings() ||
+//      ProjectRootsUtil.isLibraryRoot(file, project2) && service.canOpenModuleLibrarySettings());
+//    return result;//false
   }
 
   @Override
@@ -241,38 +242,39 @@ public class PsiDirectoryNode2 extends BasePsiNode2<PsiDirectory> implements Nav
 
   @Override
   public void navigate(final boolean requestFocus) {
+    Uni.getLog().warning("empty navigate");
     Module module = ModuleUtilCore.findModuleForPsiElement(getValue());
     if (module != null) {
       final VirtualFile file = getVirtualFile();
-      ProjectSettingsService service = ProjectSettingsService.getInstance(project2);
-      if (ProjectRootsUtil.isModuleContentRoot(file, project2)) {
-        service.openModuleSettings(module);
-      }
-      else if (ProjectRootsUtil.isLibraryRoot(file, project2)) {
-        final OrderEntry orderEntry = LibraryUtil.findLibraryEntry(file, module.getProject());
-        if (orderEntry != null) {
-          service.openLibraryOrSdkSettings(orderEntry);
-        }
-      }
-      else {
-        service.openContentEntriesSettings(module);
-      }
+//      ProjectSettingsService service = ProjectSettingsService.getInstance(project2);
+//      if (ProjectRootsUtil.isModuleContentRoot(file, project2)) {
+//        service.openModuleSettings(module);
+//      }
+//      else if (ProjectRootsUtil.isLibraryRoot(file, project2)) {
+//        final OrderEntry orderEntry = LibraryUtil.findLibraryEntry(file, module.getProject());
+//        if (orderEntry != null) {
+//          service.openLibraryOrSdkSettings(orderEntry);
+//        }
+//      }
+//      else {
+//        service.openContentEntriesSettings(module);
+//      }
     }
   }
 
   @Override
   public String getNavigateActionText(boolean focusEditor) {
     VirtualFile file = getVirtualFile();
-    if (file != null) {
-      if (ProjectRootsUtil.isModuleContentRoot(file, project2) || ProjectRootsUtil.isModuleSourceRoot(file, project2)) {
-        return ActionsBundle.message("action.ModuleSettings.navigate");
-      }
-      if (ProjectRootsUtil.isLibraryRoot(file, project2)) {
-        return ActionsBundle.message("action.LibrarySettings.navigate");
-      }
-    }
+//    if (file != null) {
+//      if (ProjectRootsUtil.isModuleContentRoot(file, project2) || ProjectRootsUtil.isModuleSourceRoot(file, project2)) {
+//        return ActionsBundle.message("action.ModuleSettings.navigate");
+//      }
+//      if (ProjectRootsUtil.isLibraryRoot(file, project2)) {
+//        return ActionsBundle.message("action.LibrarySettings.navigate");
+//      }
+//    }
 
-    return null;
+    return "Todo GetNavigateActionText";
   }
 
   @Override
@@ -288,9 +290,17 @@ public class PsiDirectoryNode2 extends BasePsiNode2<PsiDirectory> implements Nav
   public String getTitle() {
     final PsiDirectory directory = getValue();
     if (directory != null) {
-      return PsiDirectoryFactory.getInstance(project2).getQualifiedName(directory, true);
+      return getQualifiedName2(directory, true);
     }
     return super.getTitle();
+  }
+
+  @NotNull
+  private String getQualifiedName2(@NotNull final PsiDirectory directory, final boolean presentable) {
+    if (presentable) {
+      return FileUtil.getLocationRelativeToUserHome(directory.getVirtualFile().getPresentableUrl());
+    }
+    return "";
   }
 
   @Override
