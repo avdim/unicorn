@@ -24,7 +24,7 @@ class TutuPsiDirectoryNode @JvmOverloads constructor(
     for (file in files) {
       val psiFile = psiManager.findFile(file)
       if (psiFile != null) {
-        nodes.add(PsiFileNode2(project2, psiFile, settings))
+        nodes.add(PsiFileNode2(psiFile, settings))
       }
 
       val psiDir = psiManager.findDirectory(file)

@@ -5,17 +5,11 @@ import com.intellij.ide.projectView.RootsProvider;
 import com.intellij.ide.projectView.SettingsProvider;
 import com.intellij.ide.projectView.ViewSettings;
 import com.intellij.openapi.diagnostic.Logger;
-import com.intellij.openapi.project.Project;
-import com.intellij.openapi.util.Comparing;
 import com.intellij.openapi.util.NlsContexts;
-import com.intellij.openapi.util.registry.Registry;
 import com.intellij.openapi.vfs.VfsUtilCore;
 import com.intellij.openapi.vfs.VirtualFile;
-import com.intellij.problems.WolfTheProblemSolver;
-import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiFileSystemItem;
 import com.intellij.psi.impl.smartPointers.AbstractTreeNod2;
-import com.intellij.psi.util.PsiUtilCore;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -33,18 +27,15 @@ public abstract class ProjectViewNode2B<Value> extends AbstractTreeNod2<Value> i
   protected static final Logger LOG = Logger.getInstance(ProjectViewNode2B.class);
 
   private final ViewSettings mySettings;
-  public @NotNull final Project myProject;
 
   /**
    * Creates an instance of the project view node.
    *
-   * @param project      the project containing the node.
    * @param value        the object (for example, a PSI element) represented by the project view node
    * @param viewSettings the settings of the project view.
    */
-  protected ProjectViewNode2B(Project project, @NotNull Value value, ViewSettings viewSettings) {
+  protected ProjectViewNode2B(@NotNull Value value, ViewSettings viewSettings) {
     super(value);
-    myProject = project;
     mySettings = viewSettings;
   }
 

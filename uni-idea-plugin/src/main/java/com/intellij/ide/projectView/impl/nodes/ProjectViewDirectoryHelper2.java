@@ -227,7 +227,7 @@ public class ProjectViewDirectoryHelper2 {
         continue;
       }
       if (child instanceof PsiFile) {
-        container.add(new PsiFileNode2(child.getProject(), (PsiFile) child, viewSettings));
+        container.add(new PsiFileNode2((PsiFile) child, viewSettings));
       }
       else if (child instanceof PsiDirectory) {
         if (withSubDirectories) {
@@ -292,13 +292,13 @@ public class ProjectViewDirectoryHelper2 {
     if (virtualFile.isDirectory()) {
       PsiDirectory directory = psiManager.findDirectory(virtualFile);
       if (directory != null) {
-        return new PsiDirectoryNode2(myProject, directory, viewSettings);
+        return new PsiDirectoryNode2(myProject, directory, viewSettings, null);
       }
     }
     else {
       PsiFile file = psiManager.findFile(virtualFile);
       if (file != null) {
-        return new PsiFileNode2(myProject, file, viewSettings);
+        return new PsiFileNode2(file, viewSettings);
       }
     }
     return null;

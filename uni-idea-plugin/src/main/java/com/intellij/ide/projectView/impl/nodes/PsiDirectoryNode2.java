@@ -9,7 +9,6 @@ import com.intellij.ide.projectView.impl.ProjectRootsUtil;
 import com.intellij.idea.ActionsBundle;
 import com.intellij.openapi.fileTypes.FileTypeRegistry;
 import com.intellij.openapi.module.Module;
-import com.intellij.openapi.module.ModuleGrouperKt;
 import com.intellij.openapi.module.ModuleType;
 import com.intellij.openapi.module.ModuleUtilCore;
 import com.intellij.openapi.project.Project;
@@ -19,7 +18,6 @@ import com.intellij.openapi.roots.ProjectRootManager;
 import com.intellij.openapi.roots.libraries.LibraryUtil;
 import com.intellij.openapi.roots.ui.configuration.ProjectSettingsService;
 import com.intellij.openapi.util.registry.Registry;
-import com.intellij.openapi.util.text.StringUtil;
 import com.intellij.openapi.vfs.LocalFileSystem;
 import com.intellij.openapi.vfs.VfsUtil;
 import com.intellij.openapi.vfs.VfsUtilCore;
@@ -49,12 +47,8 @@ public class PsiDirectoryNode2 extends BasePsiNode2<PsiDirectory> implements Nav
   private final PsiFileSystemItemFilter myFilter;
   private final @NotNull Project project2;
 
-  public PsiDirectoryNode2(@NotNull Project project, @NotNull PsiDirectory value, ViewSettings viewSettings) {
-    this(project, value, viewSettings, null);
-  }
-
   public PsiDirectoryNode2(@NotNull Project project, @NotNull PsiDirectory value, ViewSettings viewSettings, @Nullable PsiFileSystemItemFilter filter) {
-    super(project, value, viewSettings);
+    super(value, viewSettings);
     project2 = project;
     myFilter = filter;
   }

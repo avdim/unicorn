@@ -3,13 +3,10 @@
 package com.intellij.ide.projectView.impl.nodes;
 
 import com.intellij.codeInsight.navigation.NavigationUtil;
-import com.intellij.ide.bookmarks.Bookmark;
-import com.intellij.ide.bookmarks.BookmarkManager;
 import com.intellij.ide.projectView.PresentationData;
 import com.intellij.ide.projectView.ProjectViewSettings;
 import com.intellij.ide.projectView.ViewSettings;
 
-import com.intellij.ide.projectView.impl.CompoundProjectViewNodeDecorator;
 import com.intellij.ide.util.treeView.ValidateableNode;
 import com.intellij.navigation.NavigationItem;
 import com.intellij.openapi.application.ApplicationManager;
@@ -20,8 +17,6 @@ import com.intellij.openapi.project.IndexNotReadyException;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.util.Iconable;
 import com.intellij.openapi.vcs.FileStatus;
-import com.intellij.openapi.vcs.FileStatusManager;
-import com.intellij.openapi.vcs.impl.FileStatusProvider;
 import com.intellij.openapi.vfs.NonPhysicalFileSystem;
 import com.intellij.openapi.vfs.VFileProperty;
 import com.intellij.openapi.vfs.VirtualFile;
@@ -32,9 +27,7 @@ import com.intellij.psi.PsiFile;
 import com.intellij.psi.impl.smartPointers.AbstractTreeNod2;
 import com.intellij.psi.impl.smartPointers.DebugBlackFile;
 import com.intellij.psi.util.PsiUtilCore;
-import com.intellij.ui.IconManager;
 import com.intellij.ui.LayeredIcon;
-import com.intellij.ui.icons.RowIcon;
 import com.intellij.util.AstLoadingFilter;
 import com.intellij.util.PlatformIcons;
 import org.jetbrains.annotations.NotNull;
@@ -44,7 +37,6 @@ import javax.swing.*;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
-import java.util.Objects;
 
 /**
  * Class for node descriptors based on PsiElements. Subclasses should define
@@ -55,10 +47,8 @@ import java.util.Objects;
 public abstract class AbstractPsiBasedNode2<Value> extends ProjectViewNode2B<Value> implements ValidateableNode, StatePreservingNavigatable {
   private static final Logger LOG = Logger.getInstance(AbstractPsiBasedNode2.class.getName());
 
-  protected AbstractPsiBasedNode2(final Project project,
-                                  @NotNull Value value,
-                                  final ViewSettings viewSettings) {
-    super(project, value, viewSettings);
+  protected AbstractPsiBasedNode2(@NotNull Value value, final ViewSettings viewSettings) {
+    super(value, viewSettings);
   }
 
   @Nullable
