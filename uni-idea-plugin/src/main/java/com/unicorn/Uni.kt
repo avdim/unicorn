@@ -17,7 +17,7 @@ import com.intellij.my.file.ConfUniFiles
 import com.intellij.openapi.application.impl.CoroutineExceptionHandlerImpl
 
 object Uni : Disposable {
-  val USE_FILE_TREE_PROVIDER = false
+  val BOLD_DIRS = true
   @JvmStatic
   val log = Log
   @JvmStatic
