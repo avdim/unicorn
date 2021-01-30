@@ -63,7 +63,7 @@ public class PsiDirectoryNode2 extends BasePsiNode2<PsiDirectory> implements Nav
   public PsiDirectoryNode2(@NotNull Project project, @NotNull PsiDirectory value, ViewSettings viewSettings, @Nullable PsiFileSystemItemFilter filter) {
     super(value, viewSettings);
     project2 = project;
-    myIndex = DirectoryIndex.getInstance(project);
+    myIndex = DirectoryIndex.getInstance(project2);
     myFilter = filter;
   }
 
@@ -364,28 +364,29 @@ public class PsiDirectoryNode2 extends BasePsiNode2<PsiDirectory> implements Nav
 
   @NotNull
   public List<VirtualFile> getTopLevelRoots() {
-    List<VirtualFile> topLevelContentRoots = new ArrayList<>();
-    ProjectRootManager prm = ProjectRootManager.getInstance(project2);
-
-    for (VirtualFile root : prm.getContentRoots()) {
-      VirtualFile parent = root.getParent();
-      if (!isFileUnderContentRoot(myIndex, parent)) {
-        topLevelContentRoots.add(root);
-      }
-    }
-    Collection<UnloadedModuleDescription> descriptions = ModuleManager.getInstance(project2).getUnloadedModuleDescriptions();
-    for (UnloadedModuleDescription description : descriptions) {
-      for (VirtualFilePointer pointer : description.getContentRoots()) {
-        VirtualFile root = pointer.getFile();
-        if (root != null) {
-          VirtualFile parent = root.getParent();
-          if (!isFileUnderContentRoot(myIndex, parent)) {
-            topLevelContentRoots.add(root);
-          }
-        }
-      }
-    }
-    return topLevelContentRoots;
+    return new ArrayList<>();
+//    List<VirtualFile> topLevelContentRoots = new ArrayList<>();
+//    ProjectRootManager prm = ProjectRootManager.getInstance(project2);
+//
+//    for (VirtualFile root : prm.getContentRoots()) {
+//      VirtualFile parent = root.getParent();
+//      if (!isFileUnderContentRoot(myIndex, parent)) {
+//        topLevelContentRoots.add(root);
+//      }
+//    }
+//    Collection<UnloadedModuleDescription> descriptions = ModuleManager.getInstance(project2).getUnloadedModuleDescriptions();
+//    for (UnloadedModuleDescription description : descriptions) {
+//      for (VirtualFilePointer pointer : description.getContentRoots()) {
+//        VirtualFile root = pointer.getFile();
+//        if (root != null) {
+//          VirtualFile parent = root.getParent();
+//          if (!isFileUnderContentRoot(myIndex, parent)) {
+//            topLevelContentRoots.add(root);
+//          }
+//        }
+//      }
+//    }
+//    return topLevelContentRoots;
   }
 
   private boolean shouldBeShown(@NotNull VirtualFile dir, ViewSettings settings) {
