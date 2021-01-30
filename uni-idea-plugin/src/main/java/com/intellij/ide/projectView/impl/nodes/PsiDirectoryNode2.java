@@ -392,9 +392,11 @@ public class PsiDirectoryNode2 extends BasePsiNode2<PsiDirectory> implements Nav
   private boolean shouldBeShown(@NotNull VirtualFile dir, ViewSettings settings) {
     if (!dir.isValid()) return false;
     DirectoryInfo directoryInfo = myIndex.getInfoForFile(dir);
-    return directoryInfo.isInProject(dir)
-      ? shouldShowExcludedFiles(settings) || !isProjectOrWorkspaceFile(dir)
-      : shouldShowExcludedFiles(settings) && directoryInfo.isExcluded(dir);
+    boolean cond = directoryInfo.isInProject(dir);
+    boolean a = shouldShowExcludedFiles(settings) || !isProjectOrWorkspaceFile(dir);
+    boolean b = shouldShowExcludedFiles(settings) && directoryInfo.isExcluded(dir);
+    boolean result = cond ? a : b;
+    return result;
   }
 
   private static boolean shouldShowExcludedFiles(ViewSettings settings) {
