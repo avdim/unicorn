@@ -88,6 +88,12 @@ object Log {
     }
   }
 
+  inline fun assertTrue(value:Boolean) {
+    if (!value) {
+      fatalError { "assertTrue" }
+    }
+  }
+
   inline fun error(payload:Payload) {
     error { payload }
   }
