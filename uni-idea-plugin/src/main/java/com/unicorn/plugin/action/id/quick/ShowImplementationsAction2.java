@@ -4,6 +4,7 @@ package com.unicorn.plugin.action.id.quick;
 import com.intellij.codeInsight.CodeInsightBundle;
 import com.intellij.codeInsight.hint.ImplementationViewSession;
 import com.intellij.codeInsight.hint.ImplementationViewSessionFactory;
+import com.intellij.codeInsight.hint.ImplementationViewSessionFactory2;
 import com.intellij.codeInsight.hint.actions.ShowRelatedElementsActionBase;
 import com.intellij.openapi.project.Project;
 import org.jetbrains.annotations.NonNls;

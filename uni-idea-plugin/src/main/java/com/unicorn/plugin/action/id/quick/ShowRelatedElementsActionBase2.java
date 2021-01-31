@@ -2,10 +2,7 @@
 package com.unicorn.plugin.action.id.quick;
 
 import com.intellij.codeInsight.documentation.DocumentationManager;
-import com.intellij.codeInsight.hint.ImplementationViewComponent;
-import com.intellij.codeInsight.hint.ImplementationViewElement;
-import com.intellij.codeInsight.hint.ImplementationViewSession;
-import com.intellij.codeInsight.hint.ImplementationViewSessionFactory;
+import com.intellij.codeInsight.hint.*;
 import com.intellij.codeInsight.lookup.LookupManager;
 import com.intellij.codeInsight.navigation.BackgroundUpdaterTaskBase;
 import com.intellij.codeInsight.navigation.ImplementationSearcher;
@@ -19,8 +16,6 @@ import com.intellij.openapi.progress.ProgressIndicator;
 import com.intellij.openapi.progress.ProgressManager;
 import com.intellij.openapi.progress.impl.BackgroundableProcessIndicator;
 import com.intellij.openapi.project.DumbAwareAction;
-import com.intellij.openapi.project.DumbService;
-import com.intellij.openapi.project.IndexNotReadyException;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.ui.GenericListComponentUpdater;
 import com.intellij.openapi.ui.popup.ComponentPopupBuilder;
@@ -31,14 +26,15 @@ import com.intellij.openapi.util.NlsContexts;
 import com.intellij.openapi.util.Ref;
 import com.intellij.openapi.vfs.VirtualFile;
 import com.intellij.psi.PsiDocumentManager;
+import com.intellij.psi.PsiElement;
 import com.intellij.reference.SoftReference;
 import com.intellij.ui.popup.AbstractPopup;
 import com.intellij.ui.popup.PopupPositionManager;
 import com.intellij.ui.popup.PopupUpdateProcessor;
 import com.intellij.usages.Usage;
 import com.intellij.usages.UsageView;
+import com.unicorn.Uni;
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.TestOnly;
 
 import java.lang.ref.Reference;
 import java.lang.ref.WeakReference;
@@ -57,38 +53,32 @@ public abstract class ShowRelatedElementsActionBase2 extends DumbAwareAction imp
 
   @Override
   public void actionPerformed(@NotNull AnActionEvent e) {
-    performForContext(e.getDataContext(), true);
+    performForContext(e, e.getDataContext(), true);
   }
 
-  @TestOnly
-  public void performForContext(DataContext dataContext) {
-    performForContext(dataContext, true);
-  }
-
-  @Override
-  public void update(@NotNull final AnActionEvent e) {
-    Project project = e.getData(CommonDataKeys.PROJECT);
-    e.getPresentation().setEnabled(project != null);
-  }
-
-  public void performForContext(@NotNull DataContext dataContext, boolean invokedByShortcut) {
+  public void performForContext(AnActionEvent e, @NotNull DataContext dataContext, boolean invokedByShortcut) {
     final Project project = CommonDataKeys.PROJECT.getData(dataContext);
     if (project == null) return;
     PsiDocumentManager.getInstance(project).commitAllDocuments();
 
     boolean isInvokedFromEditor = CommonDataKeys.EDITOR.getData(dataContext) != null;
 
-    try {
-      for (ImplementationViewSessionFactory factory : getSessionFactories()) {
-        ImplementationViewSession session = factory.createSession(dataContext, project, isSearchDeep(), isIncludeAlwaysSelf());
-        if (session != null) {
-          showImplementations(session, isInvokedFromEditor, invokedByShortcut);
-        }
-      }
-    }
-    catch (IndexNotReadyException e) {
-      DumbService.getInstance(project).showDumbModeNotification(getIndexNotReadyMessage());
-    }
+    PsiElement psiElement = e.getRequiredData(CommonDataKeys.PSI_ELEMENT);
+    VirtualFile virtualFile = Uni.INSTANCE.getSelectedFile();//e.getData(CommonDataKeys.VIRTUAL_FILE);
+    PsiImplementationViewSession2 viewSession = new PsiImplementationViewSession2(project, psiElement, PsiElement.EMPTY_ARRAY, "todo", null, virtualFile, false, true);
+    showImplementations(e, virtualFile, viewSession, isInvokedFromEditor, invokedByShortcut);
+
+//    try {
+//      for (ImplementationViewSessionFactory factory : getSessionFactories()) {
+//        ImplementationViewSession session = factory.createSession(dataContext, project, isSearchDeep(), isIncludeAlwaysSelf());
+//        if (session != null) {
+//          showImplementations(e, session, isInvokedFromEditor, invokedByShortcut);
+//        }
+//      }
+//    }
+//    catch (IndexNotReadyException ex) {
+//      DumbService.getInstance(project).showDumbModeNotification(getIndexNotReadyMessage());
+//    }
   }
 
   @NotNull
@@ -97,38 +87,45 @@ public abstract class ShowRelatedElementsActionBase2 extends DumbAwareAction imp
   @NotNull
   protected abstract @NlsContexts.PopupContent String getIndexNotReadyMessage();
 
-  private void updateElementImplementations(final Object lookupItemObject, ImplementationViewSession session) {
+  private void updateElementImplementations(AnActionEvent e, final Object lookupItemObject, ImplementationViewSession session) {
     ImplementationViewSessionFactory currentFactory = session.getFactory();
-    ImplementationViewSession newSession = createNewSession(currentFactory, session, lookupItemObject);
-    if (newSession == null) {
-      for (ImplementationViewSessionFactory factory : getSessionFactories()) {
-        if (currentFactory == factory) continue;
-        newSession = createNewSession(factory, session, lookupItemObject);
-        if (newSession != null) break;
-      }
-    }
-    if (newSession != null) {
-      Disposer.dispose(session);
-      showImplementations(newSession, false, false);
-    }
+
+    PsiElement psiElement = e.getRequiredData(CommonDataKeys.PSI_ELEMENT);
+    Project project = e.getProject();
+    VirtualFile virtualFile = Uni.INSTANCE.getSelectedFile();//e.getData(CommonDataKeys.VIRTUAL_FILE);
+    PsiImplementationViewSession2 newSession = new PsiImplementationViewSession2(project, psiElement, PsiElement.EMPTY_ARRAY, "todo", null, virtualFile, false, true);
+//    PsiImplementationViewSession2 newSession = createNewSession(currentFactory, session, lookupItemObject);
+//    if (newSession == null) {
+//      for (ImplementationViewSessionFactory factory : getSessionFactories()) {
+//        if (currentFactory == factory) continue;
+//        newSession = createNewSession(factory, session, lookupItemObject);
+//        if (newSession != null) break;
+//      }
+//    }
+//    if (newSession != null) {
+//      Disposer.dispose(session);//todo
+      showImplementations(e, virtualFile, newSession, false, false);
+//    }
   }
 
-  private ImplementationViewSession createNewSession(ImplementationViewSessionFactory factory,
-                                                     ImplementationViewSession session,
-                                                     Object lookupItemObject) {
-    return factory.createSessionForLookupElement(session.getProject(), session.getEditor(), session.getFile(), lookupItemObject,
-                                                 isSearchDeep(), isIncludeAlwaysSelf());
-  }
+//  private PsiImplementationViewSession2 createNewSession(ImplementationViewSessionFactory factory,
+//                                                     ImplementationViewSession session,
+//                                                     Object lookupItemObject) {
+//    return factory.createSessionForLookupElement(session.getProject(), session.getEditor(), session.getFile(), lookupItemObject,
+//                                                 isSearchDeep(), isIncludeAlwaysSelf());
+//  }
 
-  protected void showImplementations(@NotNull ImplementationViewSession session,
+  protected void showImplementations(AnActionEvent e,
+                                     @NotNull VirtualFile virtualFile,
+                                     @NotNull PsiImplementationViewSession2 session,
                                      boolean invokedFromEditor,
                                      boolean invokedByShortcut) {
 
-    List<ImplementationViewElement> impls = session.getImplementationElements();
-    if (impls.size() == 0) return;
-    Project project = session.getProject();
+    PsiElement psiElement = e.getRequiredData(CommonDataKeys.PSI_ELEMENT);
+    List<ImplementationViewElement> impls = List.of(new PsiImplementationViewElement(psiElement));//session.getImplementationElements();
+
+    Project project = e.getProject();
     triggerFeatureUsed(project);
-    VirtualFile virtualFile = session.getFile();
     int index = 0;
     if (invokedFromEditor && virtualFile != null && impls.size() > 1) {
       final VirtualFile containingFile = impls.get(0).getContainingFile();
@@ -141,7 +138,7 @@ public abstract class ShowRelatedElementsActionBase2 extends DumbAwareAction imp
     }
 
     final Ref<UsageView> usageView = new Ref<>();
-    final String title = getPopupTitle(session);
+    final String title = "popup_title: " + virtualFile.getName();
     JBPopup popup = SoftReference.dereference(myPopupRef);
     if (popup != null && popup.isVisible() && popup instanceof AbstractPopup) {
       final ImplementationViewComponent component = (ImplementationViewComponent)((AbstractPopup)popup).getComponent();
@@ -159,7 +156,7 @@ public abstract class ShowRelatedElementsActionBase2 extends DumbAwareAction imp
       final PopupUpdateProcessor updateProcessor = new PopupUpdateProcessor(project) {
         @Override
         public void updatePopup(Object lookupItemObject) {
-          updateElementImplementations(lookupItemObject, session);
+          updateElementImplementations(e, lookupItemObject, session);
         }
       };
 

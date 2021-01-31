@@ -239,7 +239,7 @@ public abstract class AbstractPsiBasedNode2<Value> extends ProjectViewNode2B<Val
         if (true) {
           openFileWithPsiElement(getVirtualFile(), extractPsiFromValue(), requestFocus, requestFocus);
         } else {
-          //old stable
+          //old
           NavigationUtil.openFileWithPsiElement(extractPsiFromValue(), requestFocus, requestFocus);
         }
       } else {

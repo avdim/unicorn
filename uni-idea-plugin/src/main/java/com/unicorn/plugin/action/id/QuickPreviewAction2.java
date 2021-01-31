@@ -3,6 +3,7 @@ package com.unicorn.plugin.action.id;
 
 import com.intellij.codeInsight.hint.ImplementationViewSession;
 import com.intellij.codeInsight.hint.ImplementationViewSessionFactory;
+import com.intellij.codeInsight.hint.PsiImplementationViewSession;
 import com.intellij.codeInsight.hint.actions.ShowImplementationsAction;
 import com.intellij.openapi.actionSystem.AnActionEvent;
 import com.intellij.openapi.actionSystem.CommonDataKeys;
@@ -18,6 +19,7 @@ import org.jetbrains.annotations.NotNull;
 
 import javax.swing.*;
 import java.awt.*;
+import java.util.List;
 
 @SuppressWarnings("ComponentNotRegistered")
 public class QuickPreviewAction2 extends ShowImplementationsAction2 {
@@ -33,11 +35,12 @@ public class QuickPreviewAction2 extends ShowImplementationsAction2 {
 
   @Override
   public void update(@NotNull AnActionEvent e) {
-    if (isQuickPreviewAvailableFor(e)) {
-      super.update(e);
-    } else {
-      e.getPresentation().setEnabled(false);
-    }
+//    if (isQuickPreviewAvailableFor(e)) {
+//      super.update(e);
+//    } else {
+//      e.getPresentation().setEnabled(false);
+//    }
+    e.getPresentation().setEnabled(true);
     e.getPresentation().setText(getClass().getSimpleName());
   }
 
@@ -58,7 +61,9 @@ public class QuickPreviewAction2 extends ShowImplementationsAction2 {
 
         if (project != null && (virtualFile != null)) {
           DataContext context = e.getDataContext();
-          for (ImplementationViewSessionFactory factory : getSessionFactories()) {
+          List<ImplementationViewSessionFactory> sessionFactories = getSessionFactories();
+          Uni.getLog().debug("sessionFactories: " + sessionFactories);
+          for (ImplementationViewSessionFactory factory : sessionFactories) {
             ImplementationViewSession session = factory.createSession(context, project, isSearchDeep(), isIncludeAlwaysSelf());
             if (session != null) {
               return true;
