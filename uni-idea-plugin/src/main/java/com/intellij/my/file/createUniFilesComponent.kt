@@ -445,6 +445,7 @@ private fun _createUniFilesComponent(
         return HelpID.PROJECT_VIEWS
       }
       if (PlatformDataKeys.PROJECT_CONTEXT.`is`(dataId)) {
+        Uni.log.debug("PROJECT_CONTEXT")
         fun getSelectNodeElement(): Any? {
           val descriptor = TreeUtil.getLastUserObject(NodeDescriptor::class.java, getSelectedPath()) ?: return null
           return if (descriptor is AbstractTreeNod2<*>) descriptor.value else descriptor.element
@@ -452,6 +453,12 @@ private fun _createUniFilesComponent(
 
         val selected = getSelectNodeElement()
         return selected as? Project
+      }
+      if (PlatformDataKeys.CONTEXT_COMPONENT.`is`(dataId)) {
+        Uni.log.debug("CONTEXT_COMPONENT")
+      }
+      if (PlatformDataKeys.EDITOR.`is`(dataId)) {
+        Uni.log.debug("EDITOR")
       }
       if (LibraryGroupElement.ARRAY_DATA_KEY.`is`(dataId)) {
         val selectedElements = getSelectedElements().filterType<LibraryGroupElement>()

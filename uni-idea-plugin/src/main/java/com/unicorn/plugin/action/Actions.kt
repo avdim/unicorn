@@ -68,6 +68,7 @@ object Actions {
           ActionData("com.unicorn.plugin.action.id.QuickTypeDefinitionAction", QuickTypeDefinitionAction()),
           ActionData("com.unicorn.plugin.action.id.ReloadGradleAction", ReloadGradleAction()),
           ActionData("com.unicorn.plugin.action.id.SelectInAction", SelectInAction()),
+          ActionData("com.unicorn.plugin.action.id.QuickPreviewAction2", QuickPreviewAction2()),
           ActionGroupData(
             id = "UniCorn.action-group.misc",
             name = "misc",
