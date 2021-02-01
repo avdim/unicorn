@@ -76,7 +76,7 @@ suspend fun configureIDE() {
   if (false) {
     UISettings.instance.editorTabPlacement = SwingConstants.CENTER
   }
-  UISettings.instance.editorTabLimit = 15
+  UISettings.instance.editorTabLimit = 40
   UISettings.instance.recentFilesLimit
   UISettings.instance.recentLocationsLimit
   UISettings.instance.state.openTabsAtTheEnd = true //option "open new tabs at the end"
