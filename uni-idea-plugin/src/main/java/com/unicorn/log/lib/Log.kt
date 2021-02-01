@@ -44,6 +44,12 @@ object Log {
     }
   }
 
+  inline fun todo(payload: Payload) {
+    todo {
+      payload
+    }
+  }
+
   inline fun todo(lambda: () -> Payload) {
     TODO_LEVEL_ENABLE {
       handleLog(

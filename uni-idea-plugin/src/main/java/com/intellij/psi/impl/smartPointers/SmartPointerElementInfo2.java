@@ -10,29 +10,29 @@ import com.intellij.psi.PsiFile;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-abstract class SmartPointerElementInf2 {
+abstract class SmartPointerElementInfo2 {
   @Nullable
   Document getDocumentToSynchronize() {
     return null;
   }
 
-  void fastenBelt(@NotNull SmartPointerManagerImpl manager) {
+  void fastenBelt(@NotNull SmartPointerManagerImpl2 manager) {
   }
 
   @Nullable
-  abstract PsiElement restoreElement(@NotNull SmartPointerManagerImpl manager);
+  abstract PsiElement restoreElement(@NotNull SmartPointerManagerImpl2 manager);
 
   @Nullable
-  abstract PsiFile restoreFile(@NotNull SmartPointerManagerImpl manager);
+  abstract PsiFile restoreFile(@NotNull SmartPointerManagerImpl2 manager);
 
   abstract int elementHashCode(); // must be immutable
-  abstract boolean pointsToTheSameElementAs(@NotNull SmartPointerElementInf2 other, @NotNull SmartPointerManagerImpl manager);
+  abstract boolean pointsToTheSameElementAs(@NotNull SmartPointerElementInfo2 other, @NotNull SmartPointerManagerImpl2 manager);
 
   abstract VirtualFile getVirtualFile();
 
   @Nullable
-  abstract Segment getRange(@NotNull SmartPointerManagerImpl manager);
+  abstract Segment getRange(@NotNull SmartPointerManagerImpl2 manager);
 
   @Nullable
-  abstract Segment getPsiRange(@NotNull SmartPointerManagerImpl manager);
+  abstract Segment getPsiRange(@NotNull SmartPointerManagerImpl2 manager);
 }

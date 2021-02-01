@@ -14,13 +14,10 @@ import com.intellij.psi.PsiDocumentManager;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiFile;
 import com.intellij.psi.impl.PsiDocumentManagerBase;
-import com.intellij.psi.impl.smartPointers.SelfElementInfo;
-import com.intellij.psi.impl.smartPointers.SmartPointerElementInfo;
-import com.intellij.psi.impl.smartPointers.SmartPointerManagerImpl;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-class FileElementInfo2 extends SmartPointerElementInf2 {
+class FileElementInfo2 extends SmartPointerElementInfo2 {
   @NotNull
   private final VirtualFile myVirtualFile;
   @NotNull
@@ -38,7 +35,7 @@ class FileElementInfo2 extends SmartPointerElementInf2 {
   }
 
   @Override
-  PsiElement restoreElement(@NotNull SmartPointerManagerImpl manager) {
+  PsiElement restoreElement(@NotNull SmartPointerManagerImpl2 manager) {
     Language language = Language.findLanguageByID(myLanguageId);
     if (language == null) return null;
     PsiFile file = SelfElementInfo.restoreFileFromVirtual(myVirtualFile, myProject, language);
@@ -46,7 +43,7 @@ class FileElementInfo2 extends SmartPointerElementInf2 {
   }
 
   @Override
-  PsiFile restoreFile(@NotNull SmartPointerManagerImpl manager) {
+  PsiFile restoreFile(@NotNull SmartPointerManagerImpl2 manager) {
     PsiElement element = restoreElement(manager);
     return element == null ? null : element.getContainingFile(); // can be directory
   }
@@ -57,8 +54,8 @@ class FileElementInfo2 extends SmartPointerElementInf2 {
   }
 
   @Override
-  boolean pointsToTheSameElementAs(@NotNull SmartPointerElementInf2 other,
-                                   @NotNull SmartPointerManagerImpl manager) {
+  boolean pointsToTheSameElementAs(@NotNull SmartPointerElementInfo2 other,
+                                   @NotNull SmartPointerManagerImpl2 manager) {
     return other instanceof FileElementInfo2 && Comparing.equal(myVirtualFile, ((FileElementInfo2)other).myVirtualFile);
   }
 
@@ -69,7 +66,7 @@ class FileElementInfo2 extends SmartPointerElementInf2 {
   }
 
   @Override
-  Segment getRange(@NotNull SmartPointerManagerImpl manager) {
+  Segment getRange(@NotNull SmartPointerManagerImpl2 manager) {
     if (!myVirtualFile.isValid()) return null;
 
     Document document = FileDocumentManager.getInstance().getDocument(myVirtualFile);
@@ -78,7 +75,7 @@ class FileElementInfo2 extends SmartPointerElementInf2 {
 
   @Nullable
   @Override
-  Segment getPsiRange(@NotNull SmartPointerManagerImpl manager) {
+  Segment getPsiRange(@NotNull SmartPointerManagerImpl2 manager) {
     Document currentDoc = FileDocumentManager.getInstance().getCachedDocument(myVirtualFile);
     Document committedDoc = currentDoc == null ? null :
                                   ((PsiDocumentManagerBase)PsiDocumentManager.getInstance(myProject)).getLastCommittedDocument(currentDoc);

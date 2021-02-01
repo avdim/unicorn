@@ -17,7 +17,7 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
 
-public class SelfElementInfo2 extends SmartPointerElementInf2 {
+public class SelfElementInfo2 extends SmartPointerElementInfo2 {
   private static final FileDocumentManager ourFileDocManager = FileDocumentManager.getInstance();
   private final Identikit myIdentikit;
   private final VirtualFile myFile;
@@ -58,7 +58,7 @@ public class SelfElementInfo2 extends SmartPointerElementInf2 {
   }
 
   @Override
-  PsiElement restoreElement(@NotNull SmartPointerManagerImpl manager) {
+  PsiElement restoreElement(@NotNull SmartPointerManagerImpl2 manager) {
     Segment segment = getPsiRange(manager);
     if (segment == null) return null;
 
@@ -70,7 +70,7 @@ public class SelfElementInfo2 extends SmartPointerElementInf2 {
 
   @Nullable
   @Override
-  TextRange getPsiRange(@NotNull SmartPointerManagerImpl manager) {
+  TextRange getPsiRange(@NotNull SmartPointerManagerImpl2 manager) {
     return calcPsiRange();
   }
 
@@ -85,7 +85,7 @@ public class SelfElementInfo2 extends SmartPointerElementInf2 {
 
   @Override
   @Nullable
-  PsiFile restoreFile(@NotNull SmartPointerManagerImpl manager) {
+  PsiFile restoreFile(@NotNull SmartPointerManagerImpl2 manager) {
     Language language = myIdentikit.getFileLanguage();
     if (language == null) return null;
     return restoreFileFromVirtual(getVirtualFile(), manager.getProject(), language);
@@ -127,7 +127,7 @@ public class SelfElementInfo2 extends SmartPointerElementInf2 {
   }
 
   @Override
-  boolean pointsToTheSameElementAs(@NotNull SmartPointerElementInf2 other, @NotNull SmartPointerManagerImpl manager) {
+  boolean pointsToTheSameElementAs(@NotNull SmartPointerElementInfo2 other, @NotNull SmartPointerManagerImpl2 manager) {
     if (other instanceof SelfElementInfo2) {
       final SelfElementInfo2 otherInfo = (SelfElementInfo2)other;
       if (!getVirtualFile().equals(other.getVirtualFile()) || myIdentikit != otherInfo.myIdentikit) return false;
@@ -151,14 +151,14 @@ public class SelfElementInfo2 extends SmartPointerElementInf2 {
 
   @Override
   @Nullable
-  Segment getRange(@NotNull SmartPointerManagerImpl manager) {
+  Segment getRange(@NotNull SmartPointerManagerImpl2 manager) {
     if (hasRange()) {
       Document document = getDocumentToSynchronize();
       if (document != null) {
         PsiDocumentManagerBase documentManager = manager.getPsiDocumentManager();
         List<DocumentEvent> events = documentManager.getEventsSinceCommit(document);
         if (!events.isEmpty()) {
-          SmartPointerTracker tracker = manager.getTracker(getVirtualFile());
+          SmartPointerTracker2 tracker = manager.getTracker(getVirtualFile());
           if (tracker != null) {
             Uni.getLog().error("tracker != null, tracker: " + tracker);
 //            return tracker.getUpdatedRange(this, (FrozenDocument)documentManager.getLastCommittedDocument(document), events);

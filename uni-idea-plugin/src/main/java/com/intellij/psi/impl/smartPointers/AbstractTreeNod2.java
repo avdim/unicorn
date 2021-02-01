@@ -192,7 +192,7 @@ public abstract class AbstractTreeNod2<T> extends PresentableNodeDescriptor2<Abs
       return ReadAction.compute(() -> {
         if (!psi.isValid()) return psi;
         SmartPsiElementPointer<PsiElement> psiResult;
-        SmartPsiElementPointer<PsiElement> oldPsiResult = SmartPointerManager.getInstance(psi.getProject()).createSmartPsiElementPointer(psi);
+        SmartPsiElementPointer<PsiElement> oldPsiResult = SmartPointerManagerImpl2.getInstance(psi.getProject()).createSmartPsiElementPointer(psi);
         SmartPsiElementPointer<PsiElement> newPsiResult = createSmartPsiElementPointer(psi);
         if (true) {
           psiResult = newPsiResult;
@@ -245,7 +245,7 @@ public abstract class AbstractTreeNod2<T> extends PresentableNodeDescriptor2<Abs
       return pointer;
     }
 
-    pointer = new SmartPsiElementPointerImpl2<E>((SmartPointerManagerImpl) SmartPointerManager.getInstance(ProjectManager.getInstance().getDefaultProject() ), element, containingFile, forInjected);
+    pointer = new SmartPsiElementPointerImpl2<E>(SmartPointerManagerImpl2.getInstance(ProjectManager.getInstance().getDefaultProject() ), element, containingFile, forInjected);
     if (containingFile != null) {
       trackPointer();
     }
