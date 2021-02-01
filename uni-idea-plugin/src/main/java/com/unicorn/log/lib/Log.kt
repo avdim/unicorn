@@ -17,6 +17,7 @@ object Log {
   }
 
   enum class LogLevel {
+    _TODO,
     DEBUG,
     INFO,
     WARNING,
@@ -53,7 +54,7 @@ object Log {
   inline fun todo(lambda: () -> Payload) {
     TODO_LEVEL_ENABLE {
       handleLog(
-        LogLevel.DEBUG,
+        LogLevel._TODO,
         lambda()
       )
     }
