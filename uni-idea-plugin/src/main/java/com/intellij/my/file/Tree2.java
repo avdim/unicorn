@@ -84,7 +84,7 @@ public class Tree2 extends JTree implements ComponentWithEmptyText, ComponentWit
     addMouseListener(new MyMouseListener());
     addFocusListener(new MyFocusListener());
 
-    setCellRenderer(new NodeRenderer());
+    setCellRenderer(new NodeRenderer2());
 
     setSelectionModel(mySelectionModel);
     setOpaque(false);
@@ -566,7 +566,9 @@ public class Tree2 extends JTree implements ComponentWithEmptyText, ComponentWit
           TreePath[] selectionPaths = getSelectionModel().getSelectionPaths();
           if (selectionPaths != null) {
             for (TreePath selectionPath : selectionPaths) {
-              if (selectionPath != null && selectionPath.equals(path)) return;
+              if (selectionPath != null && selectionPath.equals(path)) {
+                return;
+              }
             }
           }
         }

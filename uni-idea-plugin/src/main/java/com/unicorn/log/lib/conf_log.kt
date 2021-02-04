@@ -5,7 +5,7 @@ inline fun DEBUG_LEVEL_ENABLE(lambda: () -> Unit) {
 }
 
 inline fun TODO_LEVEL_ENABLE(lambda: () -> Unit) {
-  lambda()
+//  lambda()
 }
 
 inline fun INFO_LEVEL_ENABLE(lambda: () -> Unit) {
