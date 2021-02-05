@@ -22,8 +22,8 @@ val MIN_JDK_VERSION: JdkVersion = if (false/*DEBUG_JVM*/) JdkVersion.JDK8 else J
  */
 val USE_KOTLIN_DEV_REPOSITORY = true
 
-//val KOTLIN_VERSION = "1.4.21"
-val KOTLIN_VERSION = "1.4.21-2"
+//val KOTLIN_VERSION = "1.4.21-2"
+val KOTLIN_VERSION = "1.4.30"
 val SERIALIZATION_VERSION = "1.0.1"
 val COROUTINE_VERSION = "1.4.2"
 val KTOR_VERSION = "1.5.0"
@@ -40,11 +40,10 @@ val COMPILER_ARGS = listOf<String>()
 // https://github.com/JetBrains/gradle-intellij-plugin
 val INTELLIJ_GRADLE = "0.6.5"
 // https://maven.pkg.jetbrains.space/public/p/compose/dev/org/jetbrains/compose/org.jetbrains.compose.gradle.plugin/
-//val DESKTOP_COMPOSE = "0.3.0-build135"
-//val DESKTOP_COMPOSE = "0.3.0-build136"
 //val DESKTOP_COMPOSE = "0.3.0-build140"
 //val DESKTOP_COMPOSE = "0.0.0-vsync-build30"
-val DESKTOP_COMPOSE = "0.3.0-build146"
+//val DESKTOP_COMPOSE = "0.3.0-build146"
+val DESKTOP_COMPOSE = "0.3.0-build149"
 
 val Project.UNI_BUILD_TYPE: BuildType get() =
   when (safeArgument("uniBuildType")) {
@@ -73,9 +72,9 @@ val UNI_VERSION = "0.12.5"
 //val LAST_COMMUNITY = IdeaVersion.Download("203.6682.78-EAP-SNAPSHOT", "IC")
 //val LAST_IDEA_STR = "203.6682.115-EAP-SNAPSHOT"
 //val LAST_IDEA_STR = "2020.3.1"
-val LAST_IDEA_STR = "2020.3.2"
-//val LAST_IDEA_STR = "211.4961.30-EAP-SNAPSHOT"
-//val LAST_IDEA_STR = "211.4961.33-EAP-SNAPSHOT"
+//val LAST_IDEA_STR = "2020.3.2"
+val LAST_IDEA_STR = "211.4961.33-EAP-SNAPSHOT"
+//val LAST_IDEA_STR = "211.5538.20-EAP-SNAPSHOT"
 val LAST_COMMUNITY = IdeaVersion.Download(LAST_IDEA_STR, "IC")
 val LAST_ULTIMATE = IdeaVersion.Download(LAST_IDEA_STR, "IU")
 

@@ -950,12 +950,12 @@ public class GitUtil {
    * <p>"The same" here means the changes made in the same files. It is possible that there was a change made in file A in the original
    * commit, but there are no local changes made in file A. Such situations are ignored.</p>
    */
-  @NotNull
-  public static Collection<Change> findCorrespondentLocalChanges(@NotNull ChangeListManager changeListManager,
-                                                                 @NotNull Collection<? extends Change> originalChanges) {
-    OpenTHashSet<Change> allChanges = new OpenTHashSet<>(changeListManager.getAllChanges());
-    return ContainerUtil.mapNotNull(originalChanges, allChanges::get);
-  }
+//  @NotNull
+//  public static Collection<Change> findCorrespondentLocalChanges(@NotNull ChangeListManager changeListManager,
+//                                                                 @NotNull Collection<? extends Change> originalChanges) {
+//    OpenTHashSet<Change> allChanges = new OpenTHashSet<>(changeListManager.getAllChanges());
+//    return ContainerUtil.mapNotNull(originalChanges, allChanges::get);
+//  }
 
   /**
    * A convenience method to refresh either a part of the VFS modified by the given changes, or the whole root recursively.
