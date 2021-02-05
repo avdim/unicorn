@@ -315,22 +315,22 @@ public abstract class AbstractPsiBasedNode2<Value> extends ProjectViewNode2B<Val
     Ref<Boolean> resultRef = new Ref<>();
     boolean openAsNativeFinal = openAsNative;
     // all navigation inside should be treated as a single operation, so that 'Back' action undoes it in one go
-    @NotNull Project[] openProjects = ProjectManager.getInstance().getOpenProjects();
-    for (Project proj : openProjects) {
-      element.getProject();
-      CommandProcessor.getInstance().executeCommand(proj, () -> {
-        if (openAsNativeFinal || !activatePsiElementIfOpen(proj, element, searchForOpen, requestFocus)) {
-          final NavigationItem navigationItem = (NavigationItem) element;
-          if (!navigationItem.canNavigate()) {
-            resultRef.set(Boolean.FALSE);
-          } else {
-            navigate2(proj, file, requestFocus);
-//            navigationItem.navigate(requestFocus);
-            resultRef.set(Boolean.TRUE);
-          }
-        }
-      }, "", null);
+    if (false) {
+      @NotNull Project[] openProjects = ProjectManager.getInstance().getOpenProjects();
     }
+    Project proj = Uni.todoUseOpenedProject(element.getProject());
+    CommandProcessor.getInstance().executeCommand(proj, () -> {
+      if (openAsNativeFinal || !activatePsiElementIfOpen(proj, element, searchForOpen, requestFocus)) {
+        final NavigationItem navigationItem = (NavigationItem) element;
+        if (!navigationItem.canNavigate()) {
+          resultRef.set(Boolean.FALSE);
+        } else {
+          navigate2(proj, file, requestFocus);
+//            navigationItem.navigate(requestFocus);
+          resultRef.set(Boolean.TRUE);
+        }
+      }
+    }, "", null);
 
     if (!resultRef.isNull()) return resultRef.get();
 

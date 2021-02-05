@@ -15,6 +15,7 @@ import com.unicorn.plugin.getToolWindow
 import kotlinx.coroutines.*
 import com.intellij.my.file.ConfUniFiles
 import com.intellij.openapi.application.impl.CoroutineExceptionHandlerImpl
+import com.intellij.openapi.project.Project
 
 object Uni : Disposable {
   val BOLD_DIRS = true
@@ -22,6 +23,8 @@ object Uni : Disposable {
   val log = Log
   @JvmStatic
   val todoDefaultProject by lazy { ProjectManager.getInstance().defaultProject }//todo
+  @JvmStatic
+  fun todoUseOpenedProject(project: Project) = project
   val buildConfig = BuildConfig
   var selectedFile: VirtualFile? = null
   val job = Job()
