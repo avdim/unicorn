@@ -217,7 +217,8 @@ private fun _createUniFilesComponent(
       }
       if (LangDataKeys.IDE_VIEW.`is`(dataId)) {
         return object : IdeView {
-          override fun getOrChooseDirectory(): PsiDirectory? = DirectoryChooserUtil.getOrChooseDirectory(this)
+          override fun getOrChooseDirectory(): PsiDirectory? =
+            DirectoryChooserUtil.getOrChooseDirectory(this)
           override fun getDirectories(): Array<PsiDirectory> {
             val directories = ArrayList<PsiDirectory>()
             for (node in getSelectedNodes(PsiDirectoryNode2::class.java)) {
@@ -226,7 +227,6 @@ private fun _createUniFilesComponent(
             if (directories.isNotEmpty()) {
               return directories.toTypedArray()
             }
-
             val elements: Array<PsiElement> = getSelectedPSIElements(myTree.selectionPaths)
             if (elements.size == 1) {
               val element = elements[0]
@@ -240,14 +240,6 @@ private fun _createUniFilesComponent(
                   val psiDirectory = containingFile.containingDirectory
                   if (psiDirectory != null) {
                     return arrayOf(psiDirectory)
-                  }
-                  val file = containingFile.virtualFile
-                  if (file is VirtualFileWindow) {
-                    val delegate = (file as VirtualFileWindow).delegate
-                    val containingDirectory = containingFile.manager.findFile(delegate)?.containingDirectory
-                    if (containingDirectory != null) {
-                      return arrayOf(containingDirectory)
-                    }
                   }
                   return PsiDirectory.EMPTY_ARRAY
                 }
@@ -266,7 +258,6 @@ private fun _createUniFilesComponent(
           }
 
           override fun deleteElement(dataContext: DataContext) {
-
             val validElements: MutableList<PsiElement> = ArrayList()
             for (psiElement in getSelectedPSIElements(myTree.selectionPaths)) {
               if (psiElement.isValid) {
