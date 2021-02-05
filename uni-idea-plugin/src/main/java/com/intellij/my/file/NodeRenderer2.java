@@ -49,7 +49,6 @@ public class NodeRenderer2 extends ColoredTreeCellRenderer {
     if (node instanceof NodeDescriptor) {
       NodeDescriptor<?> descriptor = (NodeDescriptor<?>)node;
       // TODO: use this color somewhere
-      Color color = descriptor.getColor();
       setIcon(fixIconIfNeeded(descriptor.getIcon(), selected, hasFocus));
     }
 
@@ -70,7 +69,7 @@ public class NodeRenderer2 extends ColoredTreeCellRenderer {
         }
         text = tree.convertValueToText(text, selected, expanded, leaf, row, hasFocus);
         SimpleTextAttributes simpleTextAttributes = getSimpleTextAttributes(
-          presentation, forcedForeground != null ? forcedForeground : color, node);
+          presentation, forcedForeground != null ? forcedForeground : color);
         append(text, simpleTextAttributes);
         String location = presentation.getLocationString();
         if (!StringUtil.isEmpty(location)) {
@@ -135,7 +134,7 @@ public class NodeRenderer2 extends ColoredTreeCellRenderer {
   }
 
   @NotNull
-  protected SimpleTextAttributes getSimpleTextAttributes(@NotNull PresentationData presentation, Color color, @NotNull Object node) {
+  protected SimpleTextAttributes getSimpleTextAttributes(@NotNull PresentationData presentation, Color color) {
     SimpleTextAttributes simpleTextAttributes = getSimpleTextAttributes(presentation, getScheme());
 
     return addColorToSimpleTextAttributes(simpleTextAttributes, color);
@@ -148,10 +147,6 @@ public class NodeRenderer2 extends ColoredTreeCellRenderer {
       simpleTextAttributes = SimpleTextAttributes.fromTextAttributes(textAttributes);
     }
     return simpleTextAttributes;
-  }
-
-  public static SimpleTextAttributes getSimpleTextAttributes(@Nullable final ItemPresentation presentation) {
-    return getSimpleTextAttributes(presentation, getScheme());
   }
 
   private static SimpleTextAttributes getSimpleTextAttributes(@Nullable final ItemPresentation presentation,

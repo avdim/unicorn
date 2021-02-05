@@ -56,7 +56,6 @@ import java.awt.*;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
-import java.util.List;
 
 /**
  * Class for node descriptors based on PsiElements. Subclasses should define
@@ -400,11 +399,11 @@ public abstract class AbstractPsiBasedNode2<Value> extends ProjectViewNode2B<Val
     }
     if (!Comparing.equal(FileDocumentManager.getInstance().getFile(e.getDocument()), file)) return false;
 
-    navigateInEditor(project, file, e);
+    navigateInEditor(project, e);
     return true;
   }
 
-  protected static void navigateInEditor(Project project, @NotNull VirtualFile file, @NotNull Editor e) {
+  protected static void navigateInEditor(Project project, @NotNull Editor e) {
     CaretModel caretModel = e.getCaretModel();
     boolean caretMoved = false;
     if (caretMoved) {

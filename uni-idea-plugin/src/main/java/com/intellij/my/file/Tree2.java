@@ -222,11 +222,6 @@ public class Tree2 extends JTree implements ComponentWithEmptyText, ComponentWit
     }
   }
 
-  protected boolean shouldShowBusyIconIfNeeded() {
-    // https://youtrack.jetbrains.com/issue/IDEA-101422 "Rotating wait symbol in Project list whenever typing"
-    return hasFocus();
-  }
-
   protected boolean paintNodes() {
     return false;
   }
@@ -658,17 +653,6 @@ public class Tree2 extends JTree implements ComponentWithEmptyText, ComponentWit
     public void focusLost(FocusEvent e) {
       focusChanges();
     }
-  }
-
-  /**
-   * @deprecated no effect
-   */
-  @Deprecated
-  public final void setLineStyleAngled() {
-  }
-
-  public interface NodeFilter<T> {
-    boolean accept(T node);
   }
 
   @Override

@@ -8,7 +8,6 @@ import com.intellij.openapi.application.ReadAction;
 import com.intellij.openapi.diagnostic.Logger;
 import com.intellij.openapi.editor.colors.TextAttributesKey;
 import com.intellij.openapi.ide.CopyPasteManager;
-import com.intellij.openapi.project.Project;
 import com.intellij.openapi.project.ProjectManager;
 import com.intellij.openapi.ui.Queryable;
 import com.intellij.openapi.util.Comparing;
@@ -53,18 +52,6 @@ public abstract class AbstractTreeNod2<T> extends PresentableNodeDescriptor2<Abs
 
   protected boolean valueIsCut() {
     return CopyPasteManager.getInstance().isCutElement(getValue());
-  }
-
-  @Override
-  public PresentableNodeDescriptor2 getChildToHighlightAt(int index) {
-    final Collection<? extends AbstractTreeNod2<?>> kids = getChildren();
-    int i = 0;
-    for (final AbstractTreeNod2<?> kid : kids) {
-      if (i == index) return kid;
-      i++;
-    }
-
-    return null;
   }
 
   @Override
@@ -321,11 +308,4 @@ public abstract class AbstractTreeNod2<T> extends PresentableNodeDescriptor2<Abs
     return Comparing.equal(getValue(), element);
   }
 
-  /**
-   * @deprecated use {@link #getPresentation()} instead
-   */
-  @Deprecated
-  protected String getToolTip() {
-    return getPresentation().getTooltip();
-  }
 }

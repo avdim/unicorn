@@ -13,7 +13,6 @@ import com.intellij.openapi.module.ModuleUtilCore;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.project.ProjectBundle;
 import com.intellij.openapi.roots.*;
-import com.intellij.openapi.roots.impl.DirectoryIndex;
 import com.intellij.openapi.roots.ui.configuration.ModuleSourceRootEditHandler;
 import com.intellij.openapi.util.Comparing;
 import com.intellij.openapi.util.io.FileUtil;
@@ -190,7 +189,7 @@ public class PsiDirectoryNode2 extends BasePsiNode2<PsiDirectory> implements Nav
     Module module = fileIndex.getModuleForFile(psiDirectory.getVirtualFile());
     ModuleFileIndex moduleFileIndex = module == null ? null : ModuleRootManager.getInstance(module).getFileIndex();
     if (!settings.isFlattenPackages() || skipDirectory()) {
-      processPsiDirectoryChildren(directoryChildrenInProject(psiDirectory, settings),
+      processPsiDirectoryChildren(directoryChildrenInProject(psiDirectory),
         children, fileIndex, null, settings, withSubDirectories, filter);
     }
     else { // source directory in "flatten packages" mode
@@ -290,7 +289,7 @@ public class PsiDirectoryNode2 extends BasePsiNode2<PsiDirectory> implements Nav
           if (!vFile.equals(projectFileIndex.getSourceRootForFile(vFile))) { // if is not a source root
             if (viewSettings.isHideEmptyMiddlePackages() && !skipDirectory() && isEmptyMiddleDirectory()) {
               processPsiDirectoryChildren(
-                directoryChildrenInProject(dir, viewSettings), container, projectFileIndex, moduleFileIndex, viewSettings, true, filter
+                directoryChildrenInProject(dir), container, projectFileIndex, moduleFileIndex, viewSettings, true, filter
               ); // expand it recursively
               continue;
             }
@@ -301,14 +300,14 @@ public class PsiDirectoryNode2 extends BasePsiNode2<PsiDirectory> implements Nav
     }
   }
 
-  private PsiElement @NotNull [] directoryChildrenInProject(PsiDirectory psiDirectory, final ViewSettings settings) {
+  private PsiElement @NotNull [] directoryChildrenInProject(PsiDirectory psiDirectory) {
     final VirtualFile dir = psiDirectory.getVirtualFile();
-    if (shouldBeShown(dir, settings)) {
+    if (shouldBeShown(dir)) {
       final List<PsiElement> children = new ArrayList<>();
       psiDirectory.processChildren(new PsiElementProcessor<PsiFileSystemItem>() {
         @Override
         public boolean execute(@NotNull PsiFileSystemItem element) {
-          if (shouldBeShown(element.getVirtualFile(), settings)) {
+          if (shouldBeShown(element.getVirtualFile())) {
             children.add(element);
           }
           return true;
@@ -335,10 +334,6 @@ public class PsiDirectoryNode2 extends BasePsiNode2<PsiDirectory> implements Nav
     }
 
     return PsiUtilCore.toPsiElementArray(directoriesOnTheWayToContentRoots);
-  }
-
-  private static boolean isFileUnderContentRoot(@NotNull DirectoryIndex index, @Nullable VirtualFile file) {
-    return file != null && index.getInfoForFile(file).getContentRoot() != null;
   }
 
   @NotNull
@@ -368,7 +363,7 @@ public class PsiDirectoryNode2 extends BasePsiNode2<PsiDirectory> implements Nav
 //    return topLevelContentRoots;
   }
 
-  private boolean shouldBeShown(@NotNull VirtualFile dir, ViewSettings settings) {
+  private boolean shouldBeShown(@NotNull VirtualFile dir) {
     if (!dir.isValid()) return false;
     Uni.getLog().warning("shouldBeShown in empty");
     return true;
@@ -379,10 +374,6 @@ public class PsiDirectoryNode2 extends BasePsiNode2<PsiDirectory> implements Nav
 //    boolean b = shouldShowExcludedFiles && directoryInfo.isExcluded(dir);
 //    boolean result = cond ? a : b;
 //    return result;
-  }
-
-  private static boolean shouldShowExcludedFiles(ViewSettings settings) {
-    return !Registry.is("ide.hide.excluded.files") && settings instanceof ProjectViewSettings && ((ProjectViewSettings)settings).isShowExcludedFiles();
   }
 
   public boolean isFQNameShown() {

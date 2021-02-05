@@ -30,6 +30,10 @@ object Log {
     logConsumers.add(consumer)
   }
 
+  fun breakPoint(message:String) {
+
+  }
+
   inline fun debug(lambda: () -> Payload) {
     DEBUG_LEVEL_ENABLE {
       handleLog(
@@ -116,11 +120,16 @@ object Log {
   }
 
   fun handleLog(level: LogLevel, logData: Payload) {
-    val stackTrace = try {
-      throw Exception()
-    } catch (t: Throwable) {
-      t.stackTrace.drop(1)
-    }
+    val stackTrace =
+      if (false) {
+        try {
+          throw Exception()
+        } catch (t: Throwable) {
+          t.stackTrace.drop(1)
+        }
+      } else {
+        listOf()
+      }
 
     val logDataWithContext = LogEvent(
       payload = logData,

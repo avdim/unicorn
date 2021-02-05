@@ -4,10 +4,6 @@ package com.intellij.psi.impl.smartPointers;
 import com.intellij.openapi.Disposable;
 import com.intellij.openapi.application.ApplicationManager;
 import com.intellij.openapi.diagnostic.Logger;
-import com.intellij.openapi.editor.Document;
-import com.intellij.openapi.editor.event.DocumentEvent;
-import com.intellij.openapi.editor.impl.FrozenDocument;
-import com.intellij.openapi.fileEditor.FileDocumentManager;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.util.Key;
 import com.intellij.openapi.util.ProperTextRange;
@@ -23,11 +19,9 @@ import com.unicorn.Uni;
 import org.jetbrains.annotations.NonNls;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-import org.jetbrains.annotations.TestOnly;
 
 import java.lang.ref.Reference;
 import java.lang.ref.WeakReference;
-import java.util.List;
 import java.util.concurrent.ConcurrentMap;
 
 public final class SmartPointerManagerImpl2 extends SmartPointerManager implements Disposable {
@@ -59,11 +53,6 @@ public final class SmartPointerManagerImpl2 extends SmartPointerManager implemen
       (project.isDisposed() ? "(Disposed)" : "") +
       (project.isDefault() ? "(Default)" : "") +
       project.hashCode();
-  }
-
-  public void fastenBelts(@NotNull VirtualFile file) {//todo rm?
-    SmartPointerTracker2 pointers = getTracker(file);
-//    if (pointers != null) pointers.fastenBelts(this);
   }
 
   private static final Key<Reference<SmartPsiElementPointerImpl2<?>>> CACHED_SMART_POINTER_KEY = Key.create("CACHED_SMART_POINTER_KEY_2");
@@ -181,14 +170,6 @@ public final class SmartPointerManagerImpl2 extends SmartPointerManager implemen
 
       SmartPointerElementInfo info = ((SmartPsiElementPointerImpl<?>)pointer).getElementInfo();
       info.cleanup();
-
-      SmartPointerTracker2.PointerReference reference = ((SmartPsiElementPointerImpl2<?>)pointer).pointerReference;
-      if (reference != null) {
-        if (reference.get() != pointer) {
-          throw new IllegalStateException("Reference points to " + reference.get());
-        }
-        reference.tracker.removeReference(reference);
-      }
     }
   }
 
@@ -213,27 +194,9 @@ public final class SmartPointerManagerImpl2 extends SmartPointerManager implemen
     }
   }
 
-  @TestOnly
-  public int getPointersNumber(@NotNull PsiFile containingFile) {
-    VirtualFile file = containingFile.getViewProvider().getVirtualFile();
-    SmartPointerTracker2 pointers = getTracker(file);
-    return pointers == null ? 0 : pointers.getSize();
-  }
-
   @Override
   public boolean pointToTheSameElement(@NotNull SmartPsiElementPointer<?> pointer1, @NotNull SmartPsiElementPointer<?> pointer2) {
     return SmartPsiElementPointerImpl.pointsToTheSameElementAs(pointer1, pointer2);
-  }
-
-  public void updatePointers(@NotNull Document document, @NotNull FrozenDocument frozen, @NotNull List<? extends DocumentEvent> events) {
-    VirtualFile file = FileDocumentManager.getInstance().getFile(document);
-    SmartPointerTracker2 list = file == null ? null : getTracker(file);
-    if (list != null) list.updateMarkers(frozen, events);
-  }
-
-  public void updatePointerTargetsAfterReparse(@NotNull VirtualFile file) {
-    SmartPointerTracker2 list = getTracker(file);
-    if (list != null) list.updatePointerTargetsAfterReparse();
   }
 
   @NotNull

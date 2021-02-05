@@ -33,8 +33,6 @@ import java.util.Collections;
 
 public abstract class ProjectViewNode2<Value> extends AbstractTreeNod2<Value> implements RootsProvider, SettingsProvider {
 
-  protected static final Logger LOG = Logger.getInstance(ProjectViewNode2.class);
-
   private static final ViewSettings mySettings = new ViewSettings() {
     @Override
     public boolean isFlattenPackages() {

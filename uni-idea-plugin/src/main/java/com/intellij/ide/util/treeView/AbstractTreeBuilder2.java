@@ -201,15 +201,6 @@ public class AbstractTreeBuilder2 implements Disposable {
   }
 
   /**
-   * @deprecated use {@link AbstractTreeUi#buildNodeForElement(Object)}
-   */
-  @Deprecated
-  public void buildNodeForElement(@NotNull Object element) {
-    AbstractTreeUi2 ui = getUi();
-    if (ui != null) ui.buildNodeForElement(element);
-  }
-
-  /**
    * @deprecated use {@link AbstractTreeUi#getNodeForElement(Object, boolean)}
    */
   @Deprecated
@@ -327,13 +318,6 @@ public class AbstractTreeBuilder2 implements Disposable {
   public void setPassthroughMode(boolean passthrough) {
     AbstractTreeUi2 ui = getUi();
     if (ui != null) ui.setPassthroughMode(passthrough);
-  }
-
-  public void cancelUpdate() {
-    AbstractTreeUi2 ui = getUi();
-    if (ui != null) {
-      ui.cancelUpdate();
-    }
   }
 
   public void batch(@NotNull Progressive progressive) {

@@ -50,7 +50,6 @@ class SmartPsiElementPointerImpl2<E extends PsiElement> implements SmartPointerE
   public final SmartPointerElementInfo2 myElementInfo;
   protected final SmartPointerManagerImpl2 myManager;
   private byte myReferenceCount = 1;
-  @Nullable SmartPointerTracker2.PointerReference pointerReference;
 
   SmartPsiElementPointerImpl2(@NotNull SmartPointerManagerImpl2 manager,
                               @NotNull E element,
