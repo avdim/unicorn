@@ -2,25 +2,15 @@
 package com.intellij.psi.impl.smartPointers;
 
 import com.intellij.ide.projectView.PresentationData;
-import com.intellij.ide.util.treeView.NodeDescriptor;
-import com.intellij.ide.util.treeView.PresentableNodeDescriptor;
-import com.intellij.openapi.project.Project;
-import com.intellij.openapi.util.NlsSafe;
-import com.intellij.ui.ColorUtil;
-import com.intellij.ui.SimpleTextAttributes;
-import com.intellij.util.ui.StartupUiUtil;
-import com.intellij.util.ui.UIUtil;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-
-import java.awt.*;
 
 public abstract class PresentableNodeDescriptor2<E> extends NodeDescriptor2<E> {
   private PresentationData myTemplatePresentation;
   private PresentationData myUpdatedPresentation;
 
-  protected PresentableNodeDescriptor2(Project project, @Nullable NodeDescriptor2 parentDescriptor) {
-    super(project, parentDescriptor);
+  protected PresentableNodeDescriptor2(@Nullable NodeDescriptor2 parentDescriptor) {
+    super(parentDescriptor);
   }
 
   @Override
@@ -50,7 +40,6 @@ public abstract class PresentableNodeDescriptor2<E> extends NodeDescriptor2<E> {
   protected final boolean apply(@NotNull PresentationData presentation, @Nullable PresentationData before) {
     setIcon(presentation.getIcon(false));
     myName = presentation.getPresentableText();
-    myColor = presentation.getForcedTextForeground();
     boolean updated = !presentation.equals(before);
 
     if (myUpdatedPresentation == null) {
@@ -118,92 +107,6 @@ public abstract class PresentableNodeDescriptor2<E> extends NodeDescriptor2<E> {
     }
 
     return myTemplatePresentation;
-  }
-
-  public boolean isContentHighlighted() {
-    return false;
-  }
-
-  public boolean isHighlightableContentNode(@NotNull PresentableNodeDescriptor2 kid) {
-    return true;
-  }
-
-  public PresentableNodeDescriptor2<?> getChildToHighlightAt(int index) {
-    return null;
-  }
-
-  public boolean isParentOf(@NotNull NodeDescriptor2 eachNode) {
-    NodeDescriptor2 eachParent = eachNode.getParentDescriptor();
-    while (eachParent != null) {
-      if (eachParent == this) return true;
-      eachParent = eachParent.getParentDescriptor();
-    }
-    return false;
-  }
-
-  public boolean isAncestorOrSelf(NodeDescriptor2 selectedNode) {
-    NodeDescriptor2<?> node = selectedNode;
-    while (node != null) {
-      if (equals(node)) return true;
-      node = node.getParentDescriptor();
-    }
-    return false;
-  }
-
-  @NotNull
-  public Color getHighlightColor() {
-    return StartupUiUtil.isUnderDarcula() ? ColorUtil.shift(UIUtil.getTreeBackground(), 1.1) : UIUtil.getTreeBackground().brighter();
-  }
-
-  public static class ColoredFragment2 {
-    private final @NlsSafe String myText;
-    private final @NlsSafe String myToolTip;
-    private final SimpleTextAttributes myAttributes;
-
-    public ColoredFragment2(@NlsSafe String aText, SimpleTextAttributes aAttributes) {
-      this(aText, null, aAttributes);
-    }
-
-    public ColoredFragment2(@NlsSafe String aText, @NlsSafe String toolTip, SimpleTextAttributes aAttributes) {
-      myText = aText == null? "" : aText;
-      myAttributes = aAttributes;
-      myToolTip = toolTip;
-    }
-
-    public @NlsSafe String getToolTip() {
-      return myToolTip;
-    }
-
-    public @NlsSafe String getText() {
-      return myText;
-    }
-
-    public SimpleTextAttributes getAttributes() {
-      return myAttributes;
-    }
-
-
-    @Override
-    public boolean equals(final Object o) {
-      if (this == o) return true;
-      if (o == null || getClass() != o.getClass()) return false;
-
-      final ColoredFragment2 that = (ColoredFragment2)o;
-
-      if (myAttributes != null ? !myAttributes.equals(that.myAttributes) : that.myAttributes != null) return false;
-      if (myText != null ? !myText.equals(that.myText) : that.myText != null) return false;
-      if (myToolTip != null ? !myToolTip.equals(that.myToolTip) : that.myToolTip != null) return false;
-
-      return true;
-    }
-
-    @Override
-    public int hashCode() {
-      int result = myText != null ? myText.hashCode() : 0;
-      result = 31 * result + (myToolTip != null ? myToolTip.hashCode() : 0);
-      result = 31 * result + (myAttributes != null ? myAttributes.hashCode() : 0);
-      return result;
-    }
   }
 
   /*public @NlsSafe String getName() {

@@ -25,7 +25,7 @@ import com.intellij.psi.PsiFile;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-class DirElementInfo2 extends SmartPointerElementInf2 {
+class DirElementInfo2 extends SmartPointerElementInfo2 {
   @NotNull
   private final VirtualFile myVirtualFile;
   @NotNull
@@ -38,12 +38,12 @@ class DirElementInfo2 extends SmartPointerElementInf2 {
   }
 
   @Override
-  PsiElement restoreElement(@NotNull SmartPointerManagerImpl manager) {
+  PsiElement restoreElement(@NotNull SmartPointerManagerImpl2 manager) {
     return SelfElementInfo.restoreDirectoryFromVirtual(myVirtualFile, myProject);
   }
 
   @Override
-  PsiFile restoreFile(@NotNull SmartPointerManagerImpl manager) {
+  PsiFile restoreFile(@NotNull SmartPointerManagerImpl2 manager) {
     return null;
   }
 
@@ -53,8 +53,8 @@ class DirElementInfo2 extends SmartPointerElementInf2 {
   }
 
   @Override
-  boolean pointsToTheSameElementAs(@NotNull SmartPointerElementInf2 other,
-                                   @NotNull SmartPointerManagerImpl manager) {
+  boolean pointsToTheSameElementAs(@NotNull SmartPointerElementInfo2 other,
+                                   @NotNull SmartPointerManagerImpl2 manager) {
     return other instanceof DirElementInfo2 && Comparing.equal(myVirtualFile, ((DirElementInfo2)other).myVirtualFile);
   }
 
@@ -65,13 +65,13 @@ class DirElementInfo2 extends SmartPointerElementInf2 {
   }
 
   @Override
-  Segment getRange(@NotNull SmartPointerManagerImpl manager) {
+  Segment getRange(@NotNull SmartPointerManagerImpl2 manager) {
     return null;
   }
 
   @Nullable
   @Override
-  Segment getPsiRange(@NotNull SmartPointerManagerImpl manager) {
+  Segment getPsiRange(@NotNull SmartPointerManagerImpl2 manager) {
     return null;
   }
 

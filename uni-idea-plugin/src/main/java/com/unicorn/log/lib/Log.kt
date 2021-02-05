@@ -17,6 +17,7 @@ object Log {
   }
 
   enum class LogLevel {
+    _TODO,
     DEBUG,
     INFO,
     WARNING,
@@ -27,6 +28,10 @@ object Log {
   val logConsumers: MutableCollection<(LogEvent) -> Unit> = CopyOnWriteArrayList()
   fun addLogConsumer(consumer: (LogEvent) -> Unit) {
     logConsumers.add(consumer)
+  }
+
+  fun breakPoint(message:String) {
+
   }
 
   inline fun debug(lambda: () -> Payload) {
@@ -44,10 +49,16 @@ object Log {
     }
   }
 
+  inline fun todo(payload: Payload) {
+    todo {
+      payload
+    }
+  }
+
   inline fun todo(lambda: () -> Payload) {
     TODO_LEVEL_ENABLE {
       handleLog(
-        LogLevel.DEBUG,
+        LogLevel._TODO,
         lambda()
       )
     }
@@ -88,6 +99,12 @@ object Log {
     }
   }
 
+  inline fun assertTrue(value:Boolean) {
+    if (!value) {
+      fatalError { "assertTrue" }
+    }
+  }
+
   inline fun error(payload:Payload) {
     error { payload }
   }
@@ -103,11 +120,16 @@ object Log {
   }
 
   fun handleLog(level: LogLevel, logData: Payload) {
-    val stackTrace = try {
-      throw Exception()
-    } catch (t: Throwable) {
-      t.stackTrace.drop(1)
-    }
+    val stackTrace =
+      if (false) {
+        try {
+          throw Exception()
+        } catch (t: Throwable) {
+          t.stackTrace.drop(1)
+        }
+      } else {
+        listOf()
+      }
 
     val logDataWithContext = LogEvent(
       payload = logData,

@@ -22,7 +22,7 @@ import com.intellij.psi.PsiFile;
 import com.intellij.psi.util.PsiUtilCore;
 import org.jetbrains.annotations.NotNull;
 
-class HardElementInfo2 extends SmartPointerElementInf2 {
+class HardElementInfo2 extends SmartPointerElementInfo2 {
   @NotNull
   private final PsiElement myElement;
 
@@ -31,12 +31,12 @@ class HardElementInfo2 extends SmartPointerElementInf2 {
   }
 
   @Override
-  PsiElement restoreElement(@NotNull SmartPointerManagerImpl manager) {
+  PsiElement restoreElement(@NotNull SmartPointerManagerImpl2 manager) {
     return myElement;
   }
 
   @Override
-  PsiFile restoreFile(@NotNull SmartPointerManagerImpl manager) {
+  PsiFile restoreFile(@NotNull SmartPointerManagerImpl2 manager) {
     return myElement.isValid() ? myElement.getContainingFile() : null;
   }
 
@@ -46,7 +46,7 @@ class HardElementInfo2 extends SmartPointerElementInf2 {
   }
 
   @Override
-  boolean pointsToTheSameElementAs(@NotNull final SmartPointerElementInf2 other, @NotNull SmartPointerManagerImpl manager) {
+  boolean pointsToTheSameElementAs(@NotNull final SmartPointerElementInfo2 other, @NotNull SmartPointerManagerImpl2 manager) {
     return other instanceof HardElementInfo2 && myElement.equals(((HardElementInfo2)other).myElement);
   }
 
@@ -56,12 +56,12 @@ class HardElementInfo2 extends SmartPointerElementInf2 {
   }
 
   @Override
-  Segment getRange(@NotNull SmartPointerManagerImpl manager) {
+  Segment getRange(@NotNull SmartPointerManagerImpl2 manager) {
     return myElement.getTextRange();
   }
 
   @Override
-  Segment getPsiRange(@NotNull SmartPointerManagerImpl manager) {
+  Segment getPsiRange(@NotNull SmartPointerManagerImpl2 manager) {
     return getRange(manager);
   }
 

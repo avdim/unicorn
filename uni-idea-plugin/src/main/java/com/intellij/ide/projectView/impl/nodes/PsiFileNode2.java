@@ -5,50 +5,32 @@ import com.intellij.ide.IdeBundle;
 import com.intellij.ide.highlighter.ArchiveFileType;
 import com.intellij.ide.projectView.PresentationData;
 import com.intellij.ide.projectView.ViewSettings;
-import com.intellij.ide.projectView.impl.ProjectRootsUtil;
-
 import com.intellij.idea.ActionsBundle;
 import com.intellij.openapi.editor.colors.CodeInsightColors;
 import com.intellij.openapi.project.Project;
-import com.intellij.openapi.roots.OrderEntry;
-import com.intellij.openapi.roots.libraries.LibraryUtil;
-import com.intellij.openapi.roots.ui.configuration.ProjectSettingsService;
 import com.intellij.openapi.util.Comparing;
 import com.intellij.openapi.util.Iconable;
 import com.intellij.openapi.util.NlsSafe;
 import com.intellij.openapi.util.io.FileUtil;
-import com.intellij.openapi.vfs.JarFileSystem;
 import com.intellij.openapi.vfs.VFileProperty;
 import com.intellij.openapi.vfs.VfsUtil;
 import com.intellij.openapi.vfs.VirtualFile;
 import com.intellij.pom.NavigatableWithText;
-import com.intellij.psi.PsiDirectory;
 import com.intellij.psi.PsiFile;
-import com.intellij.psi.PsiManager;
 import com.intellij.psi.impl.smartPointers.AbstractTreeNod2;
 import com.intellij.util.containers.ContainerUtil;
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 
 import java.util.Collection;
 
 public class PsiFileNode2 extends BasePsiNode2<PsiFile> implements NavigatableWithText {
-  public PsiFileNode2(Project project, @NotNull PsiFile value, ViewSettings viewSettings) {
-    super(project, value, viewSettings);
+  public PsiFileNode2(@NotNull PsiFile value, ViewSettings viewSettings) {
+    super(value, viewSettings);
   }
 
   @Override
   public Collection<AbstractTreeNod2<?>> getChildrenImpl() {
-    Project project = getProject();
-    VirtualFile jarRoot = getJarRoot();
-    if (project != null && jarRoot != null) {
-      PsiDirectory psiDirectory = PsiManager.getInstance(project).findDirectory(jarRoot);
-      if (psiDirectory != null) {
-        return ProjectViewDirectoryHelper2.getInstance(project).getDirectoryChildren(psiDirectory, getSettings(), true);
-      }
-    }
-
-    return ContainerUtil.emptyList();
+    return ContainerUtil.emptyList();//1
   }
 
   private boolean isArchive() {
@@ -79,40 +61,16 @@ public class PsiFileNode2 extends BasePsiNode2<PsiFile> implements NavigatableWi
 
   @Override
   public boolean canNavigate() {
-    return isNavigatableLibraryRoot() || super.canNavigate();
+    getVirtualFile();//todo check: is file can opened in editor
+    return true || super.canNavigate();
   }
 
   private boolean isNavigatableLibraryRoot() {
-    VirtualFile jarRoot = getJarRoot();
-    final Project project = getProject();
-    if (jarRoot != null && project != null && ProjectRootsUtil.isLibraryRoot(jarRoot, project)) {
-      final OrderEntry orderEntry = LibraryUtil.findLibraryEntry(jarRoot, project);
-      return orderEntry != null && ProjectSettingsService.getInstance(project).canOpenLibraryOrSdkSettings(orderEntry);
-    }
     return false;
-  }
-
-  @Nullable
-  private VirtualFile getJarRoot() {
-    final VirtualFile file = getVirtualFile();
-    if (file == null || !file.isValid() || !(file.getFileType() instanceof ArchiveFileType)) {
-      return null;
-    }
-    return JarFileSystem.getInstance().getJarRootForLocalFile(file);
   }
 
   @Override
   public void navigate(boolean requestFocus) {
-    final VirtualFile jarRoot = getJarRoot();
-    final Project project = getProject();
-    if (requestFocus && jarRoot != null && project != null && ProjectRootsUtil.isLibraryRoot(jarRoot, project)) {
-      final OrderEntry orderEntry = LibraryUtil.findLibraryEntry(jarRoot, project);
-      if (orderEntry != null) {
-        ProjectSettingsService.getInstance(project).openLibraryOrSdkSettings(orderEntry);
-        return;
-      }
-    }
-
     super.navigate(requestFocus);
   }
 

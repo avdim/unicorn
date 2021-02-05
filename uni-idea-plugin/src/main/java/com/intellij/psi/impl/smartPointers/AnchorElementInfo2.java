@@ -62,7 +62,7 @@ class AnchorElementInfo2 extends SelfElementInfo2 {
 
   @Override
   @Nullable
-  public PsiElement restoreElement(@NotNull SmartPointerManagerImpl manager) {
+  public PsiElement restoreElement(@NotNull SmartPointerManagerImpl2 manager) {
     long typeAndId = myStubElementTypeAndId;
     int stubId = (int)typeAndId;
     if (stubId != -1) {
@@ -77,7 +77,7 @@ class AnchorElementInfo2 extends SelfElementInfo2 {
   }
 
   @Override
-  public boolean pointsToTheSameElementAs(@NotNull final SmartPointerElementInf2 other, @NotNull SmartPointerManagerImpl manager) {
+  public boolean pointsToTheSameElementAs(@NotNull final SmartPointerElementInfo2 other, @NotNull SmartPointerManagerImpl2 manager) {
     if (other instanceof AnchorElementInfo2) {
       if (!getVirtualFile().equals(other.getVirtualFile())) return false;
 
@@ -95,16 +95,16 @@ class AnchorElementInfo2 extends SelfElementInfo2 {
   }
 
   @Override
-  public void fastenBelt(@NotNull SmartPointerManagerImpl manager) {
+  public void fastenBelt(@NotNull SmartPointerManagerImpl2 manager) {
     if (getStubId() != -1) {
       switchToTree(manager);
     }
     super.fastenBelt(manager);
   }
 
-  private void switchToTree(@NotNull SmartPointerManagerImpl manager) {
+  private void switchToTree(@NotNull SmartPointerManagerImpl2 manager) {
     PsiElement element = restoreElement(manager);
-    SmartPointerTracker tracker = manager.getTracker(getVirtualFile());
+    SmartPointerTracker2 tracker = manager.getTracker(getVirtualFile());
     if (element != null && tracker != null) {
       Uni.getLog().error("switchToTree");
 //      tracker.switchStubToAst(this, element);
@@ -112,7 +112,7 @@ class AnchorElementInfo2 extends SelfElementInfo2 {
   }
 
   @Override
-  public Segment getRange(@NotNull SmartPointerManagerImpl manager) {
+  public Segment getRange(@NotNull SmartPointerManagerImpl2 manager) {
     if (getStubId() != -1) {
       switchToTree(manager);
     }
@@ -121,7 +121,7 @@ class AnchorElementInfo2 extends SelfElementInfo2 {
 
   @Nullable
   @Override
-  public TextRange getPsiRange(@NotNull SmartPointerManagerImpl manager) {
+  public TextRange getPsiRange(@NotNull SmartPointerManagerImpl2 manager) {
     if (getStubId() != -1) {
       switchToTree(manager);
     }

@@ -18,6 +18,7 @@ import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiFileSystemItem;
 import com.intellij.psi.impl.smartPointers.AbstractTreeNod2;
 import com.intellij.psi.util.PsiUtilCore;
+import com.unicorn.Uni;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -31,8 +32,6 @@ import java.util.Collections;
  */
 
 public abstract class ProjectViewNode2<Value> extends AbstractTreeNod2<Value> implements RootsProvider, SettingsProvider {
-
-  protected static final Logger LOG = Logger.getInstance(ProjectViewNode2.class);
 
   private static final ViewSettings mySettings = new ViewSettings() {
     @Override
@@ -87,7 +86,7 @@ public abstract class ProjectViewNode2<Value> extends AbstractTreeNod2<Value> im
    * @param value        the object (for example, a PSI element) represented by the project view node
    */
   protected ProjectViewNode2(@NotNull Value value) {
-    super(ProjectManager.getInstance().getDefaultProject(), value);
+    super(value);
   }
 
   /**
@@ -177,7 +176,7 @@ public abstract class ProjectViewNode2<Value> extends AbstractTreeNod2<Value> im
   protected boolean hasProblemFileBeneath() {
     if (!Registry.is("projectView.showHierarchyErrors")) return false;
 
-    Project project = getProject();
+    Project project = Uni.getTodoDefaultProject();
     WolfTheProblemSolver wolf = project == null ? null : WolfTheProblemSolver.getInstance(project);
     return wolf != null && wolf.hasProblemFilesBeneath(virtualFile -> {
       Value value;

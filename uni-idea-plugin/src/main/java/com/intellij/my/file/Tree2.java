@@ -1,18 +1,19 @@
 // Copyright 2000-2020 JetBrains s.r.o. Use of this source code is governed by the Apache 2.0 license that can be found in the LICENSE file.
 package com.intellij.my.file;
 
-import com.intellij.ide.IdeBundle;
-import com.intellij.ide.util.treeView.*;
+import com.intellij.ide.util.treeView.AbstractTreeBuilder2;
+import com.intellij.ide.util.treeView.AbstractTreeStructure;
+import com.intellij.ide.util.treeView.NodeDescriptor;
+import com.intellij.ide.util.treeView.PresentableNodeDescriptor;
 import com.intellij.openapi.ui.GraphicsConfig;
 import com.intellij.openapi.ui.Queryable;
-import com.intellij.openapi.util.*;
+import com.intellij.openapi.util.Disposer;
+import com.intellij.openapi.util.SystemInfo;
 import com.intellij.openapi.util.registry.Registry;
 import com.intellij.ui.*;
 import com.intellij.ui.tree.TreePathBackgroundSupplier;
-import com.intellij.util.ArrayUtil;
 import com.intellij.util.ui.*;
 import com.intellij.util.ui.tree.TreeUtil;
-import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -25,15 +26,12 @@ import javax.swing.tree.*;
 import java.awt.*;
 import java.awt.event.*;
 import java.util.ArrayDeque;
-import java.util.ArrayList;
 import java.util.Map;
 
 import static com.intellij.ide.dnd.SmoothAutoScroller.installDropTargetAsNecessary;
 
 public class Tree2 extends JTree implements ComponentWithEmptyText, ComponentWithExpandableItems<Integer>, Queryable,
                                            ComponentWithFileColors, TreePathBackgroundSupplier {
-  @ApiStatus.Internal
-  public static final Key<Boolean> AUTO_SELECT_ON_MOUSE_PRESSED = Key.create("allows to select a node automatically on right click");
 
   private final StatusText myEmptyText;
   private final ExpandableItemsHandler<Integer> myExpandableItemsHandler;
@@ -84,7 +82,7 @@ public class Tree2 extends JTree implements ComponentWithEmptyText, ComponentWit
     addMouseListener(new MyMouseListener());
     addFocusListener(new MyFocusListener());
 
-    setCellRenderer(new NodeRenderer());
+    setCellRenderer(new NodeRenderer2());
 
     setSelectionModel(mySelectionModel);
     setOpaque(false);
@@ -220,11 +218,6 @@ public class Tree2 extends JTree implements ComponentWithEmptyText, ComponentWit
       });
       updateBusyIconLocation();
     }
-  }
-
-  protected boolean shouldShowBusyIconIfNeeded() {
-    // https://youtrack.jetbrains.com/issue/IDEA-101422 "Rotating wait symbol in Project list whenever typing"
-    return hasFocus();
   }
 
   protected boolean paintNodes() {
@@ -553,7 +546,6 @@ public class Tree2 extends JTree implements ComponentWithEmptyText, ComponentWit
     public void mousePressed(MouseEvent event) {
       setPressed(event, true);
 
-      if (Boolean.FALSE.equals(UIUtil.getClientProperty(event.getSource(), AUTO_SELECT_ON_MOUSE_PRESSED))) return;
       if (!SwingUtilities.isLeftMouseButton(event) &&
           (SwingUtilities.isRightMouseButton(event) || SwingUtilities.isMiddleMouseButton(event))) {
         TreePath path = getClosestPathForLocation(event.getX(), event.getY());
@@ -566,7 +558,9 @@ public class Tree2 extends JTree implements ComponentWithEmptyText, ComponentWit
           TreePath[] selectionPaths = getSelectionModel().getSelectionPaths();
           if (selectionPaths != null) {
             for (TreePath selectionPath : selectionPaths) {
-              if (selectionPath != null && selectionPath.equals(path)) return;
+              if (selectionPath != null && selectionPath.equals(path)) {
+                return;
+              }
             }
           }
         }
@@ -656,17 +650,6 @@ public class Tree2 extends JTree implements ComponentWithEmptyText, ComponentWit
     public void focusLost(FocusEvent e) {
       focusChanges();
     }
-  }
-
-  /**
-   * @deprecated no effect
-   */
-  @Deprecated
-  public final void setLineStyleAngled() {
-  }
-
-  public interface NodeFilter<T> {
-    boolean accept(T node);
   }
 
   @Override

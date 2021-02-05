@@ -4,25 +4,18 @@ package com.intellij.my.file
 
 import com.intellij.history.LocalHistory
 import com.intellij.ide.*
-import com.intellij.ide.dnd.*
-import com.intellij.ide.projectView.*
-import com.intellij.ide.projectView.impl.*
-import com.intellij.ide.projectView.impl.nodes.*
+import com.intellij.ide.projectView.ProjectViewSettings
+import com.intellij.ide.projectView.ViewSettings
+import com.intellij.ide.projectView.impl.JavaHelpers
+import com.intellij.ide.projectView.impl.SpeedSearchFiles
+import com.intellij.ide.projectView.impl.nodes.AbstractProjectNode2
+import com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode2
 import com.intellij.ide.ui.customization.CustomizationUtil
 import com.intellij.ide.util.DirectoryChooserUtil
-import com.intellij.ide.util.treeView.*
-import com.intellij.injected.editor.VirtualFileWindow
-import com.intellij.openapi.Disposable
 import com.intellij.openapi.actionSystem.*
 import com.intellij.openapi.application.ApplicationManager
-import com.intellij.openapi.module.Module
-import com.intellij.openapi.module.ModuleUtilCore
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.project.ProjectManager
-import com.intellij.openapi.ui.VerticalFlowLayout
-import com.intellij.openapi.util.Disposer
-import com.intellij.openapi.util.Pair
-import com.intellij.openapi.util.Trinity
 import com.intellij.openapi.vfs.VirtualFile
 import com.intellij.pom.Navigatable
 import com.intellij.psi.PsiDirectory
@@ -33,26 +26,22 @@ import com.intellij.psi.impl.smartPointers.AbstractTreeNod2
 import com.intellij.psi.impl.smartPointers.NodeDescriptor2
 import com.intellij.psi.util.PsiUtilCore
 import com.intellij.ui.ScrollPaneFactory
-import com.intellij.ui.SimpleColoredComponent
 import com.intellij.ui.layout.Cell
-import com.intellij.ui.switcher.QuickActionProvider
-import com.intellij.ui.tree.TreePathUtil
 import com.intellij.util.EditSourceOnDoubleClickHandler
 import com.intellij.util.EditSourceOnEnterKeyHandler
-import com.intellij.util.ObjectUtils
-import com.intellij.util.containers.ContainerUtil
-import com.intellij.util.ui.EmptyIcon
-import com.intellij.util.ui.ImageUtil
 import com.intellij.util.ui.tree.TreeUtil
 import com.unicorn.Uni
 import com.unicorn.plugin.virtualFile
-import java.awt.*
-import java.awt.dnd.DnDConstants
-import java.awt.image.BufferedImage
-import java.io.File
+import java.awt.BorderLayout
+import java.awt.Font
 import java.util.*
-import javax.swing.*
-import javax.swing.tree.*
+import javax.swing.JComponent
+import javax.swing.JPanel
+import javax.swing.ToolTipManager
+import javax.swing.tree.DefaultMutableTreeNode
+import javax.swing.tree.DefaultTreeModel
+import javax.swing.tree.TreePath
+import javax.swing.tree.TreeSelectionModel
 
 //@todo.mvi.State(name = "ProjectView", storages = {
 //  @Storage(StoragePathMacros.PRODUCT_WORKSPACE_FILE),
@@ -60,7 +49,6 @@ import javax.swing.tree.*
 //})
 
 inline fun <reified T : Any> Array<Any>.filterType() = mapNotNull { it as? T }
-const val FILES_PANE_ID = "TutuProjectPane"
 
 fun Cell.uniFiles(
   project: Project,
@@ -101,7 +89,7 @@ private fun _createUniFilesComponent(
   val treeStructure =
     object : AbstractProjectTreeStructure2(), ProjectViewSettings {
       override fun createRoot(): AbstractTreeNod2<*> =
-        object : ProjectViewProjectNode2() {
+        object : AbstractProjectNode2() {
           override fun canRepresent(element: Any): Boolean = true
           override fun getChildren(): Collection<AbstractTreeNod2<*>> {
             return uniFilesRootNodes(project, settings, rootDirs = rootPaths)
@@ -120,13 +108,7 @@ private fun _createUniFilesComponent(
       override fun isUseFileNestingRules(): Boolean = true
     }
 
-  fun getSelectedElements(): Array<Any> {
-    return JavaHelpers.pathsToSelectedElements(myTree.selectionPaths)
-  }
-
-  fun getSelectedPath(): TreePath? {
-    return TreeUtil.getSelectedPathIfOne(myTree)
-  }
+  fun getSelectedElements(): Array<Any> = JavaHelpers.pathsToSelectedElements(myTree.selectionPaths)
 
   fun <T : NodeDescriptor2<*>> getSelectedNodes(nodeClass: Class<T>): List<T> {
     val paths: Array<out TreePath> = myTree.selectionPaths ?: return emptyList()
@@ -139,150 +121,6 @@ private fun _createUniFilesComponent(
     }
     return result
   }
-
-  fun getSelectedPSIElements(): Array<PsiElement> {
-    val paths = myTree.selectionPaths ?: return emptyArray()
-    val result = ArrayList<PsiElement>()
-    for (path in paths) {
-      result.addAll(JavaHelpers.getElementsFromNode(ProjectManager.getInstance().defaultProject, path.lastPathComponent))
-    }
-    return PsiUtilCore.toPsiElementArray(result)
-  }
-
-  class MyDragSource : DnDSource {
-    override fun canStartDragging(action: DnDAction, dragOrigin: Point): Boolean {
-      if ((action.actionId and DnDConstants.ACTION_COPY_OR_MOVE) == 0) return false
-      val elements = getSelectedElements()
-      val psiElements = getSelectedPSIElements()
-      val dataContext = DataManager.getInstance().getDataContext(myTree)
-      return psiElements.isNotEmpty() || canDragElements(elements, dataContext, action.actionId)
-    }
-
-    override fun startDragging(action: DnDAction, dragOrigin: Point): DnDDragStartBean {
-      val psiElements = getSelectedPSIElements()
-      return DnDDragStartBean(object : TransferableWrapper {
-        override fun asFileList(): List<File>? {
-          return PsiCopyPasteManager.asFileList(psiElements)
-        }
-
-        override fun getTreePaths(): Array<TreePath> {
-          return myTree.selectionPaths ?: emptyArray()
-        }
-
-        override fun getTreeNodes(): Array<TreeNode>? {
-          return TreePathUtil.toTreeNodes(*treePaths)
-        }
-
-        override fun getPsiElements(): Array<PsiElement> {
-          return psiElements
-        }
-      })
-    }
-
-    // copy/paste from com.intellij.ide.dnd.aware.DnDAwareTree.createDragImage
-    override fun createDraggedImage(action: DnDAction, dragOrigin: Point, bean: DnDDragStartBean): Pair<Image, Point>? {
-      val paths = myTree.selectionPaths ?: return null
-
-      val toRender = ArrayList<Trinity<String, Icon, VirtualFile>>()
-      myTree.selectionPaths?.forEach { path ->
-        val obj: Any = TreeUtil.getLastUserObject(path)!!
-        val component = getTreeCellRendererComponent(
-          myTree,
-          obj,
-          myTree.getRowForPath(path)
-        )
-        val icon = arrayOfNulls<Icon>(1)
-        val text = arrayOfNulls<String>(1)
-        ObjectUtils.consumeIfCast(
-          component,
-          ProjectViewRenderer::class.java
-        ) { renderer ->
-          icon[0] = renderer.icon
-        }
-        ObjectUtils.consumeIfCast(
-          component,
-          SimpleColoredComponent::class.java
-        ) { renderer ->
-          text[0] = renderer.getCharSequence(true).toString()
-        }
-        val iconAndText = Pair.create(icon[0], text[0])
-        toRender.add(
-          Trinity.create(
-            iconAndText.second, iconAndText.first,
-            PsiCopyPasteManager.asVirtualFile(
-              ContainerUtil.getFirstItem(
-                JavaHelpers.getElementsFromNode(
-                  ProjectManager.getInstance().defaultProject,
-                  path.lastPathComponent
-                )
-              )
-            )
-          )
-        )
-      }
-
-      var count = 0
-      val panel = JPanel(VerticalFlowLayout(0, 0))
-      val maxItemsToShow = if (toRender.size < 20) toRender.size else 10
-      for (trinity in toRender) {
-        val fileLabel = DragImageLabel(ProjectManager.getInstance().defaultProject, myTree, trinity.first, trinity.second, trinity.third)
-        panel.add(fileLabel)
-        count++
-        if (count > maxItemsToShow) {
-          panel.add(
-            DragImageLabel(
-              ProjectManager.getInstance().defaultProject,
-              myTree,
-              IdeBundle.message("label.more.files", paths.size - maxItemsToShow),
-              EmptyIcon.ICON_16,
-              null
-            )
-          )
-          break
-        }
-      }
-      panel.size = panel.preferredSize
-      panel.doLayout()
-
-      val image = ImageUtil.createImage(panel.width, panel.height, BufferedImage.TYPE_INT_ARGB)
-      val g2 = image.graphics as Graphics2D
-      panel.paint(g2)
-      g2.dispose()
-
-      return Pair<Image, Point>(image, Point())
-    }
-
-  }
-
-  val headlessEnvironment = ApplicationManager.getApplication().isHeadlessEnvironment
-  val myDragSource: DnDSource? =
-    if (!headlessEnvironment) {
-      MyDragSource().also {
-        DnDManager.getInstance().registerSource(it, myTree)
-      }
-    } else {
-      null
-    }
-  val myDropTarget: DnDTarget? =
-    if (!headlessEnvironment) {
-      object : ProjectViewDropTarget2(myTree, ProjectManager.getInstance().defaultProject) {
-        override fun getPsiElement(path: TreePath): PsiElement? {
-          return ContainerUtil.getFirstItem(JavaHelpers.getElementsFromNode(ProjectManager.getInstance().defaultProject, path.lastPathComponent))
-        }
-
-        override fun getModule(element: PsiElement): Module? {
-          return ModuleUtilCore.findModuleForPsiElement(element)
-        }
-
-        override fun update(event: DnDEvent): Boolean {
-          return super.update(event)
-        }
-      }.also {
-        DnDManager.getInstance().registerTarget(it, myTree)
-      }
-    } else {
-      null
-    }
 
   val treeBuilder = ProjectTreeBuilder2(myTree, treeModel, treeStructure)
   treeBuilder.setNodeDescriptorComparator(GroupByTypeComparator2())
@@ -304,15 +142,6 @@ private fun _createUniFilesComponent(
     )
   }
   initTree()
-  val fileManagerDisposable = Disposable {
-    if (myDropTarget != null) {
-      DnDManager.getInstance().unregisterTarget(myDropTarget, myTree)
-    }
-    if (myDragSource != null) {
-      DnDManager.getInstance().unregisterSource(myDragSource, myTree)
-    }
-  }
-  Disposer.register(Uni, fileManagerDisposable)
 
   val viewComponent: JComponent = ScrollPaneFactory.createScrollPane(myTree)
   myTree.addSelectionListener {
@@ -330,15 +159,29 @@ private fun _createUniFilesComponent(
     }
 
     override fun getData(dataId: String): Any? {
-      if (PlatformDataKeys.TREE_EXPANDER.`is`(dataId)) return createTreeExpander(myTree)//todo lazy cache
 
-      val nodes = getSelectedNodes(AbstractTreeNod2::class.java)
+      if (PlatformDataKeys.PROJECT_CONTEXT.`is`(dataId)) {
+        Uni.log.breakPoint("PROJECT_CONTEXT")
+      }
+      if (PlatformDataKeys.CONTEXT_COMPONENT.`is`(dataId)) {
+        Uni.log.breakPoint("CONTEXT_COMPONENT")
+      }
+      if (PlatformDataKeys.EDITOR.`is`(dataId)) {
+        Uni.log.breakPoint("EDITOR")
+      }
+
+      if (PlatformDataKeys.TREE_EXPANDER.`is`(dataId)) {
+        Uni.log.error{"PlatformDataKeys.TREE_EXPANDER"}
+//        return createTreeExpander(myTree)//todo lazy cache
+      }
+
       val data = treeStructure.getDataFromProviders()
       if (data != null) {
         return data
       }
 
       if (CommonDataKeys.NAVIGATABLE_ARRAY.`is`(dataId)) {
+        // Used for copy/paste multiple files
         val paths = myTree.selectionPaths ?: return null
         val navigatables = ArrayList<Navigatable>()
         for (path in paths) {
@@ -350,19 +193,20 @@ private fun _createUniFilesComponent(
             navigatables.add(node)
           }
         }
-        return if (navigatables.isEmpty()) null else navigatables.toTypedArray()
+        if (navigatables.isEmpty()) {
+          return null
+        } else {
+          return navigatables.toTypedArray()
+        }
       }
 
       if (CommonDataKeys.PSI_ELEMENT.`is`(dataId)) {
-        val elements = getSelectedPSIElements()
+        val elements = getSelectedPSIElements(myTree.selectionPaths)
         return if (elements.size == 1) elements[0] else null
       }
       if (LangDataKeys.PSI_ELEMENT_ARRAY.`is`(dataId)) {
-        val elements = getSelectedPSIElements()
+        val elements = getSelectedPSIElements(myTree.selectionPaths)
         return if (elements.isEmpty()) null else elements
-      }
-      if (LangDataKeys.TARGET_PSI_ELEMENT.`is`(dataId)) {
-        return null
       }
       if (PlatformDataKeys.CUT_PROVIDER.`is`(dataId)) {
         return myCopyPasteDelegator.cutProvider
@@ -375,7 +219,8 @@ private fun _createUniFilesComponent(
       }
       if (LangDataKeys.IDE_VIEW.`is`(dataId)) {
         return object : IdeView {
-          override fun getOrChooseDirectory(): PsiDirectory? = DirectoryChooserUtil.getOrChooseDirectory(this)
+          override fun getOrChooseDirectory(): PsiDirectory? =
+            DirectoryChooserUtil.getOrChooseDirectory(this)
           override fun getDirectories(): Array<PsiDirectory> {
             val directories = ArrayList<PsiDirectory>()
             for (node in getSelectedNodes(PsiDirectoryNode2::class.java)) {
@@ -384,8 +229,7 @@ private fun _createUniFilesComponent(
             if (directories.isNotEmpty()) {
               return directories.toTypedArray()
             }
-
-            val elements: Array<PsiElement> = getSelectedPSIElements()
+            val elements: Array<PsiElement> = getSelectedPSIElements(myTree.selectionPaths)
             if (elements.size == 1) {
               val element = elements[0]
               if (element is PsiDirectory) {
@@ -398,14 +242,6 @@ private fun _createUniFilesComponent(
                   val psiDirectory = containingFile.containingDirectory
                   if (psiDirectory != null) {
                     return arrayOf(psiDirectory)
-                  }
-                  val file = containingFile.virtualFile
-                  if (file is VirtualFileWindow) {
-                    val delegate = (file as VirtualFileWindow).delegate
-                    val containingDirectory = containingFile.manager.findFile(delegate)?.containingDirectory
-                    if (containingDirectory != null) {
-                      return arrayOf(containingDirectory)
-                    }
                   }
                   return PsiDirectory.EMPTY_ARRAY
                 }
@@ -424,9 +260,8 @@ private fun _createUniFilesComponent(
           }
 
           override fun deleteElement(dataContext: DataContext) {
-
             val validElements: MutableList<PsiElement> = ArrayList()
-            for (psiElement in getSelectedPSIElements()) {
+            for (psiElement in getSelectedPSIElements(myTree.selectionPaths)) {
               if (psiElement.isValid) {
                 validElements.add(psiElement)
               }
@@ -441,31 +276,8 @@ private fun _createUniFilesComponent(
           }
         }
       }
-      if (PlatformDataKeys.HELP_ID.`is`(dataId)) {
-        return HelpID.PROJECT_VIEWS
-      }
-      if (PlatformDataKeys.PROJECT_CONTEXT.`is`(dataId)) {
-        fun getSelectNodeElement(): Any? {
-          val descriptor = TreeUtil.getLastUserObject(NodeDescriptor::class.java, getSelectedPath()) ?: return null
-          return if (descriptor is AbstractTreeNod2<*>) descriptor.value else descriptor.element
-        }
-
-        val selected = getSelectNodeElement()
-        return selected as? Project
-      }
-      if (LibraryGroupElement.ARRAY_DATA_KEY.`is`(dataId)) {
-        val selectedElements = getSelectedElements().filterType<LibraryGroupElement>()
-        return if (selectedElements.isEmpty()) null else selectedElements.toTypedArray()
-      }
-      if (NamedLibraryElement.ARRAY_DATA_KEY.`is`(dataId)) {
-        val selectedElements = getSelectedElements().filterType<NamedLibraryElement>()
-        return if (selectedElements.isEmpty()) null else selectedElements.toTypedArray()
-      }
       if (PlatformDataKeys.SELECTED_ITEMS.`is`(dataId)) {
         return getSelectedElements()
-      }
-      if (QuickActionProvider.KEY.`is`(dataId)) {
-        return this
       }
 
       return null
@@ -487,4 +299,13 @@ fun uniFilesRootNodes(
       settings
     )
   }
+}
+
+fun getSelectedPSIElements(selectionPaths: Array<TreePath>?): Array<PsiElement> {
+  val paths = selectionPaths ?: return emptyArray()
+  val result = ArrayList<PsiElement>()
+  for (path in paths) {
+    result.addAll(JavaHelpers.getElementsFromNode(ProjectManager.getInstance().defaultProject, path.lastPathComponent))
+  }
+  return PsiUtilCore.toPsiElementArray(result)
 }

@@ -84,7 +84,6 @@ public class AbstractTreeUi2 {
   };
 
   long myOwnComparatorStamp;
-  private long myLastComparatorStamp;
 
   private DefaultMutableTreeNode myRootNode;
   private final Map<Object, Object> myElementToNodeMap = new HashMap<>();
@@ -99,8 +98,6 @@ public class AbstractTreeUi2 {
   private final Set<Runnable> myActiveWorkerTasks = new HashSet<>();
 
   private ProgressIndicator myProgress;
-  private AbstractTreeNod2<Object> TREE_NODE_WRAPPER;
-
   private boolean myRootNodeWasQueuedToInitialize;
   private boolean myRootNodeInitialized;
 
@@ -216,7 +213,6 @@ public class AbstractTreeUi2 {
     myActivityMonitor = UiActivityMonitor.getInstance();
     myActivityId = new UiActivity.AsyncBgOperation("TreeUi " + this);
     addModelListenerToDiagnoseAccessOutsideEdt();
-    TREE_NODE_WRAPPER = createSearchingTreeNodeWrapper();
     myTree.setModel(myTreeModel);
     setRootNode((DefaultMutableTreeNode)treeModel.getRoot());
     myTreeStructure = treeStructure;
@@ -447,7 +443,6 @@ public class AbstractTreeUi2 {
       getUpdater().cancelAllRequests();
       myWorker.clear();
       clearWorkerTasks();
-      TREE_NODE_WRAPPER.setValue(null);
       if (myProgress != null) {
         myProgress.cancel();
       }
@@ -588,31 +583,8 @@ public class AbstractTreeUi2 {
     return valid;
   }
 
-  final void buildNodeForElement(@NotNull Object element) {
-    getUpdater().performUpdate();
-    DefaultMutableTreeNode node = getNodeForElement(element, false);
-    if (node == null) {
-      final List<Object> elements = new ArrayList<>();
-      while (true) {
-        element = getTreeStructure().getParentElement(element);
-        if (element == null) {
-          break;
-        }
-        elements.add(0, element);
-      }
-
-      for (final Object element1 : elements) {
-        node = getNodeForElement(element1, false);
-        if (node != null) {
-          expand(node, true);
-        }
-      }
-    }
-  }
-
   public final void setNodeDescriptorComparator(Comparator<? super NodeDescriptor2<?>> nodeDescriptorComparator) {
     myNodeDescriptorComparator = nodeDescriptorComparator;
-    myLastComparatorStamp = -1;
     getBuilder().queueUpdateFrom(getTreeStructure().getRootElement(), true);
   }
 
@@ -4292,16 +4264,15 @@ public class AbstractTreeUi2 {
   Object findNodeByElement(Object element) {
     element = TreeAnchorizer.getService().createAnchor(element);
     try {
-      if (isNodeNull(element)) return null;
+      if (isNodeNull(element)) {
+        return null;
+      }
       if (myElementToNodeMap.containsKey(element)) {
         return myElementToNodeMap.get(element);
       }
-
-      TREE_NODE_WRAPPER.setValue(element);
-      return myElementToNodeMap.get(TREE_NODE_WRAPPER);
+      return null;
     }
     finally {
-      TREE_NODE_WRAPPER.setValue(null);
       TreeAnchorizer.getService().freeAnchor(element);
     }
   }
@@ -4344,8 +4315,6 @@ public class AbstractTreeUi2 {
     myTree.collapsePath(new TreePath(myTree.getModel().getRoot()));
     clearSelection();
     getRootNode().removeAllChildren();
-    TREE_NODE_WRAPPER = createSearchingTreeNodeWrapper();
-
     myRootNodeWasQueuedToInitialize = false;
     myRootNodeInitialized = false;
 
@@ -4575,18 +4544,7 @@ public class AbstractTreeUi2 {
   }
 
   private long getComparatorStamp() {
-    if (myNodeDescriptorComparator instanceof NodeDescriptor2.NodeComparator) {
-      long currentComparatorStamp = ((NodeDescriptor2.NodeComparator)myNodeDescriptorComparator).getStamp();
-      if (currentComparatorStamp > myLastComparatorStamp) {
-        myOwnComparatorStamp = Math.max(myOwnComparatorStamp, currentComparatorStamp) + 1;
-      }
-      myLastComparatorStamp = currentComparatorStamp;
-
-      return Math.max(currentComparatorStamp, myOwnComparatorStamp);
-    }
-    else {
-      return myOwnComparatorStamp;
-    }
+    return myOwnComparatorStamp;
   }
 
   void incComparatorStamp() {
@@ -4751,34 +4709,6 @@ public class AbstractTreeUi2 {
     @Override
     public final void accept(T t) {
       run();
-    }
-  }
-
-  @NotNull
-  static AbstractTreeNod2<Object> createSearchingTreeNodeWrapper() {
-    return new AbstractTreeNodeWrapper2();
-  }
-
-  private static class AbstractTreeNodeWrapper2 extends AbstractTreeNod2<Object> {
-    AbstractTreeNodeWrapper2() {
-      super(null, new Object());
-    }
-
-    @Override
-    @NotNull
-    public Collection<AbstractTreeNod2<?>> getChildren() {
-      return Collections.emptyList();
-    }
-
-    @Override
-    public void update(@NotNull PresentationData presentation) {
-    }
-
-    @Override
-    public boolean equals(Object object) {
-      if (object == this) return true;
-      // this hack allows to find a node in a map without checking a class type
-      return object instanceof AbstractTreeNod2 && Comparing.equal(getEqualityObject(), ((AbstractTreeNod2)object).getEqualityObject());
     }
   }
 

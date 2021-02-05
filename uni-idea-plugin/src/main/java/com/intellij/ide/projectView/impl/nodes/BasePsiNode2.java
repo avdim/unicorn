@@ -25,20 +25,18 @@ import com.intellij.psi.util.PsiUtilCore;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import java.util.Objects;
-
 public abstract class BasePsiNode2<T extends PsiElement> extends AbstractPsiBasedNode2<T> {
   @Nullable
   private final VirtualFile myVirtualFile;
 
-  protected BasePsiNode2(Project project, @NotNull T value, ViewSettings viewSettings) {
-    super(project, value, viewSettings);
+  protected BasePsiNode2(@NotNull T value, ViewSettings viewSettings) {
+    super(value, viewSettings);
     myVirtualFile = PsiUtilCore.getVirtualFile(value);
   }
 
   @Override
   public FileStatus getFileStatus() {
-    return computeFileStatus(getVirtualFile(), Objects.requireNonNull(getProject()));
+    return computeFileStatus(myVirtualFile);
   }
 
   @Override
