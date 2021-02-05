@@ -374,9 +374,6 @@ private fun _createUniFilesComponent(
         val elements = getSelectedPSIElements()
         return if (elements.isEmpty()) null else elements
       }
-      if (LangDataKeys.TARGET_PSI_ELEMENT.`is`(dataId)) {
-        return null
-      }
       if (PlatformDataKeys.CUT_PROVIDER.`is`(dataId)) {
         return myCopyPasteDelegator.cutProvider
       }
@@ -453,17 +450,6 @@ private fun _createUniFilesComponent(
             }
           }
         }
-      }
-      if (PlatformDataKeys.HELP_ID.`is`(dataId)) {
-        return HelpID.PROJECT_VIEWS
-      }
-      if (LibraryGroupElement.ARRAY_DATA_KEY.`is`(dataId)) {
-        val selectedElements = getSelectedElements().filterType<LibraryGroupElement>()
-        return if (selectedElements.isEmpty()) null else selectedElements.toTypedArray()
-      }
-      if (NamedLibraryElement.ARRAY_DATA_KEY.`is`(dataId)) {
-        val selectedElements = getSelectedElements().filterType<NamedLibraryElement>()
-        return if (selectedElements.isEmpty()) null else selectedElements.toTypedArray()
       }
       if (PlatformDataKeys.SELECTED_ITEMS.`is`(dataId)) {
         return getSelectedElements()
