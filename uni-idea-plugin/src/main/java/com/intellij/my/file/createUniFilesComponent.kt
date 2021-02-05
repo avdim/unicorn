@@ -330,7 +330,20 @@ private fun _createUniFilesComponent(
     }
 
     override fun getData(dataId: String): Any? {
-      if (PlatformDataKeys.TREE_EXPANDER.`is`(dataId)) return createTreeExpander(myTree)//todo lazy cache
+
+      if (PlatformDataKeys.PROJECT_CONTEXT.`is`(dataId)) {
+        Uni.log.breakPoint("PROJECT_CONTEXT")
+      }
+      if (PlatformDataKeys.CONTEXT_COMPONENT.`is`(dataId)) {
+        Uni.log.breakPoint("CONTEXT_COMPONENT")
+      }
+      if (PlatformDataKeys.EDITOR.`is`(dataId)) {
+        Uni.log.breakPoint("EDITOR")
+      }
+
+      if (PlatformDataKeys.TREE_EXPANDER.`is`(dataId)) {
+        return createTreeExpander(myTree)//todo lazy cache
+      }
 
       val nodes = getSelectedNodes(AbstractTreeNod2::class.java)
       val data = treeStructure.getDataFromProviders()
@@ -443,22 +456,6 @@ private fun _createUniFilesComponent(
       }
       if (PlatformDataKeys.HELP_ID.`is`(dataId)) {
         return HelpID.PROJECT_VIEWS
-      }
-      if (PlatformDataKeys.PROJECT_CONTEXT.`is`(dataId)) {
-        Uni.log.breakPoint("PROJECT_CONTEXT")
-        fun getSelectNodeElement(): Any? {
-          val descriptor = TreeUtil.getLastUserObject(NodeDescriptor::class.java, getSelectedPath()) ?: return null
-          return if (descriptor is AbstractTreeNod2<*>) descriptor.value else descriptor.element
-        }
-
-        val selected = getSelectNodeElement()
-        return selected as? Project
-      }
-      if (PlatformDataKeys.CONTEXT_COMPONENT.`is`(dataId)) {
-        Uni.log.debug("CONTEXT_COMPONENT")
-      }
-      if (PlatformDataKeys.EDITOR.`is`(dataId)) {
-        Uni.log.debug("EDITOR")
       }
       if (LibraryGroupElement.ARRAY_DATA_KEY.`is`(dataId)) {
         val selectedElements = getSelectedElements().filterType<LibraryGroupElement>()
