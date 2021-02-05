@@ -105,11 +105,6 @@ public abstract class NodeDescriptor2<E> {
   }
 
   public abstract static class NodeComparator<T extends NodeDescriptor2<?>> implements Comparator<T> {
-    private long myStamp;
-
-    public long getStamp() {
-      return myStamp;
-    }
 
   }
 }
