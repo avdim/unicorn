@@ -8,12 +8,10 @@ import com.intellij.ide.projectView.ProjectViewSettings
 import com.intellij.ide.projectView.ViewSettings
 import com.intellij.ide.projectView.impl.JavaHelpers
 import com.intellij.ide.projectView.impl.SpeedSearchFiles
-import com.intellij.ide.projectView.impl.createTreeExpander
 import com.intellij.ide.projectView.impl.nodes.AbstractProjectNode2
 import com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode2
 import com.intellij.ide.ui.customization.CustomizationUtil
 import com.intellij.ide.util.DirectoryChooserUtil
-import com.intellij.injected.editor.VirtualFileWindow
 import com.intellij.openapi.actionSystem.*
 import com.intellij.openapi.application.ApplicationManager
 import com.intellij.openapi.project.Project
@@ -29,7 +27,6 @@ import com.intellij.psi.impl.smartPointers.NodeDescriptor2
 import com.intellij.psi.util.PsiUtilCore
 import com.intellij.ui.ScrollPaneFactory
 import com.intellij.ui.layout.Cell
-import com.intellij.ui.switcher.QuickActionProvider
 import com.intellij.util.EditSourceOnDoubleClickHandler
 import com.intellij.util.EditSourceOnEnterKeyHandler
 import com.intellij.util.ui.tree.TreeUtil
@@ -174,7 +171,8 @@ private fun _createUniFilesComponent(
       }
 
       if (PlatformDataKeys.TREE_EXPANDER.`is`(dataId)) {
-        return createTreeExpander(myTree)//todo lazy cache
+        Uni.log.error{"PlatformDataKeys.TREE_EXPANDER"}
+//        return createTreeExpander(myTree)//todo lazy cache
       }
 
       val data = treeStructure.getDataFromProviders()
@@ -195,7 +193,11 @@ private fun _createUniFilesComponent(
             navigatables.add(node)
           }
         }
-        return if (navigatables.isEmpty()) null else navigatables.toTypedArray()
+        if (navigatables.isEmpty()) {
+          return null
+        } else {
+          return navigatables.toTypedArray()
+        }
       }
 
       if (CommonDataKeys.PSI_ELEMENT.`is`(dataId)) {
@@ -276,9 +278,6 @@ private fun _createUniFilesComponent(
       }
       if (PlatformDataKeys.SELECTED_ITEMS.`is`(dataId)) {
         return getSelectedElements()
-      }
-      if (QuickActionProvider.KEY.`is`(dataId)) {
-        return this
       }
 
       return null
