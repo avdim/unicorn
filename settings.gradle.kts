@@ -8,10 +8,7 @@ pluginManagement {
   }
 
   repositories {
-//    mavenCentral()
-//    maven { setUrl("https://jcenter.bintray.com/") }
     gradlePluginPortal()//todo alternative?: maven { setUrl("https://plugins.gradle.org/m2/") }
-    jcenter()
     mavenCentral()
     maven { setUrl("https://dl.bintray.com/kotlin/kotlinx") }
     maven(url = "https://maven.pkg.jetbrains.space/public/p/compose/dev")

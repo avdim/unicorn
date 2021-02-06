@@ -20,7 +20,6 @@ allprojects {//todo allprojects bad?
 //  buildDir = File("/dev/shm/$name")
 //  version = "1.0"
   repositories {
-    jcenter()
     mavenCentral()
     maven { setUrl("https://dl.bintray.com/kotlin/kotlinx") }
     //maven { setUrl("https://dl.bintray.com/kotlin/exposed") }
