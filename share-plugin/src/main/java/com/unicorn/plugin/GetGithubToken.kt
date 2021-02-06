@@ -20,7 +20,7 @@ val AUTH_TOKEN_URL = "https://tutu-ci.herokuapp.com/github_token_localhost"
 @OptIn(EngineAPI::class)
 fun getGithubToken(
   tokenScope: String = "user:email",
-  port: Int = 55555,
+  port: Int = 4321,
   callback: (token: String) -> Unit
 ) {
   var mutableCallbackPipe: (token: String) -> Unit = {
