@@ -7,7 +7,7 @@ group = "ru.avdim.lib.github"//todo artifact id
 version = "0.1"
 
 repositories {
-  jcenter()
+  mavenCentral()
 }
 
 dependencies {

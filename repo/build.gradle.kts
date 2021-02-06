@@ -27,7 +27,6 @@ group = "org.sample"
 version = "1.0-SNAPSHOT"
 
 repositories {
-  jcenter()
   mavenCentral()
 }
 
