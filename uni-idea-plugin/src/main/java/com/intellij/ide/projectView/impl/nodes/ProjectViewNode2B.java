@@ -85,10 +85,9 @@ public abstract class ProjectViewNode2B<Value> extends AbstractTreeNod2<Value> i
     return false;
   }
 
-  @Nullable
   @NlsContexts.PopupTitle
   public String getTitle() {
-    return null;
+    return "todo empty title";
   }
 
   @Override

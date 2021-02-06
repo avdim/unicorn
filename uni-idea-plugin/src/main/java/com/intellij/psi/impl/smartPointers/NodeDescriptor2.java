@@ -104,7 +104,4 @@ public abstract class NodeDescriptor2<E> {
     myClosedIcon = closedIcon;
   }
 
-  public abstract static class NodeComparator<T extends NodeDescriptor2<?>> implements Comparator<T> {
-
-  }
 }

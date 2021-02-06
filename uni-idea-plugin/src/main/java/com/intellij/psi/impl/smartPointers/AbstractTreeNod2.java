@@ -270,9 +270,7 @@ public abstract class AbstractTreeNod2<T> extends PresentableNodeDescriptor2<Abs
   public void apply(@NotNull Map<String, String> info) {
   }
 
-  protected VirtualFile getVirtualFile() {
-    return null;
-  }
+  abstract protected VirtualFile getVirtualFile();
 
   public FileStatus getFileStatus() {
     return FileStatus.NOT_CHANGED;

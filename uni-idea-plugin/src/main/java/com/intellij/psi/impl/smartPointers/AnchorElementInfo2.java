@@ -94,14 +94,6 @@ class AnchorElementInfo2 extends SelfElementInfo2 {
     return super.pointsToTheSameElementAs(other, manager);
   }
 
-  @Override
-  public void fastenBelt(@NotNull SmartPointerManagerImpl2 manager) {
-    if (getStubId() != -1) {
-      switchToTree(manager);
-    }
-    super.fastenBelt(manager);
-  }
-
   private void switchToTree(@NotNull SmartPointerManagerImpl2 manager) {
     PsiElement element = restoreElement(manager);
     SmartPointerTracker2 tracker = manager.getTracker(getVirtualFile());
