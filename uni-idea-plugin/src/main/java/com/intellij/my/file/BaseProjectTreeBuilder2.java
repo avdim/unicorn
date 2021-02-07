@@ -6,7 +6,6 @@ import com.intellij.ide.favoritesTreeView.FavoriteTreeNodeDescriptor;
 import com.intellij.ide.projectView.ProjectViewNode;
 import com.intellij.psi.impl.smartPointers.AbstractTreeNod2;
 import com.intellij.ide.projectView.impl.nodes.ProjectViewNode2;
-import com.intellij.ide.projectView.impl.nodes.ProjectViewNode2B;
 import com.intellij.ide.util.treeView.*;
 import com.intellij.openapi.progress.ProgressIndicator;
 import com.intellij.openapi.progress.util.StatusBarProgress;
@@ -216,10 +215,6 @@ public abstract class BaseProjectTreeBuilder2 extends AbstractTreeBuilder2 {
         final AbstractTreeNod2 projectViewNode = (ProjectViewNode2)userObject;
         return projectViewNode.canRepresent(element);
       }
-      if (userObject instanceof ProjectViewNode2B) {
-        final AbstractTreeNod2 projectViewNode = (ProjectViewNode2B)userObject;
-        return projectViewNode.canRepresent(element);
-      }
     }
     return false;
   }
@@ -250,11 +245,6 @@ public abstract class BaseProjectTreeBuilder2 extends AbstractTreeBuilder2 {
 
     if (!canExpandPathTo()) {
       async.setError("cannot expand");
-      return async;
-    }
-
-    if (root instanceof ProjectViewNode2B && file != null && !((ProjectViewNode2B)root).contains(file)) {
-      async.setError("not applicable");
       return async;
     }
 

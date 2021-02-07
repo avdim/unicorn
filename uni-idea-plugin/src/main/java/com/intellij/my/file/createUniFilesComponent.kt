@@ -16,6 +16,7 @@ import com.intellij.openapi.actionSystem.*
 import com.intellij.openapi.application.ApplicationManager
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.project.ProjectManager
+import com.intellij.openapi.vcs.FileStatus
 import com.intellij.openapi.vfs.VirtualFile
 import com.intellij.pom.Navigatable
 import com.intellij.psi.PsiDirectory
@@ -92,8 +93,9 @@ private fun _createUniFilesComponent(
         object : AbstractProjectNode2() {
           override fun canRepresent(element: Any): Boolean = true
           override fun getChildren(): Collection<AbstractTreeNod2<*>> {
-            return uniFilesRootNodes(project, settings, rootDirs = rootPaths)
+            return uniFilesRootNodes(project, rootDirs = rootPaths)
           }
+          override fun getFileStatus() = FileStatus.NOT_CHANGED
         }
 
       override fun getChildElements(element: Any): Array<Any> {
@@ -287,7 +289,6 @@ private fun _createUniFilesComponent(
 
 fun uniFilesRootNodes(
   project: Project,
-  settings: ViewSettings?,
   rootDirs: List<VirtualFile> = ConfUniFiles.ROOT_DIRS
 ): Collection<AbstractTreeNod2<*>> {
   return rootDirs.mapNotNull {
@@ -295,8 +296,7 @@ fun uniFilesRootNodes(
   }.map { psiDirectory: PsiDirectory ->
     TutuPsiDirectoryNode(
       project,
-      psiDirectory,
-      settings
+      psiDirectory
     )
   }
 }

@@ -63,11 +63,11 @@ import java.util.Collections;
  *
  * @param <Value> Value of node descriptor
  */
-public abstract class AbstractPsiBasedNode2<Value> extends ProjectViewNode2B<Value> implements ValidateableNode, StatePreservingNavigatable {
+public abstract class AbstractPsiBasedNode2<Value> extends ProjectViewNode2<Value> implements ValidateableNode, StatePreservingNavigatable {
   private static final Logger LOG = Logger.getInstance(AbstractPsiBasedNode2.class.getName());
 
-  protected AbstractPsiBasedNode2(@NotNull Value value, final ViewSettings viewSettings) {
-    super(value, viewSettings);
+  protected AbstractPsiBasedNode2(@NotNull Value value) {
+    super(value);
   }
 
   @Nullable
@@ -119,12 +119,6 @@ public abstract class AbstractPsiBasedNode2<Value> extends ProjectViewNode2B<Val
 
     final Object parentValue = parent.getValue();
     return parentValue instanceof PsiDirectory || parentValue instanceof Module;
-  }
-
-
-  @Override
-  public FileStatus getFileStatus() {
-    return computeFileStatus(getVirtualFileForValue());
   }
 
   protected static FileStatus computeFileStatus(@Nullable VirtualFile virtualFile) {
@@ -183,8 +177,7 @@ public abstract class AbstractPsiBasedNode2<Value> extends ProjectViewNode2B<Val
   @Iconable.IconFlags
   protected int getIconableFlags() {
     int flags = 0;
-    ViewSettings settings = getSettings();
-    if (settings instanceof ProjectViewSettings && ((ProjectViewSettings) settings).isShowVisibilityIcons()) {
+    if (Uni.fileManagerConf2.isShowVisibilityIcons) {
       flags |= Iconable.ICON_FLAG_VISIBILITY;
     }
     if (isMarkReadOnly()) {
@@ -208,21 +201,6 @@ public abstract class AbstractPsiBasedNode2<Value> extends ProjectViewNode2B<Val
 
   protected boolean isDeprecated() {
     return false;
-  }
-
-  @Override
-  public boolean contains(@NotNull final VirtualFile file) {
-    final PsiElement psiElement = extractPsiFromValue();
-    if (psiElement == null || !psiElement.isValid()) {
-      return false;
-    }
-
-    final PsiFile containingFile = psiElement.getContainingFile();
-    if (containingFile == null) {
-      return false;
-    }
-    final VirtualFile valueFile = containingFile.getVirtualFile();
-    return file.equals(valueFile);
   }
 
   @Nullable

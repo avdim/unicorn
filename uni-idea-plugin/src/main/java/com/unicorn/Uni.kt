@@ -1,5 +1,6 @@
 package com.unicorn
 
+import com.intellij.ide.projectView.ViewSettings
 import com.intellij.openapi.Disposable
 import com.intellij.openapi.project.ProjectManager
 import com.intellij.openapi.util.Disposer
@@ -33,6 +34,45 @@ object Uni : Disposable {
     Uni.log.error { "coroutine exception in coroutineContext: $coroutineContext, throwable: $throwable" }
   }
   val PLUGIN_NAME = "UniCorn"
+  
+  object fileManagerConf2 {
+    @JvmField
+    val isFlattenPackages = false
+    @JvmField
+    val isShowMembers = false
+    @JvmField
+    val isHideEmptyMiddlePackages = false
+    @JvmField
+    val isCompactDirectories = false
+    @JvmField
+    val isAbbreviatePackageNames = false
+    @JvmField
+    val isShowLibraryContents = true
+    @JvmField
+    val isShowModules = false
+    @JvmField
+    val isFlattenModules = false
+    @JvmField
+    val isShowURL = true
+    @JvmField
+    val isFoldersAlwaysOnTop = true
+    @JvmField
+    val skipDirInPsiDirectoryNode = true//todo inline
+    @JvmField
+    val isShowVisibilityIcons = true//default false
+  }
+  @JvmStatic
+  val fileManagerConf = object : ViewSettings {
+    override fun isFlattenPackages(): Boolean = fileManagerConf2.isFlattenPackages
+    override fun isShowMembers(): Boolean = fileManagerConf2.isShowMembers
+    override fun isHideEmptyMiddlePackages(): Boolean = fileManagerConf2.isHideEmptyMiddlePackages
+    override fun isCompactDirectories(): Boolean = fileManagerConf2.isCompactDirectories
+    override fun isAbbreviatePackageNames(): Boolean = fileManagerConf2.isAbbreviatePackageNames
+    override fun isShowLibraryContents(): Boolean = fileManagerConf2.isShowLibraryContents
+    override fun isShowModules(): Boolean = fileManagerConf2.isShowModules
+    override fun isFlattenModules(): Boolean = fileManagerConf2.isFlattenModules
+    override fun isShowURL(): Boolean = fileManagerConf2.isShowURL
+  }
 
   init {
     RecentLog.start()

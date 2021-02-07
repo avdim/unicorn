@@ -2,8 +2,6 @@
 package com.intellij.ide.projectView.impl.nodes;
 
 import com.intellij.ide.projectView.PresentationData;
-import com.intellij.ide.projectView.ProjectViewSettings;
-import com.intellij.ide.projectView.ViewSettings;
 import com.intellij.ide.projectView.impl.CompoundIconProvider;
 import com.intellij.ide.projectView.impl.ProjectRootsUtil;
 import com.intellij.ide.util.treeView.AbstractTreeUi;
@@ -17,8 +15,6 @@ import com.intellij.openapi.roots.ui.configuration.ModuleSourceRootEditHandler;
 import com.intellij.openapi.util.Comparing;
 import com.intellij.openapi.util.io.FileUtil;
 import com.intellij.openapi.util.registry.Registry;
-import com.intellij.openapi.vfs.LocalFileSystem;
-import com.intellij.openapi.vfs.VfsUtil;
 import com.intellij.openapi.vfs.VfsUtilCore;
 import com.intellij.openapi.vfs.VirtualFile;
 import com.intellij.pom.NavigatableWithText;
@@ -48,8 +44,8 @@ public class PsiDirectoryNode2 extends BasePsiNode2<PsiDirectory> implements Nav
 
   private final PsiFileSystemItemFilter myFilter;
 
-  public PsiDirectoryNode2(@NotNull PsiDirectory value, ViewSettings viewSettings, @Nullable PsiFileSystemItemFilter filter) {
-    super(value, viewSettings);
+  public PsiDirectoryNode2(@NotNull PsiDirectory value, @Nullable PsiFileSystemItemFilter filter) {
+    super(value);
     myFilter = filter;
   }
 
@@ -104,7 +100,9 @@ public class PsiDirectoryNode2 extends BasePsiNode2<PsiDirectory> implements Nav
 
     String name = parentValue instanceof Project
       ? psiDirectory.getVirtualFile().getPresentableUrl()
-      : ProjectViewDirectoryHelper.getInstance(psiDirectory.getProject()).getNodeName(getSettings(), parentValue, psiDirectory);
+      : ProjectViewDirectoryHelper.getInstance(psiDirectory.getProject()).getNodeName(
+        Uni.getFileManagerConf(),//todo maybe redundant ?
+      parentValue, psiDirectory);
     if (name == null) {
       setValue(null);
       return;
@@ -163,24 +161,18 @@ public class PsiDirectoryNode2 extends BasePsiNode2<PsiDirectory> implements Nav
 
   @Override
   public Collection<AbstractTreeNod2<?>> getChildrenImpl() {
-    return getDirectoryChildren(getValue(), getSettings(), true, getFilter());
+    return getDirectoryChildren(getValue(), true, getFilter());
   }
 
   @NotNull
   public Collection<AbstractTreeNod2<?>> getDirectoryChildren(PsiDirectory psiDirectory,
-                                                              ViewSettings settings,
                                                               boolean withSubDirectories,
                                                               @Nullable PsiFileSystemItemFilter filter) {
-    return AbstractTreeUi.calculateYieldingToWriteAction(() -> doGetDirectoryChildren(psiDirectory, settings, withSubDirectories, filter));
-  }
-
-  public boolean skipDirectory() {
-    return true;
+    return AbstractTreeUi.calculateYieldingToWriteAction(() -> doGetDirectoryChildren(psiDirectory, withSubDirectories, filter));
   }
 
   @NotNull
   private Collection<AbstractTreeNod2<?>> doGetDirectoryChildren(PsiDirectory psiDirectory,
-                                                                 ViewSettings settings,
                                                                  boolean withSubDirectories,
                                                                  @Nullable PsiFileSystemItemFilter filter) {
     List<AbstractTreeNod2<?>> children = new ArrayList<>();
@@ -188,19 +180,19 @@ public class PsiDirectoryNode2 extends BasePsiNode2<PsiDirectory> implements Nav
     ProjectFileIndex fileIndex = ProjectRootManager.getInstance(project).getFileIndex();
     Module module = fileIndex.getModuleForFile(psiDirectory.getVirtualFile());
     ModuleFileIndex moduleFileIndex = module == null ? null : ModuleRootManager.getInstance(module).getFileIndex();
-    if (!settings.isFlattenPackages() || skipDirectory()) {
+    if (!Uni.fileManagerConf2.isFlattenPackages || Uni.fileManagerConf2.skipDirInPsiDirectoryNode) {
       processPsiDirectoryChildren(directoryChildrenInProject(psiDirectory),
-        children, fileIndex, null, settings, withSubDirectories, filter);
+        children, fileIndex, null, withSubDirectories, filter);
     }
     else { // source directory in "flatten packages" mode
       final PsiDirectory parentDir = psiDirectory.getParentDirectory();
-      if (parentDir == null || skipDirectory() && withSubDirectories) {
-        addAllSubpackages(children, psiDirectory, moduleFileIndex, settings, filter);
+      if (parentDir == null || Uni.fileManagerConf2.skipDirInPsiDirectoryNode && withSubDirectories) {
+        addAllSubpackages(children, psiDirectory, moduleFileIndex, filter);
       }
       if (withSubDirectories) {
         PsiDirectory[] subdirs = psiDirectory.getSubdirectories();
         for (PsiDirectory subdir : subdirs) {
-          if (!skipDirectory() || filter != null && !filter.shouldShow(subdir)) {
+          if (!(Uni.fileManagerConf2.skipDirInPsiDirectoryNode) || filter != null && !filter.shouldShow(subdir)) {
             continue;
           }
           VirtualFile directoryFile = subdir.getVirtualFile();
@@ -212,11 +204,10 @@ public class PsiDirectoryNode2 extends BasePsiNode2<PsiDirectory> implements Nav
             if (FileTypeRegistry.getInstance().isFileIgnored(directoryFile)) continue;
           }
 
-          children.add(new PsiDirectoryNode2(subdir, settings, filter));
+          children.add(new PsiDirectoryNode2(subdir, filter));
         }
       }
-      processPsiDirectoryChildren(psiDirectory.getFiles(), children, fileIndex, moduleFileIndex, settings,
-        withSubDirectories, filter);
+      processPsiDirectoryChildren(psiDirectory.getFiles(), children, fileIndex, moduleFileIndex, withSubDirectories, filter);
     }
     return children;
   }
@@ -225,28 +216,27 @@ public class PsiDirectoryNode2 extends BasePsiNode2<PsiDirectory> implements Nav
   private void addAllSubpackages(List<? super AbstractTreeNod2<?>> container,
                                  PsiDirectory dir,
                                  @Nullable ModuleFileIndex moduleFileIndex,
-                                 ViewSettings viewSettings,
                                  @Nullable PsiFileSystemItemFilter filter) {
     final Project project = dir.getProject();
     PsiDirectory[] subdirs = dir.getSubdirectories();
     for (PsiDirectory subdir : subdirs) {
-      if (skipDirectory() || filter != null && !filter.shouldShow(subdir)) {
+      if (Uni.fileManagerConf2.skipDirInPsiDirectoryNode || filter != null && !filter.shouldShow(subdir)) {
         continue;
       }
       if (moduleFileIndex != null && !moduleFileIndex.isInContent(subdir.getVirtualFile())) {
-        container.add(new PsiDirectoryNode2(subdir, viewSettings, filter));
+        container.add(new PsiDirectoryNode2(subdir, filter));
         continue;
       }
-      if (viewSettings.isHideEmptyMiddlePackages()) {
+      if (Uni.fileManagerConf2.isHideEmptyMiddlePackages) {
         if (!isEmptyMiddleDirectory()) {
 
-          container.add(new PsiDirectoryNode2(subdir, viewSettings, filter));
+          container.add(new PsiDirectoryNode2(subdir, filter));
         }
       }
       else {
-        container.add(new PsiDirectoryNode2(subdir, viewSettings, filter));
+        container.add(new PsiDirectoryNode2(subdir, filter));
       }
-      addAllSubpackages(container, subdir, moduleFileIndex, viewSettings, filter);
+      addAllSubpackages(container, subdir, moduleFileIndex, filter);
     }
   }
 
@@ -260,7 +250,6 @@ public class PsiDirectoryNode2 extends BasePsiNode2<PsiDirectory> implements Nav
                                            List<? super AbstractTreeNod2<?>> container,
                                            ProjectFileIndex projectFileIndex,
                                            @Nullable ModuleFileIndex moduleFileIndex,
-                                           ViewSettings viewSettings,
                                            boolean withSubDirectories,
                                            @Nullable PsiFileSystemItemFilter filter) {
     for (PsiElement child : children) {
@@ -281,20 +270,20 @@ public class PsiDirectoryNode2 extends BasePsiNode2<PsiDirectory> implements Nav
         continue;
       }
       if (child instanceof PsiFile) {
-        container.add(new PsiFileNode2((PsiFile) child, viewSettings));
+        container.add(new PsiFileNode2((PsiFile) child));
       }
       else if (child instanceof PsiDirectory) {
         if (withSubDirectories) {
           PsiDirectory dir = (PsiDirectory)child;
           if (!vFile.equals(projectFileIndex.getSourceRootForFile(vFile))) { // if is not a source root
-            if (viewSettings.isHideEmptyMiddlePackages() && !skipDirectory() && isEmptyMiddleDirectory()) {
+            if (Uni.fileManagerConf2.isHideEmptyMiddlePackages && !(Uni.fileManagerConf2.skipDirInPsiDirectoryNode) && isEmptyMiddleDirectory()) {
               processPsiDirectoryChildren(
-                directoryChildrenInProject(dir), container, projectFileIndex, moduleFileIndex, viewSettings, true, filter
+                directoryChildrenInProject(dir), container, projectFileIndex, moduleFileIndex, true, filter
               ); // expand it recursively
               continue;
             }
           }
-          container.add(new PsiDirectoryNode2((PsiDirectory)child, viewSettings, filter));
+          container.add(new PsiDirectoryNode2((PsiDirectory)child, filter));
         }
       }
     }
@@ -378,40 +367,6 @@ public class PsiDirectoryNode2 extends BasePsiNode2<PsiDirectory> implements Nav
 
   public boolean isFQNameShown() {
     return false;
-  }
-
-  @Override
-  public boolean contains(@NotNull VirtualFile file) {
-    final PsiDirectory value = getValue();
-    if (value == null) {
-      return false;
-    }
-
-    VirtualFile directory = value.getVirtualFile();
-    if (directory.getFileSystem() instanceof LocalFileSystem) {
-      file = VfsUtil.getLocalFile(file);
-    }
-
-    if (!VfsUtilCore.isAncestor(directory, file, false)) {
-      return false;
-    }
-
-    final @Nullable Project project = value.getProject();
-    PsiFileSystemItemFilter filter = getFilter();
-    if (filter != null) {
-      PsiFile psiFile = PsiManager.getInstance(project).findFile(file);
-      if (psiFile != null && !filter.shouldShow(psiFile)) return false;
-
-      PsiDirectory psiDirectory = PsiManager.getInstance(project).findDirectory(file);
-      if (psiDirectory != null && !filter.shouldShow(psiDirectory)) return false;
-    }
-
-    if (Registry.is("ide.hide.excluded.files")) {
-      final ProjectFileIndex fileIndex = ProjectRootManager.getInstance(project).getFileIndex();
-      return !fileIndex.isExcluded(file);
-    } else {
-      return !FileTypeRegistry.getInstance().isFileIgnored(file);
-    }
   }
 
   /**
@@ -510,8 +465,7 @@ public class PsiDirectoryNode2 extends BasePsiNode2<PsiDirectory> implements Nav
 
   @Override
   public int getWeight() {
-    ViewSettings settings = getSettings();
-    if (settings == null || settings.isFoldersAlwaysOnTop()) {
+    if (Uni.fileManagerConf2.isFoldersAlwaysOnTop) {
       return 20;
     }
     return isFQNameShown() ? 70 : 0;
