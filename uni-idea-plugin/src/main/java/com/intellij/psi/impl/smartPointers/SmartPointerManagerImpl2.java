@@ -130,12 +130,13 @@ public final class SmartPointerManagerImpl2 extends SmartPointerManager implemen
   public SmartPsiFileRange createSmartPsiFileRangePointer(@NotNull PsiFile file,
                                                           @NotNull TextRange range,
                                                           boolean forInjected) {
-    PsiUtilCore.ensureValid(file);
-    SmartPointerTracker2.processQueue();
-    SmartPsiFileRangePointerImpl2 pointer = new SmartPsiFileRangePointerImpl2(this, file, ProperTextRange.create(range), forInjected);
-    trackPointer(pointer, file.getViewProvider().getVirtualFile());
-
-    return pointer;
+    Uni.getLog().error("createSmartPsiFileRangePointer not implemented");
+    throw new UnsupportedOperationException("createSmartPsiFileRangePointer");
+//    PsiUtilCore.ensureValid(file);
+//    SmartPointerTracker2.processQueue();
+//    SmartPsiFileRangePointerImpl2 pointer = new SmartPsiFileRangePointerImpl2(this, file, ProperTextRange.create(range), forInjected);
+//    trackPointer(pointer, file.getViewProvider().getVirtualFile());
+//    return pointer;
   }
 
   private <E extends PsiElement> void trackPointer(@NotNull SmartPsiElementPointerImpl2<E> pointer, @NotNull VirtualFile containingFile) {

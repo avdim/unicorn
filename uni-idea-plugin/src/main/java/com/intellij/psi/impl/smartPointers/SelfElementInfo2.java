@@ -29,13 +29,13 @@ public class SelfElementInfo2 extends SmartPointerElementInfo2 {
                    @NotNull Identikit identikit,
                    @NotNull PsiFile containingFile,
                    boolean forInjected) {
+    //todo unused
     myForInjected = forInjected;
     myIdentikit = identikit;
 
     myFile = containingFile.getViewProvider().getVirtualFile();
     setRange(range);
   }
-
 
   void setRange(@Nullable Segment range) {
     if (range == null) {

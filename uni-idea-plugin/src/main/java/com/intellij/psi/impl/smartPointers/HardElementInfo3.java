@@ -17,59 +17,58 @@ package com.intellij.psi.impl.smartPointers;
 
 import com.intellij.openapi.util.Segment;
 import com.intellij.openapi.vfs.VirtualFile;
-import com.intellij.psi.PsiAnchor;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiFile;
+import com.intellij.psi.util.PsiUtilCore;
+import com.unicorn.Uni;
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 
-class ClsElementInfo2 extends SmartPointerElementInfo2 {
+class HardElementInfo3 extends SmartPointerElementInfo2 {
   @NotNull
-  private final PsiAnchor.StubIndexReference myStubIndexReference;
+  private final PsiElement myElement;
 
-  ClsElementInfo2(@NotNull PsiAnchor.StubIndexReference stubReference) {
-    myStubIndexReference = stubReference;
+  HardElementInfo3(@NotNull PsiElement element) {
+    Uni.getLog().warning("use HardElementInfo3");
+    myElement = element;
   }
 
   @Override
   PsiElement restoreElement(@NotNull SmartPointerManagerImpl2 manager) {
-    return myStubIndexReference.retrieve();
-  }
-
-  @Override
-  int elementHashCode() {
-    return myStubIndexReference.hashCode();
-  }
-
-  @Override
-  boolean pointsToTheSameElementAs(@NotNull SmartPointerElementInfo2 other, @NotNull SmartPointerManagerImpl2 manager) {
-    return other instanceof ClsElementInfo2 && myStubIndexReference.equals(((ClsElementInfo2)other).myStubIndexReference);
-  }
-
-  @Override
-  @NotNull
-  VirtualFile getVirtualFile() {
-    return myStubIndexReference.getVirtualFile();
-  }
-
-  @Override
-  Segment getRange(@NotNull SmartPointerManagerImpl2 manager) {
-    return null;
-  }
-
-  @Nullable
-  @Override
-  Segment getPsiRange(@NotNull SmartPointerManagerImpl2 manager) {
-    return null;
+    return myElement;
   }
 
   @Override
   PsiFile restoreFile(@NotNull SmartPointerManagerImpl2 manager) {
-    return myStubIndexReference.getFile();
+    return myElement.isValid() ? myElement.getContainingFile() : null;
+  }
+
+  @Override
+  int elementHashCode() {
+    return myElement.hashCode();
+  }
+
+  @Override
+  boolean pointsToTheSameElementAs(@NotNull final SmartPointerElementInfo2 other, @NotNull SmartPointerManagerImpl2 manager) {
+    return other instanceof HardElementInfo3 && myElement.equals(((HardElementInfo3)other).myElement);
+  }
+
+  @Override
+  VirtualFile getVirtualFile() {
+    return PsiUtilCore.getVirtualFile(myElement);
+  }
+
+  @Override
+  Segment getRange(@NotNull SmartPointerManagerImpl2 manager) {
+    return myElement.getTextRange();
+  }
+
+  @Override
+  Segment getPsiRange(@NotNull SmartPointerManagerImpl2 manager) {
+    return getRange(manager);
   }
 
   @Override
   public String toString() {
-    return myStubIndexReference.toString();
+    return "hard{" + myElement + " of " + myElement.getClass() + "}";
   }
 }
