@@ -226,9 +226,7 @@ public abstract class AbstractTreeNod2<T> extends PresentableNodeDescriptor2<Abs
 //    SmartPointerTracker.processQueue();
 //    ensureMyProject(containingFile != null ? containingFile.getProject() : element.getProject());
     SmartPsiElementPointerImpl2<E> pointer = getCachedPointer(element);
-    if (pointer != null &&
-      (!(pointer.getElementInfo() instanceof SelfElementInfo2) || ((SelfElementInfo2)pointer.getElementInfo()).isForInjected() == forInjected) &&
-      pointer.incrementAndGetReferenceCount(1) > 0) {
+    if (pointer != null && pointer.incrementAndGetReferenceCount(1) > 0) {
       return pointer;
     }
 

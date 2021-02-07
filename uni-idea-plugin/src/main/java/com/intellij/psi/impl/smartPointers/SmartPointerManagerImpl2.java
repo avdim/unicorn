@@ -77,16 +77,11 @@ public final class SmartPointerManagerImpl2 extends SmartPointerManager implemen
     SmartPointerTracker2.processQueue();
     ensureMyProject(containingFile != null ? containingFile.getProject() : element.getProject());
     SmartPsiElementPointerImpl2<E> pointer = getCachedPointer(element);
-    if (pointer != null &&
-        (!(pointer.getElementInfo() instanceof SelfElementInfo2) || ((SelfElementInfo2)pointer.getElementInfo()).isForInjected() == forInjected) &&
-        pointer.incrementAndGetReferenceCount(1) > 0) {
+    if (pointer != null && pointer.incrementAndGetReferenceCount(1) > 0) {
       return pointer;
     }
 
     pointer = new SmartPsiElementPointerImpl2<>(this, element, containingFile, forInjected);
-    if (containingFile != null) {
-      trackPointer(pointer, containingFile.getViewProvider().getVirtualFile());
-    }
     element.putUserData(CACHED_SMART_POINTER_KEY, new SoftReference<>(pointer));
     return pointer;
   }
@@ -137,18 +132,6 @@ public final class SmartPointerManagerImpl2 extends SmartPointerManager implemen
 //    SmartPsiFileRangePointerImpl2 pointer = new SmartPsiFileRangePointerImpl2(this, file, ProperTextRange.create(range), forInjected);
 //    trackPointer(pointer, file.getViewProvider().getVirtualFile());
 //    return pointer;
-  }
-
-  private <E extends PsiElement> void trackPointer(@NotNull SmartPsiElementPointerImpl2<E> pointer, @NotNull VirtualFile containingFile) {
-    SmartPointerElementInfo2 info = pointer.getElementInfo();
-    if (!(info instanceof SelfElementInfo2)) return;
-
-    SmartPointerTracker2 tracker = getTracker(containingFile);
-    if (tracker == null) {
-      tracker = getOrCreateTracker(containingFile);
-    }
-    Uni.getLog().todo("pointer: " + pointer + ", tracker: " + tracker + ", containingFile: " + containingFile);
-//    tracker.addReference(pointer);
   }
 
   @Override
