@@ -253,11 +253,6 @@ public abstract class BaseProjectTreeBuilder2 extends AbstractTreeBuilder2 {
       return async;
     }
 
-    if (root instanceof ProjectViewNode2 && file != null && !((ProjectViewNode2)root).contains()) {
-      async.setError("not applicable");
-      return async;
-    }
-
     if (root instanceof ProjectViewNode2B && file != null && !((ProjectViewNode2B)root).contains(file)) {
       async.setError("not applicable");
       return async;

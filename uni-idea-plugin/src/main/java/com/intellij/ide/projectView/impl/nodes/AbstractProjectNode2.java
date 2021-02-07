@@ -18,9 +18,4 @@ public abstract class AbstractProjectNode2 extends ProjectViewNode2<Project> {
     presentation.setPresentableText("todo_presentable_text");
   }
 
-  @Override
-  public boolean contains() {
-    return true;
-  }
-
 }

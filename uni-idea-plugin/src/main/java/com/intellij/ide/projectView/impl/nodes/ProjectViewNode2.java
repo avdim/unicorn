@@ -87,13 +87,6 @@ public abstract class ProjectViewNode2<Value> extends AbstractTreeNod2<Value> im
   }
 
   /**
-   * Checks if this node or one of its children represents the specified virtual file.
-   *
-   * @return true if the file is found in the subtree, false otherwise.
-   */
-  public abstract boolean contains();
-
-  /**
    * Returns the virtual file represented by this node or one of its children.
    *
    * @return the virtual file instance, or null if the project view node doesn't represent a virtual file.
@@ -157,10 +150,9 @@ public abstract class ProjectViewNode2<Value> extends AbstractTreeNod2<Value> im
     WolfTheProblemSolver wolf = project == null ? null : WolfTheProblemSolver.getInstance(project);
     return wolf != null && wolf.hasProblemFilesBeneath(virtualFile -> {
       Value value;
-      return contains()
-             // in case of flattened packages, when package node a.b.c contains error file, node a.b might not.
-             && ((value = getValue()) instanceof PsiElement && Comparing.equal(PsiUtilCore.getVirtualFile((PsiElement)value), virtualFile) ||
-                 someChildContainsFile(virtualFile));
+      // in case of flattened packages, when package node a.b.c contains error file, node a.b might not.
+      return ((value = getValue()) instanceof PsiElement && Comparing.equal(PsiUtilCore.getVirtualFile((PsiElement) value), virtualFile) ||
+        someChildContainsFile(virtualFile));
     });
   }
 
