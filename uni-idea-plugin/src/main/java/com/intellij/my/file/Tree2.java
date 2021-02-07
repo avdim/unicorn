@@ -30,7 +30,7 @@ import java.util.Map;
 
 import static com.intellij.ide.dnd.SmoothAutoScroller.installDropTargetAsNecessary;
 
-public class Tree2 extends JTree implements ComponentWithEmptyText, ComponentWithExpandableItems<Integer>, Queryable,
+public abstract class Tree2 extends JTree implements ComponentWithEmptyText, ComponentWithExpandableItems<Integer>, Queryable,
                                            ComponentWithFileColors, TreePathBackgroundSupplier {
 
   private final StatusText myEmptyText;
@@ -280,10 +280,7 @@ public class Tree2 extends JTree implements ComponentWithEmptyText, ComponentWit
     return getFileColorFor(TreeUtil.getUserObject(component));
   }
 
-  @Nullable
-  public Color getFileColorFor(Object object) {
-    return null;
-  }
+  abstract public Color getFileColorFor(Object object);
 
   @Override
   protected void processKeyEvent(KeyEvent e) {
