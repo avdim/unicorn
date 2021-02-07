@@ -98,15 +98,8 @@ public class PsiDirectoryNode2 extends BasePsiNode2<PsiDirectory> implements Nav
     }
 */
 
-    String name = parentValue instanceof Project
-      ? psiDirectory.getVirtualFile().getPresentableUrl()
-      : ProjectViewDirectoryHelper.getInstance(psiDirectory.getProject()).getNodeName(
-        Uni.getFileManagerConf(),//todo maybe redundant ?
-      parentValue, psiDirectory);
-    if (name == null) {
-      setValue(null);
-      return;
-    }
+    boolean isViewRoot = parentValue instanceof Project;
+    String name = isViewRoot ? psiDirectory.getVirtualFile().getPresentableUrl() : psiDirectory.getName();
 
     if(Uni.INSTANCE.getBOLD_DIRS()) {
       data.addText(directoryFile.getName() + " ", SimpleTextAttributes.REGULAR_BOLD_ATTRIBUTES);
