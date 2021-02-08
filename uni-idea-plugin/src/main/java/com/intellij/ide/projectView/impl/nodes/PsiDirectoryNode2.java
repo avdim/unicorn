@@ -4,41 +4,33 @@ package com.intellij.ide.projectView.impl.nodes;
 import com.intellij.ide.projectView.PresentationData;
 import com.intellij.ide.projectView.impl.CompoundIconProvider;
 import com.intellij.ide.projectView.impl.ProjectRootsUtil;
-import com.intellij.ide.util.treeView.AbstractTreeUi;
-import com.intellij.openapi.fileTypes.FileTypeRegistry;
 import com.intellij.openapi.module.Module;
 import com.intellij.openapi.module.ModuleUtilCore;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.project.ProjectBundle;
-import com.intellij.openapi.roots.*;
+import com.intellij.openapi.roots.SourceFolder;
 import com.intellij.openapi.roots.ui.configuration.ModuleSourceRootEditHandler;
-import com.intellij.openapi.util.Comparing;
 import com.intellij.openapi.util.io.FileUtil;
-import com.intellij.openapi.util.registry.Registry;
 import com.intellij.openapi.vfs.VfsUtilCore;
 import com.intellij.openapi.vfs.VirtualFile;
 import com.intellij.pom.NavigatableWithText;
-import com.intellij.psi.*;
-import com.intellij.psi.impl.smartPointers.AbstractTreeNod2;
-import com.intellij.psi.search.PsiElementProcessor;
-import com.intellij.psi.util.PsiUtilCore;
+import com.intellij.psi.PsiDirectory;
 import com.intellij.ui.SimpleTextAttributes;
 import com.intellij.util.FontUtil;
 import com.intellij.util.IconUtil;
 import com.intellij.util.PlatformUtils;
 import com.intellij.util.containers.SmartHashSet;
 import com.unicorn.Uni;
-import gnu.trove.THashSet;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.jetbrains.jps.model.java.JavaModuleSourceRootTypes;
 import org.jetbrains.jps.model.java.JavaSourceRootProperties;
 
 import javax.swing.*;
-import java.util.*;
+import java.util.Locale;
+import java.util.Set;
 
-@SuppressWarnings("UnstableApiUsage")
-public class PsiDirectoryNode2 extends BasePsiNode2<PsiDirectory> implements NavigatableWithText {
+public abstract class PsiDirectoryNode2 extends BasePsiNode2<PsiDirectory> implements NavigatableWithText {
   // the chain from a parent directory to this one usually contains only one virtual file
   private final Set<VirtualFile> chain = new SmartHashSet<>();
 
@@ -150,212 +142,6 @@ public class PsiDirectoryNode2 extends BasePsiNode2<PsiDirectory> implements Nav
       Icon icon = CompoundIconProvider.findIcon(psiDirectory, 0);
       if (icon != null) data.setIcon(icon);
     }
-  }
-
-  @Override
-  public Collection<AbstractTreeNod2<?>> getChildrenImpl() {
-    return getDirectoryChildren(getValue(), true, getFilter());
-  }
-
-  @NotNull
-  public Collection<AbstractTreeNod2<?>> getDirectoryChildren(PsiDirectory psiDirectory,
-                                                              boolean withSubDirectories,
-                                                              @Nullable PsiFileSystemItemFilter filter) {
-    return AbstractTreeUi.calculateYieldingToWriteAction(() -> doGetDirectoryChildren(psiDirectory, withSubDirectories, filter));
-  }
-
-  @NotNull
-  private Collection<AbstractTreeNod2<?>> doGetDirectoryChildren(PsiDirectory psiDirectory,
-                                                                 boolean withSubDirectories,
-                                                                 @Nullable PsiFileSystemItemFilter filter) {
-    List<AbstractTreeNod2<?>> children = new ArrayList<>();
-    Project project = psiDirectory.getProject();
-    ProjectFileIndex fileIndex = ProjectRootManager.getInstance(project).getFileIndex();
-    Module module = fileIndex.getModuleForFile(psiDirectory.getVirtualFile());
-    ModuleFileIndex moduleFileIndex = module == null ? null : ModuleRootManager.getInstance(module).getFileIndex();
-    if (!Uni.fileManagerConf2.isFlattenPackages || Uni.fileManagerConf2.skipDirInPsiDirectoryNode) {
-      processPsiDirectoryChildren(directoryChildrenInProject(psiDirectory),
-        children, fileIndex, null, withSubDirectories, filter);
-    }
-    else { // source directory in "flatten packages" mode
-      final PsiDirectory parentDir = psiDirectory.getParentDirectory();
-      if (parentDir == null || Uni.fileManagerConf2.skipDirInPsiDirectoryNode && withSubDirectories) {
-        addAllSubpackages(children, psiDirectory, moduleFileIndex, filter);
-      }
-      if (withSubDirectories) {
-        PsiDirectory[] subdirs = psiDirectory.getSubdirectories();
-        for (PsiDirectory subdir : subdirs) {
-          if (!(Uni.fileManagerConf2.skipDirInPsiDirectoryNode) || filter != null && !filter.shouldShow(subdir)) {
-            continue;
-          }
-          VirtualFile directoryFile = subdir.getVirtualFile();
-
-          if (Registry.is("ide.hide.excluded.files")) {
-            if (fileIndex.isExcluded(directoryFile)) continue;
-          }
-          else {
-            if (FileTypeRegistry.getInstance().isFileIgnored(directoryFile)) continue;
-          }
-
-          children.add(new PsiDirectoryNode2(subdir, filter));
-        }
-      }
-      processPsiDirectoryChildren(psiDirectory.getFiles(), children, fileIndex, moduleFileIndex, withSubDirectories, filter);
-    }
-    return children;
-  }
-
-  // used only in flatten packages mode
-  private void addAllSubpackages(List<? super AbstractTreeNod2<?>> container,
-                                 PsiDirectory dir,
-                                 @Nullable ModuleFileIndex moduleFileIndex,
-                                 @Nullable PsiFileSystemItemFilter filter) {
-    final Project project = dir.getProject();
-    PsiDirectory[] subdirs = dir.getSubdirectories();
-    for (PsiDirectory subdir : subdirs) {
-      if (Uni.fileManagerConf2.skipDirInPsiDirectoryNode || filter != null && !filter.shouldShow(subdir)) {
-        continue;
-      }
-      if (moduleFileIndex != null && !moduleFileIndex.isInContent(subdir.getVirtualFile())) {
-        container.add(new PsiDirectoryNode2(subdir, filter));
-        continue;
-      }
-      if (Uni.fileManagerConf2.isHideEmptyMiddlePackages) {
-        if (!isEmptyMiddleDirectory()) {
-
-          container.add(new PsiDirectoryNode2(subdir, filter));
-        }
-      }
-      else {
-        container.add(new PsiDirectoryNode2(subdir, filter));
-      }
-      addAllSubpackages(container, subdir, moduleFileIndex, filter);
-    }
-  }
-
-  public boolean isEmptyMiddleDirectory() {
-    return false;
-  }
-
-
-  // used only for non-flatten packages mode
-  private void processPsiDirectoryChildren(PsiElement[] children,
-                                           List<? super AbstractTreeNod2<?>> container,
-                                           ProjectFileIndex projectFileIndex,
-                                           @Nullable ModuleFileIndex moduleFileIndex,
-                                           boolean withSubDirectories,
-                                           @Nullable PsiFileSystemItemFilter filter) {
-    for (PsiElement child : children) {
-      Uni.getLog().assertTrue(child.isValid());
-
-      if (!(child instanceof PsiFileSystemItem)) {
-        Uni.getLog().error("Either PsiFile or PsiDirectory expected as a child of " + child.getParent() + ", but was " + child);
-        continue;
-      }
-      final VirtualFile vFile = ((PsiFileSystemItem) child).getVirtualFile();
-      if (vFile == null) {
-        continue;
-      }
-      if (moduleFileIndex != null && !moduleFileIndex.isInContent(vFile)) {
-        continue;
-      }
-      if (filter != null && !filter.shouldShow((PsiFileSystemItem)child)) {
-        continue;
-      }
-      if (child instanceof PsiFile) {
-        container.add(new PsiFileNode2((PsiFile) child));
-      }
-      else if (child instanceof PsiDirectory) {
-        if (withSubDirectories) {
-          PsiDirectory dir = (PsiDirectory)child;
-          if (!vFile.equals(projectFileIndex.getSourceRootForFile(vFile))) { // if is not a source root
-            if (Uni.fileManagerConf2.isHideEmptyMiddlePackages && !(Uni.fileManagerConf2.skipDirInPsiDirectoryNode) && isEmptyMiddleDirectory()) {
-              processPsiDirectoryChildren(
-                directoryChildrenInProject(dir), container, projectFileIndex, moduleFileIndex, true, filter
-              ); // expand it recursively
-              continue;
-            }
-          }
-          container.add(new PsiDirectoryNode2((PsiDirectory)child, filter));
-        }
-      }
-    }
-  }
-
-  private PsiElement @NotNull [] directoryChildrenInProject(PsiDirectory psiDirectory) {
-    final VirtualFile dir = psiDirectory.getVirtualFile();
-    if (shouldBeShown(dir)) {
-      final List<PsiElement> children = new ArrayList<>();
-      psiDirectory.processChildren(new PsiElementProcessor<PsiFileSystemItem>() {
-        @Override
-        public boolean execute(@NotNull PsiFileSystemItem element) {
-          if (shouldBeShown(element.getVirtualFile())) {
-            children.add(element);
-          }
-          return true;
-        }
-      });
-      return PsiUtilCore.toPsiElementArray(children);
-    }
-
-    PsiManager manager = psiDirectory.getManager();
-    Set<PsiElement> directoriesOnTheWayToContentRoots = new THashSet<>();
-    for (VirtualFile root : getTopLevelRoots()) {
-      VirtualFile current = root;
-      while (current != null) {
-        VirtualFile parent = current.getParent();
-
-        if (Comparing.equal(parent, dir)) {
-          final PsiDirectory psi = manager.findDirectory(current);
-          if (psi != null) {
-            directoriesOnTheWayToContentRoots.add(psi);
-          }
-        }
-        current = parent;
-      }
-    }
-
-    return PsiUtilCore.toPsiElementArray(directoriesOnTheWayToContentRoots);
-  }
-
-  @NotNull
-  public List<VirtualFile> getTopLevelRoots() {
-    return new ArrayList<>();
-//    List<VirtualFile> topLevelContentRoots = new ArrayList<>();
-//    ProjectRootManager prm = ProjectRootManager.getInstance(project2);
-//
-//    for (VirtualFile root : prm.getContentRoots()) {
-//      VirtualFile parent = root.getParent();
-//      if (!isFileUnderContentRoot(myIndex, parent)) {
-//        topLevelContentRoots.add(root);
-//      }
-//    }
-//    Collection<UnloadedModuleDescription> descriptions = ModuleManager.getInstance(project2).getUnloadedModuleDescriptions();
-//    for (UnloadedModuleDescription description : descriptions) {
-//      for (VirtualFilePointer pointer : description.getContentRoots()) {
-//        VirtualFile root = pointer.getFile();
-//        if (root != null) {
-//          VirtualFile parent = root.getParent();
-//          if (!isFileUnderContentRoot(myIndex, parent)) {
-//            topLevelContentRoots.add(root);
-//          }
-//        }
-//      }
-//    }
-//    return topLevelContentRoots;
-  }
-
-  private boolean shouldBeShown(@NotNull VirtualFile dir) {
-    if (!dir.isValid()) return false;
-    Uni.getLog().warning("shouldBeShown in empty");
-    return true;
-//    DirectoryInfo directoryInfo = myIndex.getInfoForFile(dir);
-//    boolean cond = directoryInfo.isInProject(dir);
-//    boolean shouldShowExcludedFiles = shouldShowExcludedFiles(settings);
-//    boolean a = shouldShowExcludedFiles || !isProjectOrWorkspaceFile(dir);
-//    boolean b = shouldShowExcludedFiles && directoryInfo.isExcluded(dir);
-//    boolean result = cond ? a : b;
-//    return result;
   }
 
   public boolean isFQNameShown() {

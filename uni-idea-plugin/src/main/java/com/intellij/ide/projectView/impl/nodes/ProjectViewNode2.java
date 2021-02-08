@@ -3,7 +3,6 @@ package com.intellij.ide.projectView.impl.nodes;
 
 import com.intellij.ide.projectView.RootsProvider;
 import com.intellij.openapi.util.NlsContexts;
-import com.intellij.openapi.vfs.VfsUtilCore;
 import com.intellij.openapi.vfs.VirtualFile;
 import com.intellij.psi.PsiFileSystemItem;
 import com.intellij.psi.impl.smartPointers.AbstractTreeNod2;
@@ -29,36 +28,6 @@ public abstract class ProjectViewNode2<Value> extends AbstractTreeNod2<Value> im
    */
   protected ProjectViewNode2(@NotNull Value value) {
     super(value);
-  }
-
-  /**
-   * Returns the virtual file represented by this node or one of its children.
-   *
-   * @return the virtual file instance, or null if the project view node doesn't represent a virtual file.
-   */
-  @Override
-  @Nullable
-  public VirtualFile getVirtualFile() {
-    return null;
-  }
-
-  public boolean someChildContainsFile(final VirtualFile file) {
-    return someChildContainsFile(file, true);
-  }
-
-  public boolean someChildContainsFile(final VirtualFile file, boolean optimizeByCheckingFileRootsFirst) {
-    VirtualFile parent = file.getParent();
-    if (optimizeByCheckingFileRootsFirst && parent != null) {
-      Collection<VirtualFile> roots = getRoots();
-      for (VirtualFile eachRoot : roots) {
-        if (parent.equals(eachRoot.getParent()) || VfsUtilCore.isAncestor(eachRoot, file, true)) {
-          return true;
-        }
-      }
-    } else {
-      return true;
-    }
-    return false;
   }
 
   @NotNull
