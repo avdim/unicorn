@@ -1,21 +1,21 @@
 // Copyright 2000-2020 JetBrains s.r.o. Use of this source code is governed by the Apache 2.0 license that can be found in the LICENSE file.
 package com.intellij.my.file
 
-import com.intellij.ide.projectView.ViewSettings
-import com.intellij.ide.projectView.impl.nodes.*
+import com.intellij.ide.projectView.impl.nodes.BasePsiNode2
+import com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode2
+import com.intellij.ide.projectView.impl.nodes.PsiFileNode2
+import com.intellij.ide.projectView.impl.nodes.PsiFileSystemItemFilter
 import com.intellij.openapi.project.Project
 import com.intellij.psi.PsiDirectory
 import com.intellij.psi.PsiManager
 import com.intellij.psi.impl.smartPointers.AbstractTreeNod2
 import com.unicorn.Uni
-import java.util.*
 
 class TutuPsiDirectoryNode @JvmOverloads constructor(
   val project: Project,
   value: PsiDirectory,
-  viewSettings: ViewSettings?,
   filter: PsiFileSystemItemFilter? = null
-) : PsiDirectoryNode2(value, viewSettings, filter) {
+) : PsiDirectoryNode2(value, filter) {
 
   override fun getChildrenImpl(): Collection<AbstractTreeNod2<*>> {
     val baseDir = virtualFile!!
@@ -25,12 +25,12 @@ class TutuPsiDirectoryNode @JvmOverloads constructor(
     for (file in files) {
       val psiFile = psiManager.findFile(file)
       if (psiFile != null) {
-        nodes.add(PsiFileNode2(psiFile, settings))
+        nodes.add(PsiFileNode2(psiFile))
       }
 
       val psiDir = psiManager.findDirectory(file)
       if (psiDir != null) {
-        nodes.add(TutuPsiDirectoryNode(Uni.todoUseOpenedProject(project), psiDir, settings))
+        nodes.add(TutuPsiDirectoryNode(Uni.todoUseOpenedProject(project), psiDir))
       }
     }
     return nodes

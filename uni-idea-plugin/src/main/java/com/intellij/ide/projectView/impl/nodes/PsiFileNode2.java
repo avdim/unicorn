@@ -4,16 +4,12 @@ package com.intellij.ide.projectView.impl.nodes;
 import com.intellij.ide.IdeBundle;
 import com.intellij.ide.highlighter.ArchiveFileType;
 import com.intellij.ide.projectView.PresentationData;
-import com.intellij.ide.projectView.ViewSettings;
 import com.intellij.idea.ActionsBundle;
 import com.intellij.openapi.editor.colors.CodeInsightColors;
-import com.intellij.openapi.project.Project;
-import com.intellij.openapi.util.Comparing;
 import com.intellij.openapi.util.Iconable;
 import com.intellij.openapi.util.NlsSafe;
 import com.intellij.openapi.util.io.FileUtil;
 import com.intellij.openapi.vfs.VFileProperty;
-import com.intellij.openapi.vfs.VfsUtil;
 import com.intellij.openapi.vfs.VirtualFile;
 import com.intellij.pom.NavigatableWithText;
 import com.intellij.psi.PsiFile;
@@ -24,8 +20,8 @@ import org.jetbrains.annotations.NotNull;
 import java.util.Collection;
 
 public class PsiFileNode2 extends BasePsiNode2<PsiFile> implements NavigatableWithText {
-  public PsiFileNode2(@NotNull PsiFile value, ViewSettings viewSettings) {
-    super(value, viewSettings);
+  public PsiFileNode2(@NotNull PsiFile value) {
+    super(value);
   }
 
   @Override
@@ -103,8 +99,4 @@ public class PsiFileNode2 extends BasePsiNode2<PsiFile> implements NavigatableWi
     return value != null && element != null && element.equals(value.getVirtualFile());
   }
 
-  @Override
-  public boolean contains(@NotNull VirtualFile file) {
-    return super.contains(file) || isArchive() && Comparing.equal(VfsUtil.getLocalFile(file), getVirtualFile());
-  }
 }

@@ -36,6 +36,7 @@ import com.intellij.psi.impl.PsiManagerEx;
 import com.intellij.psi.impl.source.PsiFileImpl;
 import com.intellij.psi.tree.IStubFileElementType;
 import com.intellij.psi.util.PsiTreeUtil;
+import com.unicorn.Uni;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -173,71 +174,70 @@ class SmartPsiElementPointerImpl2<E extends PsiElement> implements SmartPointerE
     if (element instanceof PsiDirectory) {
       return new DirElementInfo2((PsiDirectory)element);
     }
-    if (element instanceof PsiCompiledElement || containingFile == null) {
-      if (element instanceof StubBasedPsiElement && element instanceof PsiCompiledElement) {
-        if (element instanceof PsiFile) {
-          return new FileElementInfo2((PsiFile)element);
-        }
-        PsiAnchor.StubIndexReference stubReference = PsiAnchor.createStubReference(element, containingFile);
-        if (stubReference != null) {
-          return new ClsElementInfo2(stubReference);
-        }
+//    if (element instanceof PsiCompiledElement || containingFile == null) {
+//      if (element instanceof StubBasedPsiElement && element instanceof PsiCompiledElement) {
+//        if (element instanceof PsiFile) {
+//          return new FileElementInfo2((PsiFile)element);
+//        }
+//        PsiAnchor.StubIndexReference stubReference = PsiAnchor.createStubReference(element, containingFile);
+//        if (stubReference != null) {
+//          Uni.getLog().error("stubReference != null, stubReference: " + stubReference);
+//        }
+//      }
+//      return new HardElementInfo2(element);
+//    }
+
+//    FileViewProvider viewProvider = containingFile.getViewProvider();
+//    if (viewProvider instanceof FreeThreadedFileViewProvider && hasReliableRange(element, containingFile)) {
+//      PsiLanguageInjectionHost hostContext = InjectedLanguageManager.getInstance(containingFile.getProject()).getInjectionHost(containingFile);
+//      TextRange elementRange = element.getTextRange();
+//      if (hostContext != null && elementRange != null) {
+//        SmartPsiElementPointer<PsiLanguageInjectionHost> hostPointer = SmartPointerManager.getInstance(project).createSmartPsiElementPointer(hostContext);
+//        Uni.getLog().error("removed InjectedSelfElementInfo2.java");
+//      }
+//    }
+
+//    VirtualFile virtualFile = viewProvider.getVirtualFile();
+    if (containingFile != null) {
+      VirtualFile virtualFile = containingFile.getVirtualFile();
+      if (element instanceof PsiFile) {
+        FileViewProvider restored = PsiManager.getInstance(project).findViewProvider(virtualFile);
+        return restored != null && restored.getPsi(LanguageUtil.getRootLanguage(element)) == element
+          ? new FileElementInfo2((PsiFile)element)
+          : new HardElementInfo2(element);
       }
-      return new HardElementInfo2(element);
     }
+    return new HardElementInfo3(element);
 
-    FileViewProvider viewProvider = containingFile.getViewProvider();
-    if (viewProvider instanceof FreeThreadedFileViewProvider && hasReliableRange(element, containingFile)) {
-      PsiLanguageInjectionHost hostContext = InjectedLanguageManager.getInstance(containingFile.getProject()).getInjectionHost(containingFile);
-      TextRange elementRange = element.getTextRange();
-      if (hostContext != null && elementRange != null) {
-        SmartPsiElementPointer<PsiLanguageInjectionHost> hostPointer = SmartPointerManager.getInstance(project).createSmartPsiElementPointer(hostContext);
-        return new InjectedSelfElementInfo2(project, element, elementRange, containingFile, hostPointer);
-      }
-    }
-
-    VirtualFile virtualFile = viewProvider.getVirtualFile();
-    if (element instanceof PsiFile) {
-      FileViewProvider restored = PsiManager.getInstance(project).findViewProvider(virtualFile);
-      return restored != null && restored.getPsi(LanguageUtil.getRootLanguage(element)) == element
-             ? new FileElementInfo2((PsiFile)element)
-             : new HardElementInfo2(element);
-    }
-
-    if (!hasReliableRange(element, containingFile)) {
-      return new HardElementInfo2(element);
-    }
-
-    Document document = FileDocumentManager.getInstance().getCachedDocument(virtualFile);
-    if (document != null &&
-        ((PsiDocumentManagerBase)PsiDocumentManager.getInstance(project)).getSynchronizer().isDocumentAffectedByTransactions(document)) {
-      LOG.error("Smart pointers must not be created during PSI changes");
-    }
-
-    SmartPointerElementInfo2 info = createAnchorInfo(element, containingFile);
-    if (info != null) {
-      return info;
-    }
-
-    TextRange elementRange = element.getTextRange();
-    if (elementRange == null) {
-      return new HardElementInfo2(element);
-    }
-    Identikit.ByType identikit = Identikit.fromPsi(element, LanguageUtil.getRootLanguage(element));
-    if (elementRange.isEmpty() && 
-        identikit.findPsiElement(containingFile, elementRange.getStartOffset(), elementRange.getEndOffset()) != element) {
-      // PSI has empty range, no text, but complicated structure (e.g. PSI built on C-style macro expansions). It can't be reliably
-      // restored by just one offset in a file, so hold it on a hard reference
-      return new HardElementInfo2(element);
-    }
-
-    if (!containingFile.isPhysical() && document == null) {
-      // there's no document whose events could be tracked and used for restoration by offset
-      return new HardElementInfo2(element);
-    }
-
-    ProperTextRange proper = ProperTextRange.create(elementRange);
-    return new SelfElementInfo2(proper, identikit, containingFile, forInjected);
+//    if (!hasReliableRange(element, containingFile)) {
+//      return new HardElementInfo2(element);
+//    }
+//
+//    Document document = FileDocumentManager.getInstance().getCachedDocument(virtualFile);
+//    if (document != null &&
+//        ((PsiDocumentManagerBase)PsiDocumentManager.getInstance(project)).getSynchronizer().isDocumentAffectedByTransactions(document)) {
+//      LOG.error("Smart pointers must not be created during PSI changes");
+//    }
+//
+//    TextRange elementRange = element.getTextRange();
+//    if (elementRange == null) {
+//      return new HardElementInfo2(element);
+//    }
+//    Identikit.ByType identikit = Identikit.fromPsi(element, LanguageUtil.getRootLanguage(element));
+//    if (elementRange.isEmpty() &&
+//        identikit.findPsiElement(containingFile, elementRange.getStartOffset(), elementRange.getEndOffset()) != element) {
+//      // PSI has empty range, no text, but complicated structure (e.g. PSI built on C-style macro expansions). It can't be reliably
+//      // restored by just one offset in a file, so hold it on a hard reference
+//      return new HardElementInfo2(element);
+//    }
+//
+//    if (!containingFile.isPhysical() && document == null) {
+//      // there's no document whose events could be tracked and used for restoration by offset
+//      return new HardElementInfo2(element);
+//    }
+//
+//    ProperTextRange proper = ProperTextRange.create(elementRange);
+//    return new SelfElementInfo2(proper, identikit, containingFile, forInjected);
   }
 
   // check it's not some fake PSI that overrides getContainingFile/getTextRange/isPhysical/etc and confuses everyone
@@ -254,26 +254,6 @@ class SmartPsiElementPointerImpl2<E extends PsiElement> implements SmartPointerE
     TextRange range = element.getTextRange();
     return range == null ||
            PsiTreeUtil.findElementOfClassAtRange(containingFile, range.getStartOffset(), range.getEndOffset(), element.getClass()) != element;
-  }
-
-  @Nullable
-  private static SmartPointerElementInfo2 createAnchorInfo(@NotNull PsiElement element, @NotNull PsiFile containingFile) {
-    if (element instanceof StubBasedPsiElement && containingFile instanceof PsiFileImpl) {
-      IStubFileElementType stubType = ((PsiFileImpl)containingFile).getElementTypeForStubBuilder();
-      if (stubType != null && stubType.shouldBuildStubFor(containingFile.getViewProvider().getVirtualFile())) {
-        StubBasedPsiElement stubPsi = (StubBasedPsiElement)element;
-        int stubId = PsiAnchor.calcStubIndex(stubPsi);
-        if (stubId != -1) {
-          return new AnchorElementInfo2(element, (PsiFileImpl)containingFile, stubId, stubPsi.getElementType());
-        }
-      }
-    }
-
-    Pair<Identikit.ByAnchor, PsiElement> pair = Identikit.withAnchor(element, LanguageUtil.getRootLanguage(containingFile));
-    if (pair != null) {
-      return new AnchorElementInfo2(pair.second, containingFile, pair.first);
-    }
-    return null;
   }
 
   @NotNull

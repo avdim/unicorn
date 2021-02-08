@@ -16,8 +16,6 @@
 
 package com.intellij.ide.projectView.impl.nodes;
 
-import com.intellij.ide.projectView.ViewSettings;
-import com.intellij.openapi.project.Project;
 import com.intellij.openapi.vcs.FileStatus;
 import com.intellij.openapi.vfs.VirtualFile;
 import com.intellij.psi.PsiElement;
@@ -29,8 +27,8 @@ public abstract class BasePsiNode2<T extends PsiElement> extends AbstractPsiBase
   @Nullable
   private final VirtualFile myVirtualFile;
 
-  protected BasePsiNode2(@NotNull T value, ViewSettings viewSettings) {
-    super(value, viewSettings);
+  protected BasePsiNode2(@NotNull T value) {
+    super(value);
     myVirtualFile = PsiUtilCore.getVirtualFile(value);
   }
 

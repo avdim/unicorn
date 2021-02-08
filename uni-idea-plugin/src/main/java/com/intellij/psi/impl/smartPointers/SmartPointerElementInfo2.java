@@ -16,9 +16,6 @@ abstract class SmartPointerElementInfo2 {
     return null;
   }
 
-  void fastenBelt(@NotNull SmartPointerManagerImpl2 manager) {
-  }
-
   @Nullable
   abstract PsiElement restoreElement(@NotNull SmartPointerManagerImpl2 manager);
 

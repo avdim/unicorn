@@ -34,13 +34,16 @@ open class ProjectViewTree2(model: TreeModel?) : DnDAwareTree2(null as TreeModel
   }
 
   @DirtyUI
-  override fun getFileColorFor(obj: Any): Color? {
-    var obj: Any? = obj
+  override fun getFileColorFor(obj: Any?): Color? {
     if (obj is DefaultMutableTreeNode) {
-      obj = obj.userObject
+      return getFileColorFor2(obj.userObject)
     }
-    if (obj is AbstractTreeNod2<*>) {
-      val value = obj.value
+    return getFileColorFor2(obj)
+  }
+
+  private fun getFileColorFor2(obj2: Any?): JBColor {
+    if (obj2 is AbstractTreeNod2<*>) {
+      val value = obj2.value
       if (value is PsiElement) {
         if (!value.isValid) {
           return JBColor.RED

@@ -4,6 +4,7 @@ package com.intellij.my.file;
 import com.intellij.ide.dnd.DnDAware;
 import com.intellij.ide.dnd.TransferableList;
 import com.intellij.openapi.util.SystemInfo;
+import com.intellij.ui.JBColor;
 import com.intellij.util.ui.tree.TreeUtil;
 import com.intellij.util.ui.tree.WideSelectionTreeUI;
 import org.jetbrains.annotations.NotNull;
@@ -20,6 +21,11 @@ public class DnDAwareTree2 extends Tree2 implements DnDAware {
   public DnDAwareTree2(final TreeModel treemodel) {
     super(treemodel);
     initDnD();
+  }
+
+  @Override
+  public Color getFileColorFor(Object object) {
+    return JBColor.RED;
   }
 
   @Override
