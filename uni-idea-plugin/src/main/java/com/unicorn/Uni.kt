@@ -15,8 +15,8 @@ import com.unicorn.plugin.configureIDE
 import com.unicorn.plugin.getToolWindow
 import kotlinx.coroutines.*
 import com.intellij.my.file.ConfUniFiles
-import com.intellij.openapi.application.impl.CoroutineExceptionHandlerImpl
 import com.intellij.openapi.project.Project
+import com.intellij.openapi.util.registry.Registry
 
 object Uni : Disposable {
   val BOLD_DIRS = true
@@ -36,6 +36,10 @@ object Uni : Disposable {
   val PLUGIN_NAME = "UniCorn"
   
   object fileManagerConf2 {
+    @JvmField
+    val ensureSelectionOnFocusGained: Boolean = Registry.`is`("ide.tree.ensureSelectionOnFocusGained").also {
+      println("ensureSelectionOnFocusGained: $it")
+    }
     @JvmField
     val isFlattenPackages = false
     @JvmField

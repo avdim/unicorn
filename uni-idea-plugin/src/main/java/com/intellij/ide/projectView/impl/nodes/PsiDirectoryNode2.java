@@ -254,14 +254,14 @@ public abstract class PsiDirectoryNode2 extends BasePsiNode2<PsiDirectory> imple
   public String getTitle() {
     final PsiDirectory directory = getValue();
     if (directory != null) {
-      return getQualifiedName2(directory, true);
+      return getQualifiedName2(directory);
     }
     return super.getTitle();
   }
 
   @NotNull
-  private String getQualifiedName2(@NotNull final PsiDirectory directory, final boolean presentable) {
-    if (presentable) {
+  private String getQualifiedName2(@NotNull final PsiDirectory directory) {
+    if (true) {
       return FileUtil.getLocationRelativeToUserHome(directory.getVirtualFile().getPresentableUrl());
     }
     return "";

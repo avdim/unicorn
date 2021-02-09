@@ -64,7 +64,7 @@ public abstract class BaseProjectTreeBuilder2 extends AbstractTreeBuilder2 {
     final VirtualFile virtualFile = PsiUtilCore.getVirtualFile(ObjectUtils.tryCast(value, PsiElement.class));
     batch(indicator -> {
       final Ref<Object> target = new Ref<>();
-      Promise<Object> callback = _select(element, virtualFile, true, Conditions.alwaysTrue());
+      Promise<Object> callback = _select(element, virtualFile, Conditions.alwaysTrue());
       callback
         .onSuccess(it -> result.setResult(target.get()))
         .onError(e -> result.setError(e));
@@ -79,8 +79,7 @@ public abstract class BaseProjectTreeBuilder2 extends AbstractTreeBuilder2 {
 
   @Override
   protected boolean isAutoExpandNode(NodeDescriptor2 nodeDescriptor) {
-    return nodeDescriptor.getParentDescriptor() == null ||
-           nodeDescriptor instanceof AbstractTreeNod2 && ((AbstractTreeNod2)nodeDescriptor).isAlwaysExpand();
+    return nodeDescriptor.getParentDescriptor() == null;
   }
 
   @Override
@@ -129,7 +128,6 @@ public abstract class BaseProjectTreeBuilder2 extends AbstractTreeBuilder2 {
   @NotNull
   private Promise<Object> _select(Object element,
                                   VirtualFile file,
-                                  boolean requestFocus,
                                   Condition<? super AbstractTreeNod2<?>> nonStopCondition) {
     AbstractTreeUpdater2 updater = getUpdater();
     if (updater == null) {
@@ -139,7 +137,7 @@ public abstract class BaseProjectTreeBuilder2 extends AbstractTreeBuilder2 {
     final AsyncPromise<Object> result = new AsyncPromise<>();
 //    UiActivityMonitor.getInstance().addActivity(myProject, new UiActivity.AsyncBgOperation("projectViewSelect"), updater.getModalityState());
     batch(indicator -> {
-      _select(element, file, requestFocus, nonStopCondition, result, indicator, null, false);
+      _select(element, file, true, nonStopCondition, result, indicator, null, false);
 //      UiActivityMonitor.getInstance().removeActivity(myProject, new UiActivity.AsyncBgOperation("projectViewSelect"));
     });
     return result;

@@ -60,11 +60,6 @@ public abstract class AbstractProjectTreeStructure2 extends AbstractTreeStructur
     return (NodeDescriptor<?>)element;
   }
 
-  @Nullable
-  public Object getDataFromProviders() {
-    return null;
-  }
-
   @NotNull
   @Override
   public final Object getRootElement() {

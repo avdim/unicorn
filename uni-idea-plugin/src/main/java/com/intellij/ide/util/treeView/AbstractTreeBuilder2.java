@@ -233,11 +233,6 @@ public class AbstractTreeBuilder2 implements Disposable {
     return false;
   }
 
-
-  protected boolean isSmartExpand() {
-    return true;
-  }
-
   public final boolean isDisposed() {
     return getUi() == null;
   }
@@ -274,10 +269,6 @@ public class AbstractTreeBuilder2 implements Disposable {
         if (!isDisposed()) runnable.run();
       });
     }
-  }
-
-  public boolean isToEnsureSelectionOnFocusGained() {
-    return true;
   }
 
   protected void runBackgroundLoading(@NotNull final Runnable runnable) {

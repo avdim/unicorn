@@ -51,11 +51,6 @@ public abstract class ProjectViewNode2<Value> extends AbstractTreeNod2<Value> im
     return file != null ? Collections.singleton(file) : Collections.emptySet();
   }
 
-  @Override
-  protected boolean hasProblemFileBeneath() {
-    return false;
-  }
-
   @NlsContexts.PopupTitle
   public String getTitle() {
     return "todo empty title";

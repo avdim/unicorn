@@ -177,11 +177,6 @@ private fun _createUniFilesComponent(
 //        return createTreeExpander(myTree)//todo lazy cache
       }
 
-      val data = treeStructure.getDataFromProviders()
-      if (data != null) {
-        return data
-      }
-
       if (CommonDataKeys.NAVIGATABLE_ARRAY.`is`(dataId)) {
         // Used for copy/paste multiple files
         val paths = myTree.selectionPaths ?: return null

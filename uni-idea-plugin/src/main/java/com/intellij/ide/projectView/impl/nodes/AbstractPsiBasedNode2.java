@@ -162,13 +162,6 @@ public abstract class AbstractPsiBasedNode2<Value> extends ProjectViewNode2<Valu
       } catch (IndexNotReadyException ignored) {
       }
       data.setPresentableText(myName);
-
-      try {
-        if (isDeprecated()) {
-          data.setAttributesKey(CodeInsightColors.DEPRECATED_ATTRIBUTES);
-        }
-      } catch (IndexNotReadyException ignored) {
-      }
       updateImpl(data);
       data.setIcon(patchIcon(data.getIcon(true), getVirtualFile()));
     });
@@ -199,10 +192,6 @@ public abstract class AbstractPsiBasedNode2<Value> extends ProjectViewNode2<Valu
     return icon;
   }
 
-  protected boolean isDeprecated() {
-    return false;
-  }
-
   @Nullable
   public NavigationItem getNavigationItem() {
     final PsiElement psiElement = extractPsiFromValue();
@@ -213,12 +202,7 @@ public abstract class AbstractPsiBasedNode2<Value> extends ProjectViewNode2<Valu
   public void navigate(boolean requestFocus, boolean preserveState) {
     if (canNavigate()) {
       if (requestFocus || preserveState) {
-        if (true) {
-          openFileWithPsiElement(getVirtualFile(), extractPsiFromValue(), requestFocus, requestFocus);
-        } else {
-          //old
-          NavigationUtil.openFileWithPsiElement(extractPsiFromValue(), requestFocus, requestFocus);
-        }
+        openFileWithPsiElement(getVirtualFile(), extractPsiFromValue(), requestFocus, requestFocus);
       } else {
         getNavigationItem().navigate(false);
       }

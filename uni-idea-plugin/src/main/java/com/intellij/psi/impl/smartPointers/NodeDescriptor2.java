@@ -12,8 +12,6 @@ import java.util.Comparator;
 public abstract class NodeDescriptor2<E> {
   public static final int DEFAULT_WEIGHT = 30;
 
-  private final NodeDescriptor2<?> myParentDescriptor;
-
   protected @NlsSafe String myName;
   @Nullable protected Icon myClosedIcon;
 
@@ -24,14 +22,11 @@ public abstract class NodeDescriptor2<E> {
 
   private boolean myWasDeclaredAlwaysLeaf;
 
-  public NodeDescriptor2(@Nullable NodeDescriptor2<?> parentDescriptor) {
-    myParentDescriptor = parentDescriptor;
+  public NodeDescriptor2() {
   }
 
   @Nullable
-  public NodeDescriptor2<?> getParentDescriptor() {
-    return myParentDescriptor;
-  }
+  abstract public NodeDescriptor2<?> getParentDescriptor();
 
   public int getIndex() {
     return myIndex;

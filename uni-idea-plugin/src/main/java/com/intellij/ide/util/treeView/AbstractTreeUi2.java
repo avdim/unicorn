@@ -4,7 +4,6 @@ package com.intellij.ide.util.treeView;
 import com.intellij.ide.IdeBundle;
 import com.intellij.ide.UiActivity;
 import com.intellij.ide.UiActivityMonitor;
-import com.intellij.ide.projectView.PresentationData;
 import com.intellij.my.file.AbstractProjectTreeStructure2;
 import com.intellij.psi.impl.smartPointers.AbstractTreeNod2;
 import com.intellij.openapi.application.Application;
@@ -27,6 +26,7 @@ import com.intellij.util.ui.UIUtil;
 import com.intellij.util.ui.tree.TreeUtil;
 import com.intellij.util.ui.update.Activatable;
 import com.intellij.util.ui.update.UiNotifyConnector;
+import com.unicorn.Uni;
 import gnu.trove.THashSet;
 import org.jetbrains.annotations.*;
 import org.jetbrains.concurrency.AsyncPromise;
@@ -1979,7 +1979,7 @@ public class AbstractTreeUi2 {
     setHoldSize(false);
 
     if (myTree.isShowing()) {
-      if (getBuilder().isToEnsureSelectionOnFocusGained() && Registry.is("ide.tree.ensureSelectionOnFocusGained")) {
+      if (Uni.fileManagerConf2.ensureSelectionOnFocusGained) {
         TreeUtil.ensureSelection(myTree);
       }
     }
@@ -2679,7 +2679,6 @@ public class AbstractTreeUi2 {
 
   private boolean canSmartExpand(DefaultMutableTreeNode node, boolean canSmartExpand) {
     if (!canInitiateNewActivity()) return false;
-    if (!getBuilder().isSmartExpand()) return false;
 
     boolean smartExpand = canSmartExpand && !myNotForSmartExpand.contains(node);
     Object element = getElementFor(node);
@@ -2688,7 +2687,6 @@ public class AbstractTreeUi2 {
 
   private void processSmartExpand(@NotNull final DefaultMutableTreeNode node, final boolean canSmartExpand, boolean forced) {
     if (!canInitiateNewActivity()) return;
-    if (!getBuilder().isSmartExpand()) return;
 
     boolean can = canSmartExpand(node, canSmartExpand);
 
@@ -3447,7 +3445,7 @@ public class AbstractTreeUi2 {
     addSubtreeToUpdate(root, null, updateStructure);
   }
 
-  public boolean addSubtreeToUpdate(@NotNull final DefaultMutableTreeNode root, @Nullable final Runnable runAfterUpdate, final boolean updateStructure) {
+  public void addSubtreeToUpdate(@NotNull final DefaultMutableTreeNode root, @Nullable final Runnable runAfterUpdate, final boolean updateStructure) {
     final Object element = getElementFor(root);
     final boolean alwaysLeaf = element != null && getTreeStructure().isAlwaysLeaf(element);
     final TreeUpdatePass2 updatePass;
@@ -3462,7 +3460,6 @@ public class AbstractTreeUi2 {
     final AbstractTreeUpdater2 updater = getUpdater();
     updater.runAfterUpdate(runAfterUpdate);
     updater.addSubtreeToUpdate(updatePass);
-    return !alwaysLeaf;
   }
 
   boolean wasRootNodeInitialized() {

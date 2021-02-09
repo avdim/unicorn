@@ -39,16 +39,12 @@ public abstract class AbstractTreeNod2<T> extends PresentableNodeDescriptor2<Abs
   public static final Object TREE_WRAPPER_VALUE = new Object();
 
   protected AbstractTreeNod2(@NotNull T value) {
-    super(null);
+    super();
     myNodeWrapper = setInternalValue(value);
   }
 
   @NotNull
   public abstract Collection<? extends AbstractTreeNod2<?>> getChildren();
-
-  protected boolean hasProblemFileBeneath() {
-    return false;
-  }
 
   protected boolean valueIsCut() {
     return CopyPasteManager.getInstance().isCutElement(getValue());
@@ -56,10 +52,6 @@ public abstract class AbstractTreeNod2<T> extends PresentableNodeDescriptor2<Abs
 
   @Override
   protected void postprocess(@NotNull PresentationData presentation) {
-    if (hasProblemFileBeneath() ) {
-      presentation.setAttributesKey(FILESTATUS_ERRORS);
-    }
-
     setForcedForeground(presentation);
   }
 
@@ -85,19 +77,10 @@ public abstract class AbstractTreeNod2<T> extends PresentableNodeDescriptor2<Abs
   @Override
   public LeafState getLeafState() {
     if (isAlwaysShowPlus()) return LeafState.NEVER;
-    if (isAlwaysLeaf()) return LeafState.ALWAYS;
     return LeafState.DEFAULT;
   }
 
   public boolean isAlwaysShowPlus() {
-    return false;
-  }
-
-  public boolean isAlwaysLeaf() {
-    return false;
-  }
-
-  public boolean isAlwaysExpand() {
     return false;
   }
 
