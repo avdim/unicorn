@@ -38,7 +38,7 @@ class DirElementInfo2 extends SmartPointerElementInfo2 {
   }
 
   @Override
-  PsiElement restoreElement(@NotNull SmartPointerManagerImpl2 manager) {
+  PsiElement restoreElement() {
     return SelfElementInfo.restoreDirectoryFromVirtual(myVirtualFile, myProject);
   }
 
@@ -53,8 +53,7 @@ class DirElementInfo2 extends SmartPointerElementInfo2 {
   }
 
   @Override
-  boolean pointsToTheSameElementAs(@NotNull SmartPointerElementInfo2 other,
-                                   @NotNull SmartPointerManagerImpl2 manager) {
+  boolean pointsToTheSameElementAs(@NotNull SmartPointerElementInfo2 other) {
     return other instanceof DirElementInfo2 && Comparing.equal(myVirtualFile, ((DirElementInfo2)other).myVirtualFile);
   }
 

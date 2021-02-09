@@ -35,7 +35,7 @@ class FileElementInfo2 extends SmartPointerElementInfo2 {
   }
 
   @Override
-  PsiElement restoreElement(@NotNull SmartPointerManagerImpl2 manager) {
+  PsiElement restoreElement() {
     Language language = Language.findLanguageByID(myLanguageId);
     if (language == null) return null;
     PsiFile file = SelfElementInfo.restoreFileFromVirtual(myVirtualFile, myProject, language);
@@ -44,7 +44,7 @@ class FileElementInfo2 extends SmartPointerElementInfo2 {
 
   @Override
   PsiFile restoreFile(@NotNull SmartPointerManagerImpl2 manager) {
-    PsiElement element = restoreElement(manager);
+    PsiElement element = restoreElement();
     return element == null ? null : element.getContainingFile(); // can be directory
   }
 
@@ -54,8 +54,7 @@ class FileElementInfo2 extends SmartPointerElementInfo2 {
   }
 
   @Override
-  boolean pointsToTheSameElementAs(@NotNull SmartPointerElementInfo2 other,
-                                   @NotNull SmartPointerManagerImpl2 manager) {
+  boolean pointsToTheSameElementAs(@NotNull SmartPointerElementInfo2 other) {
     return other instanceof FileElementInfo2 && Comparing.equal(myVirtualFile, ((FileElementInfo2)other).myVirtualFile);
   }
 

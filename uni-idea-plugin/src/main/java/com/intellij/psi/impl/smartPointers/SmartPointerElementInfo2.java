@@ -17,13 +17,13 @@ abstract class SmartPointerElementInfo2 {
   }
 
   @Nullable
-  abstract PsiElement restoreElement(@NotNull SmartPointerManagerImpl2 manager);
+  abstract PsiElement restoreElement();
 
   @Nullable
   abstract PsiFile restoreFile(@NotNull SmartPointerManagerImpl2 manager);
 
   abstract int elementHashCode(); // must be immutable
-  abstract boolean pointsToTheSameElementAs(@NotNull SmartPointerElementInfo2 other, @NotNull SmartPointerManagerImpl2 manager);
+  abstract boolean pointsToTheSameElementAs(@NotNull SmartPointerElementInfo2 other);
 
   abstract VirtualFile getVirtualFile();
 

@@ -29,11 +29,6 @@ public class PsiFileNode2 extends BasePsiNode2<PsiFile> implements NavigatableWi
     return ContainerUtil.emptyList();//1
   }
 
-  private boolean isArchive() {
-    VirtualFile file = getVirtualFile();
-    return file != null && file.isValid() && file.getFileType() instanceof ArchiveFileType;
-  }
-
   @Override
   protected void updateImpl(@NotNull PresentationData data) {
     PsiFile value = getValue();
@@ -78,12 +73,6 @@ public class PsiFileNode2 extends BasePsiNode2<PsiFile> implements NavigatableWi
   @Override
   public int getWeight() {
     return 20;
-  }
-
-  @Override
-  public String getTitle() {
-    VirtualFile file = getVirtualFile();
-    return file != null ? FileUtil.getLocationRelativeToUserHome(file.getPresentableUrl()) : super.getTitle();
   }
 
   @Override

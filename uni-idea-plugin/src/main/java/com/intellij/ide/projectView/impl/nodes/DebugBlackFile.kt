@@ -13,7 +13,7 @@ object DebugBlackFile {
         //debug (equalityObject as SmartPsiElementPointerImpl<*>).let{it.myElementInfo.restoreElement(it.myManager)}
       }
       if (equalityObject is SmartPsiElementPointerImpl2<*>) {
-        val restoreElement = equalityObject.myElementInfo.restoreElement(equalityObject.myManager)
+        val restoreElement = equalityObject.myElementInfo.restoreElement()
         if (restoreElement == null) {
           Uni.log.error { "restoreElement == null" }
         }

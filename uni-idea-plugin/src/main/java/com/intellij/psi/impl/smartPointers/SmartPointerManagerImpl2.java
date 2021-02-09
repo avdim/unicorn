@@ -6,14 +6,12 @@ import com.intellij.openapi.application.ApplicationManager;
 import com.intellij.openapi.diagnostic.Logger;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.util.Key;
-import com.intellij.openapi.util.ProperTextRange;
 import com.intellij.openapi.util.TextRange;
 import com.intellij.openapi.vfs.VirtualFile;
 import com.intellij.psi.*;
 import com.intellij.psi.impl.PsiDocumentManagerBase;
 import com.intellij.psi.util.PsiUtilCore;
 import com.intellij.reference.SoftReference;
-import com.intellij.testFramework.LightVirtualFile;
 import com.intellij.util.containers.ContainerUtil;
 import com.unicorn.Uni;
 import org.jetbrains.annotations.NonNls;
@@ -66,13 +64,12 @@ public final class SmartPointerManagerImpl2 extends SmartPointerManager implemen
   @Override
   @NotNull
   public <E extends PsiElement> SmartPsiElementPointer<E> createSmartPsiElementPointer(@NotNull E element, PsiFile containingFile) {
-    return createSmartPsiElementPointer(element, containingFile, false);
+    return createSmartPsiElementPointer2(element, containingFile);
   }
 
   @NotNull
-  public <E extends PsiElement> SmartPsiElementPointer<E> createSmartPsiElementPointer(@NotNull E element,
-                                                                                       PsiFile containingFile,
-                                                                                       boolean forInjected) {
+  public <E extends PsiElement> SmartPsiElementPointer<E> createSmartPsiElementPointer2(@NotNull E element,
+                                                                                       PsiFile containingFile) {
     ensureValid(element, containingFile);
     SmartPointerTracker2.processQueue();
     ensureMyProject(containingFile != null ? containingFile.getProject() : element.getProject());
@@ -81,7 +78,7 @@ public final class SmartPointerManagerImpl2 extends SmartPointerManager implemen
       return pointer;
     }
 
-    pointer = new SmartPsiElementPointerImpl2<>(this, element, containingFile, forInjected);
+    pointer = new SmartPsiElementPointerImpl2<>(this, element, containingFile);
     element.putUserData(CACHED_SMART_POINTER_KEY, new SoftReference<>(pointer));
     return pointer;
   }
@@ -157,27 +154,6 @@ public final class SmartPointerManagerImpl2 extends SmartPointerManager implemen
     }
   }
 
-  @Nullable
-  SmartPointerTracker2 getTracker(@NotNull VirtualFile file) {
-    return file instanceof LightVirtualFile ? SoftReference.dereference(file.getUserData(LIGHT_TRACKER_KEY)) : myPhysicalTrackers.get(file);
-  }
-
-  @NotNull
-  private SmartPointerTracker2 getOrCreateTracker(@NotNull VirtualFile file) {
-    synchronized (myPhysicalTrackers) {
-      SmartPointerTracker2 tracker = getTracker(file);
-      if (tracker == null) {
-        tracker = new SmartPointerTracker2();
-        if (file instanceof LightVirtualFile) {
-          file.putUserData(LIGHT_TRACKER_KEY, new WeakReference<>(tracker));
-        } else {
-          myPhysicalTrackers.put(file, tracker);
-        }
-      }
-      return tracker;
-    }
-  }
-
   @Override
   public boolean pointToTheSameElement(@NotNull SmartPsiElementPointer<?> pointer1, @NotNull SmartPsiElementPointer<?> pointer2) {
     return SmartPsiElementPointerImpl.pointsToTheSameElementAs(pointer1, pointer2);
@@ -188,8 +164,4 @@ public final class SmartPointerManagerImpl2 extends SmartPointerManager implemen
     return myProject;
   }
 
-  @NotNull
-  PsiDocumentManagerBase getPsiDocumentManager() {
-    return myPsiDocManager;
-  }
 }
