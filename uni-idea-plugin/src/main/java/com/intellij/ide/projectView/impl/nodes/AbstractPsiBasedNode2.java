@@ -129,17 +129,6 @@ public abstract class AbstractPsiBasedNode2<Value> extends ProjectViewNode2<Valu
     return FileStatus.NOT_CHANGED;
   }
 
-  @Nullable
-  private VirtualFile getVirtualFileForValue() {
-    PsiElement psiElement = extractPsiFromValue();
-    if (psiElement == null) {
-      return null;
-    }
-    return PsiUtilCore.getVirtualFile(psiElement);
-  }
-
-  // Should be called in atomic action
-
   @Override
   public void update(@NotNull final PresentationData data) {
     AstLoadingFilter.disallowTreeLoading(() -> doUpdate(data));

@@ -33,7 +33,7 @@ class HardElementInfo3 extends SmartPointerElementInfo2 {
   }
 
   @Override
-  PsiElement restoreElement(@NotNull SmartPointerManagerImpl2 manager) {
+  PsiElement restoreElement() {
     return myElement;
   }
 
@@ -48,7 +48,7 @@ class HardElementInfo3 extends SmartPointerElementInfo2 {
   }
 
   @Override
-  boolean pointsToTheSameElementAs(@NotNull final SmartPointerElementInfo2 other, @NotNull SmartPointerManagerImpl2 manager) {
+  boolean pointsToTheSameElementAs(@NotNull final SmartPointerElementInfo2 other) {
     return other instanceof HardElementInfo3 && myElement.equals(((HardElementInfo3)other).myElement);
   }
 

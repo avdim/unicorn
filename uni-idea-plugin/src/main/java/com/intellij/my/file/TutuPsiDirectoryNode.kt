@@ -13,9 +13,8 @@ import com.unicorn.Uni
 
 class TutuPsiDirectoryNode @JvmOverloads constructor(
   val project: Project,
-  value: PsiDirectory,
-  filter: PsiFileSystemItemFilter? = null
-) : PsiDirectoryNode2(value, filter) {
+  value: PsiDirectory
+) : PsiDirectoryNode2(value) {
 
   override fun getChildrenImpl(): Collection<AbstractTreeNod2<*>> {
     val baseDir = virtualFile!!

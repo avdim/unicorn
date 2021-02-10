@@ -34,16 +34,8 @@ public abstract class PsiDirectoryNode2 extends BasePsiNode2<PsiDirectory> imple
   // the chain from a parent directory to this one usually contains only one virtual file
   private final Set<VirtualFile> chain = new SmartHashSet<>();
 
-  private final PsiFileSystemItemFilter myFilter;
-
-  public PsiDirectoryNode2(@NotNull PsiDirectory value, @Nullable PsiFileSystemItemFilter filter) {
+  public PsiDirectoryNode2(@NotNull PsiDirectory value) {
     super(value);
-    myFilter = filter;
-  }
-
-  @Nullable
-  public PsiFileSystemItemFilter getFilter() {
-    return myFilter;
   }
 
   @Override
@@ -248,23 +240,6 @@ public abstract class PsiDirectoryNode2 extends BasePsiNode2<PsiDirectory> imple
       return 20;
     }
     return isFQNameShown() ? 70 : 0;
-  }
-
-  @Override
-  public String getTitle() {
-    final PsiDirectory directory = getValue();
-    if (directory != null) {
-      return getQualifiedName2(directory);
-    }
-    return super.getTitle();
-  }
-
-  @NotNull
-  private String getQualifiedName2(@NotNull final PsiDirectory directory) {
-    if (true) {
-      return FileUtil.getLocationRelativeToUserHome(directory.getVirtualFile().getPresentableUrl());
-    }
-    return "";
   }
 
   @Override

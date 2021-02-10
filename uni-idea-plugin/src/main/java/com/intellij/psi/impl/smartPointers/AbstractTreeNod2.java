@@ -6,7 +6,6 @@ import com.intellij.navigation.NavigationItem;
 import com.intellij.openapi.application.ApplicationManager;
 import com.intellij.openapi.application.ReadAction;
 import com.intellij.openapi.diagnostic.Logger;
-import com.intellij.openapi.editor.colors.TextAttributesKey;
 import com.intellij.openapi.ide.CopyPasteManager;
 import com.intellij.openapi.project.ProjectManager;
 import com.intellij.openapi.ui.Queryable;
@@ -30,7 +29,6 @@ import java.util.Map;
 public abstract class AbstractTreeNod2<T> extends PresentableNodeDescriptor2<AbstractTreeNod2<T>>
   implements NavigationItem, Queryable.Contributor, LeafState.Supplier {
 
-  private static final TextAttributesKey FILESTATUS_ERRORS = TextAttributesKey.createTextAttributesKey("FILESTATUS_ERRORS");
   private static final Logger LOG = Logger.getInstance(AbstractTreeNod2.class);
   private AbstractTreeNod2<?> myParent;
   private Object myValue;
@@ -185,7 +183,7 @@ public abstract class AbstractTreeNod2<T> extends PresentableNodeDescriptor2<Abs
 
   @NotNull
   public static <E extends PsiElement> SmartPsiElementPointer<E> createSmartPsiElementPointer(@NotNull E element, PsiFile containingFile) {
-    return createSmartPsiElementPointer(element, containingFile, false);
+    return createSmartPsiElementPointer2(element, containingFile);
   }
 
   private static <E extends PsiElement> SmartPsiElementPointerImpl2<E> getCachedPointer(@NotNull E element) {
@@ -202,9 +200,8 @@ public abstract class AbstractTreeNod2<T> extends PresentableNodeDescriptor2<Abs
   }
 
   @NotNull
-  public static <E extends PsiElement> SmartPsiElementPointer<E> createSmartPsiElementPointer(@NotNull E element,
-                                                                                       PsiFile containingFile,
-                                                                                       boolean forInjected) {
+  public static <E extends PsiElement> SmartPsiElementPointer<E> createSmartPsiElementPointer2(@NotNull E element,
+                                                                                              PsiFile containingFile) {
     ensureValid(element, containingFile);
 //    SmartPointerTracker.processQueue();
 //    ensureMyProject(containingFile != null ? containingFile.getProject() : element.getProject());
@@ -213,7 +210,7 @@ public abstract class AbstractTreeNod2<T> extends PresentableNodeDescriptor2<Abs
       return pointer;
     }
 
-    pointer = new SmartPsiElementPointerImpl2<E>(SmartPointerManagerImpl2.getInstance(ProjectManager.getInstance().getDefaultProject() ), element, containingFile, forInjected);
+    pointer = new SmartPsiElementPointerImpl2<E>(SmartPointerManagerImpl2.getInstance(ProjectManager.getInstance().getDefaultProject() ), element, containingFile);
     if (containingFile != null) {
       trackPointer();
     }
