@@ -50,11 +50,13 @@ fun LayoutBuilder.renderWelcomeProjects(
   githubDir: File
 ) {
   val welcomeProjects = listOf(
+    "avdim/jcenter-cache",
     "avdim/aicup2020",
     "avdim/unicorn",
     "avdim/kotlin-node-js",
     "avdim/github-script",
     "tutu/js-npm-migrate",
+    "tutu/android-core",
     "ilgonmic/kotlin-ts",
     "JetBrains/intellij-community",
   )
