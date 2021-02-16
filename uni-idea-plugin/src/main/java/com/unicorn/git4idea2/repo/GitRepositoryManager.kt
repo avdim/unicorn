@@ -4,6 +4,7 @@ package com.unicorn.git4idea2.repo
 import com.intellij.dvcs.repo.AbstractRepositoryManager
 import com.intellij.openapi.components.ServiceManager
 import com.intellij.openapi.project.Project
+import com.unicorn.Uni
 import git4idea.GitVcs
 import git4idea.rebase.GitRebaseSpec
 import git4idea.repo.GitRepository
@@ -37,7 +38,8 @@ class GitRepositoryManager(
   }
 
   fun getDirectSubmodules(superProject: GitRepository): Collection<GitRepository> {
-    return original.getDirectSubmodules(superProject)
+    Uni.log.fatalError { "broken in new versions of IDEA" }
+//    return original.getDirectSubmodules(superProject)
   }
 
   /**

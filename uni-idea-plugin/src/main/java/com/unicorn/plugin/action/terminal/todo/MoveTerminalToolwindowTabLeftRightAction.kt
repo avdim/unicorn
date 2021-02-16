@@ -5,6 +5,7 @@ import com.intellij.openapi.actionSystem.AnActionEvent
 import com.intellij.openapi.project.DumbAware
 import com.intellij.openapi.project.Project
 import com.intellij.ui.content.Content
+import com.unicorn.Uni
 import org.jetbrains.plugins.terminal.TerminalTabCloseListener
 
 open class MoveTerminalToolwindowTabLeftRightAction(private val moveLeft: Boolean) : TerminalSessionContextMenuActionBase(), DumbAware {
@@ -31,7 +32,7 @@ open class MoveTerminalToolwindowTabLeftRightAction(private val moveLeft: Boolea
       TerminalTabCloseListener.executeContentOperationSilently(otherContent) {
         manager.removeContent(otherContent, false, false, false).doWhenDone {
           manager.addContent(otherContent, ind)
-          TerminalTabCloseListener(otherContent, project)
+          TerminalTabCloseListener(otherContent, project, Uni)
         }
       }
     }
