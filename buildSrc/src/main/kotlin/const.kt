@@ -43,6 +43,7 @@ val INTELLIJ_GRADLE = "0.6.5"
 //val DESKTOP_COMPOSE = "0.0.0-vsync-build30"
 //val DESKTOP_COMPOSE = "0.3.0-build150"
 val DESKTOP_COMPOSE = "0.3.0-build152"
+//val DESKTOP_COMPOSE = "0.3.0-build154"
 
 val Project.UNI_BUILD_TYPE: BuildType get() =
   when (safeArgument("uniBuildType")) {
@@ -62,7 +63,7 @@ val Project.myIdeaSandboxDir:String get() = when (UNI_BUILD_TYPE) {
     else -> tmpDir()
   }
 
-val UNI_VERSION = "0.12.5"
+val UNI_VERSION = "0.13.0"
 
 // https://www.jetbrains.com/intellij-repository/snapshots/
 //    IdeaVersion.Community("2020.2.3")
@@ -72,8 +73,9 @@ val UNI_VERSION = "0.12.5"
 //val LAST_IDEA_STR = "203.6682.115-EAP-SNAPSHOT"
 //val LAST_IDEA_STR = "2020.3.1"
 //val LAST_IDEA_STR = "2020.3.2"
-val LAST_IDEA_STR = "211.4961.33-EAP-SNAPSHOT"
+//val LAST_IDEA_STR = "211.4961.33-EAP-SNAPSHOT"
 //val LAST_IDEA_STR = "211.5538.20-EAP-SNAPSHOT"
+val LAST_IDEA_STR = "211.6085-EAP-CANDIDATE-SNAPSHOT"
 val LAST_COMMUNITY = IdeaVersion.Download(LAST_IDEA_STR, "IC")
 val LAST_ULTIMATE = IdeaVersion.Download(LAST_IDEA_STR, "IU")
 
