@@ -39,6 +39,7 @@ class ComposeOfficialSample2Action : UniAction(), DumbAware {
       val dialog = this
       var packed = false
       return ComposePanel().apply {
+        //preferredSize = Dimension(800, 600)
         setContent {
           ComposeSizeAdjustmentWrapper(
             window = dialog,
