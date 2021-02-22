@@ -38,7 +38,8 @@ val COMPILER_ARGS = listOf<String>()
 //or in gradle.properties: kotlin.js.compiler=ir
 
 // https://github.com/JetBrains/gradle-intellij-plugin
-val INTELLIJ_GRADLE = "0.6.5"
+//val INTELLIJ_GRADLE = "0.6.5"
+val INTELLIJ_GRADLE = "0.7.1"
 // https://maven.pkg.jetbrains.space/public/p/compose/dev/org/jetbrains/compose/org.jetbrains.compose.gradle.plugin/
 //val DESKTOP_COMPOSE = "0.0.0-vsync-build30"
 //val DESKTOP_COMPOSE = "0.3.0-build150"
