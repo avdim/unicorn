@@ -45,6 +45,7 @@ val INTELLIJ_GRADLE = "0.7.1"
 //val DESKTOP_COMPOSE = "0.3.0-build150"
 val DESKTOP_COMPOSE = "0.3.0-build152"
 //val DESKTOP_COMPOSE = "0.3.0-build154"
+//val DESKTOP_COMPOSE = "0.3.0"//todo
 
 val Project.UNI_BUILD_TYPE: BuildType get() =
   when (safeArgument("uniBuildType")) {
