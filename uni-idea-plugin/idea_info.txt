@@ -37,4 +37,5 @@ Alt click to breakpoint
 
 Alt+Shift+C Recent changes
 
-Quick Evaluate Expression Ctrl+Alt+F8
+In Debugger "Quick Evaluate Expression" Ctrl+Alt+F8 (or Alt + mouse)
+
