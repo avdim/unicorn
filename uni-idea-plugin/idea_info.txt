@@ -36,3 +36,5 @@ Shift click to breakpoint
 Alt click to breakpoint
 
 Alt+Shift+C Recent changes
+
+Quick Evaluate Expression Ctrl+Alt+F8
