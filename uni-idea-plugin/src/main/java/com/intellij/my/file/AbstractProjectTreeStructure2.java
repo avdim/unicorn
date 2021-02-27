@@ -28,7 +28,7 @@ public abstract class AbstractProjectTreeStructure2 extends AbstractTreeStructur
   }*/
 
   @Override
-  public Object @NotNull [] getChildElements(@NotNull Object element) {
+  public Object /*@NotNull*/ [] getChildElements(@NotNull Object element) {
     if (!(element instanceof AbstractTreeNod2)) {
       Uni.getLog().error("!(element instanceof AbstractTreeNod2)");
     }

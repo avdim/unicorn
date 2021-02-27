@@ -14,7 +14,7 @@ sealed class BuildType {
 
   }
 
-  object UseLocal : BuildType() {
+  class UseLocal(val path: String) : BuildType() {
 
   }
 

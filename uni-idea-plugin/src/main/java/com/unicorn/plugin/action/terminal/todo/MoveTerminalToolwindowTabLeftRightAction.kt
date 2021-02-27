@@ -32,7 +32,7 @@ open class MoveTerminalToolwindowTabLeftRightAction(private val moveLeft: Boolea
       TerminalTabCloseListener.executeContentOperationSilently(otherContent) {
         manager.removeContent(otherContent, false, false, false).doWhenDone {
           manager.addContent(otherContent, ind)
-          TerminalTabCloseListener(otherContent, project, Uni)
+          TerminalTabCloseListener(otherContent, project/*, Uni*/)
         }
       }
     }

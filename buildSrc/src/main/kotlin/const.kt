@@ -39,7 +39,7 @@ val COMPILER_ARGS = listOf<String>()
 
 // https://github.com/JetBrains/gradle-intellij-plugin
 //val INTELLIJ_GRADLE = "0.6.5"
-val INTELLIJ_GRADLE = "0.7.1"
+val INTELLIJ_GRADLE = "0.7.2"
 // https://maven.pkg.jetbrains.space/public/p/compose/dev/org/jetbrains/compose/org.jetbrains.compose.gradle.plugin/
 //val DESKTOP_COMPOSE = "0.0.0-vsync-build30"
 //val DESKTOP_COMPOSE = "0.3.0-build150"
@@ -47,22 +47,38 @@ val DESKTOP_COMPOSE = "0.3.0-build152"
 //val DESKTOP_COMPOSE = "0.3.0-build154"
 //val DESKTOP_COMPOSE = "0.3.0"//todo
 
+val as4_1_macos = "/Users/dim/Library/Application Support/JetBrains/Toolbox/apps/AndroidStudio/ch-2/201.6823847/Android Studio.app/Contents"
+val as4_2_linux = "/home/dim/Desktop/programs/android-studio-4.2/2020.3.1.8"
+
 val Project.UNI_BUILD_TYPE: BuildType get() =
   when (safeArgument("uniBuildType")) {
     "release" -> BuildType.Release
+    "as" -> if (isMacOS) {
+      BuildType.UseLocal(as4_1_macos)
+    } else {
+      BuildType.UseLocal(as4_2_linux)
+    }
     "integration-test" -> BuildType.IntegrationTest
     else -> BuildType.Debug
   }
 
-val Project.myIdeaSandboxDir:String get() = when (UNI_BUILD_TYPE) {
-    BuildType.Release, BuildType.Debug -> {
-      //HOME_DIR.resolve("Desktop/uni_release_system").absolutePath
-      //tmpDir()//"/tmp/idea_sandbox"
-      val file = projectDir.resolve(".idea_system_${IDEA_VERSION.postfixName}")
-      file.mkdirs()
-      file.absolutePath
+val Project.myIdeaSandboxDir: String
+  get() = UNI_BUILD_TYPE.let { buildType ->
+    when (buildType) {
+      BuildType.Release, BuildType.Debug -> {
+        //HOME_DIR.resolve("Desktop/uni_release_system").absolutePath
+        //tmpDir()//"/tmp/idea_sandbox"
+        val file = projectDir.resolve(".idea_system_${IDEA_VERSION.postfixName}")
+        file.mkdirs()
+        file.absolutePath
+      }
+      is BuildType.UseLocal -> {
+        val file = projectDir.resolve(".idea_system_local_${buildType.path.hashCode()}")
+        file.mkdirs()
+        file.absolutePath
+      }
+      BuildType.IntegrationTest -> tmpDir()
     }
-    else -> tmpDir()
   }
 
 val UNI_VERSION = "0.13.0"
@@ -82,8 +98,8 @@ val LAST_IDEA_STR = "211.6222.4-EAP-SNAPSHOT"
 val LAST_COMMUNITY = IdeaVersion.Download(LAST_IDEA_STR, "IC")
 val LAST_ULTIMATE = IdeaVersion.Download(LAST_IDEA_STR, "IU")
 
-val Project.IDEA_VERSION: IdeaVersion get() =
-  when (UNI_BUILD_TYPE) {
+val Project.IDEA_VERSION: IdeaVersion get() = UNI_BUILD_TYPE.let {buildType->
+  when (buildType) {
     is BuildType.Debug -> {
 //      IdeaVersion.Download("2020.3", "IU")
       LAST_COMMUNITY
@@ -94,21 +110,13 @@ val Project.IDEA_VERSION: IdeaVersion get() =
       LAST_ULTIMATE
     }
     is BuildType.IntegrationTest -> {
-//      IdeaVersion.Download("203.4818-EAP-CANDIDATE-SNAPSHOT")//jvm8 stable integration test
-//      IdeaVersion.Community("203.5251-EAP-CANDIDATE-SNAPSHOT")//jvm11
-//      IdeaVersion.Community("203.5600.34-EAP-SNAPSHOT")//jvm11
-//      IdeaVersion.Community("203.5784.10-EAP-SNAPSHOT")
       LAST_COMMUNITY
     }
     is BuildType.UseLocal -> {
-      if(isMacOS) {
-//        IdeaVersion.Local("/Users/dim/Library/Application Support/JetBrains/Toolbox/apps/AndroidStudio/ch-1/202.6863838/Android Studio 4.2 Preview.app/Contents")
-        IdeaVersion.Local("/Users/dim/Library/Application Support/JetBrains/Toolbox/apps/IDEA-U/ch-2/203.5784.10/IntelliJ IDEA 2020.3 EAP.app/Contents")
-      } else {
-        LAST_COMMUNITY
-      }
+      IdeaVersion.Local(buildType.path)
     }
   }
+}
 
 fun Project.safeArgument(key: String): String? =
   if (hasProperty(key)) {

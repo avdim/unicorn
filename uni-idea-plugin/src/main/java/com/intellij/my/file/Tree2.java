@@ -650,8 +650,8 @@ public abstract class Tree2 extends JTree implements ComponentWithEmptyText, Com
   }
 
   @Override
-  public void putInfo(@NotNull Map<? super String, ? super String> info) {
-//  public void putInfo(@NotNull Map<String, String> info) {
+//  public void putInfo(@NotNull Map<? super String, ? super String> info) {
+  public void putInfo(@NotNull Map<String, String> info) {
     TreePath[] selection = getSelectionPaths();
     if (selection == null) return;
 

@@ -77,9 +77,7 @@ intellij {
   val selfIdea="/home/dim/Desktop/github/JetBrains/intellij-community/out/deploy/dist"
   val idea2020_2 = "/home/dim/Desktop/programs/idea2020.2/2020.2-beta/idea-IC-202.6250.13"
   val as4_0 = "/home/dim/Desktop/programs/android-studio-4.0"
-  val as4_1_macos = "/Users/dim/Library/Application Support/JetBrains/Toolbox/apps/AndroidStudio/ch-2/201.6823847/Android Studio.app/Contents"
-  val as4_2_linux = "/home/dim/Desktop/programs/android-studio-4.2/4.2-canary4"
-  //    alternativeIdePath = as4_2
+//  alternativeIdePath = as4_2
 
   val ideaVersion = IDEA_VERSION
   when (ideaVersion) {

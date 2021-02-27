@@ -115,7 +115,7 @@ public class PsiImplementationViewSession2 implements ImplementationViewSession 
   public void dispose() {
   }
 
-  static PsiElement @NotNull [] filterElements(final PsiElement @NotNull [] targetElements) {
+  static PsiElement /*@NotNull*/ [] filterElements(final PsiElement /*@NotNull*/ [] targetElements) {
     final Set<PsiElement> unique = new LinkedHashSet<>(Arrays.asList(targetElements));
     for (final PsiElement elt : targetElements) {
       ApplicationManager.getApplication().runReadAction(() -> {
@@ -160,13 +160,13 @@ public class PsiImplementationViewSession2 implements ImplementationViewSession 
     };
   }
 
-  static PsiElement @NotNull [] getSelfAndImplementations(Editor editor,
+  static PsiElement /*@NotNull*/ [] getSelfAndImplementations(Editor editor,
                                                           @NotNull PsiElement element,
                                                           @NotNull ImplementationSearcher handler) {
     return getSelfAndImplementations(editor, element, handler, !(element instanceof PomTargetPsiElement));
   }
 
-  public static PsiElement @NotNull [] getSelfAndImplementations(Editor editor,
+  public static PsiElement /*@NotNull*/ [] getSelfAndImplementations(Editor editor,
                                                                  @NotNull PsiElement element,
                                                                  @NotNull ImplementationSearcher handler,
                                                                  final boolean includeSelfAlways) {
