@@ -8,17 +8,20 @@ import kotlin.test.assertEquals
 
 class TestAes {
 
-
+  fun helperFull(value: String, key: String, encryptedCheck: Base64Str? = null) {
+    val encrypted = value.encryptToBase64(key)
+    println("value: $value")
+    println("encrypted: $encrypted")
+    if (encryptedCheck != null) {
+      assertEquals(encryptedCheck, encrypted)
+    }
+    val decrypted = encrypted.decrypt(key)
+    assertEquals(value, decrypted)
+  }
 
   @Test
   fun testSimpleEncryptDecrypt() {
-    val initStr = "s"
-    val key = "k"
-    val encrypted = initStr.encryptToBase64(key)
-    assertEquals(Base64Str("l1pqAB0Dj4ekZKUImsGKgA=="), encrypted)
-    val decrypted = encrypted.decrypt(key)
-    println("encrypted: $encrypted")
-    println("decrypted: $decrypted")
-    assertEquals(initStr, decrypted)
+    helperFull("s", "k", Base64Str("l1pqAB0Dj4ekZKUImsGKgA=="))
   }
+
 }
