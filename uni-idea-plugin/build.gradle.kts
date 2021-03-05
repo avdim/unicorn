@@ -66,6 +66,7 @@ dependencies {
   implementation("org.jetbrains.kotlinx:kotlinx-coroutines-swing:$COROUTINE_VERSION")
   implementation(project(":share-plugin"))
   implementation(project(":repo"))
+  implementation(project(":aes"))
   implementation(compose.desktop.currentOs)
 //  implementation(compose.desktop.all)//todo linux
   testImplementation("junit:junit:4.12")

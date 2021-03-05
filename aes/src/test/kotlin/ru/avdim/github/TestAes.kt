@@ -1,15 +1,15 @@
 package ru.avdim.github
 
 import aes.Base64Str
-import aes.decrypt
-import aes.encryptToBase64
+import aes.aesDecrypt
+import aes.aesEncryptToBase64
 import kotlin.test.Test
 import kotlin.test.assertEquals
 
 class TestAes {
 
   fun helper(value: String, key: String, encryptedCheck: Base64Str? = null) {
-    val encrypted = value.encryptToBase64(key)
+    val encrypted = value.aesEncryptToBase64(key)
     println("--------------------------")
     println("value: $value")
     println("encrypted: $encrypted")
@@ -17,7 +17,7 @@ class TestAes {
     if (encryptedCheck != null) {
       assertEquals(encryptedCheck, encrypted)
     }
-    val decrypted = encrypted.decrypt(key)
+    val decrypted = encrypted.aesDecrypt(key)
     assertEquals(value, decrypted)
   }
 
