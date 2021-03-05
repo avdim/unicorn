@@ -32,4 +32,8 @@ fun String.encryptToBase64(key: String): Base64Str =
 fun Base64Str.decrypt(key:String):String=
   AesWrapper.decryptFromBase64(key, this.str)
 
-data class Base64Str(val str:String)
+data class Base64Str(val str:String) {
+  override fun toString(): String {
+    return """Base64Str("$str")"""
+  }
+}
