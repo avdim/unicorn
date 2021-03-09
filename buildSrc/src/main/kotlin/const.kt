@@ -48,13 +48,14 @@ val DESKTOP_COMPOSE = "0.3.0-build152"
 //val DESKTOP_COMPOSE = "0.3.0"//todo
 
 val as4_1_macos = "/Users/dim/Library/Application Support/JetBrains/Toolbox/apps/AndroidStudio/ch-2/201.6823847/Android Studio.app/Contents"
+val as4_20202_3_mac = "/Users/dim/Library/Application Support/JetBrains/Toolbox/apps/AndroidStudio/ch-0/203.7185775/Android Studio Preview.app/Contents"
 val as4_2_linux = "/home/dim/Desktop/programs/android-studio-4.2/2020.3.1.8"
 
 val Project.UNI_BUILD_TYPE: BuildType get() =
   when (safeArgument("uniBuildType")) {
     "release" -> BuildType.Release
     "as" -> if (isMacOS) {
-      BuildType.UseLocal(as4_1_macos)
+      BuildType.UseLocal(as4_20202_3_mac)
     } else {
       BuildType.UseLocal(as4_2_linux)
     }
