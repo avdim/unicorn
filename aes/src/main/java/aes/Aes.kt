@@ -34,7 +34,7 @@ class Aes {
         val plainBlocks: List<ByteArray> = encryptedBlocks.map { decrypt16Bytes(it, keyBytes) }
         val sizeAndPlainWithTail: ByteArray = plainBlocks.join()
         val sizeBytes: ByteArray = sizeAndPlainWithTail.sliceArray(0..3)
-        val size = sizeBytes.byteArray4toInt()
+        val size: Int = sizeBytes.byteArray4toInt()
         val plain = sizeAndPlainWithTail.sliceArray(4 until (4 + size))
         return plain
     }
