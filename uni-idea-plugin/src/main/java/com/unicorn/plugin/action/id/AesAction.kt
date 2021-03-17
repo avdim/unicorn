@@ -22,6 +22,7 @@ class AesAction : UniAction(), DumbAware {
     val decryptMe: Base64Str = Base64Str(""),
     val secretValue: String = "",
     val secretKey: String = "",
+    val secretKeyCheck: String = "",
     val encryptedResult: Base64Str = Base64Str("")
   )
 
@@ -29,6 +30,7 @@ class AesAction : UniAction(), DumbAware {
     class SetDecryptMe(val str: String) : Action()
     class SetSecretValue(val str: String) : Action()
     class SetSecretKey(val str: String) : Action()
+    class SetSecretKeyCheck(val str: String) : Action()
     object DoDecrypt : Action()
     object DoEncrypt : Action()
     object ChangeHidden : Action()
@@ -52,6 +54,11 @@ class AesAction : UniAction(), DumbAware {
             secretKey = a.str
           )
         }
+        is Action.SetSecretKeyCheck -> {
+          s.copy(
+            secretKeyCheck = a.str
+          )
+        }
         is Action.DoDecrypt -> {
           s.copy(
             secretValue = s.decryptMe.aesDecrypt(s.secretKey)
@@ -59,7 +66,7 @@ class AesAction : UniAction(), DumbAware {
         }
         is Action.DoEncrypt -> {
           s.copy(
-            encryptedResult = s.secretValue.aesEncryptToBase64(s.secretKey)
+            encryptedResult = if (s.secretKey == s.secretKeyCheck) s.secretValue.aesEncryptToBase64(s.secretKey) else Base64Str("secretKey no checked")
           )
         }
         is Action.ChangeHidden -> {
@@ -78,6 +85,12 @@ class AesAction : UniAction(), DumbAware {
           label("secretKey:")
           myTextField(s.secretKey, s.hidden) {
             store.send(Action.SetSecretKey(it))
+          }
+        }
+        row {
+          label("check secretKey:")
+          myTextField(s.secretKeyCheck, s.hidden) {
+            store.send(Action.SetSecretKeyCheck(it))
           }
         }
         row {
