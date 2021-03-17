@@ -55,4 +55,20 @@ class TestAes {
     """.trimIndent(), "normal key",  Base64Str("73+XsYn4roOWJv+ZyWVKRA=="))
   }
 
+  @Test
+  fun testFastlaneJson() {
+    // fake data (not secure)
+    helper("""
+      {
+        "key_id": "ASDF445345DF45F",
+        "issuer_id": "asd34324sdf-34sdf43-sdfsdf45435-45sdf3-asfdw453sdf34sdf",
+        "key": "-----BEGIN FAKE KEY-----\nASD34\ncd/DEFDF34/WDFF3\ntDF445DF+c34DFDF++SDF/Go\nDF%d/2OP\n-----END FAKE KEY-----",
+        "duration": 1200,
+        "in_house": false
+      }      
+    """.trimIndent(), "normal key",
+      Base64Str("i/esf9gHm3GuNgNjmQTWs9OEXN3R3oQy2YlR/JtE9wjCCd51OWJ1cP13pPoJ8OY2U1ld2rrNa/9DHAMKgrzpy/SXQT7zEcFaWx1UdwD31osOSYjqEtB6I5aQA4r7G2chq4aSKaH7b2qHZIyjH6XtoCokCt3nOULM21tqyoUuUKxcJpBOkkfZCm/TAK/w4CmffZxvWyCzxgWqXTbXpb+6Sdgr6Zxzx4z3ma9s7KWcVfW5CdMNZVU+BIKw9hXGILPq7Vn1H5m4o/8dN73LJAjlQLHcpAjTehrLD5tatkCEOo2i/iLHMxAbyg5AHYKV4kvnyHOrGTMhkC+vnNG+lkcIOYeGLyxnYQnYxAVJ7C7/ZjsmckGGwE26PZd91em/PQMi")
+    )
+  }
+
 }

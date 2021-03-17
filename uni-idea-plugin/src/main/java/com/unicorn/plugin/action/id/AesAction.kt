@@ -75,27 +75,27 @@ class AesAction : UniAction(), DumbAware {
           label("AES")
         }
         row {
-          label("secretKey")
+          label("secretKey:")
           myTextField(s.secretKey, s.hidden) {
             store.send(Action.SetSecretKey(it))
           }
         }
         row {
-          label("decryptMe")
-          myTextField(s.decryptMe.str) {
-            store.send(Action.SetDecryptMe(it))
-          }
           button("decrypt") {
             store.send(Action.DoDecrypt)
           }
+          label("decryptMe:")
+          myTextField(s.decryptMe.str) {
+            store.send(Action.SetDecryptMe(it))
+          }
         }
         row {
+          button("encrypt") {
+            store.send(Action.DoEncrypt)
+          }
           label("secret:")
           myTextArea(s.secretValue, s.hidden) {
             store.send(Action.SetSecretValue(it))
-          }
-          button("encrypt") {
-            store.send(Action.DoEncrypt)
           }
         }
         row {
