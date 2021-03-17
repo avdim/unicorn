@@ -8,6 +8,7 @@ import com.intellij.openapi.project.DumbAware
 import com.intellij.ui.components.JBCheckBox
 import com.unicorn.Uni
 import com.unicorn.plugin.ui.render.myCheckBox
+import com.unicorn.plugin.ui.render.myTextArea
 import com.unicorn.plugin.ui.render.myTextField
 import com.unicorn.plugin.ui.render.stateFlowView
 import com.unicorn.plugin.ui.showPanelDialog
@@ -90,7 +91,7 @@ class AesAction : UniAction(), DumbAware {
         }
         row {
           label("secret:")
-          myTextField(s.secretValue, s.hidden) {
+          myTextArea(s.secretValue, s.hidden) {
             store.send(Action.SetSecretValue(it))
           }
           button("encrypt") {

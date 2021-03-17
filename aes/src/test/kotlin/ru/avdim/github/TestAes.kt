@@ -47,4 +47,12 @@ class TestAes {
     )
   }
 
+  @Test
+  fun testMultiline() {
+    helper("""
+      1
+      2
+    """.trimIndent(), "normal key",  Base64Str("73+XsYn4roOWJv+ZyWVKRA=="))
+  }
+
 }
