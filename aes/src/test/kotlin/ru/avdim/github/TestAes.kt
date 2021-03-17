@@ -71,4 +71,19 @@ class TestAes {
     )
   }
 
+  @Test
+  fun testFastlaneBadJson() {
+    // fake data (not secure)
+    helper("""
+        {
+          "issuer_id": "asd34324sdf-34sdf43-sdfsdf45435-45sdf3-asfdw453sdf34sdf",
+          "key": "-----",
+          "duration": 1200,
+          "in_house": false
+        }
+    """.trimIndent(), "normal key",
+      Base64Str("todo")
+    )
+  }
+
 }
