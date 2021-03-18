@@ -84,6 +84,7 @@ object Actions {
               ActionData("com.unicorn.plugin.action.id.ComposeOfficialSample", ComposeOfficialSampleAction()),
               ActionData("com.unicorn.plugin.action.id.ComposeOfficialSample2", ComposeOfficialSample2Action()),
               ActionData("com.unicorn.plugin.action.id.ComposePanelAction", ComposePanelAction()),
+              ActionData("com.unicorn.plugin.action.id.ComposePanelAction", CloneAction()),
             )
           )
         )
