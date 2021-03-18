@@ -19,6 +19,7 @@ plugins {
 idea {
   module {
     excludeDirs = excludeDirs + listOf(file("${project.projectDir}/build/libs"))
+    excludeDirs = excludeDirs + listOf(file("${project.projectDir}/.exclude"))
   }
 }
 

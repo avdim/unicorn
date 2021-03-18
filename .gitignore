@@ -20,5 +20,6 @@ local.properties
 Thumbs.db
 
 temp_id_rsa
+.exclude
 .idea_system**
 .system**

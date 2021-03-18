@@ -69,12 +69,12 @@ val Project.myIdeaSandboxDir: String
       BuildType.Release, BuildType.Debug -> {
         //HOME_DIR.resolve("Desktop/uni_release_system").absolutePath
         //tmpDir()//"/tmp/idea_sandbox"
-        val file = projectDir.resolve(".idea_system_${IDEA_VERSION.postfixName}")
+        val file = projectDir.resolve(".exclude/.idea_system_${IDEA_VERSION.postfixName}")
         file.mkdirs()
         file.absolutePath
       }
       is BuildType.UseLocal -> {
-        val file = projectDir.resolve(".idea_system_local_${buildType.path.hashCode()}")
+        val file = projectDir.resolve(".exclude/.idea_system_local_${buildType.path.hashCode()}")
         file.mkdirs()
         file.absolutePath
       }
