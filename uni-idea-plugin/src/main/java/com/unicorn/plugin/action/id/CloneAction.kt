@@ -24,29 +24,12 @@ import java.nio.file.Paths
 class CloneAction : UniAction(), DumbAware {
 
   override fun actionPerformed(event: AnActionEvent) {
-    if (false) {
-      val project: Project = Uni.todoDefaultProject//event.getRequiredData<Project>(CommonDataKeys.PROJECT)
-      val checkoutListener = ProjectLevelVcsManager.getInstance(project).compositeCheckoutListener
-      val dialog: VcsCloneDialog = VcsCloneDialog.Builder(project).forVcs(GitCheckoutProvider::class.java)
+    val project: Project = Uni.todoDefaultProject//event.getRequiredData<Project>(CommonDataKeys.PROJECT)
+    val checkoutListener = ProjectLevelVcsManager.getInstance(project).compositeCheckoutListener
+    val dialog: VcsCloneDialog = VcsCloneDialog.Builder(project).forVcs(GitCheckoutProvider::class.java)
 
-      if (dialog.showAndGet()) {
-        dialog.doClone(checkoutListener)
-      }
-    } else {
-      doClone2(
-        repoUrl = "https://github.com/avdim/save.git",
-        dirStr = "/home/dim/Desktop/github2/save",//todo path
-        Uni.todoDefaultProject,
-        object : CheckoutProvider.Listener {
-          override fun directoryCheckedOut(directory: File?, vcs: VcsKey?) {
-            Uni.log.info { "directoryCheckedOut: $directory" }
-          }
-
-          override fun checkoutCompleted() {
-
-          }
-        }
-      )
+    if (dialog.showAndGet()) {
+      dialog.doClone(checkoutListener)
     }
   }
 
@@ -54,16 +37,17 @@ class CloneAction : UniAction(), DumbAware {
 
 fun doClone2(
   repoUrl: String,
-  dirStr: String,
-  project1: Project,
-  checkoutListener: CheckoutProvider.Listener
+  dir:File,
+  project1: Project = Uni.todoDefaultProject,
+  onComplete:()->Unit
 ) {
-  val parent: Path = Paths.get(dirStr).toAbsolutePath().parent
-  if (!parent.toFile().exists()) {
-    Files.createDirectories(parent)
-  }
+//  val parent: Path = Paths.get(dirStr).toAbsolutePath().parent
+//  Files.createDirectories(parent)
 
-  val destinationParent: VirtualFile? = parent.toFile().toVirtualFile()
+  val parent = dir.parentFile
+  parent.mkdirs()
+
+  val destinationParent: VirtualFile? = parent.toVirtualFile()
   if (destinationParent == null) {
     //LOG.error("Clone Failed. Destination doesn't exist")
     GithubNotifications.showError(
@@ -74,10 +58,19 @@ fun doClone2(
     )
     return
   }
-  val directoryName = Paths.get(dirStr).fileName.toString()
-  val parentDirectory = parent.toAbsolutePath().toString()
+  val directoryName = dir.name //Paths.get(dirStr).fileName.toString()
+  val parentDirectory = parent.absolutePath.toString()
 
-  GitCheckoutProvider.clone(project1, Git.getInstance(), checkoutListener, destinationParent, repoUrl, directoryName, parentDirectory)
+  GitCheckoutProvider.clone(project1, Git.getInstance(),
+    object : CheckoutProvider.Listener {
+      override fun directoryCheckedOut(directory: File?, vcs: VcsKey?) {
+
+      }
+      override fun checkoutCompleted() {
+        onComplete()
+      }
+    },
+    destinationParent, repoUrl, directoryName, parentDirectory)
 }
 
 fun File.toVirtualFile(lfs: LocalFileSystem = LocalFileSystem.getInstance()): VirtualFile? =
