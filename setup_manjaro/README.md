@@ -5,7 +5,8 @@
 - Window Manager  
 ![img.png](window_manager.png)
 ![img.png](windows_manager_2.png)
-- Keyboard
+- Keyboard  
+xfce4-popup-whiskermenu [Win Key]  
 ![img.png](keyboard1.png)
 ![img.png](keyboard2.png)
 - Panel  
