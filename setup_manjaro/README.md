@@ -1,7 +1,9 @@
 ## Manjaro XFCE First setup
-- software: upddate, reboot, chromium, idea community
+- software: update, reboot
+- chromium (setup no password, reopen previous)  
+- idea community
 - TODO kernel
-- archlinux-java set java-11-openjdk  
+- sudo archlinux-java set java-11-openjdk  
 - Mouse and Touchpad -> Select Device Touchpad, checkbox Reverse scroll direction
 - Mouse and Touchpad-> Select Device Touchpad, and tab Touchpad. checkbox "Tab touchpad to click" true
 - Window Manager  
