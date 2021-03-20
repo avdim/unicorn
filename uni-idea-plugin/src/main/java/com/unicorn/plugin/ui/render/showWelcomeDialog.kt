@@ -146,11 +146,8 @@ private fun calcStateFromFileSystem(): WelcomeDialogState {
     RepoData("avdim", "save"),
     RepoData("avdim", "unicorn"),
     RepoData("avdim", "aicup2020"),
-    RepoData("avdim", "kotlin-node-js"),
     RepoData("avdim", "github-script"),
-    RepoData("tutu", "js-npm-migrate"),
     RepoData("tutu", "android-core"),
-    RepoData("ilgonmic", "kotlin-ts"),
     RepoData("JetBrains", "intellij-community")
   )
   return WelcomeDialogState(
