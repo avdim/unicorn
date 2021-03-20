@@ -18,6 +18,11 @@ xfce4-popup-whiskermenu [Win Key]
 - Power Manager   
 - Docker  
   https://manjaro.site/how-to-install-docker-on-manjaro-18-0/  
-- download android_studio  
-https://developer.android.com/studio/archive  
-  
+- download and run android_studio  
+https://developer.android.com/studio/archive
+```bash
+archlinux-java status
+sudo archlinux-java set java-8-openjdk
+yes | ~/Android/Sdk/tools/bin/sdkmanager --licenses
+sudo archlinux-java set java-11-openjdk
+```
