@@ -16,3 +16,8 @@ xfce4-popup-whiskermenu [Win Key]
 - Panel  
 ![img.png](panel.png)
 - Power Manager   
+- Docker  
+  https://manjaro.site/how-to-install-docker-on-manjaro-18-0/  
+- download android_studio  
+https://developer.android.com/studio/archive  
+  
