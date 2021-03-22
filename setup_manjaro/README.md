@@ -1,4 +1,6 @@
 ## Manjaro XFCE First setup
+(install with swap file)
+
 - software: update, reboot
 - chromium (setup no password, reopen previous)
 - manjaro settings, kernel
@@ -28,4 +30,16 @@ archlinux-java status
 sudo archlinux-java set java-8-openjdk
 yes | ~/Android/Sdk/tools/bin/sdkmanager --licenses
 sudo archlinux-java set java-11-openjdk
+```
+- increase swapfile (https://www.linuxsecrets.com/manjaro-wiki/index.php%3Ftitle=Add_a_%252Fswapfile.html)
+```bash
+sudo swapoff /swapfile
+sudo rm -rf /swapfile
+sudo fallocate -l 35G /swapfile
+sudo chmod 600 /swapfile
+sudo mkswap /swapfile
+sudo swapon /swapfile
+# not need if change exists
+#Add the following line to your /etc/fstab
+#/swapfile none swap defaults 0 0
 ```
