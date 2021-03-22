@@ -145,6 +145,7 @@ private fun calcStateFromFileSystem(): WelcomeDialogState {
   val welcomeRepos = listOf(
     RepoData("avdim", "save"),
     RepoData("avdim", "unicorn"),
+    RepoData("avdim", "masspower"),
     RepoData("avdim", "aicup2020"),
     RepoData("avdim", "github-script"),
     RepoData("tutu", "android-core"),
