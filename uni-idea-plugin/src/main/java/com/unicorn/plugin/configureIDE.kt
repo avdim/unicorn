@@ -93,7 +93,7 @@ suspend fun configureIDE() {
   UISettings.instance.wideScreenSupport = true
   UISettings.instance.compactTreeIndents = true
 
-  EditorSettingsExternalizable.getInstance().isCamelWords = true //option Use "CamelHumps" words
+  EditorSettingsExternalizable.getInstance().isCamelWords = false //option Use "CamelHumps" words
   EditorSettingsExternalizable.getInstance().isMouseClickSelectionHonorsCamelWords = false
 
   EditorSettingsExternalizable.getInstance().setLineNumbersShown(false)
