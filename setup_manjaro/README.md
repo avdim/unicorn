@@ -1,6 +1,13 @@
 ## Manjaro XFCE First setup
 
 - software: update, reboot
+- Disable beep
+```bash
+sudo su
+echo "blacklist pcspkr" | tee /etc/modprobe.d/nobeep.conf
+rmmod pcspkr
+(https://wiki.archlinux.org/index.php/PC_speaker)
+```
 - chromium (setup no password, reopen previous)
 - manjaro settings, kernel
 - idea community
