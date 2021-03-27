@@ -8,7 +8,7 @@ echo "blacklist pcspkr" | tee /etc/modprobe.d/nobeep.conf
 rmmod pcspkr
 (https://wiki.archlinux.org/index.php/PC_speaker)
 ```
-- chromium (setup no password, reopen previous)
+- chromium (setup no password, reopen previous, default browser)
 - manjaro settings, kernel
 - idea community
 - sudo archlinux-java set java-11-openjdk  
