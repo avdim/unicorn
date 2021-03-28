@@ -14,7 +14,7 @@ rmmod pcspkr
 - sudo archlinux-java set java-11-openjdk  
 - Mouse and Touchpad -> Select Device Touchpad, checkbox Reverse scroll direction
 - Mouse and Touchpad-> Select Device Touchpad, and tab Touchpad. checkbox "Tab touchpad to click" true
-- Appearance
+- Appearance  
 ![img.png](appearance.png)
 - Window Manager  
 ![img.png](window_manager.png)  
@@ -49,5 +49,7 @@ sudo swapon /swapfile
 #Add the following line to your /etc/fstab
 #/swapfile none swap defaults 0 0
 ```
-- add to bashrc
+- add to bashrc  
+```bash
 source "/home/dim/Desktop/github/avdim/save/linux_install/_bashrc.sh"
+```
