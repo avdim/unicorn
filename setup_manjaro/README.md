@@ -10,6 +10,12 @@ rmmod pcspkr
 ```
 - chromium (setup no password, reopen previous, default browser)
 - manjaro settings, kernel
+- On Lenovo-Flex (or amd cpu graphics)
+```bash
+#https://www.linux.org/threads/failed-to-start-load-save-screen-backlight-brightness-of-amdgpu_bl1.31998/
+sudo nano /etc/mkinitcpio.conf
+#modify: MODULES=(amdgpu)
+```
 - idea community
 - sudo archlinux-java set java-11-openjdk  
 - Mouse and Touchpad -> Select Device Touchpad, checkbox Reverse scroll direction
