@@ -15,6 +15,7 @@ rmmod pcspkr
 #https://www.linux.org/threads/failed-to-start-load-save-screen-backlight-brightness-of-amdgpu_bl1.31998/
 sudo nano /etc/mkinitcpio.conf
 #modify: MODULES=(amdgpu)
+sudo mkinitcpio -P
 ```
 - idea community
 - sudo archlinux-java set java-11-openjdk  
