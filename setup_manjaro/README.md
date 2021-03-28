@@ -49,3 +49,5 @@ sudo swapon /swapfile
 #Add the following line to your /etc/fstab
 #/swapfile none swap defaults 0 0
 ```
+- add to bashrc
+source "/home/dim/Desktop/github/avdim/save/linux_install/_bashrc.sh"
