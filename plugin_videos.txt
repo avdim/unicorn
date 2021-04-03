@@ -1,0 +1,46 @@
+
+project.executeWriteCommand()запись файл https://youtu.be/ohMEwwmb_X8?t=3521
+Дмитрий Жемеров Project https://youtu.be/ohMEwwmb_X8?t=3358
+Дмитрий Жемеров DomManager.getInstance(.) https://youtu.be/ohMEwwmb_X8?t=2944
+Дмитрий Жемеров HotSwap Make Project https://youtu.be/ohMEwwmb_X8?t=1310
+Дмитрий Жемеров PSI Visitor https://youtu.be/ohMEwwmb_X8?t=1178
+Message.showErrorDialog(project?, msg, title)
+Дмитрий Жемеров. Что такое PSI https://youtu.be/3jVkNsWPJ20?t=3968
+KotlinDestinationFolderComboBox https://youtu.be/3jVkNsWPJ20?t=3287
+PackageNameReferenceEditorCombo https://youtu.be/3jVkNsWPJ20?t=2943
+создание диалога https://youtu.be/3jVkNsWPJ20?t=2326
+Дмитрий Жемеров startInWriteAction https://youtu.be/3jVkNsWPJ20?t=2045
+CodeInsightAction https://youtu.be/3jVkNsWPJ20?t=1910
+Extension point для новых модулей https://youtu.be/QKervhpICjk?t=3248
+AndroidLintInspectionBase https://youtu.be/QKervhpICjk?t=2457
+git плагин https://youtu.be/QKervhpICjk?t=2082
+модификация кода https://youtu.be/QKervhpICjk?t=1619
+Обход Kotlin файлов https://youtu.be/QKervhpICjk?t=1241
+KotlinGenerateActionBase https://youtu.be/QKervhpICjk?t=1082
+CodeInsightAction https://youtu.be/QKervhpICjk?t=976
+TODO https://github.com/JetBrains/intellij-sdk-code-samples
+<action> ...
+    <add-to-group group-id group-id="NewGroup" anchor="last"> группа нового файла
+</action>
+добавить Action к группе или в меню https://youtu.be/MSMI85JMIwE?t=2575
+find class https://youtu.be/MSMI85JMIwE?t=2288
+модификация файлов https://youtu.be/MSMI85JMIwE?t=2097
+Создание файлов и директорий PSIDirectory https://youtu.be/MSMI85JMIwE?t=1776
+DI https://youtu.be/MSMI85JMIwE?t=1396
+PsiReferenceContributor https://youtu.be/xoTrgA2zOJI?t=2579
+LineMarkerProvider https://youtu.be/xoTrgA2zOJI?t=2165
+AbstractBaseUastLocalInspectionTool https://youtu.be/xoTrgA2zOJI?t=1883
+https://github.com/jreznot/intellij-uber-injector
+Rename Refactoring https://youtu.be/QygpuGVPHJc?t=3210
+Find Usages https://youtu.be/QygpuGVPHJc?t=2942
+LocalQuickFixProvider https://youtu.be/QygpuGVPHJc?t=2598
+ReferenceInjector https://youtu.be/QygpuGVPHJc?t=2444
+ReferenceInjector browser https://youtu.be/QygpuGVPHJc?t=2089
+ReferenceInjector(extension point) https://youtu.be/QygpuGVPHJc?t=1880
+JSON Schema https://youtu.be/QygpuGVPHJc?t=1424
+<injectionConfig... https://youtu.be/QygpuGVPHJc?t=985
+BrowserUtil.browse(url)
+
+UAST - Universal AST для jvm языков
+Implicit Usage Provider, Line Marker Provider https://youtu.be/EEAiyRuaUXU?t=2403
+Испекция на assertEquals https://youtu.be/EEAiyRuaUXU?t=2133
