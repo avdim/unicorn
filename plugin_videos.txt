@@ -1,4 +1,5 @@
 
+плагин для миграции Allure https://youtu.be/Y6oryeeFZYc?t=1936
 Модификация Kotlin кода, KtPsiFactory https://youtu.be/OAwyIlE4_K8?t=4237
 project.executeWriteCommand()запись файл https://youtu.be/ohMEwwmb_X8?t=3521
 Дмитрий Жемеров Project https://youtu.be/ohMEwwmb_X8?t=3358
