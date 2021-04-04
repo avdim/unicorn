@@ -43,6 +43,7 @@ ReferenceInjector browser https://youtu.be/QygpuGVPHJc?t=2089
 ReferenceInjector(extension point) https://youtu.be/QygpuGVPHJc?t=1880
 JSON Schema https://youtu.be/QygpuGVPHJc?t=1424
 <injectionConfig... https://youtu.be/QygpuGVPHJc?t=985
+https://github.com/jreznot/intellij-uber-injector
 BrowserUtil.browse(url)
 
 UAST - Universal AST для jvm языков
