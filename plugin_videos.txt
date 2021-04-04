@@ -18,6 +18,10 @@ git плагин https://youtu.be/QKervhpICjk?t=2082
 Обход Kotlin файлов https://youtu.be/QKervhpICjk?t=1241
 KotlinGenerateActionBase https://youtu.be/QKervhpICjk?t=1082
 CodeInsightAction https://youtu.be/QKervhpICjk?t=976
+https://github.com/hhru/android-multimodule-plugin
+https://github.com/PStrelchenko/android-studio-new-module-plugin-sample
+https://github.com/PStrelchenko/androidbroadcast-assistedinject-plugin
+https://github.com/PStrelchenko/mobius-2020-page-object-plugin
 TODO https://github.com/JetBrains/intellij-sdk-code-samples
 <action> ...
     <add-to-group group-id group-id="NewGroup" anchor="last"> группа нового файла
