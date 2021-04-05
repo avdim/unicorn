@@ -1,4 +1,6 @@
 
+in idea.properties: idea.is.internal=true
+разбор PsiJavaFile https://youtu.be/j2tvi4GbOr4?t=885
 https://github.com/eroshenkoam/idea-plugin-sample/blob/master/src/main/java/io/eroshenkoam/idea/AllureMigrationAction.java
 плагин для миграции Allure https://youtu.be/Y6oryeeFZYc?t=1936
 Модификация Kotlin кода, KtPsiFactory https://youtu.be/OAwyIlE4_K8?t=4237
