@@ -148,7 +148,7 @@ private fun calcStateFromFileSystem(): WelcomeDialogState {
     RepoData("avdim", "masspower"),
     RepoData("avdim", "aicup2020"),
     RepoData("avdim", "github-script"),
-    RepoData("tutu", "android-core"),
+    RepoData("tutu-ru-mobile", "android-core"),
     RepoData("JetBrains", "intellij-community")
   )
   return WelcomeDialogState(
