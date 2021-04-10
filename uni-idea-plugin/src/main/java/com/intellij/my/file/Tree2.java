@@ -30,7 +30,7 @@ import java.util.Map;
 
 import static com.intellij.ide.dnd.SmoothAutoScroller.installDropTargetAsNecessary;
 
-public abstract class Tree2 extends JTree implements ComponentWithEmptyText, ComponentWithExpandableItems<Integer>, Queryable,
+public abstract class Tree2 extends JTree implements ComponentWithEmptyText, ComponentWithExpandableItems<Integer>,
                                            ComponentWithFileColors, TreePathBackgroundSupplier {
 
   private final StatusText myEmptyText;
@@ -646,32 +646,6 @@ public abstract class Tree2 extends JTree implements ComponentWithEmptyText, Com
     @Override
     public void focusLost(FocusEvent e) {
       focusChanges();
-    }
-  }
-
-  @Override
-//  public void putInfo(@NotNull Map<? super String, ? super String> info) {
-  public void putInfo(@NotNull Map<String, String> info) {
-    TreePath[] selection = getSelectionPaths();
-    if (selection == null) return;
-
-    StringBuilder nodesText = new StringBuilder();
-
-    for (TreePath eachPath : selection) {
-      Object eachNode = eachPath.getLastPathComponent();
-      Component c =
-        getCellRenderer().getTreeCellRendererComponent(this, eachNode, false, false, false, getRowForPath(eachPath), false);
-
-      if (c != null) {
-        if (nodesText.length() > 0) {
-          nodesText.append(";");
-        }
-        nodesText.append(c);
-      }
-    }
-
-    if (nodesText.length() > 0) {
-      info.put("selectedNodes", nodesText.toString());
     }
   }
 
