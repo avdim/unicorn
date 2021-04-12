@@ -50,7 +50,7 @@ repositories {
   mavenCentral()
   maven("https://www.jetbrains.com/intellij-repository/snapshots")
   maven("https://jetbrains.bintray.com/intellij-plugin-service")
-  maven("https://jetbrains.bintray.com/intellij-third-party-dependencies")
+  maven("https://cache-redirector.jetbrains.com/intellij-dependencies")
 //  maven { setUrl("https://oss.sonatype.org/content/repositories/snapshots/") }
 //  maven { setUrl("https://dl.bintray.com/jetbrains/intellij-plugin-service") }
 }
@@ -129,6 +129,7 @@ tasks.withType<org.jetbrains.intellij.tasks.RunIdeTask> {
   //https://bintray.com/jetbrains/intellij-jbr/download_file?file_path=jbrsdk-11_0_7-linux-x64-b989.1.tar.gz
   // https://cache-redirector.jetbrains.com/jetbrains.bintray.com/intellij-jbr/jbrsdk-11_0_7-linux-x64-b989.1.tar.gz
 //  jbrVersion("jbrsdk-11_0_7b989.1")
+//  jbrVersion("jbr_dcevm-11_0_10-linux-x64-b1341.35")
   systemProperties["ide.browser.jcef.enabled"] = true
 //  systemProperties["pdf.viewer.debug"] = true
   jvmArgs("-Xmx2048m", "-Xms128m")
