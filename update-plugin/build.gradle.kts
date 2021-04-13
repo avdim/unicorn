@@ -92,6 +92,7 @@ tasks.withType<org.jetbrains.intellij.tasks.PatchPluginXmlTask>() {
 tasks.withType<org.jetbrains.intellij.tasks.RunIdeTask> {
   systemProperties["ide.browser.jcef.enabled"] = true
   jvmArgs("-Xmx2000m", "-Xms128m")
+  autoReloadPlugins = true
 }
 
 tasks.withType<org.jetbrains.kotlin.gradle.tasks.KotlinCompile> {

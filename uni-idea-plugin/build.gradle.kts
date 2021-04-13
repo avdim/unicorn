@@ -133,6 +133,7 @@ tasks.withType<org.jetbrains.intellij.tasks.RunIdeTask> {
   systemProperties["ide.browser.jcef.enabled"] = true
 //  systemProperties["pdf.viewer.debug"] = true
   jvmArgs("-Xmx2048m", "-Xms128m")
+  autoReloadPlugins = true
 }
 
 tasks.withType<org.jetbrains.kotlin.gradle.tasks.KotlinCompile> {
