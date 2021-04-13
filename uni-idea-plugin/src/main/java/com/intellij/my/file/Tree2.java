@@ -220,19 +220,8 @@ public abstract class Tree2 extends JTree implements ComponentWithEmptyText, Com
     }
   }
 
-  protected boolean paintNodes() {
-    return false;
-  }
-
   @Override
   protected void paintComponent(Graphics g) {
-    if (paintNodes()) {
-      g.setColor(getBackground());
-      g.fillRect(0, 0, getWidth(), getHeight());
-
-      paintNodeContent(g);
-    }
-
     if (isFileColorsEnabled()) {
       g.setColor(getBackground());
       g.fillRect(0, 0, getWidth(), getHeight());
@@ -647,11 +636,6 @@ public abstract class Tree2 extends JTree implements ComponentWithEmptyText, Com
     public void focusLost(FocusEvent e) {
       focusChanges();
     }
-  }
-
-  @Override
-  public Dimension getPreferredSize() {
-    return super.getPreferredSize();
   }
 
   @Override
