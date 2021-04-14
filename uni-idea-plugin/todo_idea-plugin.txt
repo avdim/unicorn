@@ -43,3 +43,6 @@ JetPack Compose:
 /Users/dim/Desktop/github/joreilly/BikeShare
 
 find file in file manager
+
+check gradle wrapper md5 and paste own
+

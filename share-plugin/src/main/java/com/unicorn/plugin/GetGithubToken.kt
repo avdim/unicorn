@@ -16,6 +16,7 @@ import kotlinx.coroutines.MainScope
 import kotlinx.coroutines.launch
 
 val AUTH_TOKEN_URL = "https://tutu-ci.herokuapp.com/github_token_localhost"
+val GITHUB_LOCALHOST_CLIENT_ID = "decb926d870e0a6ca0d0" // tutu localhost
 
 @OptIn(EngineAPI::class)
 fun getGithubToken(
@@ -46,7 +47,7 @@ fun getGithubToken(
           val response: HttpResponse = client.request(
             url = Url(AUTH_TOKEN_URL).copy(
               parameters = parametersOf(
-                "client_id" to listOf(BuildConfig.GITHUB_CLIENT_ID),
+                "client_id" to listOf(GITHUB_LOCALHOST_CLIENT_ID),
                 "code" to listOf(githubAuthCode)
               )
             )
@@ -63,7 +64,7 @@ fun getGithubToken(
                 body = TextContent(
                   """
                     {
-                      "client_id": "${BuildConfig.GITHUB_CLIENT_ID}",
+                      "client_id": "${GITHUB_LOCALHOST_CLIENT_ID}",
                       "client_secret": ${throw Error("GITHUB_CLIENT_SECRET")},
                       "code": "$githubAuthCode"
                     }              
@@ -104,7 +105,7 @@ private fun authHref(tokenScope: String): String =
   Url("https://github.com/login/oauth/authorize/")
     .copy(
       parameters = parametersOf(
-        "client_id" to listOf(BuildConfig.GITHUB_CLIENT_ID),
+        "client_id" to listOf(GITHUB_LOCALHOST_CLIENT_ID),
         "scope" to listOf(tokenScope)
       )
     ).toString()
