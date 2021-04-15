@@ -7,14 +7,14 @@ import kotlinx.serialization.Serializable
 import kotlinx.serialization.decodeFromString
 
 @Serializable
-data class Release(
+class Release(
   val url: String,
   val html_url: String,
   val assets: List<ReleaseAsset>,
 )
 
 @Serializable
-data class ReleaseAsset(
+class ReleaseAsset(
   val browser_download_url: String
 )
 

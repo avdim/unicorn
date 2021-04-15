@@ -12,5 +12,3 @@ inline fun <reified T> Response<String>.fromJson(): Response<T> {
     jsonParser.decodeFromString(it)
   }
 }
-
-//public inline fun <reified T> StringFormat.decodeFromString(string: String): T =
