@@ -1,3 +1,4 @@
+import com.sample.WorkflowRunJob
 import kotlinx.datetime.Clock
 import kotlinx.datetime.TimeZone
 import kotlinx.datetime.toInstant
@@ -11,6 +12,7 @@ class TestParseTime {
   @Test
   fun testParseTime() {
     //https://github.com/tutu-ru-mobile/ios-core/runs/2352544389
+    // https://github.com/Kotlin/kotlinx-datetime
     val startedAt = "2021-04-15T12:03:27Z".toInstant()
     val completedAt = "2021-04-15T12:25:41Z".toInstant()
     val duration = completedAt - startedAt
