@@ -12,7 +12,8 @@ java {
 }
 
 application {
-  mainClassName = "org.sample.StarterKt"
+  mainClass.set("org.sample.StarterKt")
+//  mainClassName = "org.sample.StarterKt"
   applicationName = "repo"
 }
 
