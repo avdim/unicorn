@@ -46,6 +46,7 @@ repositories {
 
 dependencies {
   implementation(project(":lib-github"))
+  implementation("org.jetbrains.kotlinx:kotlinx-datetime:0.1.1")
   implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:$COROUTINE_VERSION")
   implementation("io.ktor:ktor-client-core:$KTOR_VERSION")
   implementation("io.ktor:ktor-client-apache:$KTOR_VERSION")
