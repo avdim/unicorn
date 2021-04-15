@@ -6,7 +6,7 @@ plugins {
 }
 
 gitHubToken {
-  scope = "repo gist workflow read"
+  scope = "repo gist workflow read user:email"
   secretAES = "gh_token_aes_secret_1"
   id = "uni-token-id-1"
   storeTokenAtLocalProperties()
@@ -45,7 +45,10 @@ repositories {
 }
 
 dependencies {
-
+  implementation(project(":lib-github"))
+  implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:$COROUTINE_VERSION")
+  implementation("io.ktor:ktor-client-core:$KTOR_VERSION")
+  implementation("io.ktor:ktor-client-apache:$KTOR_VERSION")
   testImplementation("org.jetbrains.kotlin:kotlin-test")
   testImplementation("org.jetbrains.kotlin:kotlin-test-junit")
 //  testImplementation("org.jetbrains.kotlinx:kotlinx-coroutines-test:$COROUTINES_VERSION")
