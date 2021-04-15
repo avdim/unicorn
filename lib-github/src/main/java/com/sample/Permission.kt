@@ -4,7 +4,7 @@ import kotlin.reflect.full.allSuperclasses
 
 interface Permission {
     interface Mail : Permission
-    interface Todo : Permission
+    interface Repo : Permission
 }
 
 inline fun <reified T, reified I> checkInterface() =
@@ -15,8 +15,8 @@ inline fun <reified T : Permission> scopes(): String {
     if (checkInterface<T, Permission.Mail>()) {
         result = result + "user:email"
     }
-    if (checkInterface<T, Permission.Todo>()) {
-        result = result + "todo"//todo
+    if (checkInterface<T, Permission.Repo>()) {
+        result = result + "repo"
     }
     return result.joinToString(",")
 }
