@@ -1,20 +1,10 @@
 plugins {
   kotlin("multiplatform") version KOTLIN_VERSION apply false
   kotlin("plugin.serialization") version KOTLIN_VERSION apply false
-  id("ru.tutu.github.token") version ("1.2.0")
-
 //  kotlin("multiplatform") version KOTLIN_VERSION apply false
 //  id("kotlin-dce-js") version KOTLIN_VERSION apply false
 //  id("kotlinx-serialization") version KOTLIN_VERSION apply false
 }
-
-gitHubToken {
-  scope = "repo gist workflow read"
-  secretAES = "gh_token_aes_secret_1"
-  id = "uni-token-id-1"
-  storeTokenAtLocalProperties()
-}
-val GH_TOKEN = gitHubToken.getToken(project)
 
 buildscript {
   repositories {

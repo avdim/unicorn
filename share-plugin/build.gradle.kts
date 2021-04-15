@@ -8,20 +8,12 @@ plugins {
   java
   kotlin("jvm")
   id("org.jetbrains.intellij") version INTELLIJ_GRADLE
-  id("com.github.kukuhyoniatmoko.buildconfigkotlin") version "1.0.5"
   idea
 }
 
 idea {
   module {
     excludeDirs = excludeDirs + listOf(file("${project.projectDir}/build/libs"))
-  }
-}
-
-buildConfigKotlin {
-  sourceSet("main") {
-    packageName = "com.unicorn.share"
-    buildConfig(name = "GITHUB_CLIENT_ID", value = getLocalProperty("GITHUB_CLIENT_ID"))
   }
 }
 

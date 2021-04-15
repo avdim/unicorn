@@ -1,7 +1,22 @@
 plugins {
-  java//delete?
   kotlin("jvm")
   application
+  id("ru.tutu.github.token") version ("1.2.0")
+  id("com.github.kukuhyoniatmoko.buildconfigkotlin") version "1.0.5"
+}
+
+gitHubToken {
+  scope = "repo gist workflow read"
+  secretAES = "gh_token_aes_secret_1"
+  id = "uni-token-id-1"
+  storeTokenAtLocalProperties()
+}
+
+buildConfigKotlin {
+  sourceSet("main") {
+    packageName = "org.sample.github"
+    buildConfig(name = "SECRET_GITHUB_TOKEN", value = gitHubToken.getToken(project))
+  }
 }
 
 java {
