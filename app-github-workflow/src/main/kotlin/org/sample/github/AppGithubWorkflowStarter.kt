@@ -24,29 +24,23 @@ suspend fun main() {
   val githubMail = client.getGithubMail(Token(BuildConfig.SECRET_GITHUB_TOKEN))
   println("githubMail: $githubMail")
 
-  val sec = coroutineScope {
-    val listOfDeferred = client.getGithubWorkflowRunsPagesUntil(Token(BuildConfig.SECRET_GITHUB_TOKEN), TUTU_ORGANIZATION, IOS_REPO) {
+  val sec =
+    client.getGithubWorkflowRunsPagesUntil(Token(BuildConfig.SECRET_GITHUB_TOKEN), TUTU_ORGANIZATION, IOS_REPO) {
 //    it.createdTime > LocalDateTime(2021, Month.MARCH, 29, 0, 0).toInstant(TimeZone.UTC)
       it.createdTime > LocalDateTime(2021, Month.APRIL, 15, 0, 0).toInstant(TimeZone.UTC)
-    }.map { run ->
-      val asyncDeferred = async {
-        client.getGithubWorkflowRunJobs(Token(BuildConfig.SECRET_GITHUB_TOKEN), TUTU_ORGANIZATION, IOS_REPO, run.id)
+    }.flatMapMerge { run ->
+      flow {
+        emit(
+          client.getGithubWorkflowRunJobs(Token(BuildConfig.SECRET_GITHUB_TOKEN), TUTU_ORGANIZATION, IOS_REPO, run.id)
+        )
       }
-//      println("make asyncDeferred")
-      asyncDeferred
-    }.fold(listOf()) { acc: List<Deferred<Response<WorkflowRunJobs>>>, value ->
-      acc.plus(value)
-    }
-    println("complete listOfDeferred")
-    listOfDeferred.awaitAll()
-      .mapNotNull {
-        if (it is Response.Success) it else null
-      }
-      .map {
-        it.data.calcDuration()
-      }
-      .sum().seconds
-  }
+    }.mapNotNull {
+      if (it is Response.Success) it else null
+    }.map {
+      it.data.calcDuration()
+    }.reduce { accumulator, value ->
+      accumulator + value
+    }.seconds
 
   println("sec: $sec")
   println("min: ${sec / 60}")
