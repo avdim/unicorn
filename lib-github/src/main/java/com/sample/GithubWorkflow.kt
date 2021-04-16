@@ -39,11 +39,11 @@ suspend fun HttpClient.getGithubWorkflowRunsPagesUntil(
     do {
       val currentData = getGithubWorkflowRuns(token, owner, repo, page, ELEMENTS_ON_PAGE)
       if (currentData is Response.Success) {
-        for (workflowRun in currentData.data.workflowRuns) {
+        currentData.data.workflowRuns.forEach { workflowRun ->
           if (lambda(workflowRun)) {
             emit(workflowRun)
           } else {
-            break
+            return@flow
           }
         }
       }
@@ -65,8 +65,8 @@ suspend fun HttpClient.getGithubWorkflowRuns(
       url = Url("https://api.github.com/repos/$owner/$repo/actions/runs")
         .copy(
           parameters = parametersOf(
-            "per_page" to listOf("100"),
-            "page" to listOf("0")//todo page
+            "per_page" to listOf(perPage.toString()),
+            "page" to listOf(page.toString())
           )
         )
     ) {
