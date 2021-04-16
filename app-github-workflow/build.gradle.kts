@@ -42,10 +42,12 @@ version = "1.0-SNAPSHOT"
 
 repositories {
   mavenCentral()
+  maven { setUrl("https://maven.pkg.jetbrains.space/public/p/kotlinx-html/maven") }
 }
 
 dependencies {
   implementation(project(":lib-github"))
+  implementation("org.jetbrains.kotlinx:kotlinx-html-jvm:0.7.2")
   implementation("org.jetbrains.kotlinx:kotlinx-datetime:0.1.1")
   implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:$COROUTINE_VERSION")
   implementation("io.ktor:ktor-client-core:$KTOR_VERSION")
