@@ -3,6 +3,9 @@ package com.sample
 import io.ktor.client.*
 import io.ktor.client.request.*
 import io.ktor.http.*
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.emitAll
+import kotlinx.coroutines.flow.flow
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 
@@ -19,10 +22,43 @@ class WorkflowRun(
   @SerialName("id")
   val id: Long,
   @SerialName("name")
-  val name: String
+  val name: String,
+  @SerialName("created_at")
+  val createdAt: String,
 )
 
-suspend fun HttpClient.getGithubWorkflowRuns(token: Token<Permission.Repo>, owner: String, repo: String): Response<WorkflowRuns> =
+suspend fun HttpClient.getGithubWorkflowRunsPagesUntil(
+  token: Token<Permission.Repo>,
+  owner: String,
+  repo: String,
+  lambda: (WorkflowRun) -> Boolean,
+): Flow<WorkflowRun> {
+  return flow {
+    val ELEMENTS_ON_PAGE = 100
+    var page = 0
+    do {
+      val currentData = getGithubWorkflowRuns(token, owner, repo, page, ELEMENTS_ON_PAGE)
+      if (currentData is Response.Success) {
+        for (workflowRun in currentData.data.workflowRuns) {
+          if (lambda(workflowRun)) {
+            emit(workflowRun)
+          } else {
+            break
+          }
+        }
+      }
+      page++
+    } while (currentData is Response.Success && page * ELEMENTS_ON_PAGE < currentData.data.totalCount)
+  }
+}
+
+suspend fun HttpClient.getGithubWorkflowRuns(
+  token: Token<Permission.Repo>,
+  owner: String,
+  repo: String,
+  page: Int = 0,
+  perPage: Int = 100,
+): Response<WorkflowRuns> =
   // https://docs.github.com/en/rest/reference/actions#workflow-runs
   tryStringRequest {
     request<String>(
@@ -30,7 +66,7 @@ suspend fun HttpClient.getGithubWorkflowRuns(token: Token<Permission.Repo>, owne
         .copy(
           parameters = parametersOf(
             "per_page" to listOf("100"),
-            "page" to listOf("0")
+            "page" to listOf("0")//todo page
           )
         )
     ) {

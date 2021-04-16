@@ -1,8 +1,12 @@
 package org.sample.github
 
+import com.sample.WorkflowRun
 import com.sample.WorkflowRunJob
 import com.sample.WorkflowRunJobs
+import kotlinx.datetime.LocalDateTime
+import kotlinx.datetime.TimeZone
 import kotlinx.datetime.toInstant
+import java.time.Month
 import kotlin.time.ExperimentalTime
 
 val THREE_HOURS = WrapDuration(3 * 60 * 60)
@@ -30,16 +34,11 @@ fun WorkflowRunJob.calcDuration(): WrapDuration {
   }
 }
 
-inline class WrapDuration(val seconds: Long)
-
 fun WorkflowRunJobs.calcDuration(): WrapDuration =
   jobs.map {
     it.calcDuration()
   }.sum()
 
-fun Collection<WrapDuration>.sum(): WrapDuration {
-  val sumSeconds = map {
-    it.seconds
-  }.reduce { acc, next -> acc + next }
-  return WrapDuration(sumSeconds)
-}
+val WorkflowRun.createdTime get() = createdAt.toInstant()
+val march29 = LocalDateTime(2021, Month.MARCH, 29, 0, 0).toInstant(TimeZone.UTC)
+fun WorkflowRun.isCreatedAfter29March() = createdTime > march29
