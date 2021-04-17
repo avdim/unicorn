@@ -1,4 +1,4 @@
-package com.sample
+package com.github
 
 import io.ktor.client.*
 import io.ktor.client.request.*

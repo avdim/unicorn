@@ -1,4 +1,4 @@
-package com.sample
+package com.github
 
 import kotlinx.serialization.decodeFromString
 import kotlinx.serialization.json.Json

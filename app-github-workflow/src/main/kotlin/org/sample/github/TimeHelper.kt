@@ -1,8 +1,8 @@
 package org.sample.github
 
-import com.sample.WorkflowRun
-import com.sample.WorkflowRunJob
-import com.sample.WorkflowRunJobs
+import com.github.WorkflowRun
+import com.github.WorkflowRunJob
+import com.github.WorkflowRunJobs
 import kotlinx.datetime.LocalDateTime
 import kotlinx.datetime.TimeZone
 import kotlinx.datetime.toInstant
@@ -12,7 +12,7 @@ import kotlin.time.ExperimentalTime
 val THREE_HOURS = WrapDuration(3 * 60 * 60)
 
 @OptIn(ExperimentalTime::class)
-fun WorkflowRunJob.calcDuration(): WrapDuration {
+fun WorkflowRunJob.billDuration(): WrapDuration {
   val a = startedAt
   val b = completedAt
   if (a != null && b != null) {
@@ -34,9 +34,9 @@ fun WorkflowRunJob.calcDuration(): WrapDuration {
   }
 }
 
-fun WorkflowRunJobs.calcDuration(): WrapDuration =
+fun WorkflowRunJobs.billDuration(): WrapDuration =
   jobs.map {
-    it.calcDuration()
+    it.billDuration()
   }.sum()
 
 val WorkflowRun.createdTime get() = createdAt.toInstant()

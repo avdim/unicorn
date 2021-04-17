@@ -1,4 +1,4 @@
-package com.sample
+package com.github
 
 import kotlin.reflect.full.allSuperclasses
 

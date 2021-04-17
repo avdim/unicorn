@@ -1,4 +1,4 @@
-package com.sample
+package com.github
 
 import io.ktor.client.*
 
@@ -20,6 +20,13 @@ inline fun <A, B> Response<A>.mapIfSuccess(lambda: (A) -> B): Response<B> =
       this
     }
   }
+
+inline fun <T> Response<T>.ifError(lambda: (Response.Error) -> Unit): Response<T> {
+  if (this is Response.Error) {
+    lambda(this)
+  }
+  return this
+}
 
 inline fun HttpClient.tryStringRequest(lambda: HttpClient.() -> String): Response<String> =
   try {

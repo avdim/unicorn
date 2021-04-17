@@ -1,10 +1,9 @@
-package com.sample
+package com.github
 
 import io.ktor.client.*
 import io.ktor.client.request.*
 import io.ktor.http.*
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.emitAll
 import kotlinx.coroutines.flow.flow
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
@@ -25,6 +24,8 @@ class WorkflowRun(
   val name: String,
   @SerialName("created_at")
   val createdAt: String,
+  @SerialName("html_url")
+  val htmlUrl: String,
 )
 
 suspend fun HttpClient.getGithubWorkflowRunsPagesUntil(
@@ -122,3 +123,60 @@ suspend fun HttpClient.getGithubWorkflowRunJobs(
   }
     .fromJson<WorkflowRunJobs>()
 
+@Serializable
+data class WorkflowRunTiming(
+  @SerialName("billable")
+  val billable: Billable
+) {
+  @Serializable
+  data class Billable(
+    @SerialName("UBUNTU")
+    val ubuntu: TimingContainer? = null,
+    @SerialName("MACOS")
+    val macOS: TimingContainer? = null,
+    @SerialName("WINDOWS")
+    val windows: TimingContainer? = null,
+  ) {
+    @Serializable
+    data class TimingContainer(
+      @SerialName("total_ms")
+      val totalMs: Long,
+      @SerialName("jobs")
+      val jobs: Int
+    )
+  }
+}
+
+fun WorkflowRunTiming.Billable.TimingContainer?.orEmpty() =
+  this ?: WorkflowRunTiming.Billable.TimingContainer(0, 0)
+
+/**
+ * @param workflowId The ID of the workflow. You can also pass the workflow file name as a string.
+ */
+suspend fun HttpClient.getGithubWorkflowRunTiming(
+  token: Token<Permission.Repo>,
+  owner: String,
+  repo: String,
+  runId: Long
+): Response<WorkflowRunTiming> =
+  // https://docs.github.com/en/rest/reference/actions#get-workflow-run-usage
+  tryStringRequest {
+    request<String>(
+      url = Url("https://api.github.com/repos/$owner/$repo/actions/runs/$runId/timing")
+    ) {
+      method = HttpMethod.Get
+      header("Authorization", "bearer ${token.tokenString}")
+      header("Accept", "*/*")
+//        contentType(/**/)
+    }
+  }
+    .fromJson<WorkflowRunTiming>()
+    .ifError {
+      println("error $it")
+    }
+
+val WorkflowRunTiming.billMinutes
+  get(): Int {
+    val totalMs = billable.macOS.orEmpty().totalMs * 10 //todo + billable.windows.orEmpty().totalMs * 2 + billable.ubuntu.orEmpty().totalMs
+    return (totalMs / 1000 / 60).toInt()
+  }

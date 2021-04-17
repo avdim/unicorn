@@ -1,6 +1,6 @@
 package ru.avdim.github
 
-import com.sample.getGithubRepoReleases
+import com.github.getGithubRepoReleases
 import io.ktor.client.*
 import kotlinx.coroutines.runBlocking
 import org.junit.Test

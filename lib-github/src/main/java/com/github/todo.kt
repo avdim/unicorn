@@ -1,4 +1,4 @@
-package com.sample
+package com.github
 
 //todo Auto create github pages
 //https://docs.github.com/en/free-pro-team@latest/rest/reference/repos#create-a-github-pages-site

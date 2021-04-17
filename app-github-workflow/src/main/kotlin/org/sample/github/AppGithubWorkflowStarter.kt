@@ -1,6 +1,6 @@
 package org.sample.github
 
-import com.sample.*
+import com.github.*
 import io.ktor.client.*
 import io.ktor.client.engine.apache.*
 import kotlinx.coroutines.async
@@ -19,7 +19,7 @@ import kotlin.io.path.absolutePathString
 import kotlin.io.path.writeText
 
 const val TUTU_ORGANIZATION = "tutu-ru-mobile"
-val SINCE_TIME = LocalDateTime(2021, Month.MARCH, 29, 0, 0).toInstant(TimeZone.UTC)
+val SINCE_TIME = LocalDateTime(2021, Month.MARCH, 29, 13, 0).toInstant(TimeZone.UTC)
 
 enum class RepoType {
   IOS,
@@ -31,10 +31,8 @@ data class RepoWithType(
   val type: RepoType
 )
 
-class RepoWithJobs(
-  val jobs: List<WorkflowRunJob>,
-  val repoWithType: RepoWithType
-)
+data class TableData(val repoWithType: RepoWithType, val rows: List<TableRow>)
+data class TableRow(val timing:WorkflowRunTiming, val workflowRun: WorkflowRun)
 
 val REPOS = listOf(
   RepoWithType("ios-core", RepoType.IOS),
@@ -49,7 +47,6 @@ val REPOS = listOf(
 @OptIn(ExperimentalPathApi::class)
 suspend fun main() {
   println("hello AppGithubWorkflowStarter")
-  println("token: ${BuildConfig.SECRET_GITHUB_TOKEN}")
   val client = HttpClient(Apache)
 
   if (false) {
@@ -60,28 +57,27 @@ suspend fun main() {
   val allRepos = coroutineScope {
     REPOS.map { repoWithType ->
       async {
-        val jobs = client.getGithubWorkflowRunsPagesUntil(Token(BuildConfig.SECRET_GITHUB_TOKEN), TUTU_ORGANIZATION, repoWithType.repo) {
-          it.createdTime > SINCE_TIME
-        }.flatMapMerge { run ->
-          flow {
-            emit(
-              client.getGithubWorkflowRunJobs(Token(BuildConfig.SECRET_GITHUB_TOKEN), TUTU_ORGANIZATION, repoWithType.repo, run.id)
-            )
-          }
-        }.mapNotNull {
-          if (it is Response.Success) it else null
-        }.completeToList()
-          .flatMap {
-            it.data.jobs
-          }
-        RepoWithJobs(jobs, repoWithType)
+        TableData(
+          repoWithType = repoWithType,
+          rows = client.getGithubWorkflowRunsPagesUntil(Token(BuildConfig.SECRET_GITHUB_TOKEN), TUTU_ORGANIZATION, repoWithType.repo) {
+            it.createdTime > SINCE_TIME
+          }.flatMapMerge { run ->
+            flow {
+              emit(
+                client.getGithubWorkflowRunTiming(Token(BuildConfig.SECRET_GITHUB_TOKEN), TUTU_ORGANIZATION, repoWithType.repo, run.id)
+                  .mapIfSuccess {
+                    TableRow(it, run)
+                  }
+              )
+            }
+          }.mapNotNull { if (it is Response.Success) it else null }
+            .completeToList().map { it.data}
+        )
       }
     }.awaitAll()
   }
 
-  val totalDuration = allRepos.fold(WrapDuration(0)) { acc, value ->
-    acc + value.jobs.calcDuration()
-  }
+  val totalDuration = allRepos.sumBy { it.rows.billDuration() }
 
   val htmlFile = Files.createTempFile("github_time", ".html")
   println("file://${htmlFile.absolutePathString()}")
@@ -107,28 +103,31 @@ suspend fun main() {
               +"total duration ${totalDuration} since $SINCE_TIME"
             }
             allRepos.forEach { repo ->
+              +"time: ${repo.rows.billDuration()} in repo ${repo.repoWithType.repo}"
+              br {}
+            }
+            allRepos.forEach { repo ->
               br {}
               br {}
               h2 {
-                +"time: ${repo.jobs.calcDuration()} in repo ${repo.repoWithType.repo}"
+                +"time: ${repo.rows.billDuration()} in repo ${repo.repoWithType.repo}"
               }
               br {}
               table {
-                repo.jobs.forEach { job ->
-                  val sec = job.calcDuration().seconds
+                repo.rows.sortedByDescending {
+                  it.timing.billMinutes
+                }.forEach { row ->
+                  val mins = row.timing.billMinutes
                   tr {
                     td {
-                      +"$sec"
+                      +"$mins m"
                     }
                     td {
-                      +"${sec / 60 + 1} m"
+                      val create = row.workflowRun.createdAt
+                      +"$create"
                     }
                     td {
-                      val start = job.startedAt
-                      +"$start"
-                    }
-                    td {
-                      a(job.htmlUrl) {
+                      a(row.workflowRun.htmlUrl) {
                         target = ATarget.blank
                         +"logs"
                       }
@@ -145,11 +144,8 @@ suspend fun main() {
 
 }
 
-fun Collection<WorkflowRunJob>.calcDuration() =
-  map { it.calcDuration() }
-    .fold(WrapDuration(0)) { acc, value ->
-      acc + value
-    }
+fun Collection<TableRow>.billDuration() =
+  sumBy { it.timing.billMinutes }
 
 suspend inline fun <T> Flow<T>.completeToList(): List<T> =
   fold(emptyList<T>()) { acc, value ->

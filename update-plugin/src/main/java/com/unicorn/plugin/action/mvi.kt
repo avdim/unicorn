@@ -1,11 +1,10 @@
 package com.unicorn.plugin.action
 
-import com.sample.Release
-import com.sample.getGithubRepoReleases
+import com.github.Release
+import com.github.getGithubRepoReleases
 import com.unicorn.plugin.buildDistPlugins
 import com.unicorn.plugin.installPlugin
 import com.unicorn.plugin.removeUniPlugin
-import com.unicorn.plugin.update.assertTrue
 import com.unicorn.plugin.update.waitPlugin
 import io.ktor.client.*
 import io.ktor.client.engine.apache.*
@@ -56,7 +55,7 @@ sealed class Effect {
     object CheckCurrent : Effect()
     object CheckBuildDir : Effect()
     object LoadReleases : Effect()
-    class DownloadPlugin(val release:Release):Effect()
+    class DownloadPlugin(val release: Release):Effect()
     class InstallPlugin(val path: String, val parentComponent: JComponent?) : Effect()
     class RemovePlugin(val parentComponent: JComponent?) : Effect()
 }
