@@ -38,7 +38,6 @@ import java.util.List;
 /**
  * @deprecated use {@link com.intellij.ui.tree.AsyncTreeModel} and {@link com.intellij.ui.tree.StructureTreeModel} instead.
  */
-@SuppressWarnings("UnstableApiUsage")
 public abstract class BaseProjectTreeBuilder2 extends AbstractTreeBuilder2 {
 //  protected final Project myProject;
 
@@ -75,11 +74,6 @@ public abstract class BaseProjectTreeBuilder2 extends AbstractTreeBuilder2 {
   @Override
   protected boolean isAlwaysShowPlus(NodeDescriptor2 nodeDescriptor) {
     return nodeDescriptor instanceof AbstractTreeNod2 && ((AbstractTreeNod2)nodeDescriptor).isAlwaysShowPlus();
-  }
-
-  @Override
-  protected boolean isAutoExpandNode(NodeDescriptor2 nodeDescriptor) {
-    return nodeDescriptor.getParentDescriptor() == null;
   }
 
   @Override

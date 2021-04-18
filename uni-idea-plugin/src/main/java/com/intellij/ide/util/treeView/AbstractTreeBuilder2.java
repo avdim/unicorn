@@ -225,10 +225,6 @@ public class AbstractTreeBuilder2 implements Disposable {
     if (ui != null) ui.doExpandNodeChildren(node);
   }
 
-  protected boolean isAutoExpandNode(final NodeDescriptor2 nodeDescriptor) {
-    return !isDisposed() && getRootElement() == getTreeStructureElement(nodeDescriptor);
-  }
-
   protected boolean isAlwaysShowPlus(final NodeDescriptor2 descriptor) {
     return false;
   }

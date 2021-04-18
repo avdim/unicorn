@@ -27,6 +27,7 @@ Productivity Guide
 
 Context in terminal Alt + Left, Alt+Right, Alt + DOWN
 Alt+Shift+Mouse - add multi cursor
+Alt+Shift+Mouse - enable/disable gutter breakpoint
 
 Ctrl+Alt  + '['  ']' - Next/Previous Project Window
 
