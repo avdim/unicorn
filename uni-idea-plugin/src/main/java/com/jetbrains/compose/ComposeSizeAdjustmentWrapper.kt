@@ -7,11 +7,8 @@ import androidx.compose.ui.layout.Layout
 import androidx.compose.ui.layout.onGloballyPositioned
 import androidx.compose.ui.unit.IntSize
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.remember
 import com.intellij.openapi.ui.DialogWrapper
 import java.awt.Dimension
-import java.awt.Window
-import javax.swing.JComponent
 
 @Composable
 fun ComposeSizeAdjustmentWrapper(
@@ -37,9 +34,9 @@ fun ComposeSizeAdjustmentWrapper(
                     packed = true
                 }
             },
-            measureBlock = { _, _ ->
-                layout(0, 0) {}
-            }
+          measurePolicy = { _, _ ->
+            layout(0, 0) {}
+          }
         )
     }
 }

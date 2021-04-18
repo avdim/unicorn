@@ -41,6 +41,11 @@ allprojects {//todo allprojects bad?
   //todo check difference if use afterEvaluate { tasks... }
   tasks.withType<org.jetbrains.kotlin.gradle.tasks.KotlinCompile> {
     kotlinOptions.jvmTarget = MIN_JDK_VERSION.kotlinTarget
+    if (COMPOSE_WORKAROUND) {
+      kotlinOptions {
+        freeCompilerArgs += listOf("-P", "plugin:androidx.compose.compiler.plugins.kotlin:suppressKotlinVersionCompatibilityCheck=true")
+      }
+    }
   }
   if (ConfBuild.TRACE_GRADLE_TASKS) {
     afterEvaluate {

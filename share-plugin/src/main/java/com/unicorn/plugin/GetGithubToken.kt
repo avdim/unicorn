@@ -1,6 +1,5 @@
 package com.unicorn.plugin
 
-import com.unicorn.share.BuildConfig
 import io.ktor.client.*
 import io.ktor.client.engine.apache.*
 import io.ktor.client.request.*

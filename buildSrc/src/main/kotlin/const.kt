@@ -23,7 +23,7 @@ val MIN_JDK_VERSION: JdkVersion = if (false/*DEBUG_JVM*/) JdkVersion.JDK8 else J
 val USE_KOTLIN_DEV_REPOSITORY = true
 
 //val KOTLIN_VERSION = "1.4.21-2"
-val KOTLIN_VERSION = "1.4.30"
+val KOTLIN_VERSION = "1.4.32"
 val SERIALIZATION_VERSION = "1.0.1"
 val COROUTINE_VERSION = "1.4.2"
 val KTOR_VERSION = "1.5.0"
@@ -41,11 +41,10 @@ val COMPILER_ARGS = listOf<String>()
 //val INTELLIJ_GRADLE = "0.6.5"
 val INTELLIJ_GRADLE = "0.7.2"
 // https://maven.pkg.jetbrains.space/public/p/compose/dev/org/jetbrains/compose/org.jetbrains.compose.gradle.plugin/
-//val DESKTOP_COMPOSE = "0.0.0-vsync-build30"
-//val DESKTOP_COMPOSE = "0.3.0-build150"
-val DESKTOP_COMPOSE = "0.3.0-build152"
-//val DESKTOP_COMPOSE = "0.3.0-build154"
-//val DESKTOP_COMPOSE = "0.3.0"//todo
+//val DESKTOP_COMPOSE = "0.3.0-build152"
+val DESKTOP_COMPOSE = "0.3.2"
+//val DESKTOP_COMPOSE = "0.4.0-build183"
+val COMPOSE_WORKAROUND = true
 
 val as4_1_macos = "/Users/dim/Library/Application Support/JetBrains/Toolbox/apps/AndroidStudio/ch-2/201.6823847/Android Studio.app/Contents"
 val as4_20202_3_mac = "/Users/dim/Library/Application Support/JetBrains/Toolbox/apps/AndroidStudio/ch-0/203.7185775/Android Studio Preview.app/Contents"
@@ -88,19 +87,9 @@ val Project.myIdeaSandboxDir: String
 val UNI_VERSION = "0.13.0"
 
 // https://www.jetbrains.com/intellij-repository/snapshots/
-//    IdeaVersion.Community("2020.2.3")
-// val LAST_COMMUNITY = IdeaVersion.Download("203.5784.10-EAP-SNAPSHOT")
-//val LAST_COMMUNITY = IdeaVersion.Download("2020.3", "IC")
-//val LAST_COMMUNITY = IdeaVersion.Download("203.6682.78-EAP-SNAPSHOT", "IC")
-//val LAST_IDEA_STR = "203.6682.115-EAP-SNAPSHOT"
-//val LAST_IDEA_STR = "2020.3.1"
-//val LAST_IDEA_STR = "2020.3.2"
-//val LAST_IDEA_STR = "211.4961.33-EAP-SNAPSHOT"
-//val LAST_IDEA_STR = "211.5538.20-EAP-SNAPSHOT"
-//val LAST_IDEA_STR = "211.6085.26-EAP-SNAPSHOT"
-//val LAST_IDEA_STR = "211.6222.4-EAP-SNAPSHOT"
 //val LAST_IDEA_STR = "2020.3.3"
 val LAST_IDEA_STR = "2021.1"
+//val LAST_IDEA_STR = "211.7036-EAP-CANDIDATE-SNAPSHOT"
 val LAST_COMMUNITY = IdeaVersion.Download(LAST_IDEA_STR, "IC")
 val LAST_ULTIMATE = IdeaVersion.Download(LAST_IDEA_STR, "IU")
 
