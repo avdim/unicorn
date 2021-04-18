@@ -19,7 +19,7 @@ import kotlin.io.path.absolutePathString
 import kotlin.io.path.writeText
 
 const val TUTU_ORGANIZATION = "tutu-ru-mobile"
-val SINCE_TIME = LocalDateTime(2021, Month.MARCH, 29, 13, 0).toInstant(TimeZone.UTC)
+val SINCE_TIME = LocalDateTime(2021, Month.MARCH, 30, 0, 0).toInstant(TimeZone.UTC)
 
 enum class RepoType {
   IOS,
