@@ -171,8 +171,6 @@ public class AbstractTreeUi2 {
 
   private boolean myPassThroughMode;
 
-  private final Set<Object> myAutoExpandRoots = new HashSet<>();
-
   private final Set<DefaultMutableTreeNode> myWillBeExpanded = new HashSet<>();
   private SimpleTimerTask myCleanupTask;
 
@@ -697,10 +695,6 @@ public class AbstractTreeUi2 {
     }
 
     return wasCleanedUp;
-  }
-
-  private boolean isAutoExpand(@NotNull DefaultMutableTreeNode node) {
-    return false;
   }
 
   @NotNull
@@ -3338,7 +3332,6 @@ public class AbstractTreeUi2 {
     if (!isNodeNull(element)) {
       removeMapping(element, node, null);
     }
-    myAutoExpandRoots.remove(element);
     node.setUserObject(null);
     node.removeAllChildren();
   }
@@ -4073,7 +4066,6 @@ public class AbstractTreeUi2 {
   private void dropUpdaterStateIfExternalChange() {
     if (!isInnerChange()) {
       clearUpdaterState();
-      myAutoExpandRoots.clear();
       mySelectionIsAdjusted = false;
     }
   }
