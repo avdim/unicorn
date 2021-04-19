@@ -492,11 +492,11 @@ public class AbstractTreeUi2 {
   }
 
   @Nullable
-  private static NodeDescriptor2 getDescriptorFrom(Object node) {
+  private static AbstractTreeNod2 getDescriptorFrom(Object node) {
     if (node instanceof DefaultMutableTreeNode) {
       Object userObject = ((DefaultMutableTreeNode)node).getUserObject();
       if (userObject instanceof NodeDescriptor2) {
-        return (NodeDescriptor2)userObject;
+        return (AbstractTreeNod2)userObject;
       }
     }
 
@@ -1023,7 +1023,7 @@ public class AbstractTreeUi2 {
                                 final boolean updateChildren) {
     try {
 
-      final NodeDescriptor2 descriptor = getDescriptorFrom(node);
+      final AbstractTreeNod2 descriptor = getDescriptorFrom(node);
       if (descriptor == null) {
         removeFromUnbuilt(node);
         removeLoading(node, true);
@@ -1339,7 +1339,7 @@ public class AbstractTreeUi2 {
   }
 
   private Pair<Boolean, LoadedChildren> processUnbuilt(@NotNull final DefaultMutableTreeNode node,
-                                                       final NodeDescriptor2 descriptor,
+                                                       final AbstractTreeNod2 descriptor,
                                                        @NotNull final TreeUpdatePass2 pass,
                                                        final boolean isExpanded,
                                                        @Nullable final LoadedChildren loadedChildren) {
@@ -1974,10 +1974,10 @@ public class AbstractTreeUi2 {
     for (final Object child : allElements) {
       Integer index = elementToIndexMap.getValue(child);
       boolean needToUpdate = false;
-      NodeDescriptor2 loadedDesc = loadedChildren.getDescriptor(child);
-      final NodeDescriptor2 childDescr;
+      AbstractTreeNod2 loadedDesc = loadedChildren.getDescriptor(child);
+      final AbstractTreeNod2 childDescr;
       if (!isValid(loadedDesc, descriptor)) {
-        childDescr = (NodeDescriptor2<?>)child;
+        childDescr = (AbstractTreeNod2<?>)child;
         needToUpdate = true;
       }
       else {
@@ -2408,8 +2408,8 @@ public class AbstractTreeUi2 {
 
         final LoadedChildren loaded = new LoadedChildren(loadedElements);
         for (final Object each : loadedElements) {
-          NodeDescriptor2<?> existingDesc = getDescriptorFrom(getNodeForElement(each, true));
-          NodeDescriptor2<?> eachChildDescriptor = isValid(existingDesc, updateInfo.getDescriptor()) ? existingDesc : (NodeDescriptor2<?>) each;
+          AbstractTreeNod2<?> existingDesc = getDescriptorFrom(getNodeForElement(each, true));
+          AbstractTreeNod2<?> eachChildDescriptor = isValid(existingDesc, updateInfo.getDescriptor()) ? existingDesc : (AbstractTreeNod2<?>) each;
           execute(new TreeRunnable2("AbstractTreeUi.queueBackgroundUpdate") {
             @Override
             public void perform() {
@@ -2989,7 +2989,7 @@ public class AbstractTreeUi2 {
 
     insertLoadingNode(node, true);
 
-    final NodeDescriptor2 descriptor = getDescriptorFrom(node);
+    final AbstractTreeNod2 descriptor = getDescriptorFrom(node);
     if (descriptor == null) return;
 
     descriptor.setChildrenSortingStamp(-1);
@@ -4400,14 +4400,14 @@ public class AbstractTreeUi2 {
 
   private static class LoadedChildren {
     @NotNull private final List<Object> myElements;
-    private final Map<Object, NodeDescriptor2> myDescriptors = new HashMap<>();
-    private final Map<NodeDescriptor2, Boolean> myChanges = new HashMap<>();
+    private final Map<Object, AbstractTreeNod2> myDescriptors = new HashMap<>();
+    private final Map<AbstractTreeNod2, Boolean> myChanges = new HashMap<>();
 
     LoadedChildren(Object /*@Nullable*/ [] elements) {
       myElements = Arrays.asList(elements != null ? elements : ArrayUtilRt.EMPTY_OBJECT_ARRAY);
     }
 
-    void putDescriptor(Object element, NodeDescriptor2 descriptor, boolean isChanged) {
+    void putDescriptor(Object element, AbstractTreeNod2 descriptor, boolean isChanged) {
       if (isUnitTestingMode()) {
         assert myElements.contains(element);
       }
@@ -4420,7 +4420,7 @@ public class AbstractTreeUi2 {
       return myElements;
     }
 
-    NodeDescriptor2 getDescriptor(Object element) {
+    AbstractTreeNod2 getDescriptor(Object element) {
       return myDescriptors.get(element);
     }
 
@@ -4445,7 +4445,7 @@ public class AbstractTreeUi2 {
   }
 
   private static class UpdateInfo {
-    NodeDescriptor2 myDescriptor;
+    AbstractTreeNod2 myDescriptor;
     TreeUpdatePass2 myPass;
     boolean myCanSmartExpand;
     boolean myWasExpanded;
@@ -4453,7 +4453,7 @@ public class AbstractTreeUi2 {
     boolean myDescriptorIsUpToDate;
     final boolean myUpdateChildren;
 
-    UpdateInfo(NodeDescriptor2 descriptor,
+    UpdateInfo(AbstractTreeNod2 descriptor,
                TreeUpdatePass2 pass,
                       boolean canSmartExpand,
                       boolean wasExpanded,
@@ -4469,7 +4469,7 @@ public class AbstractTreeUi2 {
       myUpdateChildren = updateChildren;
     }
 
-    synchronized NodeDescriptor2 getDescriptor() {
+    synchronized AbstractTreeNod2 getDescriptor() {
       return myDescriptor;
     }
 

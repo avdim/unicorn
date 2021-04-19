@@ -9,6 +9,7 @@ import com.intellij.openapi.application.ApplicationManager;
 import com.intellij.openapi.progress.ProgressIndicator;
 import com.intellij.openapi.progress.Progressive;
 import com.intellij.openapi.util.ActionCallback;
+import com.intellij.psi.impl.smartPointers.AbstractTreeNod2;
 import com.intellij.psi.impl.smartPointers.NodeDescriptor2;
 import com.intellij.reference.SoftReference;
 import com.intellij.util.Consumer;
@@ -33,10 +34,7 @@ import java.util.*;
 /**
  * @deprecated use {@link com.intellij.ui.tree.AsyncTreeModel} and {@link com.intellij.ui.tree.StructureTreeModel} instead.
  */
-@SuppressWarnings("UnstableApiUsage")
-@ApiStatus.ScheduledForRemoval(inVersion = "2020.3")
-@Deprecated
-public class AbstractTreeBuilder2 implements Disposable {
+abstract public class AbstractTreeBuilder2 implements Disposable {
   private AbstractTreeUi2 myUi;
   @NonNls private static final String TREE_BUILDER = "TreeBuilder";
   protected static final boolean DEFAULT_UPDATE_INACTIVE = true;
@@ -200,9 +198,6 @@ public class AbstractTreeBuilder2 implements Disposable {
     return result;
   }
 
-  /**
-   * @deprecated use {@link AbstractTreeUi#getNodeForElement(Object, boolean)}
-   */
   @Deprecated
   @Nullable
   public DefaultMutableTreeNode getNodeForElement(@NotNull Object element) {
@@ -225,9 +220,7 @@ public class AbstractTreeBuilder2 implements Disposable {
     if (ui != null) ui.doExpandNodeChildren(node);
   }
 
-  protected boolean isAlwaysShowPlus(final NodeDescriptor2 descriptor) {
-    return false;
-  }
+  abstract protected boolean isAlwaysShowPlus(final AbstractTreeNod2 descriptor);
 
   public final boolean isDisposed() {
     return getUi() == null;
