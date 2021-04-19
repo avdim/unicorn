@@ -177,6 +177,6 @@ suspend fun HttpClient.getGithubWorkflowRunTiming(
 
 val WorkflowRunTiming.billMinutes
   get(): Int {
-    val totalMs = billable.macOS.orEmpty().totalMs * 10 //todo + billable.windows.orEmpty().totalMs * 2 + billable.ubuntu.orEmpty().totalMs
+    val totalMs = billable.macOS.orEmpty().totalMs * 10 + billable.windows.orEmpty().totalMs * 2 + billable.ubuntu.orEmpty().totalMs
     return (totalMs / 1000 / 60).toInt()
   }
