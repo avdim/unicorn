@@ -47,6 +47,7 @@ val REPOS = listOf(
 @OptIn(ExperimentalPathApi::class)
 suspend fun main() {
   println("hello AppGithubWorkflowStarter")
+  return
   val client = HttpClient(Apache)
 
   if (false) {
