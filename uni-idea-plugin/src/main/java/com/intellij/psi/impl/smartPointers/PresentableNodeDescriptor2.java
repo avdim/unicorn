@@ -5,7 +5,7 @@ import com.intellij.ide.projectView.PresentationData;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-public abstract class PresentableNodeDescriptor2<E> extends NodeDescriptor2<E> {
+public abstract class PresentableNodeDescriptor2<E> extends NodeDescriptor2 {
   private PresentationData myTemplatePresentation;
   private PresentationData myUpdatedPresentation;
 

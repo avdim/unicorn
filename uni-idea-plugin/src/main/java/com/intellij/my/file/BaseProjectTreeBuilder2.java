@@ -73,7 +73,7 @@ public abstract class BaseProjectTreeBuilder2 extends AbstractTreeBuilder2 {
 
   @Override
   protected boolean isAlwaysShowPlus(AbstractTreeNod2 nodeDescriptor) {
-    return nodeDescriptor instanceof AbstractTreeNod2 && ((AbstractTreeNod2)nodeDescriptor).isAlwaysShowPlus();
+    return nodeDescriptor != null && nodeDescriptor.isAlwaysShowPlus();
   }
 
   @Override

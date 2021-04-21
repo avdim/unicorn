@@ -1,6 +1,7 @@
 // Copyright 2000-2020 JetBrains s.r.o. Use of this source code is governed by the Apache 2.0 license that can be found in the LICENSE file.
 package com.intellij.psi.impl.smartPointers;
 
+import com.intellij.ide.projectView.impl.nodes.ProjectViewNode2;
 import com.intellij.ide.util.treeView.WeighedItem;
 import com.intellij.openapi.util.NlsSafe;
 import org.jetbrains.annotations.NotNull;
@@ -9,7 +10,7 @@ import org.jetbrains.annotations.Nullable;
 import javax.swing.*;
 import java.util.Comparator;
 
-public abstract class NodeDescriptor2<E> {
+public abstract class NodeDescriptor2 {
   public static final int DEFAULT_WEIGHT = 30;
 
   protected @NlsSafe String myName;
@@ -26,7 +27,7 @@ public abstract class NodeDescriptor2<E> {
   }
 
   @Nullable
-  abstract public NodeDescriptor2<?> getParentDescriptor();
+  abstract public NodeDescriptor2 getParentDescriptor();
 
   public int getIndex() {
     return myIndex;
@@ -43,7 +44,7 @@ public abstract class NodeDescriptor2<E> {
    */
   public abstract boolean update();
 
-  public abstract E getElement();
+  public abstract ProjectViewNode2 getElement();
 
   @Override
   public @NlsSafe String toString() {
@@ -59,7 +60,7 @@ public abstract class NodeDescriptor2<E> {
   }
 
   public int getWeight() {
-    E element = getElement();
+    ProjectViewNode2 element = getElement();
     if (element instanceof WeighedItem) {
       return ((WeighedItem) element).getWeight();
     }
@@ -90,7 +91,7 @@ public abstract class NodeDescriptor2<E> {
     myWasDeclaredAlwaysLeaf = leaf;
   }
 
-  public void applyFrom(@NotNull NodeDescriptor2<?> desc) {
+  public void applyFrom(@NotNull NodeDescriptor2 desc) {
     setIcon(desc.getIcon());
     myName = desc.myName;
   }

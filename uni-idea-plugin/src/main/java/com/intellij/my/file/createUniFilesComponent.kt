@@ -5,10 +5,10 @@ package com.intellij.my.file
 import com.intellij.history.LocalHistory
 import com.intellij.ide.*
 import com.intellij.ide.projectView.ProjectViewSettings
-import com.intellij.ide.projectView.ViewSettings
 import com.intellij.ide.projectView.impl.JavaHelpers
 import com.intellij.ide.projectView.impl.SpeedSearchFiles
 import com.intellij.ide.projectView.impl.nodes.AbstractProjectNode2
+import com.intellij.ide.projectView.impl.nodes.ProjectViewNode2
 import com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode2
 import com.intellij.ide.ui.customization.CustomizationUtil
 import com.intellij.ide.util.DirectoryChooserUtil
@@ -92,7 +92,7 @@ private fun _createUniFilesComponent(
       override fun createRoot(): AbstractTreeNod2<*> =
         object : AbstractProjectNode2() {
           override fun canRepresent(element: Any): Boolean = true
-          override fun getChildren(): Collection<AbstractTreeNod2<*>> {
+          override fun getChildren(): Collection<ProjectViewNode2<*>> {
             return uniFilesRootNodes(project, rootDirs = rootPaths)
           }
           override fun getFileStatus() = FileStatus.NOT_CHANGED
@@ -112,7 +112,7 @@ private fun _createUniFilesComponent(
 
   fun getSelectedElements(): Array<Any> = JavaHelpers.pathsToSelectedElements(myTree.selectionPaths)
 
-  fun <T : NodeDescriptor2<*>> getSelectedNodes(nodeClass: Class<T>): List<T> {
+  fun <T : ProjectViewNode2<*>> getSelectedNodes(nodeClass: Class<T>): List<T> {
     val paths: Array<out TreePath> = myTree.selectionPaths ?: return emptyList()
     val result = ArrayList<T>()
     for (path in paths) {
@@ -285,7 +285,7 @@ private fun _createUniFilesComponent(
 fun uniFilesRootNodes(
   project: Project,
   rootDirs: List<VirtualFile> = ConfUniFiles.ROOT_DIRS
-): Collection<AbstractTreeNod2<*>> {
+): Collection<ProjectViewNode2<*>> {
   return rootDirs.mapNotNull {
     PsiManager.getInstance(Uni.todoDefaultProject).findDirectory(it)
   }.map { psiDirectory: PsiDirectory ->

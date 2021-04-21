@@ -2,6 +2,7 @@
 
 package com.intellij.ide.util.treeView;
 
+import com.intellij.ide.projectView.impl.nodes.ProjectViewNode2;
 import com.intellij.my.file.AbstractProjectTreeStructure2;
 import com.intellij.openapi.Disposable;
 import com.intellij.openapi.application.Application;
@@ -107,7 +108,7 @@ abstract public class AbstractTreeBuilder2 implements Disposable {
     return ui == null ? null : ui.getRootNode();
   }
 
-  public final void setNodeDescriptorComparator(Comparator<? super NodeDescriptor2<?>> nodeDescriptorComparator) {
+  public final void setNodeDescriptorComparator(Comparator<? super NodeDescriptor2> nodeDescriptorComparator) {
     AbstractTreeUi2 ui = getUi();
     if (ui != null) {
       ui.setNodeDescriptorComparator(nodeDescriptorComparator);
@@ -119,7 +120,7 @@ abstract public class AbstractTreeBuilder2 implements Disposable {
    * 1.TreeStructure always returns & receives "treeStructure" element returned by getTreeStructureElement
    * 2.Paths contain "model" element returned by getElement
    */
-  protected Object getTreeStructureElement(NodeDescriptor2 nodeDescriptor) {
+  protected ProjectViewNode2 getTreeStructureElement(NodeDescriptor2 nodeDescriptor) {
     return nodeDescriptor == null ? null : nodeDescriptor.getElement();
   }
 

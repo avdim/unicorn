@@ -2,6 +2,7 @@
 package com.intellij.psi.impl.smartPointers;
 
 import com.intellij.ide.projectView.PresentationData;
+import com.intellij.ide.projectView.impl.nodes.ProjectViewNode2;
 import com.intellij.navigation.NavigationItem;
 import com.intellij.openapi.application.ApplicationManager;
 import com.intellij.openapi.application.ReadAction;
@@ -42,7 +43,7 @@ public abstract class AbstractTreeNod2<T> extends PresentableNodeDescriptor2<Abs
   }
 
   @NotNull
-  public abstract Collection<? extends AbstractTreeNod2<?>> getChildren();
+  public abstract Collection<? extends ProjectViewNode2<?>> getChildren();
 
   protected boolean valueIsCut() {
     return CopyPasteManager.getInstance().isCutElement(getValue());
@@ -84,8 +85,8 @@ public abstract class AbstractTreeNod2<T> extends PresentableNodeDescriptor2<Abs
 
   @Override
   @Nullable
-  public final AbstractTreeNod2<T> getElement() {
-    return getEqualityObject() != null ? this : null;
+  public final ProjectViewNode2<T> getElement() {
+    return getEqualityObject() != null ? (ProjectViewNode2)this : null;
   }
 
   @Override

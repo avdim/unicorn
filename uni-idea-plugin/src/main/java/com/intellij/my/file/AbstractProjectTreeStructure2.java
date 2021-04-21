@@ -32,8 +32,8 @@ public abstract class AbstractProjectTreeStructure2 extends AbstractTreeStructur
     if (!(element instanceof AbstractTreeNod2)) {
       Uni.getLog().error("!(element instanceof AbstractTreeNod2)");
     }
-    AbstractTreeNod2<?> treeNode = (AbstractTreeNod2<?>)element;
-    Collection<? extends AbstractTreeNod2<?>> elements = treeNode.getChildren();
+    ProjectViewNode2<?> treeNode = (ProjectViewNode2<?>)element;
+    Collection<? extends ProjectViewNode2<?>> elements = treeNode.getChildren();
     if (elements.contains(null)) {
       Uni.getLog().error("node contains null child: " + treeNode + "; " + treeNode.getClass());
     }

@@ -80,8 +80,8 @@ public abstract class AbstractPsiBasedNode2<Value> extends ProjectViewNode2<Valu
 
   @Override
   @NotNull
-  public final Collection<? extends AbstractTreeNod2<?>> getChildren() {
-    return AstLoadingFilter.disallowTreeLoading(this::doGetChildren);
+  public final Collection<? extends ProjectViewNode2<?>> getChildren() {
+    return (Collection<? extends ProjectViewNode2<?>>) AstLoadingFilter.disallowTreeLoading(this::doGetChildren);
   }
 
   @NotNull

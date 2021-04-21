@@ -60,7 +60,7 @@ public class AbstractTreeUi2 {
   private AbstractProjectTreeStructure2 myTreeStructure;
   private AbstractTreeUpdater2 myUpdater;
 
-  private Comparator<? super NodeDescriptor2<?>> myNodeDescriptorComparator;
+  private Comparator<? super NodeDescriptor2> myNodeDescriptorComparator;
 
   private final Comparator<TreeNode> myNodeComparator = new Comparator<TreeNode>() {
     @Override
@@ -69,8 +69,8 @@ public class AbstractTreeUi2 {
       if (isLoadingNode(n1)) return -1;
       if (isLoadingNode(n2)) return 1;
 
-      NodeDescriptor2<?> nodeDescriptor1 = getDescriptorFrom(n1);
-      NodeDescriptor2<?> nodeDescriptor2 = getDescriptorFrom(n2);
+      NodeDescriptor2 nodeDescriptor1 = getDescriptorFrom(n1);
+      NodeDescriptor2 nodeDescriptor2 = getDescriptorFrom(n2);
 
       if (nodeDescriptor1 == null && nodeDescriptor2 == null) return 0;
       if (nodeDescriptor1 == null) return -1;
@@ -579,7 +579,7 @@ public class AbstractTreeUi2 {
     return valid;
   }
 
-  public final void setNodeDescriptorComparator(Comparator<? super NodeDescriptor2<?>> nodeDescriptorComparator) {
+  public final void setNodeDescriptorComparator(Comparator<? super NodeDescriptor2> nodeDescriptorComparator) {
     myNodeDescriptorComparator = nodeDescriptorComparator;
     getBuilder().queueUpdateFrom(getTreeStructure().getRootElement(), true);
   }
@@ -630,7 +630,7 @@ public class AbstractTreeUi2 {
     Runnable build = new TreeRunnable2("AbstractTreeUi.initRootNodeNowIfNeeded: build") {
       @Override
       public void perform() {
-        rootDescriptor.set((NodeDescriptor2<?>) rootElement);
+        rootDescriptor.set((NodeDescriptor2) rootElement);
         getRootNode().setUserObject(rootDescriptor.get());
         update(rootDescriptor.get(), true);
         pass.addToUpdated(rootDescriptor.get());
@@ -976,7 +976,7 @@ public class AbstractTreeUi2 {
       });
   }
 
-  public Object getElementFromDescriptor(NodeDescriptor2 descriptor) {
+  public AbstractTreeNod2 getElementFromDescriptor(NodeDescriptor2 descriptor) {
     return getBuilder().getTreeStructureElement(descriptor);
   }
 
@@ -2731,7 +2731,7 @@ public class AbstractTreeUi2 {
               promise = updateIndexDone;
               NodeDescriptor2 parentDescriptor = getDescriptorFrom(parentNode);
               if (parentDescriptor != null) {
-                childDesc.set((NodeDescriptor2<?>) elementFromMap);
+                childDesc.set((NodeDescriptor2) elementFromMap);
                 NodeDescriptor2 oldDesc = getDescriptorFrom(childNode);
                 if (isValid(oldDesc)) {
                   childDesc.get().applyFrom(oldDesc);
@@ -3019,10 +3019,10 @@ public class AbstractTreeUi2 {
   private boolean isValid(NodeDescriptor2 descriptor, NodeDescriptor2 parent) {
     if (descriptor == null) return false;
     if (parent != null && parent != descriptor.getParentDescriptor()) return false;
-    return isValid(getElementFromDescriptor(descriptor));
+    return isValid2(getElementFromDescriptor(descriptor));
   }
 
-  private boolean isValid(@Nullable NodeDescriptor2 descriptor) {
+  private boolean isValid2(@Nullable NodeDescriptor2 descriptor) {
     return descriptor != null && isValid(getElementFromDescriptor(descriptor));
   }
 
