@@ -17,7 +17,7 @@ import com.intellij.openapi.vfs.VirtualFile;
 import com.intellij.psi.PsiDirectory;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiFile;
-import com.intellij.psi.impl.smartPointers.NodeDescriptor2;
+import com.intellij.psi.impl.smartPointers.PresentableNodeDescriptor2;
 import com.intellij.psi.util.PsiUtilCore;
 import com.intellij.util.ObjectUtils;
 import com.unicorn.Uni;
@@ -78,7 +78,7 @@ public abstract class BaseProjectTreeBuilder2 extends AbstractTreeBuilder2 {
 
   @Override
   protected final void expandNodeChildren(@NotNull final DefaultMutableTreeNode node) {
-    final NodeDescriptor2 userObject = (NodeDescriptor2)node.getUserObject();
+    final PresentableNodeDescriptor2 userObject = (PresentableNodeDescriptor2)node.getUserObject();
     if (userObject == null) return;
     Object element = userObject.getElement();
     VirtualFile virtualFile = getFileToRefresh(element);

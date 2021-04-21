@@ -11,13 +11,12 @@ import com.intellij.openapi.progress.ProgressIndicator;
 import com.intellij.openapi.progress.Progressive;
 import com.intellij.openapi.util.ActionCallback;
 import com.intellij.psi.impl.smartPointers.AbstractTreeNod2;
-import com.intellij.psi.impl.smartPointers.NodeDescriptor2;
+import com.intellij.psi.impl.smartPointers.PresentableNodeDescriptor2;
 import com.intellij.reference.SoftReference;
 import com.intellij.util.Consumer;
 import com.intellij.util.concurrency.EdtExecutorService;
 import com.intellij.util.ui.UIUtil;
 import com.intellij.util.ui.update.MergingUpdateQueue;
-import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.NonNls;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -108,7 +107,7 @@ abstract public class AbstractTreeBuilder2 implements Disposable {
     return ui == null ? null : ui.getRootNode();
   }
 
-  public final void setNodeDescriptorComparator(Comparator<? super NodeDescriptor2> nodeDescriptorComparator) {
+  public final void setNodeDescriptorComparator(Comparator<? super PresentableNodeDescriptor2> nodeDescriptorComparator) {
     AbstractTreeUi2 ui = getUi();
     if (ui != null) {
       ui.setNodeDescriptorComparator(nodeDescriptorComparator);
@@ -120,7 +119,7 @@ abstract public class AbstractTreeBuilder2 implements Disposable {
    * 1.TreeStructure always returns & receives "treeStructure" element returned by getTreeStructureElement
    * 2.Paths contain "model" element returned by getElement
    */
-  protected ProjectViewNode2 getTreeStructureElement(NodeDescriptor2 nodeDescriptor) {
+  protected ProjectViewNode2 getTreeStructureElement(PresentableNodeDescriptor2 nodeDescriptor) {
     return nodeDescriptor == null ? null : nodeDescriptor.getElement();
   }
 
@@ -338,7 +337,7 @@ abstract public class AbstractTreeBuilder2 implements Disposable {
     myUi = null;
   }
 
-  protected boolean updateNodeDescriptor(@NotNull NodeDescriptor2 descriptor) {
+  protected boolean updateNodeDescriptor(@NotNull PresentableNodeDescriptor2 descriptor) {
     AbstractTreeUi2 ui = getUi();
     return ui != null && descriptor.update();
   }

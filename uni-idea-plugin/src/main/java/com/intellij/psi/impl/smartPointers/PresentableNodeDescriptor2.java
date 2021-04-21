@@ -2,18 +2,29 @@
 package com.intellij.psi.impl.smartPointers;
 
 import com.intellij.ide.projectView.PresentationData;
+import com.intellij.ide.projectView.impl.nodes.ProjectViewNode2;
+import com.intellij.ide.util.treeView.WeighedItem;
+import com.intellij.openapi.util.NlsSafe;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-public abstract class PresentableNodeDescriptor2<E> extends NodeDescriptor2 {
+import javax.swing.*;
+
+public abstract class PresentableNodeDescriptor2<E> {
+  public static final int DEFAULT_WEIGHT = 30;
+  protected @NlsSafe String myName;
+  @Nullable protected Icon myClosedIcon;
   private PresentationData myTemplatePresentation;
   private PresentationData myUpdatedPresentation;
+  private int myIndex = -1;
+  private long myChildrenSortingStamp = -1;
+  private long myUpdateCount;
+  private boolean myWasDeclaredAlwaysLeaf;
 
   protected PresentableNodeDescriptor2() {
-    super();
+
   }
 
-  @Override
   public final boolean update() {
     if (shouldUpdateData()) {
       PresentationData before = getPresentation().clone();
@@ -27,13 +38,13 @@ public abstract class PresentableNodeDescriptor2<E> extends NodeDescriptor2 {
     return apply(presentation, null);
   }
 
-  @Override
-  public void applyFrom(@NotNull NodeDescriptor2 desc) {
+  public void applyFrom(@NotNull PresentableNodeDescriptor2 desc) {
     if (desc instanceof PresentableNodeDescriptor2) {
       apply(((PresentableNodeDescriptor2<?>)desc).getPresentation());
     }
     else {
-      super.applyFrom(desc);
+      setIcon(desc.getIcon());
+      myName = desc.myName;
     }
   }
 
@@ -107,6 +118,68 @@ public abstract class PresentableNodeDescriptor2<E> extends NodeDescriptor2 {
     }
 
     return myTemplatePresentation;
+  }
+
+  @Nullable
+  abstract public PresentableNodeDescriptor2 getParentDescriptor();
+
+  public int getIndex() {
+    return myIndex;
+  }
+
+  public void setIndex(int index) {
+    myIndex = index;
+  }
+
+  public abstract ProjectViewNode2 getElement();
+
+  @Override
+  public @NlsSafe String toString() {
+    // NB!: this method may return null if node is not valid
+    // it contradicts the specification, but the fix breaks existing behaviour
+    // see com.intellij.ide.util.FileStructurePopup#getSpeedSearchText
+    return myName;
+  }
+
+  @Nullable
+  public final Icon getIcon() {
+    return myClosedIcon;
+  }
+
+  public int getWeight() {
+    ProjectViewNode2 element = getElement();
+    if (element instanceof WeighedItem) {
+      return ((WeighedItem) element).getWeight();
+    }
+    return DEFAULT_WEIGHT;
+  }
+
+  public final long getChildrenSortingStamp() {
+    return myChildrenSortingStamp;
+  }
+
+  public final void setChildrenSortingStamp(long stamp) {
+    myChildrenSortingStamp = stamp;
+  }
+
+  public final long getUpdateCount() {
+    return myUpdateCount;
+  }
+
+  public final void setUpdateCount(long updateCount) {
+    myUpdateCount = updateCount;
+  }
+
+  public boolean isWasDeclaredAlwaysLeaf() {
+    return myWasDeclaredAlwaysLeaf;
+  }
+
+  public void setWasDeclaredAlwaysLeaf(boolean leaf) {
+    myWasDeclaredAlwaysLeaf = leaf;
+  }
+
+  public void setIcon(@Nullable Icon closedIcon) {
+    myClosedIcon = closedIcon;
   }
 
   /*public @NlsSafe String getName() {

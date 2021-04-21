@@ -113,7 +113,7 @@ public abstract class AbstractTreeNod2<T> extends PresentableNodeDescriptor2<Abs
   }
 
   @Override
-  public final NodeDescriptor2 getParentDescriptor() {
+  public final PresentableNodeDescriptor2 getParentDescriptor() {
     return myParent;
   }
 

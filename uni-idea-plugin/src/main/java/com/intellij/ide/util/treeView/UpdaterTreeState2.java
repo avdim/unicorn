@@ -4,7 +4,7 @@ package com.intellij.ide.util.treeView;
 import com.intellij.openapi.util.ActionCallback;
 import com.intellij.openapi.util.Condition;
 import com.intellij.openapi.util.Conditions;
-import com.intellij.psi.impl.smartPointers.NodeDescriptor2;
+import com.intellij.psi.impl.smartPointers.PresentableNodeDescriptor2;
 import com.intellij.util.ArrayUtil;
 import com.intellij.util.Function;
 import com.intellij.util.containers.ContainerUtil;
@@ -71,7 +71,7 @@ public class UpdaterTreeState2 {
         if (node instanceof DefaultMutableTreeNode) {
           final Object descriptor = ((DefaultMutableTreeNode)node).getUserObject();
           if (descriptor instanceof NodeDescriptor) {
-            final Object element = myUi.getElementFromDescriptor((NodeDescriptor2)descriptor);
+            final Object element = myUi.getElementFromDescriptor((PresentableNodeDescriptor2)descriptor);
             if (element != null) {
               target.add(element);
             }

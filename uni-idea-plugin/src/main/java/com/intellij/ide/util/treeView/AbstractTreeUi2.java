@@ -14,7 +14,7 @@ import com.intellij.openapi.util.*;
 import com.intellij.openapi.util.registry.Registry;
 import com.intellij.openapi.util.registry.RegistryValue;
 import com.intellij.psi.impl.smartPointers.AbstractTreeNod2;
-import com.intellij.psi.impl.smartPointers.NodeDescriptor2;
+import com.intellij.psi.impl.smartPointers.PresentableNodeDescriptor2;
 import com.intellij.ui.LoadingNode;
 import com.intellij.ui.treeStructure.Tree;
 import com.intellij.util.*;
@@ -60,7 +60,7 @@ public class AbstractTreeUi2 {
   private AbstractProjectTreeStructure2 myTreeStructure;
   private AbstractTreeUpdater2 myUpdater;
 
-  private Comparator<? super NodeDescriptor2> myNodeDescriptorComparator;
+  private Comparator<? super PresentableNodeDescriptor2> myNodeDescriptorComparator;
 
   private final Comparator<TreeNode> myNodeComparator = new Comparator<TreeNode>() {
     @Override
@@ -69,16 +69,16 @@ public class AbstractTreeUi2 {
       if (isLoadingNode(n1)) return -1;
       if (isLoadingNode(n2)) return 1;
 
-      NodeDescriptor2 nodeDescriptor1 = getDescriptorFrom(n1);
-      NodeDescriptor2 nodeDescriptor2 = getDescriptorFrom(n2);
+      PresentableNodeDescriptor2 nodeDescriptor1 = getDescriptorFrom(n1);
+      PresentableNodeDescriptor2 PresentableNodeDescriptor2 = getDescriptorFrom(n2);
 
-      if (nodeDescriptor1 == null && nodeDescriptor2 == null) return 0;
+      if (nodeDescriptor1 == null && PresentableNodeDescriptor2 == null) return 0;
       if (nodeDescriptor1 == null) return -1;
-      if (nodeDescriptor2 == null) return 1;
+      if (PresentableNodeDescriptor2 == null) return 1;
 
       return myNodeDescriptorComparator != null
-             ? myNodeDescriptorComparator.compare(nodeDescriptor1, nodeDescriptor2)
-             : nodeDescriptor1.getIndex() - nodeDescriptor2.getIndex();
+             ? myNodeDescriptorComparator.compare(nodeDescriptor1, PresentableNodeDescriptor2)
+             : nodeDescriptor1.getIndex() - PresentableNodeDescriptor2.getIndex();
     }
   };
 
@@ -495,7 +495,7 @@ public class AbstractTreeUi2 {
   private static AbstractTreeNod2 getDescriptorFrom(Object node) {
     if (node instanceof DefaultMutableTreeNode) {
       Object userObject = ((DefaultMutableTreeNode)node).getUserObject();
-      if (userObject instanceof NodeDescriptor2) {
+      if (userObject instanceof PresentableNodeDescriptor2) {
         return (AbstractTreeNod2)userObject;
       }
     }
@@ -579,7 +579,7 @@ public class AbstractTreeUi2 {
     return valid;
   }
 
-  public final void setNodeDescriptorComparator(Comparator<? super NodeDescriptor2> nodeDescriptorComparator) {
+  public final void setNodeDescriptorComparator(Comparator<? super PresentableNodeDescriptor2> nodeDescriptorComparator) {
     myNodeDescriptorComparator = nodeDescriptorComparator;
     getBuilder().queueUpdateFrom(getTreeStructure().getRootElement(), true);
   }
@@ -624,13 +624,13 @@ public class AbstractTreeUi2 {
     addNodeAction(rootElement, false, node -> processDeferredActions());
 
 
-    final Ref<NodeDescriptor2> rootDescriptor = new Ref<>(null);
+    final Ref<PresentableNodeDescriptor2> rootDescriptor = new Ref<>(null);
     final boolean bgLoading = isToBuildChildrenInBackground(rootElement);
 
     Runnable build = new TreeRunnable2("AbstractTreeUi.initRootNodeNowIfNeeded: build") {
       @Override
       public void perform() {
-        rootDescriptor.set((NodeDescriptor2) rootElement);
+        rootDescriptor.set((PresentableNodeDescriptor2) rootElement);
         getRootNode().setUserObject(rootDescriptor.get());
         update(rootDescriptor.get(), true);
         pass.addToUpdated(rootDescriptor.get());
@@ -698,7 +698,7 @@ public class AbstractTreeUi2 {
   }
 
   @NotNull
-  private Promise<Boolean> update(@NotNull final NodeDescriptor2 nodeDescriptor, boolean now) {
+  private Promise<Boolean> update(@NotNull final PresentableNodeDescriptor2 nodeDescriptor, boolean now) {
     Promise<Boolean> promise;
     if (now || isPassthroughMode()) {
       promise = Promises.resolvedPromise(update(nodeDescriptor));
@@ -772,7 +772,7 @@ public class AbstractTreeUi2 {
     return promise;
   }
 
-  private boolean update(@NotNull final NodeDescriptor2 nodeDescriptor) {
+  private boolean update(@NotNull final PresentableNodeDescriptor2 nodeDescriptor) {
     while(true) {
       try (LockToken ignored = attemptLock()) {
         if (ignored == null) {  // async children calculation is in progress under lock
@@ -886,7 +886,7 @@ public class AbstractTreeUi2 {
 
     final DefaultMutableTreeNode node = pass.getNode();
 
-    NodeDescriptor2 descriptor = getDescriptorFrom(node);
+    PresentableNodeDescriptor2 descriptor = getDescriptorFrom(node);
     if (descriptor == null) return;
 
     if (pass.isUpdateStructure()) {
@@ -916,7 +916,7 @@ public class AbstractTreeUi2 {
 
         TreePath path = getTree().getPathForRow(row);
         if (path != null) {
-          final NodeDescriptor2 descriptor = getDescriptorFrom(path.getLastPathComponent());
+          final PresentableNodeDescriptor2 descriptor = getDescriptorFrom(path.getLastPathComponent());
           if (descriptor != null) {
             DefaultMutableTreeNode node = (DefaultMutableTreeNode)path.getLastPathComponent();
             maybeYield(() -> update(descriptor, false)
@@ -937,7 +937,7 @@ public class AbstractTreeUi2 {
     return element != null && structure.isToBuildChildrenInBackground(element);
   }
 
-  private boolean isToBuildInBackground(NodeDescriptor2 descriptor) {
+  private boolean isToBuildInBackground(PresentableNodeDescriptor2 descriptor) {
     return isToBuildChildrenInBackground(getElementFromDescriptor(descriptor));
   }
 
@@ -957,7 +957,7 @@ public class AbstractTreeUi2 {
   }
 
   void doUpdateNode(@NotNull final DefaultMutableTreeNode node) {
-    NodeDescriptor2 descriptor = getDescriptorFrom(node);
+    PresentableNodeDescriptor2 descriptor = getDescriptorFrom(node);
     if (descriptor == null) return;
     final Object prevElement = getElementFromDescriptor(descriptor);
     if (prevElement == null) return;
@@ -976,7 +976,7 @@ public class AbstractTreeUi2 {
       });
   }
 
-  public AbstractTreeNod2 getElementFromDescriptor(NodeDescriptor2 descriptor) {
+  public AbstractTreeNod2 getElementFromDescriptor(PresentableNodeDescriptor2 descriptor) {
     return getBuilder().getTreeStructureElement(descriptor);
   }
 
@@ -1120,7 +1120,7 @@ public class AbstractTreeUi2 {
 
   private boolean processAlwaysLeaf(@NotNull DefaultMutableTreeNode node) {
     Object element = getElementFor(node);
-    NodeDescriptor2 desc = getDescriptorFrom(node);
+    PresentableNodeDescriptor2 desc = getDescriptorFrom(node);
 
     if (desc == null) return false;
 
@@ -1183,7 +1183,7 @@ public class AbstractTreeUi2 {
       throw new ProcessCanceledException();
     }
 
-    final NodeDescriptor2 descriptor = getDescriptorFrom(node);
+    final PresentableNodeDescriptor2 descriptor = getDescriptorFrom(node);
 
     final MutualMap<Object, Integer> elementToIndexMap = loadElementsFromStructure(descriptor, preloadedChildren);
     final LoadedChildren loadedChildren =
@@ -1499,8 +1499,8 @@ public class AbstractTreeUi2 {
         final boolean childForceUpdate = isChildNodeForceUpdate(eachChild, forceUpdate, wasExpanded);
 
         promises.add(maybeYield(() -> {
-          NodeDescriptor2 descriptor = preloaded != null ? preloaded.getDescriptor(getElementFor(eachChild)) : null;
-          NodeDescriptor2 descriptorFromNode = getDescriptorFrom(eachChild);
+          PresentableNodeDescriptor2 descriptor = preloaded != null ? preloaded.getDescriptor(getElementFor(eachChild)) : null;
+          PresentableNodeDescriptor2 descriptorFromNode = getDescriptorFrom(eachChild);
           if (isValid(descriptor)) {
             eachChild.setUserObject(descriptor);
             if (descriptorFromNode != null) {
@@ -1935,7 +1935,7 @@ public class AbstractTreeUi2 {
   }
 
   @NotNull
-  private MutualMap<Object, Integer> loadElementsFromStructure(final NodeDescriptor2 descriptor,
+  private MutualMap<Object, Integer> loadElementsFromStructure(final PresentableNodeDescriptor2 descriptor,
                                                                @Nullable LoadedChildren preloadedChildren) {
     MutualMap<Object, Integer> elementToIndexMap = new MutualMap<>(true);
     final Object element = getElementFromDescriptor(descriptor);
@@ -1959,7 +1959,7 @@ public class AbstractTreeUi2 {
   }
 
   @NotNull
-  private AsyncResult<List<TreeNode>> collectNodesToInsert(final NodeDescriptor2 descriptor,
+  private AsyncResult<List<TreeNode>> collectNodesToInsert(final PresentableNodeDescriptor2 descriptor,
                                                            @NotNull final MutualMap<Object, Integer> elementToIndexMap,
                                                            final DefaultMutableTreeNode parent,
                                                            final boolean addLoadingNode,
@@ -2037,7 +2037,7 @@ public class AbstractTreeUi2 {
   }
 
   @NotNull
-  protected DefaultMutableTreeNode createChildNode(final NodeDescriptor2 descriptor) {
+  protected DefaultMutableTreeNode createChildNode(final PresentableNodeDescriptor2 descriptor) {
     return new ElementNode(this, descriptor);
   }
 
@@ -2248,7 +2248,7 @@ public class AbstractTreeUi2 {
     final Set<Object> myElements = new HashSet<>();
     final AbstractTreeUi2 myUi;
 
-    ElementNode(AbstractTreeUi2 ui, NodeDescriptor2 descriptor) {
+    ElementNode(AbstractTreeUi2 ui, PresentableNodeDescriptor2 descriptor) {
       super(descriptor);
       myUi = ui;
     }
@@ -2524,7 +2524,7 @@ public class AbstractTreeUi2 {
 
     if (isNodeBeingBuilt(node)) return;
 
-    NodeDescriptor2 descriptor = getDescriptorFrom(node);
+    PresentableNodeDescriptor2 descriptor = getDescriptorFrom(node);
     if (descriptor == null) return;
 
 
@@ -2677,7 +2677,7 @@ public class AbstractTreeUi2 {
 
   @NotNull
   private Promise<?> processExistingNode(@NotNull final DefaultMutableTreeNode childNode,
-                                             final NodeDescriptor2 childDescriptor,
+                                             final PresentableNodeDescriptor2 childDescriptor,
                                              @NotNull final DefaultMutableTreeNode parentNode,
                                              @NotNull final MutualMap<Object, Integer> elementToIndexMap,
                                              @NotNull final TreeUpdatePass2 pass,
@@ -2710,7 +2710,7 @@ public class AbstractTreeUi2 {
     }
 
     final AsyncPromise<Void> result = new AsyncPromise<>();
-    final Ref<NodeDescriptor2> childDesc = new Ref<>(childDescriptor);
+    final Ref<PresentableNodeDescriptor2> childDesc = new Ref<>(childDescriptor);
 
     update
       .onSuccess(isChanged -> {
@@ -2729,10 +2729,10 @@ public class AbstractTreeUi2 {
             if (isInStructure(elementFromMap) && isInStructure(newElement.get())) {
               final AsyncPromise<Boolean> updateIndexDone = new AsyncPromise<>();
               promise = updateIndexDone;
-              NodeDescriptor2 parentDescriptor = getDescriptorFrom(parentNode);
+              PresentableNodeDescriptor2 parentDescriptor = getDescriptorFrom(parentNode);
               if (parentDescriptor != null) {
-                childDesc.set((NodeDescriptor2) elementFromMap);
-                NodeDescriptor2 oldDesc = getDescriptorFrom(childNode);
+                childDesc.set((PresentableNodeDescriptor2) elementFromMap);
+                PresentableNodeDescriptor2 oldDesc = getDescriptorFrom(childNode);
                 if (isValid(oldDesc)) {
                   childDesc.get().applyFrom(oldDesc);
                 }
@@ -2778,7 +2778,7 @@ public class AbstractTreeUi2 {
                 if (!isNodeNull(newE)) {
                   createMapping(newE, childNode);
                 }
-                NodeDescriptor2 parentDescriptor = getDescriptorFrom(parentNode);
+                PresentableNodeDescriptor2 parentDescriptor = getDescriptorFrom(parentNode);
                 if (parentDescriptor != null) {
                   parentDescriptor.setChildrenSortingStamp(-1);
                 }
@@ -3016,13 +3016,13 @@ public class AbstractTreeUi2 {
    * @param parent     an expected parent for the testing descriptor
    * @return {@code true} if the specified descriptor is valid
    */
-  private boolean isValid(NodeDescriptor2 descriptor, NodeDescriptor2 parent) {
+  private boolean isValid(PresentableNodeDescriptor2 descriptor, PresentableNodeDescriptor2 parent) {
     if (descriptor == null) return false;
     if (parent != null && parent != descriptor.getParentDescriptor()) return false;
     return isValid2(getElementFromDescriptor(descriptor));
   }
 
-  private boolean isValid2(@Nullable NodeDescriptor2 descriptor) {
+  private boolean isValid2(@Nullable PresentableNodeDescriptor2 descriptor) {
     return descriptor != null && isValid(getElementFromDescriptor(descriptor));
   }
 
@@ -3198,7 +3198,7 @@ public class AbstractTreeUi2 {
   }
 
   private void updateNodeImageAndPosition(@NotNull final DefaultMutableTreeNode node) {
-    NodeDescriptor2 descriptor = getDescriptorFrom(node);
+    PresentableNodeDescriptor2 descriptor = getDescriptorFrom(node);
     if (descriptor == null) return;
     if (getElementFromDescriptor(descriptor) == null) return;
 
@@ -3289,7 +3289,7 @@ public class AbstractTreeUi2 {
   }
 
   private void sortChildren(@NotNull DefaultMutableTreeNode node, @NotNull List<? extends TreeNode> children, boolean updateStamp, boolean forceSort) {
-    NodeDescriptor2 descriptor = getDescriptorFrom(node);
+    PresentableNodeDescriptor2 descriptor = getDescriptorFrom(node);
     assert descriptor != null;
 
     if (descriptor.getChildrenSortingStamp() >= getComparatorStamp() && !forceSort) return;
@@ -3326,7 +3326,7 @@ public class AbstractTreeUi2 {
     removeFromCancelled(node);
 
     if (isLoadingNode(node)) return;
-    NodeDescriptor2 descriptor = getDescriptorFrom(node);
+    PresentableNodeDescriptor2 descriptor = getDescriptorFrom(node);
     if (descriptor == null) return;
     final Object element = getElementFromDescriptor(descriptor);
     if (!isNodeNull(element)) {
@@ -4007,7 +4007,7 @@ public class AbstractTreeUi2 {
 
   @Nullable
   public Object getElementFor(Object node) {
-    NodeDescriptor2 descriptor = getDescriptorFrom(node);
+    PresentableNodeDescriptor2 descriptor = getDescriptorFrom(node);
     return descriptor == null ? null : getElementFromDescriptor(descriptor);
   }
 
@@ -4294,7 +4294,7 @@ public class AbstractTreeUi2 {
 
       final TreePath path = e.getPath();
       final DefaultMutableTreeNode node = (DefaultMutableTreeNode)path.getLastPathComponent();
-      NodeDescriptor2 descriptor = getDescriptorFrom(node);
+      PresentableNodeDescriptor2 descriptor = getDescriptorFrom(node);
       if (descriptor == null) return;
 
       TreePath pathToSelect = null;
@@ -4431,7 +4431,7 @@ public class AbstractTreeUi2 {
     }
 
     public boolean isUpdated(Object element) {
-      NodeDescriptor2 desc = getDescriptor(element);
+      PresentableNodeDescriptor2 desc = getDescriptor(element);
       return myChanges.get(desc);
     }
   }

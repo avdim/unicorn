@@ -15,7 +15,7 @@
  */
 package com.intellij.ide.util.treeView;
 
-import com.intellij.psi.impl.smartPointers.NodeDescriptor2;
+import com.intellij.psi.impl.smartPointers.PresentableNodeDescriptor2;
 import org.jetbrains.annotations.NonNls;
 import org.jetbrains.annotations.NotNull;
 
@@ -35,7 +35,7 @@ public class TreeUpdatePass2 {
 
   private boolean myUpdateChildren = true;
   private boolean myUpdateStructure = true;
-  private final Set<NodeDescriptor2> myUpdatedDescriptors = new HashSet<>();
+  private final Set<PresentableNodeDescriptor2> myUpdatedDescriptors = new HashSet<>();
 
   public TreeUpdatePass2(@NotNull final DefaultMutableTreeNode node) {
     myNode = node;
@@ -101,11 +101,11 @@ public class TreeUpdatePass2 {
     return myUpdateStructure;
   }
 
-  public void addToUpdated(NodeDescriptor2 nodeDescriptor) {
+  public void addToUpdated(PresentableNodeDescriptor2 nodeDescriptor) {
     myUpdatedDescriptors.add(nodeDescriptor);
   }
 
-  public boolean isUpdated(NodeDescriptor2 descriptor) {
+  public boolean isUpdated(PresentableNodeDescriptor2 descriptor) {
     return myUpdatedDescriptors.contains(descriptor);
   }
 }
