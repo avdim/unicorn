@@ -4,7 +4,6 @@ package com.intellij.my.file;
 
 import com.intellij.ide.favoritesTreeView.FavoriteTreeNodeDescriptor;
 import com.intellij.ide.projectView.ProjectViewNode;
-import com.intellij.psi.impl.smartPointers.AbstractTreeNod2;
 import com.intellij.ide.projectView.impl.nodes.ProjectViewNode2;
 import com.intellij.ide.util.treeView.*;
 import com.intellij.openapi.progress.ProgressIndicator;
@@ -17,7 +16,7 @@ import com.intellij.openapi.vfs.VirtualFile;
 import com.intellij.psi.PsiDirectory;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiFile;
-import com.intellij.psi.impl.smartPointers.PresentableNodeDescriptor2;
+import com.intellij.psi.impl.smartPointers.AbstractTreeNod2;
 import com.intellij.psi.util.PsiUtilCore;
 import com.intellij.util.ObjectUtils;
 import com.unicorn.Uni;
@@ -78,7 +77,7 @@ public abstract class BaseProjectTreeBuilder2 extends AbstractTreeBuilder2 {
 
   @Override
   protected final void expandNodeChildren(@NotNull final DefaultMutableTreeNode node) {
-    final PresentableNodeDescriptor2 userObject = (PresentableNodeDescriptor2)node.getUserObject();
+    final AbstractTreeNod2 userObject = (AbstractTreeNod2)node.getUserObject();
     if (userObject == null) return;
     Object element = userObject.getElement();
     VirtualFile virtualFile = getFileToRefresh(element);

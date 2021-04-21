@@ -3,6 +3,7 @@ package com.intellij.psi.impl.smartPointers;
 
 import com.intellij.ide.projectView.PresentationData;
 import com.intellij.ide.projectView.impl.nodes.ProjectViewNode2;
+import com.intellij.ide.util.treeView.WeighedItem;
 import com.intellij.navigation.NavigationItem;
 import com.intellij.openapi.application.ApplicationManager;
 import com.intellij.openapi.application.ReadAction;
@@ -12,6 +13,7 @@ import com.intellij.openapi.project.ProjectManager;
 import com.intellij.openapi.ui.Queryable;
 import com.intellij.openapi.util.Comparing;
 import com.intellij.openapi.util.Key;
+import com.intellij.openapi.util.NlsSafe;
 import com.intellij.openapi.vcs.FileStatus;
 import com.intellij.openapi.vfs.VirtualFile;
 import com.intellij.psi.*;
@@ -22,20 +24,30 @@ import com.unicorn.Uni;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
+import javax.swing.*;
 import java.awt.*;
 import java.lang.ref.Reference;
 import java.util.Collection;
 import java.util.Map;
 
-public abstract class AbstractTreeNod2<T> extends PresentableNodeDescriptor2<AbstractTreeNod2<T>>
+public abstract class AbstractTreeNod2<T>
   implements NavigationItem, Queryable.Contributor, LeafState.Supplier {
 
+  public static final int DEFAULT_WEIGHT = 30;
   private static final Logger LOG = Logger.getInstance(AbstractTreeNod2.class);
+  protected @NlsSafe String myName;
+  @Nullable protected Icon myClosedIcon;
   private AbstractTreeNod2<?> myParent;
   private Object myValue;
   private boolean myNullValueSet;
   private final boolean myNodeWrapper;
   public static final Object TREE_WRAPPER_VALUE = new Object();
+  private PresentationData myTemplatePresentation;
+  private PresentationData myUpdatedPresentation;
+  private int myIndex = -1;
+  private long myChildrenSortingStamp = -1;
+  private long myUpdateCount;
+  private boolean myWasDeclaredAlwaysLeaf;
 
   protected AbstractTreeNod2(@NotNull T value) {
     super();
@@ -49,7 +61,6 @@ public abstract class AbstractTreeNod2<T> extends PresentableNodeDescriptor2<Abs
     return CopyPasteManager.getInstance().isCutElement(getValue());
   }
 
-  @Override
   protected void postprocess(@NotNull PresentationData presentation) {
     setForcedForeground(presentation);
   }
@@ -67,7 +78,6 @@ public abstract class AbstractTreeNod2<T> extends PresentableNodeDescriptor2<Abs
     }
   }
 
-  @Override
   protected boolean shouldUpdateData() {
     return getEqualityObject() != null;
   }
@@ -83,7 +93,6 @@ public abstract class AbstractTreeNod2<T> extends PresentableNodeDescriptor2<Abs
     return false;
   }
 
-  @Override
   @Nullable
   public final ProjectViewNode2<T> getElement() {
     return getEqualityObject() != null ? (ProjectViewNode2)this : null;
@@ -112,8 +121,8 @@ public abstract class AbstractTreeNod2<T> extends PresentableNodeDescriptor2<Abs
     myParent = parent;
   }
 
-  @Override
-  public final PresentableNodeDescriptor2 getParentDescriptor() {
+  @Nullable
+  public final AbstractTreeNod2 getParentDescriptor() {
     return myParent;
   }
 
@@ -283,4 +292,147 @@ public abstract class AbstractTreeNod2<T> extends PresentableNodeDescriptor2<Abs
     return Comparing.equal(getValue(), element);
   }
 
+  public final boolean update() {
+    if (shouldUpdateData()) {
+      PresentationData before = getPresentation().clone();
+      PresentationData updated = getUpdatedPresentation();
+      return shouldApply() && apply(updated, before);
+    }
+    return false;
+  }
+
+  protected final boolean apply(@NotNull PresentationData presentation) {
+    return apply(presentation, null);
+  }
+
+  public void applyFrom(@NotNull AbstractTreeNod2 desc) {
+    if (desc instanceof AbstractTreeNod2) {
+      apply(((AbstractTreeNod2<?>)desc).getPresentation());
+    }
+    else {
+      setIcon(desc.getIcon());
+      myName = desc.myName;
+    }
+  }
+
+  protected final boolean apply(@NotNull PresentationData presentation, @Nullable PresentationData before) {
+    setIcon(presentation.getIcon(false));
+    myName = presentation.getPresentableText();
+    boolean updated = !presentation.equals(before);
+
+    if (myUpdatedPresentation == null) {
+      myUpdatedPresentation = createPresentation();
+    }
+
+    myUpdatedPresentation.copyFrom(presentation);
+
+    if (myTemplatePresentation != null) {
+      myUpdatedPresentation.applyFrom(myTemplatePresentation);
+    }
+
+    updated |= myUpdatedPresentation.isChanged();
+    myUpdatedPresentation.setChanged(false);
+
+    return updated;
+  }
+
+  @NotNull
+  private PresentationData getUpdatedPresentation() {
+    PresentationData presentation = myUpdatedPresentation != null ? myUpdatedPresentation : createPresentation();
+    myUpdatedPresentation = presentation;
+    presentation.clear();
+    update(presentation);
+
+    if (shouldPostprocess()) {
+      postprocess(presentation);
+    }
+
+    return presentation;
+  }
+
+  @NotNull
+  protected PresentationData createPresentation() {
+    return new PresentationData();
+  }
+
+  protected boolean shouldPostprocess() {
+    return true;
+  }
+
+  protected boolean shouldApply() {
+    return true;
+  }
+
+  protected abstract void update(@NotNull PresentationData presentation);
+
+  @NotNull
+  public final PresentationData getPresentation() {
+    return myUpdatedPresentation == null ? getTemplatePresentation() : myUpdatedPresentation;
+  }
+
+  @NotNull
+  protected final PresentationData getTemplatePresentation() {
+    if (myTemplatePresentation == null) {
+      myTemplatePresentation = createPresentation();
+    }
+
+    return myTemplatePresentation;
+  }
+
+  public int getIndex() {
+    return myIndex;
+  }
+
+  public void setIndex(int index) {
+    myIndex = index;
+  }
+
+  @Override
+  public @NlsSafe String toString() {
+    // NB!: this method may return null if node is not valid
+    // it contradicts the specification, but the fix breaks existing behaviour
+    // see com.intellij.ide.util.FileStructurePopup#getSpeedSearchText
+    return myName;
+  }
+
+  @Nullable
+  public final Icon getIcon() {
+    return myClosedIcon;
+  }
+
+  public int getWeight() {
+    ProjectViewNode2 element = getElement();
+    if (element instanceof WeighedItem) {
+      return ((WeighedItem) element).getWeight();
+    }
+    return DEFAULT_WEIGHT;
+  }
+
+  public final long getChildrenSortingStamp() {
+    return myChildrenSortingStamp;
+  }
+
+  public final void setChildrenSortingStamp(long stamp) {
+    myChildrenSortingStamp = stamp;
+  }
+
+  public final long getUpdateCount() {
+    return myUpdateCount;
+  }
+
+  public final void setUpdateCount(long updateCount) {
+    myUpdateCount = updateCount;
+  }
+
+  public boolean isWasDeclaredAlwaysLeaf() {
+    return myWasDeclaredAlwaysLeaf;
+  }
+
+  public void setWasDeclaredAlwaysLeaf(boolean leaf) {
+    myWasDeclaredAlwaysLeaf = leaf;
+  }
+
+  public void setIcon(@Nullable Icon closedIcon) {
+    myClosedIcon = closedIcon;
+  }
 }

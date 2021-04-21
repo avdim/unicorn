@@ -4,7 +4,6 @@ package com.intellij.my.file
 import com.intellij.ide.projectView.impl.nodes.BasePsiNode2
 import com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode2
 import com.intellij.ide.projectView.impl.nodes.PsiFileNode2
-import com.intellij.ide.projectView.impl.nodes.PsiFileSystemItemFilter
 import com.intellij.openapi.project.Project
 import com.intellij.psi.PsiDirectory
 import com.intellij.psi.PsiManager

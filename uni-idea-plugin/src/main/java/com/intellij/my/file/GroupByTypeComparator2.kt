@@ -3,16 +3,16 @@ package com.intellij.my.file
 
 import com.intellij.ide.projectView.ProjectViewNode
 import com.intellij.openapi.util.text.StringUtil
-import com.intellij.psi.impl.smartPointers.PresentableNodeDescriptor2
+import com.intellij.psi.impl.smartPointers.AbstractTreeNod2
 import java.util.Comparator
 
-class GroupByTypeComparator2 : Comparator<PresentableNodeDescriptor2<*>?> {
+class GroupByTypeComparator2 : Comparator<AbstractTreeNod2<*>?> {
   private val _isAbbreviateQualifiedNames: Boolean = false
   private val _isSortByType: Boolean = false
   private val _isManualOrder: Boolean = false
   private val _isFoldersAlwaysOnTop: Boolean = false
 
-  override fun compare(descriptor1: PresentableNodeDescriptor2<*>?, descriptor2: PresentableNodeDescriptor2<*>?): Int {
+  override fun compare(descriptor1: AbstractTreeNod2<*>?, descriptor2: AbstractTreeNod2<*>?): Int {
     var descriptor1 = descriptor1
     var descriptor2 = descriptor2
     descriptor1 = getNodeDescriptor(descriptor1)
@@ -71,7 +71,7 @@ class GroupByTypeComparator2 : Comparator<PresentableNodeDescriptor2<*>?> {
     }
   }
 
-  private fun getNodeDescriptor(descriptor: PresentableNodeDescriptor2<*>?): PresentableNodeDescriptor2<*>? {
+  private fun getNodeDescriptor(descriptor: AbstractTreeNod2<*>?): AbstractTreeNod2<*>? {
     var current = descriptor
 //    if (!_isSortByType && current is ProjectViewNode<*> && current.isSortByFirstChild) {
 //      val children = current.children

@@ -2,11 +2,8 @@
 
 package com.intellij.ide.projectView.impl.nodes;
 
-import com.intellij.codeInsight.navigation.NavigationUtil;
 import com.intellij.ide.*;
 import com.intellij.ide.projectView.PresentationData;
-import com.intellij.ide.projectView.ProjectViewSettings;
-import com.intellij.ide.projectView.ViewSettings;
 
 import com.intellij.ide.util.treeView.ValidateableNode;
 import com.intellij.navigation.NavigationItem;
@@ -16,7 +13,6 @@ import com.intellij.openapi.application.ApplicationNamesInfo;
 import com.intellij.openapi.command.CommandProcessor;
 import com.intellij.openapi.diagnostic.Logger;
 import com.intellij.openapi.editor.*;
-import com.intellij.openapi.editor.colors.CodeInsightColors;
 import com.intellij.openapi.fileEditor.*;
 import com.intellij.openapi.fileEditor.impl.EditorHistoryManager;
 import com.intellij.openapi.fileTypes.FileType;
@@ -43,7 +39,6 @@ import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiFile;
 import com.intellij.psi.impl.smartPointers.AbstractTreeNod2;
 import com.intellij.psi.impl.smartPointers.DebugBlackFile;
-import com.intellij.psi.util.PsiUtilCore;
 import com.intellij.ui.LayeredIcon;
 import com.intellij.util.AstLoadingFilter;
 import com.intellij.util.PlatformIcons;
