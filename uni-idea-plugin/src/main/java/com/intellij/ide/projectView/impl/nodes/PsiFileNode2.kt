@@ -23,7 +23,7 @@ class PsiFileNode2(value: PsiFile) : BasePsiNode2<PsiFile>(value), NavigatableWi
         if (value != null) {
             data.presentableText = value.name
             data.setIcon(value.getIcon(Iconable.ICON_FLAG_READ_STATUS))
-            val file = virtualFile
+            val file = getVirtualFile()
             if (file != null && file.`is`(VFileProperty.SYMLINK)) {
                 val target = file.canonicalPath
                 if (target == null) {
@@ -37,7 +37,7 @@ class PsiFileNode2(value: PsiFile) : BasePsiNode2<PsiFile>(value), NavigatableWi
     }
 
     override fun canNavigate(): Boolean {
-        virtualFile //todo check: is file can opened in editor
+        getVirtualFile() //todo check: is file can opened in editor
         return true
     }
 

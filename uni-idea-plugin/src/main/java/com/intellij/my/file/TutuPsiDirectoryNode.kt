@@ -16,7 +16,7 @@ class TutuPsiDirectoryNode @JvmOverloads constructor(
 ) : PsiDirectoryNode2(value) {
 
   override fun getChildrenImpl(): Collection<AbstractTreeNod2<*>> {
-    val baseDir = virtualFile!!
+    val baseDir = getVirtualFile()!!
     val psiManager = PsiManager.getInstance(Uni.todoUseOpenedProject(project))
     val nodes: MutableList<BasePsiNode2<*>> = ArrayList()
     val files = baseDir.children

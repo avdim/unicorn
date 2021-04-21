@@ -9,7 +9,7 @@ import com.intellij.psi.impl.smartPointers.AbstractTreeNod2
 /**
  * A node in the project view tree.
  */
-abstract class ProjectViewNode2<Value:Any> constructor(value: Value) : AbstractTreeNod2<Value>(value), RootsProvider {
+abstract class ProjectViewNode2<T:Any> constructor(value: T) : AbstractTreeNod2<T>(value), RootsProvider {
     override fun getRoots(): Collection<VirtualFile> {
         val value = value
         if (value is RootsProvider) {

@@ -1,244 +1,344 @@
 // Copyright 2000-2020 JetBrains s.r.o. Use of this source code is governed by the Apache 2.0 license that can be found in the LICENSE file.
-package com.intellij.psi.impl.smartPointers;
+package com.intellij.psi.impl.smartPointers
 
-import com.intellij.ide.projectView.PresentationData;
-import com.intellij.ide.projectView.impl.nodes.ProjectViewNode2;
-import com.intellij.ide.util.treeView.WeighedItem;
-import com.intellij.navigation.NavigationItem;
-import com.intellij.openapi.application.ApplicationManager;
-import com.intellij.openapi.application.ReadAction;
-import com.intellij.openapi.diagnostic.Logger;
-import com.intellij.openapi.ide.CopyPasteManager;
-import com.intellij.openapi.project.ProjectManager;
-import com.intellij.openapi.ui.Queryable;
-import com.intellij.openapi.util.Comparing;
-import com.intellij.openapi.util.Key;
-import com.intellij.openapi.util.NlsSafe;
-import com.intellij.openapi.vcs.FileStatus;
-import com.intellij.openapi.vfs.VirtualFile;
-import com.intellij.psi.*;
-import com.intellij.psi.util.PsiUtilCore;
-import com.intellij.reference.SoftReference;
-import com.intellij.ui.tree.LeafState;
-import com.unicorn.Uni;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import com.intellij.ide.projectView.PresentationData
+import com.intellij.ide.projectView.impl.nodes.ProjectViewNode2
+import com.intellij.ide.util.treeView.WeighedItem
+import com.intellij.navigation.NavigationItem
+import com.intellij.openapi.application.ApplicationManager
+import com.intellij.openapi.application.ReadAction
+import com.intellij.openapi.diagnostic.Logger
+import com.intellij.openapi.ide.CopyPasteManager
+import com.intellij.openapi.project.ProjectManager
+import com.intellij.openapi.ui.Queryable
+import com.intellij.openapi.util.Comparing
+import com.intellij.openapi.util.Key
+import com.intellij.openapi.util.NlsSafe
+import com.intellij.openapi.vcs.FileStatus
+import com.intellij.openapi.vfs.VirtualFile
+import com.intellij.psi.PsiElement
+import com.intellij.psi.PsiFile
+import com.intellij.psi.PsiInvalidElementAccessException
+import com.intellij.psi.SmartPsiElementPointer
+import com.intellij.psi.util.PsiUtilCore
+import com.intellij.reference.SoftReference
+import com.intellij.ui.tree.LeafState
+import com.unicorn.Uni.log
+import java.lang.ref.Reference
+import javax.swing.Icon
 
-import javax.swing.*;
-import java.awt.*;
-import java.lang.ref.Reference;
-import java.util.Collection;
-import java.util.Map;
+abstract class AbstractTreeNod2<T : Any> protected constructor(value: T) : NavigationItem, Queryable.Contributor,
+  LeafState.Supplier {
+  @JvmField
+  protected var myName: @NlsSafe String? = null
+  var icon: Icon? = null
 
-public abstract class AbstractTreeNod2<T>
-  implements NavigationItem, Queryable.Contributor, LeafState.Supplier {
+  fun getParent(): AbstractTreeNod2<*>? {
+    return _myParent
+  }
+  fun setParent(parent: AbstractTreeNod2<*>) {
+    _myParent = parent
+  }
+  private var _myParent:AbstractTreeNod2<*>? = null
+  var parentDescriptor: AbstractTreeNod2<*>? = null
+    get() = _myParent
+    set
 
-  public static final int DEFAULT_WEIGHT = 30;
-  private static final Logger LOG = Logger.getInstance(AbstractTreeNod2.class);
-  protected @NlsSafe String myName;
-  @Nullable protected Icon myClosedIcon;
-  private AbstractTreeNod2<?> myParent;
-  private Object myValue;
-  private boolean myNullValueSet;
-  private final boolean myNodeWrapper;
-  public static final Object TREE_WRAPPER_VALUE = new Object();
-  private PresentationData myTemplatePresentation;
-  private PresentationData myUpdatedPresentation;
-  private int myIndex = -1;
-  private long myChildrenSortingStamp = -1;
-  private long myUpdateCount;
-  private boolean myWasDeclaredAlwaysLeaf;
-
-  protected AbstractTreeNod2(@NotNull T value) {
-    super();
-    myNodeWrapper = setInternalValue(value);
+  private var myValue: Any? = null
+  private var myNullValueSet = false
+  private val myNodeWrapper: Boolean
+  private var myTemplatePresentation: PresentationData? = null
+  private var myUpdatedPresentation: PresentationData? = null
+  var index = -1
+  var childrenSortingStamp: Long = -1
+  var updateCount: Long = 0
+  var isWasDeclaredAlwaysLeaf = false
+  abstract fun getChildren(): Collection<ProjectViewNode2<*>>
+  protected fun valueIsCut(): Boolean {
+    return CopyPasteManager.getInstance().isCutElement(value)
   }
 
-  @NotNull
-  public abstract Collection<? extends ProjectViewNode2<?>> getChildren();
-
-  protected boolean valueIsCut() {
-    return CopyPasteManager.getInstance().isCutElement(getValue());
+  protected fun postprocess(presentation: PresentationData) {
+    setForcedForeground(presentation)
   }
 
-  protected void postprocess(@NotNull PresentationData presentation) {
-    setForcedForeground(presentation);
-  }
-
-  private void setForcedForeground(@NotNull PresentationData presentation) {
-    final FileStatus status = getFileStatus();
-    Color fgColor = status.getColor();
-
+  private fun setForcedForeground(presentation: PresentationData) {
+    val status = getFileStatus()
+    var fgColor = status.color
     if (valueIsCut()) {
-      fgColor = CopyPasteManager.CUT_COLOR;
+      fgColor = CopyPasteManager.CUT_COLOR
     }
-
-    if (presentation.getForcedTextForeground() == null) {
-      presentation.setForcedTextForeground(fgColor);
+    if (presentation.forcedTextForeground == null) {
+      presentation.forcedTextForeground = fgColor
     }
   }
 
-  protected boolean shouldUpdateData() {
-    return getEqualityObject() != null;
+  protected fun shouldUpdateData(): Boolean {
+    return equalityObject != null
   }
 
-  @NotNull
-  @Override
-  public LeafState getLeafState() {
-    if (isAlwaysShowPlus()) return LeafState.NEVER;
-    return LeafState.DEFAULT;
+  override fun getLeafState(): LeafState {
+    return if (isAlwaysShowPlus) LeafState.NEVER else LeafState.DEFAULT
   }
 
-  public boolean isAlwaysShowPlus() {
-    return false;
-  }
+  open val isAlwaysShowPlus: Boolean get() = false
+  val element: ProjectViewNode2<T>? get() = if (equalityObject != null) this as? ProjectViewNode2<T> else null
 
-  @Nullable
-  public final ProjectViewNode2<T> getElement() {
-    return getEqualityObject() != null ? (ProjectViewNode2)this : null;
-  }
-
-  @Override
-  public boolean equals(Object object) {
-    if (object == this) return true;
-    if (object == null || !object.getClass().equals(getClass())) return false;
+  override fun equals(`object`: Any?): Boolean {
+    if (`object` === this) return true
+    return if (`object` == null || `object`.javaClass != javaClass) false else Comparing.equal(
+      myValue,
+      (`object` as AbstractTreeNod2<*>).myValue
+    )
     // we should not change this behaviour if value is set to null
-    return Comparing.equal(myValue, ((AbstractTreeNod2<?>)object).myValue);
   }
 
-  @Override
-  public int hashCode() {
+  override fun hashCode(): Int {
     // we should not change hash code if value is set to null
-    Object value = myValue;
-    return value == null ? 0 : value.hashCode();
+    val value = myValue
+    return value?.hashCode() ?: 0
   }
 
-  public final AbstractTreeNod2 getParent() {
-    return myParent;
-  }
-
-  public final void setParent(AbstractTreeNod2 parent) {
-    myParent = parent;
-  }
-
-  @Nullable
-  public final AbstractTreeNod2 getParentDescriptor() {
-    return myParent;
-  }
-
-  public final T getValue() {
-    Object value = getEqualityObject();
-    return value == null ? null : (T) retrieveElement(value);
-  }
-
-  @Nullable
-  public static Object retrieveElement(@NotNull final Object pointer) {
-    if (pointer instanceof SmartPsiElementPointer) {
-      if(!(pointer instanceof SmartPsiElementPointerImpl2)) {
-        Uni.getLog().error("!(pointer instanceof SmartPsiElementPointerImpl2)");
+  var value: T?
+    get() {
+      val value = equalityObject
+      return if (value == null) null else retrieveElement(value) as T?
+    }
+    set(value) {
+      val debug = !myNodeWrapper && LOG.isDebugEnabled
+      val hash = if (!debug) 0 else hashCode()
+      myNullValueSet = value == null || setInternalValue(value)
+      if (debug && hash != hashCode()) {
+        LOG.warn("hash code changed: $myValue")
       }
-      return ReadAction.compute(() -> ((SmartPsiElementPointerImpl2<?>)pointer).getElement());//по факту тут тотлько SmartPsiElementPointerImpl2
     }
-    return pointer;
-  }
-
-  public final void setValue(T value) {
-    boolean debug = !myNodeWrapper && LOG.isDebugEnabled();
-    int hash = !debug ? 0 : hashCode();
-    myNullValueSet = value == null || setInternalValue(value);
-    if (debug && hash != hashCode()) {
-      LOG.warn("hash code changed: " + myValue);
-    }
-  }
 
   /**
-   * Stores the anchor to new value if it is not {@code null}
+   * Stores the anchor to new value if it is not `null`
    *
    * @param value a new value to set
-   * @return {@code true} if the specified value is {@code null} and the anchor is not changed
+   * @return `true` if the specified value is `null` and the anchor is not changed
    */
-  private boolean setInternalValue(@NotNull T value) {
-    if (value == TREE_WRAPPER_VALUE) return true;
-
-    myValue = createAnchor(value);
-    return false;
+  private fun setInternalValue(value: T): Boolean {
+    if (value === TREE_WRAPPER_VALUE) return true
+    myValue = createAnchor(value)
+    return false
   }
 
-  public Object createAnchor(@NotNull Object element) {
-    if (element instanceof PsiElement) {
-      PsiElement psi = (PsiElement)element;
-      return ReadAction.compute(() -> {
-        if (!psi.isValid()) return psi;
-        SmartPsiElementPointer<PsiElement> psiResult;
-        SmartPsiElementPointer<PsiElement> oldPsiResult = SmartPointerManagerImpl2.getInstance(psi.getProject()).createSmartPsiElementPointer(psi);
-        SmartPsiElementPointer<PsiElement> newPsiResult = createSmartPsiElementPointer(psi);
-        if (true) {
-          psiResult = newPsiResult;
+  fun createAnchor(element: Any): Any {
+    if (element is PsiElement) {
+      val psi = element
+      return ReadAction.compute<Any, RuntimeException> {
+        if (!psi.isValid) return@compute psi
+        val psiResult: SmartPsiElementPointer<PsiElement>
+        val oldPsiResult = SmartPointerManagerImpl2.getInstance(psi.project).createSmartPsiElementPointer(psi)
+        val newPsiResult = createSmartPsiElementPointer(psi)
+        psiResult = if (true) {
+          newPsiResult
         } else {
-          psiResult = oldPsiResult;
+          oldPsiResult
         }
-
-        return psiResult;
-      });
-    }
-    return element;
-  }
-
-  @NotNull
-  public static <E extends PsiElement> SmartPsiElementPointer<E> createSmartPsiElementPointer(@NotNull E element) {
-    ApplicationManager.getApplication().assertReadAccessAllowed();
-    PsiFile containingFile = element.getContainingFile();
-    return createSmartPsiElementPointer(element, containingFile);
-  }
-
-  @NotNull
-  public static <E extends PsiElement> SmartPsiElementPointer<E> createSmartPsiElementPointer(@NotNull E element, PsiFile containingFile) {
-    return createSmartPsiElementPointer2(element, containingFile);
-  }
-
-  private static <E extends PsiElement> SmartPsiElementPointerImpl2<E> getCachedPointer(@NotNull E element) {
-    Reference<SmartPsiElementPointerImpl2<?>> data = element.getUserData(CACHED_SMART_POINTER_KEY);
-    SmartPsiElementPointerImpl2<?> cachedPointer = SoftReference.dereference(data);
-    if (cachedPointer != null) {
-      PsiElement cachedElement = cachedPointer.getElement();
-      if (cachedElement != element) {
-        return null;
+        psiResult
       }
     }
-    //noinspection unchecked
-    return (SmartPsiElementPointerImpl2<E>)cachedPointer;
+    return element
   }
 
-  @NotNull
-  public static <E extends PsiElement> SmartPsiElementPointer<E> createSmartPsiElementPointer2(@NotNull E element,
-                                                                                              PsiFile containingFile) {
-    ensureValid(element, containingFile);
-//    SmartPointerTracker.processQueue();
+  val equalityObject: Any?
+    get() = if (myNullValueSet) null else myValue
+
+  override fun apply(info: Map<String, String>) {}
+  protected abstract fun getVirtualFile(): VirtualFile?
+  abstract fun getFileStatus(): FileStatus
+  override fun getName(): String? {
+    return myName
+  }
+
+  override fun navigate(requestFocus: Boolean) {}
+  override fun canNavigate(): Boolean {
+    return false
+  }
+
+  override fun canNavigateToSource(): Boolean {
+    return false
+  }
+
+  protected val parentValue: Any?
+    protected get() {
+      val parent = parentDescriptor
+      return parent?.value
+    }
+
+  open fun canRepresent(element: Any): Boolean {
+    return Comparing.equal(value, element)
+  }
+
+  fun update(): Boolean {
+    if (shouldUpdateData()) {
+      val before = presentation.clone()
+      val updated = updatedPresentation
+      return shouldApply() && apply(updated, before)
+    }
+    return false
+  }
+
+  fun applyFrom(desc: AbstractTreeNod2<*>) {
+    if (desc is AbstractTreeNod2<*>) {
+      apply(desc.presentation)
+    } else {
+      icon = desc.icon
+      myName = desc.myName
+    }
+  }
+
+  protected fun apply(presentation: PresentationData, before: PresentationData? = null): Boolean {
+    icon = presentation.getIcon(false)
+    myName = presentation.presentableText
+    var updated = presentation != before
+    if (myUpdatedPresentation == null) {
+      myUpdatedPresentation = createPresentation()
+    }
+    myUpdatedPresentation!!.copyFrom(presentation)
+    if (myTemplatePresentation != null) {
+      myUpdatedPresentation!!.applyFrom(myTemplatePresentation)
+    }
+    updated = updated or myUpdatedPresentation!!.isChanged
+    myUpdatedPresentation!!.isChanged = false
+    return updated
+  }
+
+  private val updatedPresentation: PresentationData
+    private get() {
+      val presentation = if (myUpdatedPresentation != null) myUpdatedPresentation!! else createPresentation()
+      myUpdatedPresentation = presentation
+      presentation.clear()
+      update(presentation)
+      if (shouldPostprocess()) {
+        postprocess(presentation)
+      }
+      return presentation
+    }
+
+  protected fun createPresentation(): PresentationData {
+    return PresentationData()
+  }
+
+  protected open fun shouldPostprocess(): Boolean {
+    return true
+  }
+
+  protected open fun shouldApply(): Boolean {
+    return true
+  }
+
+  protected abstract fun update(presentation: PresentationData)
+  override fun getPresentation(): PresentationData {
+    return if (myUpdatedPresentation == null) templatePresentation else myUpdatedPresentation!!
+  }
+
+  protected val templatePresentation: PresentationData
+    protected get() {
+      if (myTemplatePresentation == null) {
+        myTemplatePresentation = createPresentation()
+      }
+      return myTemplatePresentation!!
+    }
+
+  override fun toString(): String {
+    // NB!: this method may return null if node is not valid
+    // it contradicts the specification, but the fix breaks existing behaviour
+    // see com.intellij.ide.util.FileStructurePopup#getSpeedSearchText
+    return myName!!
+  }
+
+  open fun getWeight(): Int {
+    val element: ProjectViewNode2<*>? = element
+    return if (element is WeighedItem) {
+      (element as WeighedItem).weight
+    } else DEFAULT_WEIGHT
+  }
+
+  companion object {
+    const val DEFAULT_WEIGHT = 30
+    private val LOG = Logger.getInstance(
+      AbstractTreeNod2::class.java
+    )
+    val TREE_WRAPPER_VALUE = Any()
+    fun retrieveElement(pointer: Any): Any? {
+      if (pointer is SmartPsiElementPointer<*>) {
+        if (pointer !is SmartPsiElementPointerImpl2<*>) {
+          log.error("!(pointer instanceof SmartPsiElementPointerImpl2)")
+        }
+        return ReadAction.compute<Any?, Throwable> { (pointer as SmartPsiElementPointerImpl2<*>).element } //по факту тут тотлько SmartPsiElementPointerImpl2
+      }
+      return pointer
+    }
+
+    fun createSmartPsiElementPointer(element: PsiElement): SmartPsiElementPointer<PsiElement> {
+      ApplicationManager.getApplication().assertReadAccessAllowed()
+      val containingFile = element.containingFile
+      return createSmartPsiElementPointer(element, containingFile)
+    }
+
+    fun createSmartPsiElementPointer(
+      element: PsiElement,
+      containingFile: PsiFile?
+    ): SmartPsiElementPointer<PsiElement> {
+      return createSmartPsiElementPointer2(element, containingFile)
+    }
+
+    private fun <E : PsiElement?> getCachedPointer(element: E): SmartPsiElementPointerImpl2<E>? {
+      val data = element?.getUserData(CACHED_SMART_POINTER_KEY)
+      val cachedPointer = SoftReference.dereference(data)
+      if (cachedPointer != null) {
+        val cachedElement = cachedPointer.element
+        if (cachedElement !== element) {
+          return null
+        }
+      }
+      return cachedPointer as? SmartPsiElementPointerImpl2<E>
+    }
+
+    fun createSmartPsiElementPointer2(
+      element: PsiElement,
+      containingFile: PsiFile?
+    ): SmartPsiElementPointer<PsiElement> {
+
+      if (element == null) {
+        throw throw PsiInvalidElementAccessException(containingFile, "element == null")
+      }
+      val valid = containingFile?.isValid ?: element.isValid
+      if (!valid) {
+        PsiUtilCore.ensureValid(element)
+        if (containingFile != null && !containingFile.isValid) {
+          throw PsiInvalidElementAccessException(
+            containingFile,
+            "Element " + element.javaClass + "(" + element.language + ")" + " claims to be valid but returns invalid containing file "
+          )
+        }
+      }
+      //    SmartPointerTracker.processQueue();
 //    ensureMyProject(containingFile != null ? containingFile.getProject() : element.getProject());
-    SmartPsiElementPointerImpl2<E> pointer = getCachedPointer(element);
-    if (pointer != null && pointer.incrementAndGetReferenceCount(1) > 0) {
-      return pointer;
-    }
-
-    pointer = new SmartPsiElementPointerImpl2<E>(SmartPointerManagerImpl2.getInstance(ProjectManager.getInstance().getDefaultProject() ), element, containingFile);
-    if (containingFile != null) {
-      trackPointer();
-    }
-    element.putUserData(CACHED_SMART_POINTER_KEY, new SoftReference<>(pointer));
-    return pointer;
-  }
-  private static final Key<Reference<SmartPsiElementPointerImpl2<?>>> CACHED_SMART_POINTER_KEY = Key.create("CACHED_SMART_POINTER_KEY_2");
-  private static void ensureValid(@NotNull PsiElement element, @Nullable PsiFile containingFile) {
-    boolean valid = containingFile != null ? containingFile.isValid() : element.isValid();
-    if (!valid) {
-      PsiUtilCore.ensureValid(element);
-      if (containingFile != null && !containingFile.isValid()) {
-        throw new PsiInvalidElementAccessException(containingFile, "Element " + element.getClass() + "(" + element.getLanguage() + ")" + " claims to be valid but returns invalid containing file ");
+      var pointer = getCachedPointer(element)
+      if (pointer != null && pointer.incrementAndGetReferenceCount(1) > 0) {
+        return pointer
       }
+      pointer = SmartPsiElementPointerImpl2(
+        SmartPointerManagerImpl2.getInstance(ProjectManager.getInstance().defaultProject),
+        element,
+        containingFile
+      )
+      if (containingFile != null) {
+        trackPointer<PsiElement>()
+      }
+      element.putUserData(CACHED_SMART_POINTER_KEY, SoftReference(pointer))
+      return pointer
     }
-  }
 
-  private static <E extends PsiElement> void trackPointer() {
+    private val CACHED_SMART_POINTER_KEY =
+      Key.create<Reference<SmartPsiElementPointerImpl2<*>>>("CACHED_SMART_POINTER_KEY_2")
+
+    private fun <E : PsiElement?> trackPointer() {
 //    Uni.getLog().error("should not use: trackPointer(pointer= " + pointer +  ", containingFile: " + containingFile);
 //    SmartPsiElementPointerImpl2 info = pointer.getElementInfo();
 //    if (!(info instanceof SelfElementInfo)) return;
@@ -248,191 +348,10 @@ public abstract class AbstractTreeNod2<T>
 //      tracker = getOrCreateTracker(containingFile);
 //    }
 //    tracker.addReference(pointer);
-  }
-
-  public final Object getEqualityObject() {
-    return myNullValueSet ? null : myValue;
-  }
-
-  @Override
-  public void apply(@NotNull Map<String, String> info) {
-  }
-
-  abstract protected VirtualFile getVirtualFile();
-
-  abstract public FileStatus getFileStatus();
-
-  @Override
-  public String getName() {
-    return myName;
-  }
-
-  @Override
-  public void navigate(boolean requestFocus) {
-  }
-
-  @Override
-  public boolean canNavigate() {
-    return false;
-  }
-
-  @Override
-  public boolean canNavigateToSource() {
-    return false;
-  }
-
-  @Nullable
-  protected final Object getParentValue() {
-    AbstractTreeNod2<?> parent = getParent();
-    return parent == null ? null : parent.getValue();
-  }
-
-
-  public boolean canRepresent(final Object element) {
-    return Comparing.equal(getValue(), element);
-  }
-
-  public final boolean update() {
-    if (shouldUpdateData()) {
-      PresentationData before = getPresentation().clone();
-      PresentationData updated = getUpdatedPresentation();
-      return shouldApply() && apply(updated, before);
-    }
-    return false;
-  }
-
-  protected final boolean apply(@NotNull PresentationData presentation) {
-    return apply(presentation, null);
-  }
-
-  public void applyFrom(@NotNull AbstractTreeNod2 desc) {
-    if (desc instanceof AbstractTreeNod2) {
-      apply(((AbstractTreeNod2<?>)desc).getPresentation());
-    }
-    else {
-      setIcon(desc.getIcon());
-      myName = desc.myName;
     }
   }
 
-  protected final boolean apply(@NotNull PresentationData presentation, @Nullable PresentationData before) {
-    setIcon(presentation.getIcon(false));
-    myName = presentation.getPresentableText();
-    boolean updated = !presentation.equals(before);
-
-    if (myUpdatedPresentation == null) {
-      myUpdatedPresentation = createPresentation();
-    }
-
-    myUpdatedPresentation.copyFrom(presentation);
-
-    if (myTemplatePresentation != null) {
-      myUpdatedPresentation.applyFrom(myTemplatePresentation);
-    }
-
-    updated |= myUpdatedPresentation.isChanged();
-    myUpdatedPresentation.setChanged(false);
-
-    return updated;
-  }
-
-  @NotNull
-  private PresentationData getUpdatedPresentation() {
-    PresentationData presentation = myUpdatedPresentation != null ? myUpdatedPresentation : createPresentation();
-    myUpdatedPresentation = presentation;
-    presentation.clear();
-    update(presentation);
-
-    if (shouldPostprocess()) {
-      postprocess(presentation);
-    }
-
-    return presentation;
-  }
-
-  @NotNull
-  protected PresentationData createPresentation() {
-    return new PresentationData();
-  }
-
-  protected boolean shouldPostprocess() {
-    return true;
-  }
-
-  protected boolean shouldApply() {
-    return true;
-  }
-
-  protected abstract void update(@NotNull PresentationData presentation);
-
-  @NotNull
-  public final PresentationData getPresentation() {
-    return myUpdatedPresentation == null ? getTemplatePresentation() : myUpdatedPresentation;
-  }
-
-  @NotNull
-  protected final PresentationData getTemplatePresentation() {
-    if (myTemplatePresentation == null) {
-      myTemplatePresentation = createPresentation();
-    }
-
-    return myTemplatePresentation;
-  }
-
-  public int getIndex() {
-    return myIndex;
-  }
-
-  public void setIndex(int index) {
-    myIndex = index;
-  }
-
-  @Override
-  public @NlsSafe String toString() {
-    // NB!: this method may return null if node is not valid
-    // it contradicts the specification, but the fix breaks existing behaviour
-    // see com.intellij.ide.util.FileStructurePopup#getSpeedSearchText
-    return myName;
-  }
-
-  @Nullable
-  public final Icon getIcon() {
-    return myClosedIcon;
-  }
-
-  public int getWeight() {
-    ProjectViewNode2 element = getElement();
-    if (element instanceof WeighedItem) {
-      return ((WeighedItem) element).getWeight();
-    }
-    return DEFAULT_WEIGHT;
-  }
-
-  public final long getChildrenSortingStamp() {
-    return myChildrenSortingStamp;
-  }
-
-  public final void setChildrenSortingStamp(long stamp) {
-    myChildrenSortingStamp = stamp;
-  }
-
-  public final long getUpdateCount() {
-    return myUpdateCount;
-  }
-
-  public final void setUpdateCount(long updateCount) {
-    myUpdateCount = updateCount;
-  }
-
-  public boolean isWasDeclaredAlwaysLeaf() {
-    return myWasDeclaredAlwaysLeaf;
-  }
-
-  public void setWasDeclaredAlwaysLeaf(boolean leaf) {
-    myWasDeclaredAlwaysLeaf = leaf;
-  }
-
-  public void setIcon(@Nullable Icon closedIcon) {
-    myClosedIcon = closedIcon;
+  init {
+    myNodeWrapper = setInternalValue(value)
   }
 }

@@ -90,17 +90,14 @@ private fun _createUniFilesComponent(
     object : AbstractProjectTreeStructure2(), ProjectViewSettings {
       override fun createRoot(): AbstractTreeNod2<*> =
         object : AbstractProjectNode2() {
-          override fun canRepresent(element: Any): Boolean = true
-          override fun getChildren(): Collection<ProjectViewNode2<*>> {
-            return uniFilesRootNodes(project, rootDirs = rootPaths)
-          }
-          override fun getFileStatus() = FileStatus.NOT_CHANGED
+          override fun getChildren(): Collection<ProjectViewNode2<*>> = uniFilesRootNodes(project, rootDirs = rootPaths)
+          override fun getFileStatus(): FileStatus = FileStatus.NOT_CHANGED
         }
 
       override fun getChildElements(element: Any): Array<Any> {
         val treeNode = element as AbstractTreeNod2<*>
-        val elements = treeNode.children
-        elements.forEach { it.setParent(treeNode) }
+        val elements = treeNode.getChildren()
+        elements.forEach { it?.setParent(treeNode) }
         return elements.toTypedArray()
       }
 
@@ -220,7 +217,10 @@ private fun _createUniFilesComponent(
           override fun getDirectories(): Array<PsiDirectory> {
             val directories = ArrayList<PsiDirectory>()
             for (node in getSelectedNodes(PsiDirectoryNode2::class.java)) {
-              directories.add(node.value)
+              val value = node.value
+              if(value != null) {
+                directories.add(value)
+              }
             }
             if (directories.isNotEmpty()) {
               return directories.toTypedArray()

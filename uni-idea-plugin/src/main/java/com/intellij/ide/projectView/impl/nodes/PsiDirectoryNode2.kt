@@ -147,7 +147,7 @@ abstract class PsiDirectoryNode2(value: PsiDirectory) : BasePsiNode2<PsiDirector
     }
 
     override fun canNavigate(): Boolean {
-        val file = virtualFile
+        val file = getVirtualFile()
         return file != null
         //    ProjectSettingsService service = ProjectSettingsService.getInstance(project2);
 //    boolean result = file != null && (ProjectRootsUtil.isModuleContentRoot(file, project2) && service.canOpenModuleSettings() ||
@@ -164,7 +164,7 @@ abstract class PsiDirectoryNode2(value: PsiDirectory) : BasePsiNode2<PsiDirector
         log.warning("empty navigate")
         val module = ModuleUtilCore.findModuleForPsiElement(value!!)
         if (module != null) {
-            val file = virtualFile
+            val file = getVirtualFile()
             //      ProjectSettingsService service = ProjectSettingsService.getInstance(project2);
 //      if (ProjectRootsUtil.isModuleContentRoot(file, project2)) {
 //        service.openModuleSettings(module);
@@ -182,7 +182,7 @@ abstract class PsiDirectoryNode2(value: PsiDirectory) : BasePsiNode2<PsiDirector
     }
 
     override fun getNavigateActionText(focusEditor: Boolean): String? {
-        val file = virtualFile
+        val file = getVirtualFile()
         //    if (file != null) {
 //      if (ProjectRootsUtil.isModuleContentRoot(file, project2) || ProjectRootsUtil.isModuleSourceRoot(file, project2)) {
 //        return ActionsBundle.message("action.ModuleSettings.navigate");
@@ -201,8 +201,8 @@ abstract class PsiDirectoryNode2(value: PsiDirectory) : BasePsiNode2<PsiDirector
         return if (isFQNameShown) 70 else 0
     }
 
-    override fun isAlwaysShowPlus(): Boolean {
-        val file = virtualFile
+    override val isAlwaysShowPlus get(): Boolean {
+        val file = getVirtualFile()
         return file == null || file.children.size > 0
     }
 
