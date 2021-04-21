@@ -88,8 +88,8 @@ val UNI_VERSION = "0.13.0"
 
 // https://www.jetbrains.com/intellij-repository/snapshots/
 //val LAST_IDEA_STR = "2020.3.3"
-val LAST_IDEA_STR = "2021.1"
-//val LAST_IDEA_STR = "211.7142.13-EAP-SNAPSHOT"
+//val LAST_IDEA_STR = "2021.1"
+val LAST_IDEA_STR = "211.7142.13-EAP-SNAPSHOT"
 val LAST_COMMUNITY = IdeaVersion.Download(LAST_IDEA_STR, "IC")
 val LAST_ULTIMATE = IdeaVersion.Download(LAST_IDEA_STR, "IU")
 

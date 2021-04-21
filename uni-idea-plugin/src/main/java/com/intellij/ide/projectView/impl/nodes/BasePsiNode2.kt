@@ -13,39 +13,27 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+package com.intellij.ide.projectView.impl.nodes
 
-package com.intellij.ide.projectView.impl.nodes;
+import com.intellij.openapi.vcs.FileStatus
+import com.intellij.openapi.vfs.VirtualFile
+import com.intellij.psi.PsiElement
+import com.intellij.psi.util.PsiUtilCore
 
-import com.intellij.openapi.vcs.FileStatus;
-import com.intellij.openapi.vfs.VirtualFile;
-import com.intellij.psi.PsiElement;
-import com.intellij.psi.util.PsiUtilCore;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+abstract class BasePsiNode2<T : PsiElement> protected constructor(value: T) : AbstractPsiBasedNode2<T>(value) {
 
-public abstract class BasePsiNode2<T extends PsiElement> extends AbstractPsiBasedNode2<T> {
-  @Nullable
-  private final VirtualFile myVirtualFile;
+  private val myVirtualFile: VirtualFile? = PsiUtilCore.getVirtualFile(value)
 
-  protected BasePsiNode2(@NotNull T value) {
-    super(value);
-    myVirtualFile = PsiUtilCore.getVirtualFile(value);
+  override fun getFileStatus(): FileStatus {
+    return computeFileStatus(myVirtualFile)
   }
 
-  @Override
-  public FileStatus getFileStatus() {
-    return computeFileStatus(myVirtualFile);
+  public override fun getVirtualFile(): VirtualFile? {
+    return myVirtualFile
   }
 
-  @Override
-  @Nullable
-  public VirtualFile getVirtualFile() {
-    return myVirtualFile;
+  override fun extractPsiFromValue(): PsiElement? {
+    return value
   }
 
-  @Override
-  @Nullable
-  protected PsiElement extractPsiFromValue() {
-    return getValue();
-  }
 }

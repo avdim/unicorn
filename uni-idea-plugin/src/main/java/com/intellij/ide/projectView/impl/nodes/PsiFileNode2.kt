@@ -1,91 +1,68 @@
 // Copyright 2000-2020 JetBrains s.r.o. Use of this source code is governed by the Apache 2.0 license that can be found in the LICENSE file.
-package com.intellij.ide.projectView.impl.nodes;
+package com.intellij.ide.projectView.impl.nodes
 
-import com.intellij.ide.IdeBundle;
-import com.intellij.ide.highlighter.ArchiveFileType;
-import com.intellij.ide.projectView.PresentationData;
-import com.intellij.idea.ActionsBundle;
-import com.intellij.openapi.editor.colors.CodeInsightColors;
-import com.intellij.openapi.util.Iconable;
-import com.intellij.openapi.util.NlsSafe;
-import com.intellij.openapi.util.io.FileUtil;
-import com.intellij.openapi.vfs.VFileProperty;
-import com.intellij.openapi.vfs.VirtualFile;
-import com.intellij.pom.NavigatableWithText;
-import com.intellij.psi.PsiFile;
-import com.intellij.psi.impl.smartPointers.AbstractTreeNod2;
-import com.intellij.util.containers.ContainerUtil;
-import org.jetbrains.annotations.NotNull;
+import com.intellij.ide.IdeBundle
+import com.intellij.ide.projectView.PresentationData
+import com.intellij.idea.ActionsBundle
+import com.intellij.openapi.editor.colors.CodeInsightColors
+import com.intellij.openapi.util.Iconable
+import com.intellij.openapi.util.io.FileUtil
+import com.intellij.openapi.vfs.VFileProperty
+import com.intellij.pom.NavigatableWithText
+import com.intellij.psi.PsiFile
+import com.intellij.psi.impl.smartPointers.AbstractTreeNod2
+import com.intellij.util.containers.ContainerUtil
 
-import java.util.Collection;
-
-public class PsiFileNode2 extends BasePsiNode2<PsiFile> implements NavigatableWithText {
-  public PsiFileNode2(@NotNull PsiFile value) {
-    super(value);
-  }
-
-  @Override
-  public Collection<AbstractTreeNod2<?>> getChildrenImpl() {
-    return ContainerUtil.emptyList();//1
-  }
-
-  @Override
-  protected void updateImpl(@NotNull PresentationData data) {
-    PsiFile value = getValue();
-    if (value != null) {
-      data.setPresentableText(value.getName());
-      data.setIcon(value.getIcon(Iconable.ICON_FLAG_READ_STATUS));
-
-      VirtualFile file = getVirtualFile();
-      if (file != null && file.is(VFileProperty.SYMLINK)) {
-        @NlsSafe String target = file.getCanonicalPath();
-        if (target == null) {
-          data.setAttributesKey(CodeInsightColors.WRONG_REFERENCES_ATTRIBUTES);
-          data.setTooltip(IdeBundle.message("node.project.view.bad.link"));
-        }
-        else {
-          data.setTooltip(FileUtil.toSystemDependentName(target));
-        }
-      }
+class PsiFileNode2(value: PsiFile) : BasePsiNode2<PsiFile>(value), NavigatableWithText {
+    public override fun getChildrenImpl(): Collection<AbstractTreeNod2<*>> {
+        return ContainerUtil.emptyList() //1
     }
-  }
 
-  @Override
-  public boolean canNavigate() {
-    getVirtualFile();//todo check: is file can opened in editor
-    return true || super.canNavigate();
-  }
+    override fun updateImpl(data: PresentationData) {
+        val value = value
+        if (value != null) {
+            data.presentableText = value.name
+            data.setIcon(value.getIcon(Iconable.ICON_FLAG_READ_STATUS))
+            val file = virtualFile
+            if (file != null && file.`is`(VFileProperty.SYMLINK)) {
+                val target = file.canonicalPath
+                if (target == null) {
+                    data.setAttributesKey(CodeInsightColors.WRONG_REFERENCES_ATTRIBUTES)
+                    data.tooltip = IdeBundle.message("node.project.view.bad.link")
+                } else {
+                    data.tooltip = FileUtil.toSystemDependentName(target)
+                }
+            }
+        }
+    }
 
-  private boolean isNavigatableLibraryRoot() {
-    return false;
-  }
+    override fun canNavigate(): Boolean {
+        virtualFile //todo check: is file can opened in editor
+        return true
+    }
 
-  @Override
-  public void navigate(boolean requestFocus) {
-    super.navigate(requestFocus);
-  }
+    private val isNavigatableLibraryRoot: Boolean
+        private get() = false
 
-  @Override
-  public String getNavigateActionText(boolean focusEditor) {
-    return isNavigatableLibraryRoot() ? ActionsBundle.message("action.LibrarySettings.navigate") : null;
-  }
+    override fun navigate(requestFocus: Boolean) {
+        super.navigate(requestFocus)
+    }
 
-  @Override
-  public int getWeight() {
-    return 20;
-  }
+    override fun getNavigateActionText(focusEditor: Boolean): String? {
+        return if (isNavigatableLibraryRoot) ActionsBundle.message("action.LibrarySettings.navigate") else null
+    }
 
-  @Override
-  protected boolean isMarkReadOnly() {
-    return true;
-  }
+    override fun getWeight(): Int {
+        return 20
+    }
 
-  @Override
-  public boolean canRepresent(final Object element) {
-    if (super.canRepresent(element)) return true;
+    override fun isMarkReadOnly(): Boolean {
+        return true
+    }
 
-    PsiFile value = getValue();
-    return value != null && element != null && element.equals(value.getVirtualFile());
-  }
-
+    override fun canRepresent(element: Any): Boolean {
+        if (super.canRepresent(element)) return true
+        val value = value
+        return value != null && element != null && element == value.virtualFile
+    }
 }
