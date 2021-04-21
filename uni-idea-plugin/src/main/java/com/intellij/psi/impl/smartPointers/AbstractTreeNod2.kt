@@ -2,6 +2,7 @@
 package com.intellij.psi.impl.smartPointers
 
 import com.intellij.ide.projectView.PresentationData
+import com.intellij.ide.projectView.RootsProvider
 import com.intellij.ide.projectView.impl.nodes.ProjectViewNode2
 import com.intellij.ide.util.treeView.WeighedItem
 import com.intellij.navigation.NavigationItem
@@ -16,10 +17,7 @@ import com.intellij.openapi.util.Key
 import com.intellij.openapi.util.NlsSafe
 import com.intellij.openapi.vcs.FileStatus
 import com.intellij.openapi.vfs.VirtualFile
-import com.intellij.psi.PsiElement
-import com.intellij.psi.PsiFile
-import com.intellij.psi.PsiInvalidElementAccessException
-import com.intellij.psi.SmartPsiElementPointer
+import com.intellij.psi.*
 import com.intellij.psi.util.PsiUtilCore
 import com.intellij.reference.SoftReference
 import com.intellij.ui.tree.LeafState
@@ -27,7 +25,7 @@ import com.unicorn.Uni.log
 import java.lang.ref.Reference
 import javax.swing.Icon
 
-abstract class AbstractTreeNod2<T : Any> protected constructor(value: T) : NavigationItem, Queryable.Contributor,
+abstract class AbstractTreeNod2<T : Any> protected constructor(value: T) : NavigationItem, Queryable.Contributor, RootsProvider,
   LeafState.Supplier {
   @JvmField
   protected var myName: @NlsSafe String? = null
@@ -112,6 +110,22 @@ abstract class AbstractTreeNod2<T : Any> protected constructor(value: T) : Navig
         LOG.warn("hash code changed: $myValue")
       }
     }
+
+  override fun getRoots(): Collection<VirtualFile> {
+    val value = value
+    if (value is RootsProvider) {
+      return value.roots
+    }
+    if (value is VirtualFile) {
+      return setOf(value)
+    }
+    if (value is PsiFileSystemItem) {
+      val item = value
+      return item.virtualFile?.let { setOf(it) } ?: emptySet()
+    }
+    return emptySet()
+  }
+
 
   /**
    * Stores the anchor to new value if it is not `null`
