@@ -53,10 +53,6 @@ class PsiFileNode2(value: PsiFile) : BasePsiNode2<PsiFile>(value), NavigatableWi
         return 20
     }
 
-    override fun isMarkReadOnly(): Boolean {
-        return true
-    }
-
     override fun canRepresent(element: Any): Boolean {
         if (super.canRepresent(element)) return true
         val value = value

@@ -3027,9 +3027,6 @@ public class AbstractTreeUi2 {
 
   private boolean isValid(Object element) {
     if (isNodeNull(element)) return false;
-    if (element instanceof ValidateableNode) {
-      if (!((ValidateableNode)element).isValid()) return false;
-    }
     return getBuilder().validateNode(element);
   }
 

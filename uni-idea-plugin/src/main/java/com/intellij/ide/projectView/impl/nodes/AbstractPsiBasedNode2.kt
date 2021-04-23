@@ -55,42 +55,12 @@ abstract class AbstractPsiBasedNode2<V : Any>(value: V) : AbstractTreeNod2<V>(va
   protected abstract fun getChildrenImpl(): Collection<AbstractTreeNod2<*>>
   protected abstract fun updateImpl(data: PresentationData)
   override fun getChildren(): Collection<AbstractTreeNod2<*>> {
-    return AstLoadingFilter.disallowTreeLoading(ThrowableComputable<Collection<AbstractTreeNod2<*>?>, RuntimeException> { doGetChildren() }) as Collection<AbstractTreeNod2<*>>
-  }
-
-  private fun doGetChildren(): Collection<AbstractTreeNod2<*>?> {
-    val psiElement = extractPsiFromValue() ?: return ArrayList()
-    if (!psiElement.isValid) {
-      LOG.error(
-        IllegalStateException(
-          """
-          Node contains invalid PSI: 
-          $javaClass [$this]
-          ${psiElement.javaClass} [$psiElement]
-          """.trimIndent()
-        )
-      )
-      return emptyList()
-    }
-    return getChildrenImpl()
+    return AstLoadingFilter.disallowTreeLoading(ThrowableComputable<Collection<AbstractTreeNod2<*>?>, RuntimeException> { getChildrenImpl() }) as Collection<AbstractTreeNod2<*>>
   }
 
   protected abstract fun getVirtualFile(): VirtualFile?
 
-  override fun isValid(): Boolean {
-    val psiElement = extractPsiFromValue()
-    return psiElement != null && psiElement.isValid
-  }
-
-  protected open fun isMarkReadOnly(): Boolean {
-    val parent = getParent() ?: return false
-    if (parent is AbstractPsiBasedNode2<*>) {
-      val psiElement = parent.extractPsiFromValue()
-      return psiElement is PsiDirectory
-    }
-    val parentValue = parent.value
-    return parentValue is PsiDirectory || parentValue is Module
-  }
+  override fun isValid(): Boolean = true
 
   public override fun update(data: PresentationData) {
     AstLoadingFilter.disallowTreeLoading<RuntimeException> { doUpdate(data) }
@@ -121,9 +91,6 @@ abstract class AbstractPsiBasedNode2<V : Any>(value: V) : AbstractTreeNod2<V>(va
       var flags = 0
       if (Uni.fileManagerConf2.isShowVisibilityIcons) {
         flags = flags or Iconable.ICON_FLAG_VISIBILITY
-      }
-      if (isMarkReadOnly()) {
-        flags = flags or Iconable.ICON_FLAG_READ_STATUS
       }
       return flags
     }
