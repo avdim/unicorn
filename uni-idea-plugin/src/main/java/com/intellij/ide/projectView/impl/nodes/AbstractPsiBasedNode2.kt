@@ -26,8 +26,6 @@ import com.intellij.openapi.project.ProjectManager
 import com.intellij.openapi.ui.Messages
 import com.intellij.openapi.util.*
 import com.intellij.openapi.util.Iconable.IconFlags
-import com.intellij.openapi.vcs.FileStatus
-import com.intellij.openapi.vfs.NonPhysicalFileSystem
 import com.intellij.openapi.vfs.VFileProperty
 import com.intellij.openapi.vfs.VirtualFile
 import com.intellij.openapi.wm.IdeFocusManager
@@ -47,11 +45,11 @@ import javax.swing.SwingUtilities
 
 /**
  * Class for node descriptors based on PsiElements. Subclasses should define
- * method that extract PsiElement from Value.
+ * method that extract PsiElement from V.
  *
- * @param <Value> Value of node descriptor
-</Value> */
-abstract class AbstractPsiBasedNode2<Value : Any> protected constructor(value: Value) : AbstractTreeNod2<Value>(value),
+ * @param <V> V of node descriptor
+</V> */
+abstract class AbstractPsiBasedNode2<V : Any>(value: V) : AbstractTreeNod2<V>(value),
   ValidateableNode, StatePreservingNavigatable {
   protected abstract fun extractPsiFromValue(): PsiElement?
   protected abstract fun getChildrenImpl(): Collection<AbstractTreeNod2<*>>
@@ -74,8 +72,7 @@ abstract class AbstractPsiBasedNode2<Value : Any> protected constructor(value: V
       )
       return emptyList()
     }
-    val children = getChildrenImpl()
-    return children ?: emptyList()
+    return getChildrenImpl()
   }
 
   protected abstract fun getVirtualFile(): VirtualFile?
@@ -120,7 +117,7 @@ abstract class AbstractPsiBasedNode2<Value : Any> protected constructor(value: V
 
   @get:IconFlags
   protected val iconableFlags: Int
-    protected get() {
+    get() {
       var flags = 0
       if (Uni.fileManagerConf2.isShowVisibilityIcons) {
         flags = flags or Iconable.ICON_FLAG_VISIBILITY
@@ -130,6 +127,7 @@ abstract class AbstractPsiBasedNode2<Value : Any> protected constructor(value: V
       }
       return flags
     }
+
   val navigationItem: NavigationItem?
     get() {
       val psiElement = extractPsiFromValue()
@@ -141,7 +139,7 @@ abstract class AbstractPsiBasedNode2<Value : Any> protected constructor(value: V
       if (requestFocus || preserveState) {
         openFileWithPsiElement(getVirtualFile(), extractPsiFromValue(), requestFocus, requestFocus)
       } else {
-        navigationItem!!.navigate(false)
+        navigationItem?.navigate(false)
       }
     }
   }

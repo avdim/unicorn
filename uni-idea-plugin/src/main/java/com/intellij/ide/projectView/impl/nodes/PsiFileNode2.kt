@@ -11,12 +11,9 @@ import com.intellij.openapi.vfs.VFileProperty
 import com.intellij.pom.NavigatableWithText
 import com.intellij.psi.PsiFile
 import com.intellij.psi.impl.smartPointers.AbstractTreeNod2
-import com.intellij.util.containers.ContainerUtil
 
 class PsiFileNode2(value: PsiFile) : BasePsiNode2<PsiFile>(value), NavigatableWithText {
-    public override fun getChildrenImpl(): Collection<AbstractTreeNod2<*>> {
-        return ContainerUtil.emptyList() //1
-    }
+    public override fun getChildrenImpl(): Collection<AbstractTreeNod2<*>> = emptyList()
 
     override fun updateImpl(data: PresentationData) {
         val value = value

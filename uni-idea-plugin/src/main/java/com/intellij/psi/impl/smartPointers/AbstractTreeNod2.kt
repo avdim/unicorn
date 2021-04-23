@@ -24,7 +24,7 @@ import com.unicorn.Uni.log
 import java.lang.ref.Reference
 import javax.swing.Icon
 
-abstract class AbstractTreeNod2<T : Any> protected constructor(value: T) : NavigationItem, Queryable.Contributor, RootsProvider,
+abstract class AbstractTreeNod2<V : Any>(value: V) : NavigationItem, Queryable.Contributor, RootsProvider,
   LeafState.Supplier {
   @JvmField
   protected var myName: @NlsSafe String? = null
@@ -79,7 +79,7 @@ abstract class AbstractTreeNod2<T : Any> protected constructor(value: T) : Navig
   }
 
   open val isAlwaysShowPlus: Boolean get() = false
-  val element: AbstractTreeNod2<T>? get() = if (equalityObject != null) this as? AbstractTreeNod2<T> else null
+  val element: AbstractTreeNod2<V>? get() = if (equalityObject != null) this as? AbstractTreeNod2<V> else null
 
   override fun equals(`object`: Any?): Boolean {
     if (`object` === this) return true
@@ -96,10 +96,10 @@ abstract class AbstractTreeNod2<T : Any> protected constructor(value: T) : Navig
     return value?.hashCode() ?: 0
   }
 
-  var value: T?
+  var value: V?
     get() {
       val value = equalityObject
-      return if (value == null) null else retrieveElement(value) as T?
+      return if (value == null) null else retrieveElement(value) as V?
     }
     set(value) {
       val debug = !myNodeWrapper && LOG.isDebugEnabled
@@ -132,7 +132,7 @@ abstract class AbstractTreeNod2<T : Any> protected constructor(value: T) : Navig
    * @param value a new value to set
    * @return `true` if the specified value is `null` and the anchor is not changed
    */
-  private fun setInternalValue(value: T): Boolean {
+  private fun setInternalValue(value: V): Boolean {
     if (value === TREE_WRAPPER_VALUE) return true
     myValue = createAnchor(value)
     return false
