@@ -161,7 +161,6 @@ abstract class AbstractTreeNod2<T : Any> protected constructor(value: T) : Navig
     get() = if (myNullValueSet) null else myValue
 
   override fun apply(info: Map<String, String>) {}
-  protected abstract fun getVirtualFile(): VirtualFile?
   abstract fun getFileStatus(): FileStatus
   override fun getName(): String? {
     return myName

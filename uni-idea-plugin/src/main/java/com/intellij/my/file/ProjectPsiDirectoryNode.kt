@@ -10,7 +10,7 @@ import com.intellij.psi.PsiManager
 import com.intellij.psi.impl.smartPointers.AbstractTreeNod2
 import com.unicorn.Uni
 
-class TutuPsiDirectoryNode @JvmOverloads constructor(
+class ProjectPsiDirectoryNode(
   val project: Project,
   value: PsiDirectory
 ) : PsiDirectoryNode2(value) {
@@ -28,7 +28,7 @@ class TutuPsiDirectoryNode @JvmOverloads constructor(
 
       val psiDir = psiManager.findDirectory(file)
       if (psiDir != null) {
-        nodes.add(TutuPsiDirectoryNode(Uni.todoUseOpenedProject(project), psiDir))
+        nodes.add(ProjectPsiDirectoryNode(Uni.todoUseOpenedProject(project), psiDir))
       }
     }
     return nodes

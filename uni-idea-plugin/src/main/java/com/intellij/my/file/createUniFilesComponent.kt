@@ -4,10 +4,10 @@ package com.intellij.my.file
 
 import com.intellij.history.LocalHistory
 import com.intellij.ide.*
+import com.intellij.ide.projectView.PresentationData
 import com.intellij.ide.projectView.ProjectViewSettings
 import com.intellij.ide.projectView.impl.JavaHelpers
 import com.intellij.ide.projectView.impl.SpeedSearchFiles
-import com.intellij.ide.projectView.impl.nodes.AbstractProjectNode2
 import com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode2
 import com.intellij.ide.ui.customization.CustomizationUtil
 import com.intellij.ide.util.DirectoryChooserUtil
@@ -28,6 +28,7 @@ import com.intellij.ui.ScrollPaneFactory
 import com.intellij.ui.layout.Cell
 import com.intellij.util.EditSourceOnDoubleClickHandler
 import com.intellij.util.EditSourceOnEnterKeyHandler
+import com.intellij.util.PlatformIcons
 import com.intellij.util.ui.tree.TreeUtil
 import com.unicorn.Uni
 import com.unicorn.plugin.virtualFile
@@ -88,9 +89,13 @@ private fun _createUniFilesComponent(
   val treeStructure =
     object : AbstractProjectTreeStructure2(), ProjectViewSettings {
       override fun createRoot(): AbstractTreeNod2<*> =
-        object : AbstractProjectNode2() {
+        object : AbstractTreeNod2<Project>(Uni.todoDefaultProject) {
           override fun getChildren(): Collection<AbstractTreeNod2<*>> = uniFilesRootNodes(project, rootDirs = rootPaths)
           override fun getFileStatus(): FileStatus = FileStatus.NOT_CHANGED
+          override fun update(presentation: PresentationData) {
+            presentation.setIcon(PlatformIcons.PROJECT_ICON)
+            presentation.presentableText = "todo_presentable_text"
+          }
         }
 
       override fun getChildElements(element: Any): Array<Any> {
@@ -287,7 +292,7 @@ fun uniFilesRootNodes(
   return rootDirs.mapNotNull {
     PsiManager.getInstance(Uni.todoDefaultProject).findDirectory(it)
   }.map { psiDirectory: PsiDirectory ->
-    TutuPsiDirectoryNode(
+    ProjectPsiDirectoryNode(
       project,
       psiDirectory
     )
