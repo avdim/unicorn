@@ -2,7 +2,6 @@
 
 package com.intellij.my.file;
 
-import com.intellij.ide.projectView.impl.nodes.ProjectViewNode2;
 import com.intellij.ide.util.treeView.AbstractTreeStructure;
 import com.intellij.ide.util.treeView.NodeDescriptor;
 import com.intellij.openapi.util.ActionCallback;
@@ -30,8 +29,8 @@ public abstract class AbstractProjectTreeStructure2 extends AbstractTreeStructur
     if (!(element instanceof AbstractTreeNod2)) {
       Uni.getLog().error("!(element instanceof AbstractTreeNod2)");
     }
-    ProjectViewNode2<?> treeNode = (ProjectViewNode2<?>)element;
-    Collection<? extends ProjectViewNode2<?>> elements = treeNode.getChildren();
+    AbstractTreeNod2<?> treeNode = (AbstractTreeNod2<?>)element;
+    Collection<? extends AbstractTreeNod2<?>> elements = treeNode.getChildren();
     if (elements.contains(null)) {
       Uni.getLog().error("node contains null child: " + treeNode + "; " + treeNode.getClass());
     }

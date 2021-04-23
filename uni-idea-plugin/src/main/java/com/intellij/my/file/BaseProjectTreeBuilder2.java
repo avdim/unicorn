@@ -4,7 +4,6 @@ package com.intellij.my.file;
 
 import com.intellij.ide.favoritesTreeView.FavoriteTreeNodeDescriptor;
 import com.intellij.ide.projectView.ProjectViewNode;
-import com.intellij.ide.projectView.impl.nodes.ProjectViewNode2;
 import com.intellij.ide.util.treeView.*;
 import com.intellij.openapi.progress.ProgressIndicator;
 import com.intellij.openapi.progress.util.StatusBarProgress;
@@ -202,8 +201,8 @@ public abstract class BaseProjectTreeBuilder2 extends AbstractTreeBuilder2 {
   private static boolean elementIsEqualTo(final Object node, final Object element) {
     if (node instanceof DefaultMutableTreeNode) {
       final Object userObject = ((DefaultMutableTreeNode)node).getUserObject();
-      if (userObject instanceof ProjectViewNode2) {
-        final AbstractTreeNod2 projectViewNode = (ProjectViewNode2)userObject;
+      if (userObject instanceof AbstractTreeNod2) {
+        final AbstractTreeNod2 projectViewNode = (AbstractTreeNod2)userObject;
         return projectViewNode.canRepresent(element);
       }
     }

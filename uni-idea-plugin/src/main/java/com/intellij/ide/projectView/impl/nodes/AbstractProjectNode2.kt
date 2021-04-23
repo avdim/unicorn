@@ -4,10 +4,11 @@ package com.intellij.ide.projectView.impl.nodes
 import com.intellij.ide.projectView.PresentationData
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.vfs.VirtualFile
+import com.intellij.psi.impl.smartPointers.AbstractTreeNod2
 import com.intellij.util.PlatformIcons
 import com.unicorn.Uni.todoDefaultProject
 
-abstract class AbstractProjectNode2 protected constructor() : ProjectViewNode2<Project>(todoDefaultProject) {
+abstract class AbstractProjectNode2 protected constructor() : AbstractTreeNod2<Project>(todoDefaultProject) {
 
   public override fun update(presentation: PresentationData) {
         presentation.setIcon(PlatformIcons.PROJECT_ICON)

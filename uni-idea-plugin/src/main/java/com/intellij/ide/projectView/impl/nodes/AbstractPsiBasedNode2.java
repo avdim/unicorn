@@ -58,7 +58,7 @@ import java.util.Collections;
  *
  * @param <Value> Value of node descriptor
  */
-public abstract class AbstractPsiBasedNode2<Value> extends ProjectViewNode2<Value> implements ValidateableNode, StatePreservingNavigatable {
+public abstract class AbstractPsiBasedNode2<Value> extends AbstractTreeNod2<Value> implements ValidateableNode, StatePreservingNavigatable {
   private static final Logger LOG = Logger.getInstance(AbstractPsiBasedNode2.class.getName());
 
   protected AbstractPsiBasedNode2(@NotNull Value value) {
@@ -75,8 +75,8 @@ public abstract class AbstractPsiBasedNode2<Value> extends ProjectViewNode2<Valu
 
   @NotNull
   @Override
-  public Collection<ProjectViewNode2<?>> getChildren() {
-    return (Collection<ProjectViewNode2<?>>) AstLoadingFilter.disallowTreeLoading(this::doGetChildren);
+  public Collection<AbstractTreeNod2<?>> getChildren() {
+    return (Collection<AbstractTreeNod2<?>>) AstLoadingFilter.disallowTreeLoading(this::doGetChildren);
   }
 
   @NotNull

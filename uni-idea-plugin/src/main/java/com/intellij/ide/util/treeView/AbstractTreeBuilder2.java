@@ -2,7 +2,6 @@
 
 package com.intellij.ide.util.treeView;
 
-import com.intellij.ide.projectView.impl.nodes.ProjectViewNode2;
 import com.intellij.my.file.AbstractProjectTreeStructure2;
 import com.intellij.openapi.Disposable;
 import com.intellij.openapi.application.Application;
@@ -118,7 +117,7 @@ abstract public class AbstractTreeBuilder2 implements Disposable {
    * 1.TreeStructure always returns & receives "treeStructure" element returned by getTreeStructureElement
    * 2.Paths contain "model" element returned by getElement
    */
-  protected ProjectViewNode2 getTreeStructureElement(AbstractTreeNod2 nodeDescriptor) {
+  protected AbstractTreeNod2 getTreeStructureElement(AbstractTreeNod2 nodeDescriptor) {
     return nodeDescriptor == null ? null : nodeDescriptor.getElement();
   }
 

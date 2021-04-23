@@ -3,7 +3,6 @@ package com.intellij.psi.impl.smartPointers
 
 import com.intellij.ide.projectView.PresentationData
 import com.intellij.ide.projectView.RootsProvider
-import com.intellij.ide.projectView.impl.nodes.ProjectViewNode2
 import com.intellij.ide.util.treeView.WeighedItem
 import com.intellij.navigation.NavigationItem
 import com.intellij.openapi.application.ApplicationManager
@@ -51,7 +50,7 @@ abstract class AbstractTreeNod2<T : Any> protected constructor(value: T) : Navig
   var childrenSortingStamp: Long = -1
   var updateCount: Long = 0
   var isWasDeclaredAlwaysLeaf = false
-  abstract fun getChildren(): Collection<ProjectViewNode2<*>>
+  abstract fun getChildren(): Collection<AbstractTreeNod2<*>>
   protected fun valueIsCut(): Boolean {
     return CopyPasteManager.getInstance().isCutElement(value)
   }
@@ -80,7 +79,7 @@ abstract class AbstractTreeNod2<T : Any> protected constructor(value: T) : Navig
   }
 
   open val isAlwaysShowPlus: Boolean get() = false
-  val element: ProjectViewNode2<T>? get() = if (equalityObject != null) this as? ProjectViewNode2<T> else null
+  val element: AbstractTreeNod2<T>? get() = if (equalityObject != null) this as? AbstractTreeNod2<T> else null
 
   override fun equals(`object`: Any?): Boolean {
     if (`object` === this) return true
@@ -266,7 +265,7 @@ abstract class AbstractTreeNod2<T : Any> protected constructor(value: T) : Navig
   }
 
   open fun getWeight(): Int {
-    val element: ProjectViewNode2<*>? = element
+    val element: AbstractTreeNod2<*>? = element
     return if (element is WeighedItem) {
       (element as WeighedItem).weight
     } else DEFAULT_WEIGHT
