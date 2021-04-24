@@ -19,8 +19,6 @@ import com.intellij.openapi.fileEditor.impl.EditorHistoryManager
 import com.intellij.openapi.fileTypes.FileTypeManager
 import com.intellij.openapi.fileTypes.INativeFileType
 import com.intellij.openapi.fileTypes.UnknownFileType
-import com.intellij.openapi.module.Module
-import com.intellij.openapi.project.IndexNotReadyException
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.project.ProjectManager
 import com.intellij.openapi.ui.Messages
@@ -30,13 +28,12 @@ import com.intellij.openapi.vfs.VFileProperty
 import com.intellij.openapi.vfs.VirtualFile
 import com.intellij.openapi.wm.IdeFocusManager
 import com.intellij.pom.StatePreservingNavigatable
-import com.intellij.psi.PsiDirectory
 import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiFile
 import com.intellij.psi.impl.smartPointers.AbstractTreeNod2
-import com.intellij.psi.impl.smartPointers.DebugBlackFile.doDebug
 import com.intellij.ui.LayeredIcon
 import com.intellij.util.AstLoadingFilter
+import com.intellij.util.IconUtil
 import com.intellij.util.PlatformIcons
 import com.unicorn.Uni
 import com.unicorn.Uni.todoUseOpenedProject
@@ -51,93 +48,35 @@ import javax.swing.SwingUtilities
 </V> */
 abstract class AbstractPsiBasedNode2<V : Any>(value: V) : AbstractTreeNod2<V>(value),
   ValidateableNode, StatePreservingNavigatable {
-  protected abstract fun extractPsiFromValue(): PsiElement?
   protected abstract fun getChildrenImpl(): Collection<AbstractTreeNod2<*>>
   protected abstract fun updateImpl(data: PresentationData)
   override fun getChildren(): Collection<AbstractTreeNod2<*>> {
     return AstLoadingFilter.disallowTreeLoading(ThrowableComputable<Collection<AbstractTreeNod2<*>?>, RuntimeException> { getChildrenImpl() }) as Collection<AbstractTreeNod2<*>>
   }
 
-  protected abstract fun getVirtualFile(): VirtualFile?
+  protected abstract fun getVirtualFile(): VirtualFile
 
   override fun isValid(): Boolean = true
 
-  public override fun update(data: PresentationData) {
-    AstLoadingFilter.disallowTreeLoading<RuntimeException> { doUpdate(data) }
-  }
-
-  private fun doUpdate(data: PresentationData) {
-    ApplicationManager.getApplication().runReadAction {
-      if (!validate()) {
-        return@runReadAction
-      }
-      val value = extractPsiFromValue()
-      LOG.assertTrue(value!!.isValid)
-      val flags = iconableFlags
-      try {
-        val icon = value.getIcon(flags)
-        data.setIcon(icon)
-      } catch (ignored: IndexNotReadyException) {
-      }
-      data.presentableText = myName
-      updateImpl(data)
-      data.setIcon(patchIcon(data.getIcon(true), getVirtualFile()))
-    }
-  }
-
-  @get:IconFlags
-  protected val iconableFlags: Int
-    get() {
-      var flags = 0
-      if (Uni.fileManagerConf2.isShowVisibilityIcons) {
-        flags = flags or Iconable.ICON_FLAG_VISIBILITY
-      }
-      return flags
-    }
-
-  val navigationItem: NavigationItem?
-    get() {
-      val psiElement = extractPsiFromValue()
-      return if (psiElement is NavigationItem) psiElement else null
-    }
-
-  override fun navigate(requestFocus: Boolean, preserveState: Boolean) {
-    if (canNavigate()) {
-      if (requestFocus || preserveState) {
-        openFileWithPsiElement(getVirtualFile(), extractPsiFromValue(), requestFocus, requestFocus)
-      } else {
-        navigationItem?.navigate(false)
+  public override fun update(presentation: PresentationData) {
+    AstLoadingFilter.disallowTreeLoading<RuntimeException> {
+      ApplicationManager.getApplication().runReadAction {
+        presentation.presentableText = getVirtualFile().name
+        presentation.setIcon(IconUtil.getIcon(getVirtualFile(), 0, Uni.todoDefaultProject))
+        if (false) {
+          presentation.setIcon(patchIcon(presentation.getIcon(true), getVirtualFile()))
+        }
+        presentation.locationString = "hint"
+        updateImpl(presentation)
       }
     }
   }
 
-  override fun navigate(requestFocus: Boolean) {
+  final override fun navigate(requestFocus: Boolean) {
     navigate(requestFocus, false)
   }
 
-  override fun canNavigate(): Boolean {
-    val item = navigationItem
-    return item != null && item.canNavigate()
-  }
-
-  override fun canNavigateToSource(): Boolean {
-    val item = navigationItem
-    return item != null && item.canNavigateToSource()
-  }
-
-  fun validate(): Boolean {
-    val psiElement = extractPsiFromValue()
-    doDebug(equalityObject!!, psiElement)
-    if (psiElement == null || !psiElement.isValid) {
-      value = null
-    }
-    return value != null
-  }
-
   companion object {
-    private val LOG = Logger.getInstance(
-      AbstractPsiBasedNode2::class.java.name
-    )
 
     fun patchIcon(original: Icon?, file: VirtualFile?): Icon? {
       if (file == null || original == null) return original
@@ -168,7 +107,7 @@ abstract class AbstractPsiBasedNode2<V : Any>(value: V) : AbstractTreeNod2<V>(va
       }
     }
 
-    private fun openFileWithPsiElement(
+    fun openFileWithPsiElement(//todo move to file node ?
       file: VirtualFile?,
       element: PsiElement?,
       searchForOpen: Boolean,

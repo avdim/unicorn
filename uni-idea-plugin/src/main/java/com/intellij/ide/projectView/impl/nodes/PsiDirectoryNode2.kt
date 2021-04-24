@@ -25,12 +25,11 @@ import com.unicorn.Uni.todoDefaultProject
 import org.jetbrains.jps.model.java.JavaModuleSourceRootTypes
 import java.util.*
 
-abstract class PsiDirectoryNode2(value: PsiDirectory) : BasePsiNode2<PsiDirectory>(value), NavigatableWithText {
+abstract class PsiDirectoryNode2(val virtualDir:VirtualFile) : BasePsiNode2(virtualDir), NavigatableWithText {
   // the chain from a parent directory to this one usually contains only one virtual file
   private val chain: MutableSet<VirtualFile> = SmartHashSet()
   override fun updateImpl(data: PresentationData) {
-    val psiDirectory = value ?: kotlin.error(this)
-    val directoryFile = psiDirectory.virtualFile
+    val directoryFile = virtualDir//psiDirectory.virtualFile
     val parentValue = parentValue
     synchronized(chain) {
       if (chain.isEmpty()) {
@@ -45,50 +44,8 @@ abstract class PsiDirectoryNode2(value: PsiDirectory) : BasePsiNode2<PsiDirector
         if (chain.isEmpty()) chain.add(directoryFile)
       }
     }
-    val isViewRoot = parentValue is Project
-    val name = if (isViewRoot) psiDirectory.virtualFile.presentableUrl else psiDirectory.name
     if (BOLD_DIRS) {
       data.addText(directoryFile.name + " ", SimpleTextAttributes.REGULAR_BOLD_ATTRIBUTES)
-    }
-    data.presentableText = name
-    data.locationString = getLocationString2(psiDirectory, false, false)
-    setupIcon(data, psiDirectory)
-  }
-
-  fun getLocationString2(psiDirectory: PsiDirectory, includeUrl: Boolean, includeRootType: Boolean): String? {
-    val result = StringBuilder()
-    val directory = psiDirectory.virtualFile
-    if (ProjectRootsUtil.isLibraryRoot(directory, psiDirectory.project)) {
-      result.append(ProjectBundle.message("module.paths.root.node", "library").toLowerCase(Locale.getDefault()))
-    } else if (includeRootType) {
-      val sourceRoot = ProjectRootsUtil.getModuleSourceRoot(psiDirectory.virtualFile, psiDirectory.project)
-      if (sourceRoot != null) {
-        val handler = ModuleSourceRootEditHandler.getEditHandler(sourceRoot.rootType)
-        if (handler != null) {
-          val properties = sourceRoot.jpsElement.getProperties(JavaModuleSourceRootTypes.SOURCES)
-          if (properties != null && properties.isForGeneratedSources) {
-            result.append("generated ")
-          }
-          result.append(handler.fullRootTypeName.toLowerCase(Locale.getDefault()))
-        }
-      }
-    }
-    if (includeUrl) {
-      if (result.length > 0) result.append(",").append(FontUtil.spaceAndThinSpace())
-      result.append(FileUtil.getLocationRelativeToUserHome(directory.presentableUrl))
-    }
-    return if (result.length == 0) null else result.toString()
-  }
-
-  protected fun setupIcon(data: PresentationData, psiDirectory: PsiDirectory?) {
-    val virtualFile = psiDirectory!!.virtualFile
-    if (PlatformUtils.isAppCode()) {
-//      final Icon icon = IconUtil.getIcon(virtualFile, 0, project2);
-      val icon2 = IconUtil.getIcon(virtualFile, 0, todoDefaultProject)
-      data.setIcon(icon2)
-    } else {
-      val icon = CompoundIconProvider.findIcon(psiDirectory, 0)
-      if (icon != null) data.setIcon(icon)
     }
   }
 
@@ -120,53 +77,10 @@ abstract class PsiDirectoryNode2(value: PsiDirectory) : BasePsiNode2<PsiDirector
 //      .isValidDirectory(getValue(), getParentValue(), getSettings(), getFilter());
   }
 
-  override fun canNavigate(): Boolean {
-    val file = getVirtualFile()
-    return file != null
-    //    ProjectSettingsService service = ProjectSettingsService.getInstance(project2);
-//    boolean result = file != null && (ProjectRootsUtil.isModuleContentRoot(file, project2) && service.canOpenModuleSettings() ||
-//      ProjectRootsUtil.isModuleSourceRoot(file, project2) && service.canOpenContentEntriesSettings() ||
-//      ProjectRootsUtil.isLibraryRoot(file, project2) && service.canOpenModuleLibrarySettings());
-//    return result;//false
-  }
-
-  override fun canNavigateToSource(): Boolean {
-    return false
-  }
-
-  override fun navigate(requestFocus: Boolean) {
-    log.warning("empty navigate")
-    val module = ModuleUtilCore.findModuleForPsiElement(value!!)
-    if (module != null) {
-      val file = getVirtualFile()
-      //      ProjectSettingsService service = ProjectSettingsService.getInstance(project2);
-//      if (ProjectRootsUtil.isModuleContentRoot(file, project2)) {
-//        service.openModuleSettings(module);
-//      }
-//      else if (ProjectRootsUtil.isLibraryRoot(file, project2)) {
-//        final OrderEntry orderEntry = LibraryUtil.findLibraryEntry(file, module.getProject());
-//        if (orderEntry != null) {
-//          service.openLibraryOrSdkSettings(orderEntry);
-//        }
-//      }
-//      else {
-//        service.openContentEntriesSettings(module);
-//      }
-    }
-  }
-
-  override fun getNavigateActionText(focusEditor: Boolean): String? {
-    val file = getVirtualFile()
-    //    if (file != null) {
-//      if (ProjectRootsUtil.isModuleContentRoot(file, project2) || ProjectRootsUtil.isModuleSourceRoot(file, project2)) {
-//        return ActionsBundle.message("action.ModuleSettings.navigate");
-//      }
-//      if (ProjectRootsUtil.isLibraryRoot(file, project2)) {
-//        return ActionsBundle.message("action.LibrarySettings.navigate");
-//      }
-//    }
-    return "Todo GetNavigateActionText"
-  }
+  override fun canNavigate(): Boolean = false
+  override fun canNavigateToSource(): Boolean = false
+  override fun navigate(requestFocus: Boolean, preserveState: Boolean) {}
+  override fun getNavigateActionText(focusEditor: Boolean): String? = "Nav"
 
   override fun getWeight(): Int {
     if (Uni.fileManagerConf2.isFoldersAlwaysOnTop) {
@@ -175,11 +89,7 @@ abstract class PsiDirectoryNode2(value: PsiDirectory) : BasePsiNode2<PsiDirector
     return if (isFQNameShown) 70 else 0
   }
 
-  override val isAlwaysShowPlus
-    get(): Boolean {
-      val file = getVirtualFile()
-      return file == null || file.children.size > 0
-    }
+  override val isAlwaysShowPlus get(): Boolean = getVirtualFile().children.isNotEmpty()
 
   companion object {
     /**

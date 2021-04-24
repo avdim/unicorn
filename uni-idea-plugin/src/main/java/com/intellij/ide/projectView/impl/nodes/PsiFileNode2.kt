@@ -4,58 +4,64 @@ package com.intellij.ide.projectView.impl.nodes
 import com.intellij.ide.IdeBundle
 import com.intellij.ide.projectView.PresentationData
 import com.intellij.idea.ActionsBundle
+import com.intellij.navigation.NavigationItem
 import com.intellij.openapi.editor.colors.CodeInsightColors
-import com.intellij.openapi.util.Iconable
+import com.intellij.openapi.project.Project
 import com.intellij.openapi.util.io.FileUtil
 import com.intellij.openapi.vfs.VFileProperty
 import com.intellij.pom.NavigatableWithText
+import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiFile
+import com.intellij.psi.PsiManager
 import com.intellij.psi.impl.smartPointers.AbstractTreeNod2
 
-class PsiFileNode2(value: PsiFile) : BasePsiNode2<PsiFile>(value), NavigatableWithText {
-    public override fun getChildrenImpl(): Collection<AbstractTreeNod2<*>> = emptyList()
+class PsiFileNode2(val project: Project, value2: PsiFile) : BasePsiNode2(value2.virtualFile), NavigatableWithText {
+  public override fun getChildrenImpl(): Collection<AbstractTreeNod2<*>> = emptyList()
 
-    override fun updateImpl(data: PresentationData) {
-        val value = value
-        if (value != null) {
-            data.presentableText = value.name
-            data.setIcon(value.getIcon(Iconable.ICON_FLAG_READ_STATUS))
-            val file = getVirtualFile()
-            if (file != null && file.`is`(VFileProperty.SYMLINK)) {
-                val target = file.canonicalPath
-                if (target == null) {
-                    data.setAttributesKey(CodeInsightColors.WRONG_REFERENCES_ATTRIBUTES)
-                    data.tooltip = IdeBundle.message("node.project.view.bad.link")
-                } else {
-                    data.tooltip = FileUtil.toSystemDependentName(target)
-                }
-            }
+  override fun updateImpl(data: PresentationData) {
+    val value = value
+    if (value != null) {
+      val file = getVirtualFile()
+      if (file.`is`(VFileProperty.SYMLINK)) {
+        val target = file.canonicalPath
+        if (target == null) {
+          data.setAttributesKey(CodeInsightColors.WRONG_REFERENCES_ATTRIBUTES)
+          data.tooltip = IdeBundle.message("node.project.view.bad.link")
+        } else {
+          data.tooltip = FileUtil.toSystemDependentName(target)
         }
+      }
     }
+  }
 
-    override fun canNavigate(): Boolean {
-        getVirtualFile() //todo check: is file can opened in editor
-        return true
+  override fun canNavigate(): Boolean {
+    getVirtualFile() //todo check: is file can opened in editor
+    return true
+  }
+
+  private val isNavigatableLibraryRoot: Boolean
+    private get() = false
+
+  fun extractPsiFromValue(): PsiElement? = PsiManager.getInstance(project).findFile(getVirtualFile())
+  override fun canNavigateToSource(): Boolean = true
+
+  override fun navigate(requestFocus: Boolean, preserveState: Boolean) {
+    if (canNavigate()) {
+      openFileWithPsiElement(getVirtualFile(), extractPsiFromValue(), requestFocus, requestFocus)
     }
+  }
 
-    private val isNavigatableLibraryRoot: Boolean
-        private get() = false
+  override fun getNavigateActionText(focusEditor: Boolean): String? {
+    return if (isNavigatableLibraryRoot) ActionsBundle.message("action.LibrarySettings.navigate") else null
+  }
 
-    override fun navigate(requestFocus: Boolean) {
-        super.navigate(requestFocus)
-    }
+  override fun getWeight(): Int {
+    return 20
+  }
 
-    override fun getNavigateActionText(focusEditor: Boolean): String? {
-        return if (isNavigatableLibraryRoot) ActionsBundle.message("action.LibrarySettings.navigate") else null
-    }
-
-    override fun getWeight(): Int {
-        return 20
-    }
-
-    override fun canRepresent(element: Any): Boolean {
-        if (super.canRepresent(element)) return true
-        val value = value
-        return value != null && element != null && element == value.virtualFile
-    }
+  override fun canRepresent(element: Any): Boolean {
+    if (super.canRepresent(element)) return true
+    val value = value
+    return value != null && element != null && element == getVirtualFile()
+  }
 }

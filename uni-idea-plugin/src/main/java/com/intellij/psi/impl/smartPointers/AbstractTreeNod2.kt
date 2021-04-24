@@ -171,10 +171,6 @@ abstract class AbstractTreeNod2<V : Any>(value: V) : NavigationItem, Queryable.C
     return false
   }
 
-  override fun canNavigateToSource(): Boolean {
-    return false
-  }
-
   protected val parentValue: Any?
     protected get() {
       val parent = parentDescriptor

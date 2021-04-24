@@ -219,16 +219,16 @@ private fun _createUniFilesComponent(
           override fun getOrChooseDirectory(): PsiDirectory? =
             DirectoryChooserUtil.getOrChooseDirectory(this)
           override fun getDirectories(): Array<PsiDirectory> {
-            val directories = ArrayList<PsiDirectory>()
-            for (node in getSelectedNodes(PsiDirectoryNode2::class.java)) {
-              val value = node.value
-              if(value != null) {
-                directories.add(value)
-              }
-            }
-            if (directories.isNotEmpty()) {
-              return directories.toTypedArray()
-            }
+//            val directories = ArrayList<PsiDirectory>()
+//            for (node in getSelectedNodes(PsiDirectoryNode2::class.java)) {
+//              val value = node.value
+//              if(value != null) {
+//                directories.add(value)
+//              }
+//            }
+//            if (directories.isNotEmpty()) {
+//              return directories.toTypedArray()
+//            }
             val elements: Array<PsiElement> = getSelectedPSIElements(myTree.selectionPaths)
             if (elements.size == 1) {
               val element = elements[0]
@@ -289,13 +289,8 @@ fun uniFilesRootNodes(
   project: Project,
   rootDirs: List<VirtualFile> = ConfUniFiles.ROOT_DIRS
 ): Collection<AbstractTreeNod2<*>> {
-  return rootDirs.mapNotNull {
-    PsiManager.getInstance(Uni.todoDefaultProject).findDirectory(it)
-  }.map { psiDirectory: PsiDirectory ->
-    ProjectPsiDirectoryNode(
-      project,
-      psiDirectory
-    )
+  return rootDirs.map {
+    ProjectPsiDirectoryNode(project, it)
   }
 }
 
