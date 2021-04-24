@@ -25,8 +25,7 @@ import com.unicorn.Uni.log
 import java.lang.ref.Reference
 import javax.swing.Icon
 
-abstract class AbstractTreeNod2<V : Any>(value: V) : NavigationItem, Queryable.Contributor, RootsProvider,
-  LeafState.Supplier {
+abstract class AbstractTreeNod2<V : Any>(value: V) : NavigationItem, Queryable.Contributor, RootsProvider, LeafState.Supplier {
   @JvmField
   protected var myName: @NlsSafe String? = null
   var icon: Icon? = null
@@ -42,9 +41,9 @@ abstract class AbstractTreeNod2<V : Any>(value: V) : NavigationItem, Queryable.C
     get() = _myParent
     set
 
-  private var myValue: Any? = null
   private var myNullValueSet = false
-  private val myNodeWrapper: Boolean
+  private var myValue: Any? = null
+  private val myNodeWrapper: Boolean = setInternalValue(value)
   private var myTemplatePresentation: PresentationData? = null
   private var myUpdatedPresentation: PresentationData? = null
   var index = -1
@@ -358,7 +357,4 @@ abstract class AbstractTreeNod2<V : Any>(value: V) : NavigationItem, Queryable.C
     }
   }
 
-  init {
-    myNodeWrapper = setInternalValue(value)
-  }
 }
