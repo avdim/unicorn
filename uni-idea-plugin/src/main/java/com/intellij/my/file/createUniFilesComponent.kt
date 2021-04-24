@@ -13,6 +13,9 @@ import com.intellij.ide.ui.customization.CustomizationUtil
 import com.intellij.ide.util.DirectoryChooserUtil
 import com.intellij.openapi.actionSystem.*
 import com.intellij.openapi.application.ApplicationManager
+import com.intellij.openapi.fileEditor.FileEditorManager
+import com.intellij.openapi.fileTypes.FileTypeManager
+import com.intellij.openapi.fileTypes.INativeFileType
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.project.ProjectManager
 import com.intellij.openapi.vcs.FileStatus
@@ -96,6 +99,7 @@ private fun _createUniFilesComponent(
             presentation.setIcon(PlatformIcons.PROJECT_ICON)
             presentation.presentableText = "todo_presentable_text"
           }
+          override fun canNavigateToSource(): Boolean = false
         }
 
       override fun getChildElements(element: Any): Array<Any> {
@@ -285,14 +289,24 @@ private fun _createUniFilesComponent(
   }
 }
 
-fun uniFilesRootNodes(
-  project: Project,
-  rootDirs: List<VirtualFile> = ConfUniFiles.ROOT_DIRS
-): Collection<AbstractTreeNod2<*>> {
-  return rootDirs.map {
-    ProjectPsiDirectoryNode(project, it)
+fun uniFilesRootNodes(project: Project, rootDirs: List<VirtualFile>): Collection<AbstractTreeNod2<*>> =
+  rootDirs.map {
+    ProjectPsiDirectoryNode(it) { file->
+      // all navigation inside should be treated as a single operation, so that 'Back' action undoes it in one go
+      if (false) {
+        ProjectManager.getInstance().openProjects
+      }
+      val type = FileTypeManager.getInstance().getKnownFileTypeOrAssociate(file, Uni.todoDefaultProject)
+      if (type == null || !file.isValid) {
+        // If not associated IDEA file type, or external application
+      } else if (type is INativeFileType) {
+        // например *.pdf
+        type.openFileInAssociatedApplication(Uni.todoDefaultProject, file)
+      } else {
+        FileEditorManager.getInstance(project).openFile(file, true, true)
+      }
+    }
   }
-}
 
 fun getSelectedPSIElements(selectionPaths: Array<TreePath>?): Array<PsiElement> {
   val paths = selectionPaths ?: return emptyArray()

@@ -20,6 +20,7 @@ import com.intellij.psi.*
 import com.intellij.psi.util.PsiUtilCore
 import com.intellij.reference.SoftReference
 import com.intellij.ui.tree.LeafState
+import com.unicorn.Uni
 import com.unicorn.Uni.log
 import java.lang.ref.Reference
 import javax.swing.Icon
@@ -177,9 +178,7 @@ abstract class AbstractTreeNod2<V : Any>(value: V) : NavigationItem, Queryable.C
       return parent?.value
     }
 
-  open fun canRepresent(element: Any): Boolean {
-    return Comparing.equal(value, element)
-  }
+  fun canRepresent(element: Any): Boolean = Uni.todoCanRepresentAlwaysTrue()
 
   fun update(): Boolean {
     if (shouldUpdateData()) {

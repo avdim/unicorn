@@ -113,6 +113,11 @@ object Uni : Disposable {
     Actions.unregister()
   }
 
+  fun todoCanRepresentAlwaysTrue(): Boolean {
+    Uni.log.error("todoCanRepresentAlwaysTrue")
+    return true
+  }
+
 }
 
 fun Disposable.myDispose() {
