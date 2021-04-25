@@ -21,10 +21,6 @@ abstract class AbstractTreeNod2<V : Any>(value: V) : NavigationItem, Queryable.C
   @JvmField
   protected var myName: @NlsSafe String? = null
   var icon: Icon? = null
-
-  fun setParent(parent: AbstractTreeNod2<*>) {
-
-  }
   private var myNullValueSet = false
   private var myValue: Any? = null
   private val myNodeWrapper: Boolean = setInternalValue(value)

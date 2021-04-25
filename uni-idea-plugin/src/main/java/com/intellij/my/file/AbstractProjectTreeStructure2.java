@@ -34,7 +34,6 @@ public abstract class AbstractProjectTreeStructure2 extends AbstractTreeStructur
     if (elements.contains(null)) {
       Uni.getLog().error("node contains null child: " + treeNode + "; " + treeNode.getClass());
     }
-    elements.forEach(node -> node.setParent(treeNode));
     return ArrayUtil.toObjectArray(elements);
   }
 

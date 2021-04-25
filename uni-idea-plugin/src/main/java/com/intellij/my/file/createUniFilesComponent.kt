@@ -103,7 +103,6 @@ private fun _createUniFilesComponent(
       override fun getChildElements(element: Any): Array<Any> {
         val treeNode = element as AbstractTreeNod2<*>
         val elements = treeNode.getChildren()
-        elements.forEach { it?.setParent(treeNode) }
         return elements.toTypedArray()
       }
 
