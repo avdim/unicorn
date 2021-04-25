@@ -17,7 +17,7 @@ import com.intellij.ui.tree.LeafState
 import com.unicorn.Uni
 import javax.swing.Icon
 
-abstract class AbstractTreeNod2<V : VirtualFile>(value: V) : NavigationItem, Queryable.Contributor, RootsProvider, LeafState.Supplier {
+abstract class AbstractTreeNod2<V : VirtualFile>(value: V) : NavigationItem, Queryable.Contributor, LeafState.Supplier {
   @JvmField
   protected var myName: @NlsSafe String? = null
   var icon: Icon? = null
@@ -58,11 +58,11 @@ abstract class AbstractTreeNod2<V : VirtualFile>(value: V) : NavigationItem, Que
   open val isAlwaysShowPlus: Boolean get() = false
   val element: AbstractTreeNod2<V>? get() = if (equalityObject != null) this as? AbstractTreeNod2<V> else null
 
-  override fun equals(`object`: Any?): Boolean {
-    if (`object` === this) return true
-    return if (`object` == null || `object`.javaClass != javaClass) false else Comparing.equal(
+  override fun equals(other: Any?): Boolean {
+    if (other === this) return true
+    return if (other == null || other.javaClass != javaClass) false else Comparing.equal(
       myValue,
-      (`object` as AbstractTreeNod2<*>).myValue
+      (other as AbstractTreeNod2<*>).myValue
     )
     // we should not change this behaviour if value is set to null
   }
@@ -86,22 +86,6 @@ abstract class AbstractTreeNod2<V : VirtualFile>(value: V) : NavigationItem, Que
         LOG.warn("hash code changed: $myValue")
       }
     }
-
-  override fun getRoots(): Collection<VirtualFile> {
-    val value = value
-    if (value is RootsProvider) {
-      return value.roots
-    }
-    if (value is VirtualFile) {
-      return setOf(value)
-    }
-    if (value is PsiFileSystemItem) {
-      val item = value
-      return item.virtualFile?.let { setOf(it) } ?: emptySet()
-    }
-    return emptySet()
-  }
-
 
   /**
    * Stores the anchor to new value if it is not `null`
