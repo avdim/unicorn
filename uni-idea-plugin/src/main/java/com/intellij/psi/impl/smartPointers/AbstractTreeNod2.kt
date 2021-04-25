@@ -5,19 +5,18 @@ import com.intellij.ide.projectView.PresentationData
 import com.intellij.ide.projectView.RootsProvider
 import com.intellij.ide.util.treeView.WeighedItem
 import com.intellij.navigation.NavigationItem
-import com.intellij.openapi.application.ApplicationManager
 import com.intellij.openapi.application.ReadAction
 import com.intellij.openapi.diagnostic.Logger
 import com.intellij.openapi.ide.CopyPasteManager
-import com.intellij.openapi.project.ProjectManager
 import com.intellij.openapi.ui.Queryable
 import com.intellij.openapi.util.Comparing
 import com.intellij.openapi.util.Key
 import com.intellij.openapi.util.NlsSafe
 import com.intellij.openapi.vcs.FileStatus
 import com.intellij.openapi.vfs.VirtualFile
-import com.intellij.psi.*
-import com.intellij.psi.util.PsiUtilCore
+import com.intellij.psi.PsiElement
+import com.intellij.psi.PsiFileSystemItem
+import com.intellij.psi.SmartPsiElementPointer
 import com.intellij.reference.SoftReference
 import com.intellij.ui.tree.LeafState
 import com.unicorn.Uni
@@ -134,27 +133,8 @@ abstract class AbstractTreeNod2<V : Any>(value: V) : NavigationItem, Queryable.C
    */
   private fun setInternalValue(value: V): Boolean {
     if (value === TREE_WRAPPER_VALUE) return true
-    myValue = createAnchor(value)
+    myValue = value
     return false
-  }
-
-  fun createAnchor(element: Any): Any {
-    if (element is PsiElement) {
-      val psi = element
-      return ReadAction.compute<Any, RuntimeException> {
-        if (!psi.isValid) return@compute psi
-        val psiResult: SmartPsiElementPointer<PsiElement>
-        val oldPsiResult = SmartPointerManagerImpl2.getInstance(psi.project).createSmartPsiElementPointer(psi)
-        val newPsiResult = createSmartPsiElementPointer(psi)
-        psiResult = if (true) {
-          newPsiResult
-        } else {
-          oldPsiResult
-        }
-        psiResult
-      }
-    }
-    return element
   }
 
   val equalityObject: Any?
@@ -280,19 +260,6 @@ abstract class AbstractTreeNod2<V : Any>(value: V) : NavigationItem, Queryable.C
       return pointer
     }
 
-    fun createSmartPsiElementPointer(element: PsiElement): SmartPsiElementPointer<PsiElement> {
-      ApplicationManager.getApplication().assertReadAccessAllowed()
-      val containingFile = element.containingFile
-      return createSmartPsiElementPointer(element, containingFile)
-    }
-
-    fun createSmartPsiElementPointer(
-      element: PsiElement,
-      containingFile: PsiFile?
-    ): SmartPsiElementPointer<PsiElement> {
-      return createSmartPsiElementPointer2(element, containingFile)
-    }
-
     private fun <E : PsiElement?> getCachedPointer(element: E): SmartPsiElementPointerImpl2<E>? {
       val data = element?.getUserData(CACHED_SMART_POINTER_KEY)
       val cachedPointer = SoftReference.dereference(data)
@@ -303,42 +270,6 @@ abstract class AbstractTreeNod2<V : Any>(value: V) : NavigationItem, Queryable.C
         }
       }
       return cachedPointer as? SmartPsiElementPointerImpl2<E>
-    }
-
-    fun createSmartPsiElementPointer2(
-      element: PsiElement,
-      containingFile: PsiFile?
-    ): SmartPsiElementPointer<PsiElement> {
-
-      if (element == null) {
-        throw throw PsiInvalidElementAccessException(containingFile, "element == null")
-      }
-      val valid = containingFile?.isValid ?: element.isValid
-      if (!valid) {
-        PsiUtilCore.ensureValid(element)
-        if (containingFile != null && !containingFile.isValid) {
-          throw PsiInvalidElementAccessException(
-            containingFile,
-            "Element " + element.javaClass + "(" + element.language + ")" + " claims to be valid but returns invalid containing file "
-          )
-        }
-      }
-      //    SmartPointerTracker.processQueue();
-//    ensureMyProject(containingFile != null ? containingFile.getProject() : element.getProject());
-      var pointer = getCachedPointer(element)
-      if (pointer != null && pointer.incrementAndGetReferenceCount(1) > 0) {
-        return pointer
-      }
-      pointer = SmartPsiElementPointerImpl2(
-        SmartPointerManagerImpl2.getInstance(ProjectManager.getInstance().defaultProject),
-        element,
-        containingFile
-      )
-      if (containingFile != null) {
-        trackPointer<PsiElement>()
-      }
-      element.putUserData(CACHED_SMART_POINTER_KEY, SoftReference(pointer))
-      return pointer
     }
 
     private val CACHED_SMART_POINTER_KEY =
