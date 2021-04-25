@@ -2752,18 +2752,6 @@ public class AbstractTreeUi2 {
           .onSuccess(new TreeConsumer2<Boolean>("AbstractTreeUi.processExistingNode: on done index updating") {
             @Override
             public void perform() {
-              if (!oldElement.equals(newElement.get()) || forceRemapping.get()) {
-                removeMapping(oldElement, childNode, newElement.get());
-                Object newE = newElement.get();
-                if (!isNodeNull(newE)) {
-                  createMapping(newE, childNode);
-                }
-                AbstractTreeNod2 parentDescriptor = getDescriptorFrom(parentNode);
-                if (parentDescriptor != null) {
-                  parentDescriptor.setChildrenSortingStamp(-1);
-                }
-              }
-
               if (index == null) {
                 int selectedIndex = -1;
                 if (TreeBuilderUtil2.isNodeOrChildSelected(myTree, childNode)) {
