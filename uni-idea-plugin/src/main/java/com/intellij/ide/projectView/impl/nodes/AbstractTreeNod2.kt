@@ -2,9 +2,7 @@
 package com.intellij.ide.projectView.impl.nodes
 
 import com.intellij.ide.projectView.PresentationData
-import com.intellij.ide.util.treeView.WeighedItem
 import com.intellij.navigation.NavigationItem
-import com.intellij.openapi.diagnostic.Logger
 import com.intellij.openapi.ide.CopyPasteManager
 import com.intellij.openapi.ui.Queryable
 import com.intellij.openapi.util.Comparing
@@ -19,16 +17,15 @@ abstract class AbstractTreeNod2<V : VirtualFile>(value: V) : NavigationItem, Que
   @JvmField
   protected var myName: @NlsSafe String? = null
   var icon: Icon? = null
-  private var myNullValueSet = false
-  private var myValue: VirtualFile = value
-  private var myTemplatePresentation: PresentationData? = null
-  private var myUpdatedPresentation: PresentationData? = null
+  private var myValue: V = value
+  private val myTemplatePresentation: PresentationData by lazy { PresentationData() }
+  private val myUpdatedPresentation: PresentationData by lazy { PresentationData() }
   var index = -1
   var childrenSortingStamp: Long = -1
   var updateCount: Long = 0
   var isWasDeclaredAlwaysLeaf = false
-  abstract fun getChildren(): Collection<AbstractTreeNod2<*>>
 
+  abstract fun getChildren(): Collection<AbstractTreeNod2<*>>
   protected fun postprocess(presentation: PresentationData) {
     setForcedForeground(presentation)
   }
@@ -44,16 +41,12 @@ abstract class AbstractTreeNod2<V : VirtualFile>(value: V) : NavigationItem, Que
     }
   }
 
-  protected fun shouldUpdateData(): Boolean {
-    return equalityObject != null
-  }
-
   override fun getLeafState(): LeafState {
     return if (isAlwaysShowPlus) LeafState.NEVER else LeafState.DEFAULT
   }
 
   open val isAlwaysShowPlus: Boolean get() = false
-  val element: AbstractTreeNod2<V>? get() = if (equalityObject != null) this as? AbstractTreeNod2<V> else null
+  val element: AbstractTreeNod2<V> get() = this
 
   override fun equals(other: Any?): Boolean {
     if (other === this) return true
@@ -64,30 +57,9 @@ abstract class AbstractTreeNod2<V : VirtualFile>(value: V) : NavigationItem, Que
     // we should not change this behaviour if value is set to null
   }
 
-  override fun hashCode(): Int {
-    // we should not change hash code if value is set to null
-    val value = myValue
-    return value?.hashCode() ?: 0
-  }
-
-  val value: V?
-    get() {
-      val value = equalityObject
-      return if (value == null) null else retrieveElement(value) as V?
-    }
-
-  /**
-   * Stores the anchor to new value if it is not `null`
-   *
-   * @param value a new value to set
-   * @return `true` if the specified value is `null` and the anchor is not changed
-   */
-  private fun setInternalValue(value: V): Boolean {
-    return false
-  }
-
-  val equalityObject: Any?
-    get() = if (myNullValueSet) null else myValue
+  override fun hashCode(): Int = myValue.hashCode()
+  val value: V = equalityObject
+  val equalityObject: V get() = myValue
 
   override fun apply(info: Map<String, String>) {}
   abstract fun getFileStatus(): FileStatus
@@ -103,90 +75,48 @@ abstract class AbstractTreeNod2<V : VirtualFile>(value: V) : NavigationItem, Que
   fun canRepresent(element: Any): Boolean = Uni.todoCanRepresentAlwaysTrue()
 
   fun update(): Boolean {
-    if (shouldUpdateData()) {
-      val before = presentation.clone()
-      val updated = updatedPresentation
-      return shouldApply() && apply(updated, before)
-    }
-    return false
+    val before = presentation.clone()
+    val updated = updatedPresentation
+    return apply(updated, before)
   }
 
-  protected fun apply(presentation: PresentationData, before: PresentationData? = null): Boolean {
+  private fun apply(presentation: PresentationData, before: PresentationData): Boolean {
     icon = presentation.getIcon(false)
     myName = presentation.presentableText
-    var updated = presentation != before
-    if (myUpdatedPresentation == null) {
-      myUpdatedPresentation = createPresentation()
-    }
-    myUpdatedPresentation!!.copyFrom(presentation)
-    if (myTemplatePresentation != null) {
-      myUpdatedPresentation!!.applyFrom(myTemplatePresentation)
-    }
-    updated = updated or myUpdatedPresentation!!.isChanged
-    myUpdatedPresentation!!.isChanged = false
-    return updated
+    var result = presentation != before
+    myUpdatedPresentation.copyFrom(presentation)
+    myUpdatedPresentation.applyFrom(myTemplatePresentation)
+    result = result or myUpdatedPresentation.isChanged
+    myUpdatedPresentation.isChanged = false
+    return result
   }
 
   private val updatedPresentation: PresentationData
-    private get() {
-      val presentation = if (myUpdatedPresentation != null) myUpdatedPresentation!! else createPresentation()
-      myUpdatedPresentation = presentation
-      presentation.clear()
-      update(presentation)
+    get() {
+      val p = myUpdatedPresentation
+      p.clear()
+      update(p)
       if (shouldPostprocess()) {
-        postprocess(presentation)
+        postprocess(p)
       }
-      return presentation
+      return p
     }
-
-  protected fun createPresentation(): PresentationData {
-    return PresentationData()
-  }
 
   protected open fun shouldPostprocess(): Boolean {
     return true
   }
 
-  protected open fun shouldApply(): Boolean {
-    return true
-  }
-
   protected abstract fun update(presentation: PresentationData)
-  override fun getPresentation(): PresentationData {
-    return if (myUpdatedPresentation == null) templatePresentation else myUpdatedPresentation!!
-  }
-
-  protected val templatePresentation: PresentationData
-    protected get() {
-      if (myTemplatePresentation == null) {
-        myTemplatePresentation = createPresentation()
-      }
-      return myTemplatePresentation!!
-    }
+  override fun getPresentation(): PresentationData = myUpdatedPresentation
 
   override fun toString(): String {
-    // NB!: this method may return null if node is not valid
-    // it contradicts the specification, but the fix breaks existing behaviour
-    // see com.intellij.ide.util.FileStructurePopup#getSpeedSearchText
     return myName!!
   }
 
-  open fun getWeight(): Int {
-    val element: AbstractTreeNod2<*>? = element
-    return if (element is WeighedItem) {
-      (element as WeighedItem).weight
-    } else DEFAULT_WEIGHT
-  }
+  open fun getWeight(): Int = DEFAULT_WEIGHT
 
   companion object {
     const val DEFAULT_WEIGHT = 30
-    private val LOG = Logger.getInstance(
-      AbstractTreeNod2::class.java
-    )
-    val TREE_WRAPPER_VALUE = Any()
-    fun retrieveElement(pointer: Any): Any? {
-      return pointer
-    }
   }
 
 }
