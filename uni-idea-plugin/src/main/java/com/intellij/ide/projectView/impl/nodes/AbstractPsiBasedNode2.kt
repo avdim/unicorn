@@ -20,7 +20,6 @@ import com.unicorn.Uni
 abstract class AbstractPsiBasedNode2<V : VirtualFile>(value: V) : AbstractTreeNod2<V>(value),
   ValidateableNode, StatePreservingNavigatable {
   protected abstract fun getChildrenImpl(): Collection<AbstractTreeNod2<*>>
-  protected abstract fun updateImpl(data: PresentationData)
   override fun getChildren(): Collection<AbstractTreeNod2<*>> {
     return AstLoadingFilter.disallowTreeLoading(ThrowableComputable<Collection<AbstractTreeNod2<*>?>, RuntimeException> { getChildrenImpl() }) as Collection<AbstractTreeNod2<*>>
   }
@@ -28,20 +27,6 @@ abstract class AbstractPsiBasedNode2<V : VirtualFile>(value: V) : AbstractTreeNo
   protected abstract fun getVirtualFile(): VirtualFile
 
   override fun isValid(): Boolean = true
-
-  public override fun update(presentation: PresentationData) {
-    AstLoadingFilter.disallowTreeLoading<RuntimeException> {
-      ApplicationManager.getApplication().runReadAction {
-        presentation.presentableText = getVirtualFile().name
-        presentation.setIcon(IconUtil.getIcon(getVirtualFile(), 0, Uni.todoDefaultProject))
-        if (false) {
-          presentation.setIcon(patchIcon(presentation.getIcon(true), getVirtualFile()))
-        }
-        presentation.locationString = "hint"
-        updateImpl(presentation)
-      }
-    }
-  }
 
   final override fun navigate(requestFocus: Boolean) {
     navigate(requestFocus, false)
