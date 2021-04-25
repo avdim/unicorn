@@ -31,9 +31,6 @@ abstract class AbstractTreeNod2<V : Any>(value: V) : NavigationItem, Queryable.C
   var updateCount: Long = 0
   var isWasDeclaredAlwaysLeaf = false
   abstract fun getChildren(): Collection<AbstractTreeNod2<*>>
-  protected fun valueIsCut(): Boolean {
-    return CopyPasteManager.getInstance().isCutElement(value)
-  }
 
   protected fun postprocess(presentation: PresentationData) {
     setForcedForeground(presentation)
@@ -42,7 +39,7 @@ abstract class AbstractTreeNod2<V : Any>(value: V) : NavigationItem, Queryable.C
   private fun setForcedForeground(presentation: PresentationData) {
     val status = getFileStatus()
     var fgColor = status.color
-    if (valueIsCut()) {
+    if (CopyPasteManager.getInstance().isCutElement(value)) {//todo not working
       fgColor = CopyPasteManager.CUT_COLOR
     }
     if (presentation.forcedTextForeground == null) {
