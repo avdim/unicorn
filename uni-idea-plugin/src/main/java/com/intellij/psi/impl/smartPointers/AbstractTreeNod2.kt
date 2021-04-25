@@ -251,40 +251,7 @@ abstract class AbstractTreeNod2<V : Any>(value: V) : NavigationItem, Queryable.C
     )
     val TREE_WRAPPER_VALUE = Any()
     fun retrieveElement(pointer: Any): Any? {
-      if (pointer is SmartPsiElementPointer<*>) {
-        if (pointer !is SmartPsiElementPointerImpl2<*>) {
-          log.error("!(pointer instanceof SmartPsiElementPointerImpl2)")
-        }
-        return ReadAction.compute<Any?, Throwable> { (pointer as SmartPsiElementPointerImpl2<*>).element } //по факту тут тотлько SmartPsiElementPointerImpl2
-      }
       return pointer
-    }
-
-    private fun <E : PsiElement?> getCachedPointer(element: E): SmartPsiElementPointerImpl2<E>? {
-      val data = element?.getUserData(CACHED_SMART_POINTER_KEY)
-      val cachedPointer = SoftReference.dereference(data)
-      if (cachedPointer != null) {
-        val cachedElement = cachedPointer.element
-        if (cachedElement !== element) {
-          return null
-        }
-      }
-      return cachedPointer as? SmartPsiElementPointerImpl2<E>
-    }
-
-    private val CACHED_SMART_POINTER_KEY =
-      Key.create<Reference<SmartPsiElementPointerImpl2<*>>>("CACHED_SMART_POINTER_KEY_2")
-
-    private fun <E : PsiElement?> trackPointer() {
-//    Uni.getLog().error("should not use: trackPointer(pointer= " + pointer +  ", containingFile: " + containingFile);
-//    SmartPsiElementPointerImpl2 info = pointer.getElementInfo();
-//    if (!(info instanceof SelfElementInfo)) return;
-//
-//    SmartPointerTracker tracker = getTracker(containingFile);
-//    if (tracker == null) {
-//      tracker = getOrCreateTracker(containingFile);
-//    }
-//    tracker.addReference(pointer);
     }
   }
 

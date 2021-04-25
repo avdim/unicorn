@@ -2,12 +2,9 @@
 package com.intellij.ide.projectView.impl.nodes
 
 import com.intellij.ide.projectView.PresentationData
-import com.intellij.openapi.vfs.VfsUtilCore
 import com.intellij.openapi.vfs.VirtualFile
 import com.intellij.pom.NavigatableWithText
-import com.intellij.psi.PsiDirectory
 import com.intellij.ui.SimpleTextAttributes
-import com.intellij.util.containers.SmartHashSet
 import com.unicorn.Uni
 import com.unicorn.Uni.BOLD_DIRS
 
