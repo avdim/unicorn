@@ -45,9 +45,6 @@ public abstract class AbstractProjectTreeStructure2 extends AbstractTreeStructur
 
   @Override
   public Object getParentElement(@NotNull Object element) {
-    if (element instanceof AbstractTreeNod2){
-      return ((AbstractTreeNod2<?>)element).getParent();
-    }
     return null;
   }
 

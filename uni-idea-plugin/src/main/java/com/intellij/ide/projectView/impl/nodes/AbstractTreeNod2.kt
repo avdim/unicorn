@@ -22,17 +22,9 @@ abstract class AbstractTreeNod2<V : Any>(value: V) : NavigationItem, Queryable.C
   protected var myName: @NlsSafe String? = null
   var icon: Icon? = null
 
-  fun getParent(): AbstractTreeNod2<*>? {
-    return _myParent
-  }
   fun setParent(parent: AbstractTreeNod2<*>) {
-    _myParent = parent
-  }
-  private var _myParent: AbstractTreeNod2<*>? = null
-  var parentDescriptor: AbstractTreeNod2<*>? = null
-    get() = _myParent
-    set
 
+  }
   private var myNullValueSet = false
   private var myValue: Any? = null
   private val myNodeWrapper: Boolean = setInternalValue(value)
@@ -143,12 +135,6 @@ abstract class AbstractTreeNod2<V : Any>(value: V) : NavigationItem, Queryable.C
   override fun canNavigate(): Boolean {
     return false
   }
-
-  protected val parentValue: Any?
-    protected get() {
-      val parent = parentDescriptor
-      return parent?.value
-    }
 
   fun canRepresent(element: Any): Boolean = Uni.todoCanRepresentAlwaysTrue()
 

@@ -3017,7 +3017,7 @@ public class AbstractTreeUi2 {
    */
   private boolean isValid(AbstractTreeNod2 descriptor, AbstractTreeNod2 parent) {
     if (descriptor == null) return false;
-    if (parent != null && parent != descriptor.getParentDescriptor()) return false;
+    if (parent != null) return false;
     return isValid2(getElementFromDescriptor(descriptor));
   }
 
