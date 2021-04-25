@@ -1,3 +1,3 @@
 #!/usr/bin/env bash
 
-./gradlew update-plugin:runIde -PuniBuildType=hand-test
+./gradlew uni-idea-plugin:runIde -PuniBuildType=hand-test
