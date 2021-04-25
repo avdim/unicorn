@@ -2,7 +2,6 @@
 package com.intellij.ide.projectView.impl.nodes
 
 import com.intellij.ide.projectView.PresentationData
-import com.intellij.ide.projectView.RootsProvider
 import com.intellij.ide.util.treeView.WeighedItem
 import com.intellij.navigation.NavigationItem
 import com.intellij.openapi.diagnostic.Logger
@@ -12,7 +11,6 @@ import com.intellij.openapi.util.Comparing
 import com.intellij.openapi.util.NlsSafe
 import com.intellij.openapi.vcs.FileStatus
 import com.intellij.openapi.vfs.VirtualFile
-import com.intellij.psi.PsiFileSystemItem
 import com.intellij.ui.tree.LeafState
 import com.unicorn.Uni
 import javax.swing.Icon
@@ -22,8 +20,7 @@ abstract class AbstractTreeNod2<V : VirtualFile>(value: V) : NavigationItem, Que
   protected var myName: @NlsSafe String? = null
   var icon: Icon? = null
   private var myNullValueSet = false
-  private var myValue: Any? = null
-  private val myNodeWrapper: Boolean = setInternalValue(value)
+  private var myValue: VirtualFile = value
   private var myTemplatePresentation: PresentationData? = null
   private var myUpdatedPresentation: PresentationData? = null
   var index = -1
@@ -73,18 +70,10 @@ abstract class AbstractTreeNod2<V : VirtualFile>(value: V) : NavigationItem, Que
     return value?.hashCode() ?: 0
   }
 
-  var value: V?
+  val value: V?
     get() {
       val value = equalityObject
       return if (value == null) null else retrieveElement(value) as V?
-    }
-    set(value) {
-      val debug = !myNodeWrapper && LOG.isDebugEnabled
-      val hash = if (!debug) 0 else hashCode()
-      myNullValueSet = value == null || setInternalValue(value)
-      if (debug && hash != hashCode()) {
-        LOG.warn("hash code changed: $myValue")
-      }
     }
 
   /**
@@ -94,8 +83,6 @@ abstract class AbstractTreeNod2<V : VirtualFile>(value: V) : NavigationItem, Que
    * @return `true` if the specified value is `null` and the anchor is not changed
    */
   private fun setInternalValue(value: V): Boolean {
-    if (value === TREE_WRAPPER_VALUE) return true
-    myValue = value
     return false
   }
 
