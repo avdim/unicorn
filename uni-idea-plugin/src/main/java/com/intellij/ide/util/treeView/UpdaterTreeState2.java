@@ -4,7 +4,7 @@ package com.intellij.ide.util.treeView;
 import com.intellij.openapi.util.ActionCallback;
 import com.intellij.openapi.util.Condition;
 import com.intellij.openapi.util.Conditions;
-import com.intellij.psi.impl.smartPointers.AbstractTreeNod2;
+import com.intellij.ide.projectView.impl.nodes.AbstractTreeNod2;
 import com.intellij.util.ArrayUtil;
 import com.intellij.util.Function;
 import com.intellij.util.containers.ContainerUtil;

@@ -2,7 +2,7 @@
 package com.intellij.my.file;
 
 import com.intellij.ide.util.treeView.FileNameComparator;
-import com.intellij.psi.impl.smartPointers.AbstractTreeNod2;
+import com.intellij.ide.projectView.impl.nodes.AbstractTreeNod2;
 
 public final class AlphaComparator2 {
 

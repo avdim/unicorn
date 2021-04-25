@@ -6,7 +6,7 @@ import com.intellij.ide.util.treeView.AbstractTreeStructure;
 import com.intellij.ide.util.treeView.NodeDescriptor;
 import com.intellij.openapi.util.ActionCallback;
 import com.intellij.psi.PsiDocumentManager;
-import com.intellij.psi.impl.smartPointers.AbstractTreeNod2;
+import com.intellij.ide.projectView.impl.nodes.AbstractTreeNod2;
 import com.intellij.util.ArrayUtil;
 import com.unicorn.Uni;
 import org.jetbrains.annotations.NotNull;

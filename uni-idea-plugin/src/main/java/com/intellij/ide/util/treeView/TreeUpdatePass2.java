@@ -15,7 +15,7 @@
  */
 package com.intellij.ide.util.treeView;
 
-import com.intellij.psi.impl.smartPointers.AbstractTreeNod2;
+import com.intellij.ide.projectView.impl.nodes.AbstractTreeNod2;
 import org.jetbrains.annotations.NonNls;
 import org.jetbrains.annotations.NotNull;
 

@@ -13,7 +13,7 @@ import com.intellij.openapi.project.IndexNotReadyException;
 import com.intellij.openapi.util.*;
 import com.intellij.openapi.util.registry.Registry;
 import com.intellij.openapi.util.registry.RegistryValue;
-import com.intellij.psi.impl.smartPointers.AbstractTreeNod2;
+import com.intellij.ide.projectView.impl.nodes.AbstractTreeNod2;
 import com.intellij.ui.LoadingNode;
 import com.intellij.ui.treeStructure.Tree;
 import com.intellij.util.*;

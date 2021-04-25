@@ -1,27 +1,20 @@
 // Copyright 2000-2020 JetBrains s.r.o. Use of this source code is governed by the Apache 2.0 license that can be found in the LICENSE file.
-package com.intellij.psi.impl.smartPointers
+package com.intellij.ide.projectView.impl.nodes
 
 import com.intellij.ide.projectView.PresentationData
 import com.intellij.ide.projectView.RootsProvider
 import com.intellij.ide.util.treeView.WeighedItem
 import com.intellij.navigation.NavigationItem
-import com.intellij.openapi.application.ReadAction
 import com.intellij.openapi.diagnostic.Logger
 import com.intellij.openapi.ide.CopyPasteManager
 import com.intellij.openapi.ui.Queryable
 import com.intellij.openapi.util.Comparing
-import com.intellij.openapi.util.Key
 import com.intellij.openapi.util.NlsSafe
 import com.intellij.openapi.vcs.FileStatus
 import com.intellij.openapi.vfs.VirtualFile
-import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiFileSystemItem
-import com.intellij.psi.SmartPsiElementPointer
-import com.intellij.reference.SoftReference
 import com.intellij.ui.tree.LeafState
 import com.unicorn.Uni
-import com.unicorn.Uni.log
-import java.lang.ref.Reference
 import javax.swing.Icon
 
 abstract class AbstractTreeNod2<V : Any>(value: V) : NavigationItem, Queryable.Contributor, RootsProvider, LeafState.Supplier {
@@ -35,7 +28,7 @@ abstract class AbstractTreeNod2<V : Any>(value: V) : NavigationItem, Queryable.C
   fun setParent(parent: AbstractTreeNod2<*>) {
     _myParent = parent
   }
-  private var _myParent:AbstractTreeNod2<*>? = null
+  private var _myParent: AbstractTreeNod2<*>? = null
   var parentDescriptor: AbstractTreeNod2<*>? = null
     get() = _myParent
     set

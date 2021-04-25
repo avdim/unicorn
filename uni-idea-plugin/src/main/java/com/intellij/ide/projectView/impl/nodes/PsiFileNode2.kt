@@ -9,7 +9,6 @@ import com.intellij.openapi.util.io.FileUtil
 import com.intellij.openapi.vfs.VFileProperty
 import com.intellij.openapi.vfs.VirtualFile
 import com.intellij.pom.NavigatableWithText
-import com.intellij.psi.impl.smartPointers.AbstractTreeNod2
 import com.intellij.ui.LayeredIcon
 import com.intellij.util.PlatformIcons
 import javax.swing.Icon

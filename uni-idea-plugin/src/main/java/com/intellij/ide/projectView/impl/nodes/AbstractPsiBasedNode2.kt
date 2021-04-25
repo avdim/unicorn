@@ -7,7 +7,6 @@ import com.intellij.openapi.application.ApplicationManager
 import com.intellij.openapi.util.ThrowableComputable
 import com.intellij.openapi.vfs.VirtualFile
 import com.intellij.pom.StatePreservingNavigatable
-import com.intellij.psi.impl.smartPointers.AbstractTreeNod2
 import com.intellij.util.AstLoadingFilter
 import com.intellij.util.IconUtil
 import com.unicorn.Uni

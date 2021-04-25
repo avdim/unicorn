@@ -8,7 +8,6 @@ import com.intellij.ide.projectView.PresentationData
 import com.intellij.ide.projectView.ProjectViewSettings
 import com.intellij.ide.projectView.impl.JavaHelpers
 import com.intellij.ide.projectView.impl.SpeedSearchFiles
-import com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode2
 import com.intellij.ide.ui.customization.CustomizationUtil
 import com.intellij.ide.util.DirectoryChooserUtil
 import com.intellij.openapi.actionSystem.*
@@ -24,8 +23,7 @@ import com.intellij.pom.Navigatable
 import com.intellij.psi.PsiDirectory
 import com.intellij.psi.PsiDirectoryContainer
 import com.intellij.psi.PsiElement
-import com.intellij.psi.PsiManager
-import com.intellij.psi.impl.smartPointers.AbstractTreeNod2
+import com.intellij.ide.projectView.impl.nodes.AbstractTreeNod2
 import com.intellij.psi.util.PsiUtilCore
 import com.intellij.ui.ScrollPaneFactory
 import com.intellij.ui.layout.Cell

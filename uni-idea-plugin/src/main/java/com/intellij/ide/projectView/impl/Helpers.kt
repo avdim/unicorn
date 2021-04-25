@@ -1,7 +1,7 @@
 package com.intellij.ide.projectView.impl
 
 import com.intellij.ide.util.treeView.NodeDescriptor
-import com.intellij.psi.impl.smartPointers.AbstractTreeNod2
+import com.intellij.ide.projectView.impl.nodes.AbstractTreeNod2
 import com.intellij.util.ui.tree.TreeUtil
 
 fun extractValueFromNode(node: Any?): Any? {

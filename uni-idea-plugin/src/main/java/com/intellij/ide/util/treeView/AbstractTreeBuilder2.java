@@ -9,7 +9,7 @@ import com.intellij.openapi.application.ApplicationManager;
 import com.intellij.openapi.progress.ProgressIndicator;
 import com.intellij.openapi.progress.Progressive;
 import com.intellij.openapi.util.ActionCallback;
-import com.intellij.psi.impl.smartPointers.AbstractTreeNod2;
+import com.intellij.ide.projectView.impl.nodes.AbstractTreeNod2;
 import com.intellij.reference.SoftReference;
 import com.intellij.util.Consumer;
 import com.intellij.util.concurrency.EdtExecutorService;

@@ -5,7 +5,7 @@ import com.intellij.ide.projectView.impl.nodes.AbstractPsiBasedNode2
 import com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode2
 import com.intellij.ide.projectView.impl.nodes.PsiFileNode2
 import com.intellij.openapi.vfs.VirtualFile
-import com.intellij.psi.impl.smartPointers.AbstractTreeNod2
+import com.intellij.ide.projectView.impl.nodes.AbstractTreeNod2
 
 class ProjectPsiDirectoryNode(
   virtualDir2: VirtualFile,

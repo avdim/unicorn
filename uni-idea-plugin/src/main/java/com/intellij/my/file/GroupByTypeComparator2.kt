@@ -3,7 +3,7 @@ package com.intellij.my.file
 
 import com.intellij.ide.projectView.ProjectViewNode
 import com.intellij.openapi.util.text.StringUtil
-import com.intellij.psi.impl.smartPointers.AbstractTreeNod2
+import com.intellij.ide.projectView.impl.nodes.AbstractTreeNod2
 import java.util.Comparator
 
 class GroupByTypeComparator2 : Comparator<AbstractTreeNod2<*>?> {
