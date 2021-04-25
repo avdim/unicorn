@@ -143,15 +143,6 @@ abstract class AbstractTreeNod2<V : Any>(value: V) : NavigationItem, Queryable.C
     return false
   }
 
-  fun applyFrom(desc: AbstractTreeNod2<*>) {
-    if (desc is AbstractTreeNod2<*>) {
-      apply(desc.presentation)
-    } else {
-      icon = desc.icon
-      myName = desc.myName
-    }
-  }
-
   protected fun apply(presentation: PresentationData, before: PresentationData? = null): Boolean {
     icon = presentation.getIcon(false)
     myName = presentation.presentableText

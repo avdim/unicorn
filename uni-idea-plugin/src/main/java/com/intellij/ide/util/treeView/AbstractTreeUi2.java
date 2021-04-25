@@ -2711,8 +2711,7 @@ public class AbstractTreeUi2 {
     final AsyncPromise<Void> result = new AsyncPromise<>();
     final Ref<AbstractTreeNod2> childDesc = new Ref<>(childDescriptor);
 
-    update
-      .onSuccess(isChanged -> {
+    update.onSuccess(isChanged -> {
         final AtomicBoolean changes = new AtomicBoolean(isChanged);
         final AtomicBoolean forceRemapping = new AtomicBoolean();
         final Ref<Object> newElement = new Ref<>(getElementFromDescriptor(childDesc.get()));
@@ -2728,24 +2727,6 @@ public class AbstractTreeUi2 {
             if (isInStructure(elementFromMap) && isInStructure(newElement.get())) {
               final AsyncPromise<Boolean> updateIndexDone = new AsyncPromise<>();
               promise = updateIndexDone;
-              AbstractTreeNod2 parentDescriptor = getDescriptorFrom(parentNode);
-              if (parentDescriptor != null) {
-                childDesc.set((AbstractTreeNod2) elementFromMap);
-                AbstractTreeNod2 oldDesc = getDescriptorFrom(childNode);
-                if (isValid(oldDesc)) {
-                  childDesc.get().applyFrom(oldDesc);
-                }
-
-                childNode.setUserObject(childDesc.get());
-                newElement.set(elementFromMap);
-                forceRemapping.set(true);
-                update(childDesc.get(), false)
-                  .onSuccess(isChanged1 -> {
-                    changes.set(isChanged1);
-                    updateIndexDone.setResult(isChanged1);
-                  });
-              }
-              // todo why we don't process promise here?
             }
             else {
               promise = Promises.resolvedPromise(changes.get());
