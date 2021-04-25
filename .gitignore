@@ -11,6 +11,8 @@ build
 *.iws
 *.iml
 
+!hand-test-empty-project/*
+
 ###### Android #############################
 out/
 local.properties
