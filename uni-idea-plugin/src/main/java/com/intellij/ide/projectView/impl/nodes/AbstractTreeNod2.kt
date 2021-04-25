@@ -11,15 +11,15 @@ import com.intellij.openapi.vcs.FileStatus
 import com.intellij.openapi.vfs.VirtualFile
 import com.intellij.ui.tree.LeafState
 import com.unicorn.Uni
-import javax.swing.Icon
 
 abstract class AbstractTreeNod2<V : VirtualFile>(value: V) : NavigationItem, Queryable.Contributor, LeafState.Supplier {
   @JvmField
   protected var myName: @NlsSafe String? = null
-  var icon: Icon? = null
   private var myValue: V = value
+
   private val myTemplatePresentation: PresentationData by lazy { PresentationData() }
   private val myUpdatedPresentation: PresentationData by lazy { PresentationData() }
+
   var index = -1
   var childrenSortingStamp: Long = -1
   var updateCount: Long = 0
@@ -76,12 +76,11 @@ abstract class AbstractTreeNod2<V : VirtualFile>(value: V) : NavigationItem, Que
 
   fun update(): Boolean {
     val before = presentation.clone()
-    val updated = updatedPresentation
+    val updated = updatedPresentation()
     return apply(updated, before)
   }
 
   private fun apply(presentation: PresentationData, before: PresentationData): Boolean {
-    icon = presentation.getIcon(false)
     myName = presentation.presentableText
     var result = presentation != before
     myUpdatedPresentation.copyFrom(presentation)
@@ -91,19 +90,12 @@ abstract class AbstractTreeNod2<V : VirtualFile>(value: V) : NavigationItem, Que
     return result
   }
 
-  private val updatedPresentation: PresentationData
-    get() {
-      val p = myUpdatedPresentation
-      p.clear()
-      update(p)
-      if (shouldPostprocess()) {
-        postprocess(p)
-      }
-      return p
-    }
-
-  protected open fun shouldPostprocess(): Boolean {
-    return true
+  private fun updatedPresentation(): PresentationData {
+    val p = myUpdatedPresentation
+    p.clear()
+    update(p)
+    postprocess(p)
+    return p
   }
 
   protected abstract fun update(presentation: PresentationData)
