@@ -17,7 +17,7 @@ import com.intellij.ui.tree.LeafState
 import com.unicorn.Uni
 import javax.swing.Icon
 
-abstract class AbstractTreeNod2<V : Any>(value: V) : NavigationItem, Queryable.Contributor, RootsProvider, LeafState.Supplier {
+abstract class AbstractTreeNod2<V : VirtualFile>(value: V) : NavigationItem, Queryable.Contributor, RootsProvider, LeafState.Supplier {
   @JvmField
   protected var myName: @NlsSafe String? = null
   var icon: Icon? = null

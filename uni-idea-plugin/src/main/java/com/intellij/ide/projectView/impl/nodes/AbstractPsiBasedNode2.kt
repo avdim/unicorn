@@ -17,7 +17,7 @@ import com.unicorn.Uni
  *
  * @param <V> V of node descriptor
 </V> */
-abstract class AbstractPsiBasedNode2<V : Any>(value: V) : AbstractTreeNod2<V>(value),
+abstract class AbstractPsiBasedNode2<V : VirtualFile>(value: V) : AbstractTreeNod2<V>(value),
   ValidateableNode, StatePreservingNavigatable {
   protected abstract fun getChildrenImpl(): Collection<AbstractTreeNod2<*>>
   protected abstract fun updateImpl(data: PresentationData)
