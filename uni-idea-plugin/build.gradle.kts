@@ -28,6 +28,8 @@ buildConfigKotlin {
     packageName = "com.unicorn"
     buildConfig(name = "BUILD_TIME", value = BUILD_TIME_STR)
     buildConfig(name = "INTEGRATION_TEST", value = UNI_BUILD_TYPE == BuildType.IntegrationTest)
+    buildConfig(name = "HAND_TEST", value = UNI_BUILD_TYPE == BuildType.HandTest)
+    buildConfig(name = "HAND_TEST_EMPTY_PROJECT", value = rootDir.resolve("hand-test-empty-project").absolutePath)
   }
 }
 

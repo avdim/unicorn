@@ -6,6 +6,10 @@ sealed class BuildType {
 
   }
 
+  object HandTest : BuildType() {
+
+  }
+
   object Release : BuildType() {
 
   }

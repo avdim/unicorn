@@ -15,6 +15,7 @@ import com.intellij.openapi.editor.ex.EditorSettingsExternalizable
 import com.intellij.openapi.keymap.ex.KeymapManagerEx
 import com.intellij.openapi.util.registry.Registry
 import com.intellij.openapi.wm.impl.IdeBackgroundUtil
+import com.unicorn.BuildConfig
 import com.unicorn.Uni
 import com.unicorn.myDispose
 import com.unicorn.plugin.action.Actions
@@ -22,8 +23,8 @@ import com.unicorn.plugin.ui.render.showWelcomeDialog
 import kotlinx.coroutines.MainScope
 import kotlinx.coroutines.launch
 import org.jetbrains.plugins.terminal.TerminalOptionsProvider
+import java.nio.file.Path
 import javax.swing.SwingConstants
-import javax.swing.UIManager
 
 private val UNICORN_KEYMAP = "Unicorn"
 
@@ -153,7 +154,11 @@ suspend fun configureIDE() {
   EditorFactory.getInstance().refreshAllEditors()
 
   MainScope().launch {
-    showWelcomeDialog()
+    if (BuildConfig.HAND_TEST) {
+      com.intellij.ide.impl.ProjectUtil.openOrImport(Path.of(BuildConfig.HAND_TEST_EMPTY_PROJECT))
+    } else {
+      showWelcomeDialog()
+    }
   }
 
   Uni.log.debug { "configureIDE end" }

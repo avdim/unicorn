@@ -62,13 +62,14 @@ val Project.UNI_BUILD_TYPE: BuildType get() =
       BuildType.UseLocal(as4_2_linux)
     }
     "integration-test" -> BuildType.IntegrationTest
+    "hand-test" -> BuildType.HandTest
     else -> BuildType.Debug
   }
 
 val Project.myIdeaSandboxDir: String
   get() = UNI_BUILD_TYPE.let { buildType ->
     when (buildType) {
-      BuildType.Release, BuildType.Debug -> {
+      BuildType.Release, BuildType.Debug, BuildType.HandTest -> {
         //HOME_DIR.resolve("Desktop/uni_release_system").absolutePath
         //tmpDir()//"/tmp/idea_sandbox"
         val file = projectDir.resolve(".exclude/.idea_system_${IDEA_VERSION.postfixName}")
@@ -95,11 +96,8 @@ val LAST_ULTIMATE = IdeaVersion.Download(LAST_IDEA_STR, "IU")
 
 val Project.IDEA_VERSION: IdeaVersion get() = UNI_BUILD_TYPE.let {buildType->
   when (buildType) {
-    is BuildType.Debug -> {
-//      IdeaVersion.Download("2020.3", "IU")
+    is BuildType.Debug, BuildType.HandTest -> {
       LAST_COMMUNITY
-//      IdeaVersion.Download("203.5981-EAP-CANDIDATE-SNAPSHOT", "IC")
-      //IdeaVersion.Community("LATEST-EAP-SNAPSHOT")
     }
     is BuildType.Release -> {
       LAST_ULTIMATE
