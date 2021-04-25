@@ -1,3 +1,3 @@
 #!/usr/bin/env bash
 
-integration_test.sh
+./gradlew update-plugin:runIde -PuniBuildType=hand-test
