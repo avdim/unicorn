@@ -12,11 +12,9 @@ import com.intellij.openapi.vfs.VirtualFile
 import com.intellij.ui.tree.LeafState
 import com.unicorn.Uni
 
-abstract class AbstractTreeNod2<V : VirtualFile>(value: V) : NavigationItem, Queryable.Contributor, LeafState.Supplier {
+abstract class AbstractTreeNod2<V : VirtualFile>(val value: V) : NavigationItem, Queryable.Contributor, LeafState.Supplier {
   @JvmField
   protected var myName: @NlsSafe String? = null
-  private var myValue: V = value
-
   private val myTemplatePresentation: PresentationData by lazy { PresentationData() }
   private val myUpdatedPresentation: PresentationData by lazy { PresentationData() }
 
@@ -50,17 +48,11 @@ abstract class AbstractTreeNod2<V : VirtualFile>(value: V) : NavigationItem, Que
 
   override fun equals(other: Any?): Boolean {
     if (other === this) return true
-    return if (other == null || other.javaClass != javaClass) false else Comparing.equal(
-      myValue,
-      (other as AbstractTreeNod2<*>).myValue
-    )
+    return if (other == null || other.javaClass != javaClass) false else Comparing.equal(value, (other as AbstractTreeNod2<*>).value)
     // we should not change this behaviour if value is set to null
   }
 
-  override fun hashCode(): Int = myValue.hashCode()
-  val value: V = equalityObject
-  val equalityObject: V get() = myValue
-
+  override fun hashCode(): Int = value.hashCode()
   override fun apply(info: Map<String, String>) {}
   abstract fun getFileStatus(): FileStatus
   override fun getName(): String? {
