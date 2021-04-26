@@ -1,5 +1,6 @@
 package com.unicorn.plugin
 
+import com.android.tools.idea.lang.androidSql.room.RoomUseScopeEnlarger
 import com.intellij.codeInsight.daemon.DaemonCodeAnalyzerSettings
 import com.intellij.find.FindSettings
 import com.intellij.ide.GeneralSettings
@@ -15,6 +16,7 @@ import com.intellij.openapi.editor.ex.EditorSettingsExternalizable
 import com.intellij.openapi.keymap.ex.KeymapManagerEx
 import com.intellij.openapi.util.registry.Registry
 import com.intellij.openapi.wm.impl.IdeBackgroundUtil
+import com.intellij.psi.search.UseScopeEnlarger
 import com.unicorn.BuildConfig
 import com.unicorn.Uni
 import com.unicorn.myDispose
@@ -152,6 +154,8 @@ suspend fun configureIDE() {
 
   UISettings.instance.fireUISettingsChanged()
   EditorFactory.getInstance().refreshAllEditors()
+
+  UseScopeEnlarger.EP_NAME.point.unregisterExtension(RoomUseScopeEnlarger::class.java)//todo иначе падает при rename in fileManager
 
   MainScope().launch {
     if (BuildConfig.HAND_TEST) {

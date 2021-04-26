@@ -106,7 +106,8 @@ intellij {
   setPlugins(
     "terminal",
     "github",
-    "git4idea"
+    "git4idea",
+    "android"
 //    "Kotlin", "java"
     /*, "org.jetbrains.kotlin:1.3.72-release-IJ2020.1-1"*/
   )

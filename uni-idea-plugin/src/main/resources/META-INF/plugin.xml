@@ -36,6 +36,10 @@
     <bundledKeymap file="Unicorn.xml"/>
 <!--    <treeStructureProvider implementation="todo.MyTreeStructureProvider"/>-->
   </extensions>
+
+  <depends>org.jetbrains.kotlin</depends>
+  <depends>org.jetbrains.android</depends>
+
 <!--  <actions>-->
 <!--    <group id="UniCorn.action-group" text="UniCorn">-->
 <!--      <add-to-group group-id="MainMenu" anchor="after" relative-to-action="HelpMenu"/>-->
