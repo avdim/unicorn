@@ -2,6 +2,7 @@ import org.gradle.api.Project
 import java.text.SimpleDateFormat
 import java.util.*
 
+val UNI_VERSION = "0.13.0"
 val BUILD_TIME_STR = SimpleDateFormat("yyyy-MM-dd_HH:mm", Locale("ru", "RU")).format(Date())
 //val BUILD_TIME_STR = Date().toString()
 
@@ -37,9 +38,16 @@ val COMPILER_ARGS = listOf<String>()
 //            freeCompilerArgs += COMPILER_ARGS
 //or in gradle.properties: kotlin.js.compiler=ir
 
+// https://www.jetbrains.com/intellij-repository/snapshots/
+//val LAST_IDEA_STR = "2020.3.3"
+//val LAST_IDEA_STR = "2021.1"
+val LAST_IDEA_STR = "211.7142.13-EAP-SNAPSHOT"
+val LAST_COMMUNITY = IdeaVersion.Download(LAST_IDEA_STR, "IC")
+val LAST_ULTIMATE = IdeaVersion.Download(LAST_IDEA_STR, "IU")
+
 // https://github.com/JetBrains/gradle-intellij-plugin
-//val INTELLIJ_GRADLE = "0.6.5"
-val INTELLIJ_GRADLE = "0.7.2"
+//val INTELLIJ_GRADLE = "0.7.2"
+val INTELLIJ_GRADLE = "0.7.3"
 // https://maven.pkg.jetbrains.space/public/p/compose/dev/org/jetbrains/compose/org.jetbrains.compose.gradle.plugin/
 //val DESKTOP_COMPOSE = "0.3.0-build152"
 val DESKTOP_COMPOSE = "0.3.2"
@@ -84,15 +92,6 @@ val Project.myIdeaSandboxDir: String
       BuildType.IntegrationTest -> tmpDir()
     }
   }
-
-val UNI_VERSION = "0.13.0"
-
-// https://www.jetbrains.com/intellij-repository/snapshots/
-//val LAST_IDEA_STR = "2020.3.3"
-//val LAST_IDEA_STR = "2021.1"
-val LAST_IDEA_STR = "211.7142.13-EAP-SNAPSHOT"
-val LAST_COMMUNITY = IdeaVersion.Download(LAST_IDEA_STR, "IC")
-val LAST_ULTIMATE = IdeaVersion.Download(LAST_IDEA_STR, "IU")
 
 val Project.IDEA_VERSION: IdeaVersion get() = UNI_BUILD_TYPE.let {buildType->
   when (buildType) {
