@@ -39,11 +39,12 @@ abstract class AbstractTreeNod2<V : VirtualFile>(val value: V) : NavigationItem,
   open val isAlwaysShowPlus: Boolean get() = false
   val element: AbstractTreeNod2<V> get() = this
 
-  override fun equals(other: Any?): Boolean {
-    if (other === this) return true
-    return if (other == null || other.javaClass != javaClass) false else Comparing.equal(value, (other as AbstractTreeNod2<*>).value)
-    // we should not change this behaviour if value is set to null
-  }
+  override fun equals(other: Any?): Boolean =
+    if (other is AbstractTreeNod2<*> && other.javaClass == javaClass) {
+      value == other.value
+    } else {
+      false
+    }
 
   override fun hashCode(): Int = value.hashCode()
   override fun apply(info: Map<String, String>) {}
