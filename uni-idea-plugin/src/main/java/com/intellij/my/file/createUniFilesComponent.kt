@@ -93,8 +93,11 @@ private fun _createUniFilesComponent(
         object : AbstractTreeNod2<VirtualFile>(virtualFile("/tmp")/*todo redundant VirtualFile type*/) {
           override fun getChildren(): Collection<AbstractTreeNod2<*>> = uniFilesRootNodes(project, rootDirs = rootPaths)
           override fun getFileStatus(): FileStatus = FileStatus.NOT_CHANGED
+          override fun update(presentation: PresentationData) {
+            presentation.setIcon(PlatformIcons.PROJECT_ICON)
+            presentation.presentableText = "todo_presentable_text"
+          }
           override fun canNavigateToSource(): Boolean = false
-          override fun updateImpl(data: PresentationData) {}//todo redundant
         }
 
       override fun getChildElements(element: Any): Array<Any> {
