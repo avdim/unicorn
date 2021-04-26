@@ -5,7 +5,6 @@ import com.intellij.ide.projectView.PresentationData
 import com.intellij.navigation.NavigationItem
 import com.intellij.openapi.ide.CopyPasteManager
 import com.intellij.openapi.ui.Queryable
-import com.intellij.openapi.util.Comparing
 import com.intellij.openapi.vcs.FileStatus
 import com.intellij.openapi.vfs.VirtualFile
 import com.intellij.ui.tree.LeafState
@@ -40,8 +39,12 @@ abstract class AbstractTreeNod2<V : VirtualFile>(val value: V) : NavigationItem,
   val element: AbstractTreeNod2<V> get() = this
 
   override fun equals(other: Any?): Boolean =
-    if (other is AbstractTreeNod2<*> && other.javaClass == javaClass) {
-      value == other.value
+    if (other is AbstractTreeNod2<*>) {
+      if (javaClass == other.javaClass) {
+        value == other.value
+      } else {
+        false
+      }
     } else {
       false
     }
