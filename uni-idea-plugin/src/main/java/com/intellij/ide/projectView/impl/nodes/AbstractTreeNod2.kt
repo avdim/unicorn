@@ -14,7 +14,6 @@ import com.unicorn.Uni
 abstract class AbstractTreeNod2<V : VirtualFile>(val value: V) : NavigationItem, Queryable.Contributor, LeafState.Supplier {
   private val myTemplatePresentation: PresentationData by lazy { PresentationData() }
   private val myUpdatedPresentation: PresentationData by lazy { PresentationData() }
-
   var index = -1
   var childrenSortingStamp: Long = -1
   var updateCount: Long = 0
@@ -36,10 +35,7 @@ abstract class AbstractTreeNod2<V : VirtualFile>(val value: V) : NavigationItem,
     }
   }
 
-  override fun getLeafState(): LeafState {
-    return if (isAlwaysShowPlus) LeafState.NEVER else LeafState.DEFAULT
-  }
-
+  override fun getLeafState(): LeafState = if (isAlwaysShowPlus) LeafState.NEVER else LeafState.DEFAULT
   open val isAlwaysShowPlus: Boolean get() = false
   val element: AbstractTreeNod2<V> get() = this
 
@@ -53,13 +49,13 @@ abstract class AbstractTreeNod2<V : VirtualFile>(val value: V) : NavigationItem,
   override fun apply(info: Map<String, String>) {}
   abstract fun getFileStatus(): FileStatus
   override fun getName(): String? = value.name
-
   override fun navigate(requestFocus: Boolean) {}
-  override fun canNavigate(): Boolean {
-    return false
-  }
-
+  override fun canNavigate(): Boolean = false
   fun canRepresent(element: Any): Boolean = Uni.todoCanRepresentAlwaysTrue()
+  override fun getPresentation(): PresentationData = myUpdatedPresentation
+  override fun toString(): String = "AbstractTreeNod2, virtualFile=${value.name}"
+  abstract fun getWeight(): Int
+  protected abstract fun update(presentation: PresentationData)
 
   fun update(): Boolean {
     val before = presentation.clone()
@@ -82,19 +78,6 @@ abstract class AbstractTreeNod2<V : VirtualFile>(val value: V) : NavigationItem,
     update(p)
     postprocess(p)
     return p
-  }
-
-  protected abstract fun update(presentation: PresentationData)
-  override fun getPresentation(): PresentationData = myUpdatedPresentation
-
-  override fun toString(): String {
-    return "AbstractTreeNod2, virtualFile=${value.name}"
-  }
-
-  open fun getWeight(): Int = DEFAULT_WEIGHT
-
-  companion object {
-    const val DEFAULT_WEIGHT = 30
   }
 
 }

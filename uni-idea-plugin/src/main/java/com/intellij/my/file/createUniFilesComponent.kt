@@ -98,6 +98,7 @@ private fun _createUniFilesComponent(
             presentation.presentableText = "todo_presentable_text"
           }
           override fun canNavigateToSource(): Boolean = false
+          override fun getWeight(): Int = 0
         }
 
       override fun getChildElements(element: Any): Array<Any> {
