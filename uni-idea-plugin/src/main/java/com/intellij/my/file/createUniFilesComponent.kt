@@ -114,18 +114,6 @@ private fun _createUniFilesComponent(
 
   fun getSelectedElements(): Array<Any> = JavaHelpers.pathsToSelectedElements(myTree.selectionPaths)
 
-  fun <T : AbstractTreeNod2<*>> getSelectedNodes(nodeClass: Class<T>): List<T> {
-    val paths: Array<out TreePath> = myTree.selectionPaths ?: return emptyList()
-    val result = ArrayList<T>()
-    for (path in paths) {
-      val userObject = TreeUtil.getLastUserObject(nodeClass, path)
-      if (userObject != null) {
-        result.add(userObject)
-      }
-    }
-    return result
-  }
-
   val treeBuilder = ProjectTreeBuilder2(myTree, treeModel, treeStructure)
   treeBuilder.setNodeDescriptorComparator(GroupByTypeComparator2())
   fun initTree() {

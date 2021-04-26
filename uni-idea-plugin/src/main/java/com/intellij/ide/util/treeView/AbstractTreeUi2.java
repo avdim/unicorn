@@ -1075,7 +1075,7 @@ public class AbstractTreeUi2 {
           return;
         }
 
-        Pair<Boolean, LoadedChildren> unbuilt = processUnbuilt(node, descriptor, pass, wasExpanded, null);
+        Pair<Boolean, LoadedChildren> unbuilt = processUnbuilt(node, descriptor, wasExpanded, null);
 
         if (unbuilt.getFirst()) {
           return;
@@ -1339,7 +1339,6 @@ public class AbstractTreeUi2 {
 
   private Pair<Boolean, LoadedChildren> processUnbuilt(@NotNull final DefaultMutableTreeNode node,
                                                        final AbstractTreeNod2 descriptor,
-                                                       @NotNull final TreeUpdatePass2 pass,
                                                        final boolean isExpanded,
                                                        @Nullable final LoadedChildren loadedChildren) {
     final Ref<Pair<Boolean, LoadedChildren>> result = new Ref<>();
@@ -2456,7 +2455,7 @@ public class AbstractTreeUi2 {
 
         if (myUnbuiltNodes.contains(node)) {
           Pair<Boolean, LoadedChildren> unbuilt =
-            processUnbuilt(node, updateInfo.getDescriptor(), updateInfo.getPass(), isExpanded(node, updateInfo.isWasExpanded()),
+            processUnbuilt(node, updateInfo.getDescriptor(), isExpanded(node, updateInfo.isWasExpanded()),
                            children.get());
           if (unbuilt.getFirst()) {
             nodeToProcessActions[0] = node;

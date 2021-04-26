@@ -20,7 +20,4 @@ object ConfUniFiles {
       .take(3)
 
   val DEFAULT_NEW_PATH = "/"
-  val ROOT_DIRS: List<VirtualFile> = DEFAULT_PATHS.map {
-    virtualFile(it.absolutePath)
-  }
 }
