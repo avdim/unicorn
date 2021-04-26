@@ -6,15 +6,12 @@ import com.intellij.navigation.NavigationItem
 import com.intellij.openapi.ide.CopyPasteManager
 import com.intellij.openapi.ui.Queryable
 import com.intellij.openapi.util.Comparing
-import com.intellij.openapi.util.NlsSafe
 import com.intellij.openapi.vcs.FileStatus
 import com.intellij.openapi.vfs.VirtualFile
 import com.intellij.ui.tree.LeafState
 import com.unicorn.Uni
 
 abstract class AbstractTreeNod2<V : VirtualFile>(val value: V) : NavigationItem, Queryable.Contributor, LeafState.Supplier {
-  @JvmField
-  protected var myName: @NlsSafe String? = null
   private val myTemplatePresentation: PresentationData by lazy { PresentationData() }
   private val myUpdatedPresentation: PresentationData by lazy { PresentationData() }
 
@@ -55,9 +52,7 @@ abstract class AbstractTreeNod2<V : VirtualFile>(val value: V) : NavigationItem,
   override fun hashCode(): Int = value.hashCode()
   override fun apply(info: Map<String, String>) {}
   abstract fun getFileStatus(): FileStatus
-  override fun getName(): String? {
-    return myName
-  }
+  override fun getName(): String? = value.name
 
   override fun navigate(requestFocus: Boolean) {}
   override fun canNavigate(): Boolean {
@@ -73,7 +68,6 @@ abstract class AbstractTreeNod2<V : VirtualFile>(val value: V) : NavigationItem,
   }
 
   private fun apply(presentation: PresentationData, before: PresentationData): Boolean {
-    myName = presentation.presentableText
     var result = presentation != before
     myUpdatedPresentation.copyFrom(presentation)
     myUpdatedPresentation.applyFrom(myTemplatePresentation)
@@ -94,7 +88,7 @@ abstract class AbstractTreeNod2<V : VirtualFile>(val value: V) : NavigationItem,
   override fun getPresentation(): PresentationData = myUpdatedPresentation
 
   override fun toString(): String {
-    return myName!!
+    return "AbstractTreeNod2, virtualFile=${value.name}"
   }
 
   open fun getWeight(): Int = DEFAULT_WEIGHT
