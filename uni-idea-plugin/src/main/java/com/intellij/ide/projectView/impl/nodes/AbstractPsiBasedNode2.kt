@@ -18,5 +18,4 @@ import com.unicorn.Uni
  * @param <V> V of node descriptor
 </V> */
 abstract class AbstractPsiBasedNode2<V : VirtualFile>(value: V) : AbstractTreeNod2<V>(value),
-  ValidateableNode,//todo redundant
   StatePreservingNavigatable //todo redundant

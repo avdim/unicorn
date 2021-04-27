@@ -18,7 +18,6 @@ abstract class BasePsiNode2(val virtualFile:VirtualFile) : AbstractPsiBasedNode2
       FileStatus.NOT_CHANGED //  also look at FileStatusProvider and VcsFileStatusProvider
     }
 
-  override fun isValid(): Boolean = true
   final override fun navigate(requestFocus: Boolean) {
     navigate(requestFocus, false)
   }
