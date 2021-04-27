@@ -1,10 +1,9 @@
-package com.intellij.ide.projectView.impl;
+package com.intellij.ide.projectView.impl.search;
 
 import com.intellij.featureStatistics.FeatureUsageTracker;
 import com.intellij.icons.AllIcons;
 import com.intellij.ide.DataManager;
 import com.intellij.ide.ui.UISettings;
-import com.intellij.internal.statistic.service.fus.collectors.UIEventLogger;
 import com.intellij.openapi.Disposable;
 import com.intellij.openapi.actionSystem.AnAction;
 import com.intellij.openapi.actionSystem.AnActionEvent;
@@ -75,7 +74,6 @@ public abstract class SpeedSearchBase2<Comp extends JComponent> extends SpeedSea
   private final PropertyChangeSupport myChangeSupport = new PropertyChangeSupport(this);
   private String myRecentEnteredPrefix;
   private SpeedSearchComparator myComparator = new SpeedSearchComparator(false);
-  private boolean myClearSearchOnNavigateNoMatch;
 
   private Disposable myListenerDisposable;
 
@@ -160,10 +158,6 @@ public abstract class SpeedSearchBase2<Comp extends JComponent> extends SpeedSea
     return null;
   }
 
-  public void setClearSearchOnNavigateNoMatch(boolean clearSearchOnNavigateNoMatch) {
-    myClearSearchOnNavigateNoMatch = clearSearchOnNavigateNoMatch;
-  }
-
   @Override
   public boolean isPopupActive() {
     return mySearchPopup != null && mySearchPopup.isVisible() ||
@@ -176,7 +170,7 @@ public abstract class SpeedSearchBase2<Comp extends JComponent> extends SpeedSea
    */
   protected abstract int getSelectedIndex();
 
-  /** @deprecated Please implement {@link #getElementCount()} and {@link #getElementAt(int)} instead. */
+  /** @deprecated Please implement {@link #getElementCount()} and {@link #getElementAt()} instead. */
   @Deprecated
   protected Object @NotNull [] getAllElements() {
     throw new UnsupportedOperationException("See `SpeedSearchBase.getElementIterator(int)` javadoc");
@@ -190,11 +184,11 @@ public abstract class SpeedSearchBase2<Comp extends JComponent> extends SpeedSea
     return getAllElements().length;
   }
 
-  protected Object getElementAt(int viewIndex) {
+  protected Object getElementAt() {
     throw new UnsupportedOperationException();
   }
 
-  /** @deprecated Please implement {@link #getElementCount()} and {@link #getElementAt(int)} instead. */
+  /** @deprecated Please implement {@link #getElementCount()} and {@link #getElementAt()} instead. */
   @Deprecated
   protected int convertIndexToModel(final int viewIndex) {
     return viewIndex;
@@ -210,7 +204,7 @@ public abstract class SpeedSearchBase2<Comp extends JComponent> extends SpeedSea
    * The main method for items traversal. 
    * 
    * Implementations can override it or use the default implementation
-   * that uses {@link #getElementAt(int)} and {@link #getElementCount()} methods.
+   * that uses {@link #getElementAt()} and {@link #getElementCount()} methods.
    *
    * The old and now deprecated API uses {@link #getAllElements()} and {@link #convertIndexToModel(int)} methods.
    */
@@ -238,14 +232,6 @@ public abstract class SpeedSearchBase2<Comp extends JComponent> extends SpeedSea
 
   protected boolean compare(@NotNull String text, @Nullable String pattern) {
     return pattern != null && myComparator.matchingFragments(pattern, text) != null;
-  }
-
-  public SpeedSearchComparator getComparator() {
-    return myComparator;
-  }
-
-  public void setComparator(final SpeedSearchComparator comparator) {
-    myComparator = comparator;
   }
 
   @Nullable
@@ -353,10 +339,6 @@ public abstract class SpeedSearchBase2<Comp extends JComponent> extends SpeedSea
     manageSearchPopup(createPopup(searchText));
   }
 
-  public void showPopup() {
-    showPopup("");
-  }
-
   public void hidePopup() {
     JTextField field = getSearchField();
     if (field != null) field.setText("");
@@ -405,18 +387,6 @@ public abstract class SpeedSearchBase2<Comp extends JComponent> extends SpeedSea
   @Override
   public void findAndSelectElement(@NotNull String searchQuery) {
     selectElement(findElement(searchQuery), searchQuery);
-  }
-
-  public boolean adjustSelection(int keyCode, @NotNull String searchQuery) {
-    if (isUpDownHomeEnd(keyCode)) {
-      UIEventLogger.IncrementalSearchNextPrevItemSelected.log(myComponent.getClass());
-      Object element = findTargetElement(keyCode, searchQuery);
-      if (element != null) {
-        selectElement(element, searchQuery);
-        return true;
-      }
-    }
-    return false;
   }
 
   @Nullable
@@ -469,7 +439,7 @@ public abstract class SpeedSearchBase2<Comp extends JComponent> extends SpeedSea
       add(mySearchField, BorderLayout.CENTER);
       mySearchField.setText(initialString);
 
-      onSearchFieldUpdated(initialString);
+      onSearchFieldUpdated();
       Object element = findElement(mySearchField.getText());
       updateSelection(element);
     }
@@ -488,18 +458,17 @@ public abstract class SpeedSearchBase2<Comp extends JComponent> extends SpeedSea
       mySearchField.processKeyEvent(e);
       if (e.isConsumed()) {
         String s = mySearchField.getText();
-        onSearchFieldUpdated(s);
+        onSearchFieldUpdated();
         int keyCode = e.getKeyCode();
         Object element;
         if (isUpDownHomeEnd(keyCode)) {
           element = findTargetElement(keyCode, s);
-          if (myClearSearchOnNavigateNoMatch && element == null) {
+          if (element == null) {
             manageSearchPopup(null);
             element = findTargetElement(keyCode, "");
           }
         }
         else {
-          UIEventLogger.IncrementalSearchKeyTyped.log(myComponent.getClass());
           element = findElement(s);
         }
         updateSelection(element);
@@ -527,7 +496,7 @@ public abstract class SpeedSearchBase2<Comp extends JComponent> extends SpeedSea
     }
   }
 
-  protected void onSearchFieldUpdated(String pattern) {
+  protected void onSearchFieldUpdated() {
   }
 
   protected class SearchField extends ExtendableTextField {
@@ -630,7 +599,6 @@ public abstract class SpeedSearchBase2<Comp extends JComponent> extends SpeedSea
       project = null;
     }
     if (mySearchPopup != null) {
-      UIEventLogger.IncrementalSearchCancelled.log(project, myComponent.getClass());
       if (myPopupLayeredPane != null) {
         myPopupLayeredPane.remove(mySearchPopup);
         myPopupLayeredPane.validate();
@@ -648,7 +616,6 @@ public abstract class SpeedSearchBase2<Comp extends JComponent> extends SpeedSea
     }
     else if (searchPopup != null) {
       FeatureUsageTracker.getInstance().triggerFeatureUsed("ui.tree.speedsearch");
-      UIEventLogger.IncrementalSearchActivated.log(project, myComponent.getClass());
     }
 
     mySearchPopup = myComponent.isShowing() ? searchPopup : null;
@@ -772,7 +739,7 @@ public abstract class SpeedSearchBase2<Comp extends JComponent> extends SpeedSea
 
     private Object getElementAt(int i) {
       if (mySpeedSearch.myElementAtImplemented) {
-        return mySpeedSearch.getElementAt(i);
+        return mySpeedSearch.getElementAt();
       }
       int index = mySpeedSearch.convertIndexToModel(i);
       return myElements[index];

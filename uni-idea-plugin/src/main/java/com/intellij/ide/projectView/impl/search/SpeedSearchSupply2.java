@@ -13,10 +13,9 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.intellij.ide.projectView.impl;
+package com.intellij.ide.projectView.impl.search;
 
 import com.intellij.openapi.util.Key;
-import com.intellij.openapi.util.TextRange;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -30,17 +29,6 @@ import java.beans.PropertyChangeListener;
 public abstract class SpeedSearchSupply2 {
   private static final Key SPEED_SEARCH_COMPONENT_MARKER = new Key("SPEED_SEARCH_COMPONENT_MARKER");
   public static final String ENTERED_PREFIX_PROPERTY_NAME = "enteredPrefix";
-
-  @Nullable
-  public static SpeedSearchSupply2 getSupply(@NotNull final JComponent component, boolean evenIfInactive) {
-    SpeedSearchSupply2 speedSearch = (SpeedSearchSupply2)component.getClientProperty(SPEED_SEARCH_COMPONENT_MARKER);
-
-    if (evenIfInactive) {
-      return speedSearch;
-    }
-
-    return speedSearch != null && speedSearch.isPopupActive() ? speedSearch : null;
-  }
 
   public abstract boolean isPopupActive();
 
@@ -62,7 +50,4 @@ public abstract class SpeedSearchSupply2 {
    */
   public abstract void findAndSelectElement(@NotNull String searchQuery);
 
-  public boolean isObjectFilteredOut(Object o) {
-    return false;
-  }
 }

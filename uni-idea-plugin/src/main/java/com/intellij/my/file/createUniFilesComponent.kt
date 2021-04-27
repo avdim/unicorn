@@ -7,7 +7,7 @@ import com.intellij.ide.*
 import com.intellij.ide.projectView.PresentationData
 import com.intellij.ide.projectView.ProjectViewSettings
 import com.intellij.ide.projectView.impl.JavaHelpers
-import com.intellij.ide.projectView.impl.SpeedSearchFiles
+import com.intellij.ide.projectView.impl.search.SpeedSearchFiles
 import com.intellij.ide.ui.customization.CustomizationUtil
 import com.intellij.ide.util.DirectoryChooserUtil
 import com.intellij.openapi.actionSystem.*

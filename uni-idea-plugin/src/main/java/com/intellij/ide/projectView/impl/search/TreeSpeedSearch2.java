@@ -1,7 +1,6 @@
 // Copyright 2000-2018 JetBrains s.r.o. Use of this source code is governed by the Apache 2.0 license that can be found in the LICENSE file.
-package com.intellij.ide.projectView.impl;
+package com.intellij.ide.projectView.impl.search;
 
-import com.intellij.ide.util.treeView.NodeDescriptor;
 import com.intellij.openapi.actionSystem.ActionManager;
 import com.intellij.openapi.actionSystem.AnActionEvent;
 import com.intellij.openapi.actionSystem.IdeActions;
@@ -10,7 +9,6 @@ import com.intellij.openapi.util.Conditions;
 import com.intellij.ui.LoadingNode;
 import com.intellij.ui.SpeedSearchBase;
 import com.intellij.ui.SpeedSearchComparator;
-import com.intellij.ui.treeStructure.Tree;
 import com.intellij.util.ObjectUtils;
 import com.intellij.util.containers.ContainerUtil;
 import com.intellij.util.containers.Convertor;
@@ -33,11 +31,6 @@ public class TreeSpeedSearch2 extends SpeedSearchBase<JTree> {
 
   private static final Convertor<TreePath, String> TO_STRING = path -> path.getLastPathComponent().toString();
   private final Convertor<? super TreePath, String> myToStringConvertor;
-  public static final Convertor<TreePath, String> NODE_DESCRIPTOR_TOSTRING = path -> {
-    NodeDescriptor descriptor = TreeUtil.getLastUserObject(NodeDescriptor.class, path);
-    if (descriptor != null) return descriptor.toString();
-    return TO_STRING.convert(path);
-  };
 
   public TreeSpeedSearch2(JTree tree, Convertor<? super TreePath, String> toStringConvertor) {
     this(tree, toStringConvertor, false);
@@ -47,14 +40,6 @@ public class TreeSpeedSearch2 extends SpeedSearchBase<JTree> {
     this(tree, TO_STRING);
   }
 
-  public TreeSpeedSearch2(Tree tree, Convertor<? super TreePath, String> toString) {
-    this(tree, toString, false);
-  }
-
-  public TreeSpeedSearch2(Tree tree, Convertor<? super TreePath, String> toString, boolean canExpand) {
-    this((JTree)tree, toString, canExpand);
-  }
-
   public TreeSpeedSearch2(JTree tree, Convertor<? super TreePath, String> toString, boolean canExpand) {
     super(tree);
     setComparator(new SpeedSearchComparator(false, true));
@@ -62,10 +47,6 @@ public class TreeSpeedSearch2 extends SpeedSearchBase<JTree> {
     myCanExpand = canExpand;
 
     new MySelectAllAction(tree, this).registerCustomShortcutSet(tree, null);
-  }
-
-  public void setCanExpand(boolean canExpand) {
-    myCanExpand = canExpand;
   }
 
   @Override
@@ -161,8 +142,7 @@ public class TreeSpeedSearch2 extends SpeedSearchBase<JTree> {
       List<TreePath> filtered = mySearch.findAllFilteredElements(query);
       if (filtered.isEmpty()) return;
 
-      boolean alreadySelected = sm.getSelectionCount() == filtered.size() &&
-                                ContainerUtil.and(filtered, (path) -> sm.isPathSelected(path));
+      boolean alreadySelected = sm.getSelectionCount() == filtered.size() && ContainerUtil.and(filtered, sm::isPathSelected);
 
       if (alreadySelected) {
         TreePath anchor = myTree.getAnchorSelectionPath();

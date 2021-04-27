@@ -1,4 +1,4 @@
-package com.intellij.ide.projectView.impl
+package com.intellij.ide.projectView.impl.search
 
 import com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode
 import com.intellij.openapi.util.text.StringUtil
