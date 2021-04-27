@@ -2,7 +2,6 @@
 package com.intellij.my.file;
 
 import com.intellij.ide.util.treeView.AbstractTreeBuilder2;
-import com.intellij.ide.util.treeView.PresentableNodeDescriptor;
 import com.intellij.openapi.ui.GraphicsConfig;
 import com.intellij.openapi.util.Disposer;
 import com.intellij.openapi.util.SystemInfo;
@@ -296,17 +295,6 @@ public abstract class Tree2 extends JTree implements ComponentWithEmptyText, Com
   @Override
   public TreePath getNextMatch(String prefix, int startingRow, Position.Bias bias) {
     return null;
-  }
-
-  protected boolean highlightSingleNode() {
-    return true;
-  }
-
-  public TreePath getPath(@NotNull PresentableNodeDescriptor node) {
-    AbstractTreeBuilder2 builder = AbstractTreeBuilder2.getBuilderFor(this);
-    DefaultMutableTreeNode treeNode = builder.getNodeForElement(node);
-
-    return treeNode != null ? new TreePath(treeNode.getPath()) : new TreePath(node);
   }
 
   @Override
