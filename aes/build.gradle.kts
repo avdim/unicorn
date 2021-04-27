@@ -6,6 +6,11 @@ plugins {
 group = "ru.avdim.lib.github"//todo artifact id
 version = "0.1"
 
+java {
+  sourceCompatibility = JavaVersion.VERSION_11
+  targetCompatibility = JavaVersion.VERSION_11
+}
+
 repositories {
   mavenCentral()
 }
