@@ -19,6 +19,7 @@ import java.util.List;
 import static com.intellij.ide.projectView.impl.HelpersKt.getValueFromNode;
 
 public class JavaHelpers {
+
   @NotNull
   public static Object[] pathsToSelectedElements(TreePath[] paths) {
     if (paths == null) return PsiElement.EMPTY_ARRAY;
@@ -37,7 +38,7 @@ public class JavaHelpers {
   }
 
   @NotNull
-  public static List<PsiElement> getElementsFromNode(@NotNull Project project, @Nullable Object node) {
+  public static List<@NotNull PsiElement> getElementsFromNode(@NotNull Project project, @Nullable Object node) {
     Object value = getValueFromNode(node);
     JBIterable<?> it = value instanceof PsiElement || value instanceof VirtualFile ? JBIterable.of(value) :
       value instanceof Object[] ? JBIterable.of((Object[])value) :
