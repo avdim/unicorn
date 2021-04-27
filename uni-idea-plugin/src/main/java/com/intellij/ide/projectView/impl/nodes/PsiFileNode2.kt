@@ -35,7 +35,7 @@ class PsiFileNode2(
   private val isNavigatableLibraryRoot: Boolean get() = false
   override fun canNavigateToSource(): Boolean = true
 
-  override fun navigate(requestFocus: Boolean, preserveState: Boolean) {
+  override fun navigate(requestFocus: Boolean) {
     openFile(virtualFile)
   }
 

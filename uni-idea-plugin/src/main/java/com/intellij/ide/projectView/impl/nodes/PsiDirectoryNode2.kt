@@ -17,7 +17,7 @@ abstract class PsiDirectoryNode2(private val virtualDir:VirtualFile) : BasePsiNo
   val isFQNameShown: Boolean get() = false
   override fun canNavigate(): Boolean = false
   override fun canNavigateToSource(): Boolean = false
-  override fun navigate(requestFocus: Boolean, preserveState: Boolean) {}
+  override fun navigate(requestFocus: Boolean) {}
   override fun getNavigateActionText(focusEditor: Boolean): String? = "Nav"
 
   override fun getWeight(): Int {
