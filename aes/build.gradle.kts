@@ -3,7 +3,7 @@ plugins {
   kotlin("plugin.serialization")
 }
 
-group = "ru.avdim.lib.github"//todo artifact id
+group = "ru.avdim.lib.aes"
 version = "0.1"
 
 java {
