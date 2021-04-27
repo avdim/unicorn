@@ -8,7 +8,6 @@ import com.intellij.openapi.editor.colors.CodeInsightColors
 import com.intellij.openapi.util.io.FileUtil
 import com.intellij.openapi.vfs.VFileProperty
 import com.intellij.openapi.vfs.VirtualFile
-import com.intellij.pom.NavigatableWithText
 import com.intellij.ui.LayeredIcon
 import com.intellij.util.PlatformIcons
 import javax.swing.Icon
@@ -16,8 +15,8 @@ import javax.swing.Icon
 class PsiFileNode2(
   virtualFile: VirtualFile,
   val openFile: (VirtualFile) -> Unit
-) : BasePsiNode2(virtualFile), NavigatableWithText {
-  public override fun getChildrenImpl(): Collection<AbstractTreeNod2<*>> = emptyList()
+) : BasePsiNode2(virtualFile) {
+  override fun getChildren(): Collection<AbstractTreeNod2<*>> = emptyList()
 
   override fun updateImpl(data: PresentationData) {
     if (virtualFile.`is`(VFileProperty.SYMLINK)) {

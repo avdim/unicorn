@@ -3,12 +3,12 @@ package com.intellij.ide.projectView.impl.nodes
 
 import com.intellij.ide.projectView.PresentationData
 import com.intellij.openapi.vfs.VirtualFile
-import com.intellij.pom.NavigatableWithText
 import com.intellij.ui.SimpleTextAttributes
 import com.unicorn.Uni
 import com.unicorn.Uni.BOLD_DIRS
 
-abstract class PsiDirectoryNode2(private val virtualDir:VirtualFile) : BasePsiNode2(virtualDir), NavigatableWithText {
+abstract class PsiDirectoryNode2(private val virtualDir:VirtualFile) : BasePsiNode2(virtualDir) {
+
   override fun updateImpl(data: PresentationData) {
     if (BOLD_DIRS) {
       data.addText(virtualFile.name + " ", SimpleTextAttributes.REGULAR_BOLD_ATTRIBUTES)
