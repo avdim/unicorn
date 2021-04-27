@@ -49,8 +49,6 @@ import javax.swing.tree.TreeSelectionModel
 //  @Storage(value = StoragePathMacros.WORKSPACE_FILE, deprecated = true)
 //})
 
-inline fun <reified T : Any> Array<Any>.filterType() = mapNotNull { it as? T }
-
 fun Cell.uniFiles(
   project: Project,
   rootPaths: List<String>,
@@ -61,24 +59,13 @@ fun createUniFilesComponent(
   project: Project,
   rootPaths: List<String>,
   selectionListener: (VirtualFile) -> Unit = {}
-): JComponent = _createUniFilesComponent(project, rootPaths.map { virtualFile(it) }, selectionListener)
-
-@Suppress("DEPRECATION")
-private fun _createUniFilesComponent(
-  project: Project,
-  rootPaths: List<VirtualFile>,
-  selectionListener: (VirtualFile) -> Unit
 ): JComponent {
-
-  @Suppress("NAME_SHADOWING")
-  val selectionListener: (VirtualFile) -> Unit = {
+  val selectionListener2: (VirtualFile) -> Unit = {
     Uni.selectedFile = it
     Uni.log.debug { arrayOf("select file", it) }
     selectionListener(it)
   }
-
   ApplicationManager.getApplication().assertIsDispatchThread()
-
   val treeModel = DefaultTreeModel(DefaultMutableTreeNode(null))
   val myTree: ProjectViewTree2 =
     object : ProjectViewTree2(treeModel) {
@@ -91,12 +78,27 @@ private fun _createUniFilesComponent(
     object : AbstractProjectTreeStructure2(), ProjectViewSettings {
       override fun createRoot(): AbstractTreeNod2<*> =
         object : AbstractTreeNod2<VirtualFile>(virtualFile("/tmp")/*todo redundant VirtualFile type*/) {
-          override fun getChildren(): Collection<AbstractTreeNod2<*>> = uniFilesRootNodes(project, rootDirs = rootPaths)
+          override fun getChildren(): Collection<AbstractTreeNod2<*>> = rootPaths.map { virtualFile(it) }.map {
+            ProjectPsiDirectoryNode(it) { file ->
+              // all navigation inside should be treated as a single operation, so that 'Back' action undoes it in one go
+              val type = FileTypeManager.getInstance().getKnownFileTypeOrAssociate(file, Uni.todoDefaultProject)
+              if (type == null || !file.isValid) {
+                // If not associated IDEA file type, or external application
+              } else if (type is INativeFileType) {
+                // например *.pdf
+                type.openFileInAssociatedApplication(Uni.todoDefaultProject, file)
+              } else {
+                FileEditorManager.getInstance(project).openFile(file, true, true)
+              }
+            }
+          }
+
           override fun getFileStatus(): FileStatus = FileStatus.NOT_CHANGED
           override fun update(presentation: PresentationData) {
             presentation.setIcon(PlatformIcons.PROJECT_ICON)
             presentation.presentableText = "todo_presentable_text"
           }
+
           override fun canNavigateToSource(): Boolean = false
           override fun getWeight(): Int = 0
         }
@@ -111,8 +113,6 @@ private fun _createUniFilesComponent(
       override fun isShowLibraryContents(): Boolean = true
       override fun isUseFileNestingRules(): Boolean = true
     }
-
-  fun getSelectedElements(): Array<Any> = JavaHelpers.pathsToSelectedElements(myTree.selectionPaths)
 
   val treeBuilder = ProjectTreeBuilder2(myTree, treeModel, treeStructure)
   treeBuilder.setNodeDescriptorComparator(GroupByTypeComparator2())
@@ -134,81 +134,80 @@ private fun _createUniFilesComponent(
     )
   }
   initTree()
-
   val viewComponent: JComponent = ScrollPaneFactory.createScrollPane(myTree)
   myTree.addSelectionListener {
-    selectionListener(it)
+    selectionListener2(it)
+  }
+  return filesJPanel(viewComponent, myTree)
+}
+
+private fun filesJPanel(
+  viewComponent: JComponent,
+  myTree: ProjectViewTree2
+) = object : JPanel(), DataProvider {
+  private val myCopyPasteDelegator = CopyPasteDelegator(ProjectManager.getInstance().defaultProject, viewComponent)
+
+  init {
+    layout = BorderLayout()
+    add(viewComponent, BorderLayout.CENTER)
+    revalidate()
+    repaint()
   }
 
-  return object : JPanel(), DataProvider {
-    private val myCopyPasteDelegator = CopyPasteDelegator(ProjectManager.getInstance().defaultProject, viewComponent)
+  override fun getData(dataId: String): Any? {
 
-    init {
-      layout = BorderLayout()
-      add(viewComponent, BorderLayout.CENTER)
-      revalidate()
-      repaint()
+    if (PlatformDataKeys.PROJECT_CONTEXT.`is`(dataId)) {
+      Uni.log.breakPoint("PROJECT_CONTEXT")
+    }
+    if (PlatformDataKeys.CONTEXT_COMPONENT.`is`(dataId)) {
+      Uni.log.breakPoint("CONTEXT_COMPONENT")
+    }
+    if (PlatformDataKeys.EDITOR.`is`(dataId)) {
+      Uni.log.breakPoint("EDITOR")
+    }
+    if (PlatformDataKeys.TREE_EXPANDER.`is`(dataId)) {
+      Uni.log.error { "PlatformDataKeys.TREE_EXPANDER" }
+//        return createTreeExpander(myTree)//todo lazy cache
     }
 
-    override fun getData(dataId: String): Any? {
-
-      if (PlatformDataKeys.PROJECT_CONTEXT.`is`(dataId)) {
-        Uni.log.breakPoint("PROJECT_CONTEXT")
-      }
-      if (PlatformDataKeys.CONTEXT_COMPONENT.`is`(dataId)) {
-        Uni.log.breakPoint("CONTEXT_COMPONENT")
-      }
-      if (PlatformDataKeys.EDITOR.`is`(dataId)) {
-        Uni.log.breakPoint("EDITOR")
-      }
-
-      if (PlatformDataKeys.TREE_EXPANDER.`is`(dataId)) {
-        Uni.log.error{"PlatformDataKeys.TREE_EXPANDER"}
-//        return createTreeExpander(myTree)//todo lazy cache
-      }
-
-      if (CommonDataKeys.NAVIGATABLE_ARRAY.`is`(dataId)) {
-        // Used for copy/paste multiple files
-        val paths = myTree.selectionPaths ?: return null
-        val navigatables = ArrayList<Navigatable>()
-        for (path in paths) {
-          val node = path.lastPathComponent
-          val userObject = TreeUtil.getUserObject(node)
-          if (userObject is Navigatable) {
-            navigatables.add(userObject)
-          } else if (node is Navigatable) {
-            navigatables.add(node)
-          }
-        }
-        if (navigatables.isEmpty()) {
-          return null
-        } else {
-          return navigatables.toTypedArray()
+    if (CommonDataKeys.NAVIGATABLE_ARRAY.`is`(dataId)) {
+      // Used for copy/paste multiple files
+      val paths = myTree.selectionPaths ?: return null
+      val navigatables = ArrayList<Navigatable>()
+      for (path in paths) {
+        val node = path.lastPathComponent
+        val userObject = TreeUtil.getUserObject(node)
+        if (userObject is Navigatable) {
+          navigatables.add(userObject)
+        } else if (node is Navigatable) {
+          navigatables.add(node)
         }
       }
+      return if (navigatables.isEmpty()) null else navigatables.toTypedArray()
+    }
 
-      if (CommonDataKeys.PSI_ELEMENT.`is`(dataId)) {
-        val elements = getSelectedPSIElements(myTree.selectionPaths)
-        return if (elements.size == 1) elements[0] else null
-      }
-      if (LangDataKeys.PSI_ELEMENT_ARRAY.`is`(dataId)) {
-        val elements = getSelectedPSIElements(myTree.selectionPaths)
-        return if (elements.isEmpty()) null else elements
-      }
-      if (PlatformDataKeys.CUT_PROVIDER.`is`(dataId)) {
-        return myCopyPasteDelegator.cutProvider
-      }
-      if (PlatformDataKeys.COPY_PROVIDER.`is`(dataId)) {
-        return myCopyPasteDelegator.copyProvider
-      }
-      if (PlatformDataKeys.PASTE_PROVIDER.`is`(dataId)) {
-        return myCopyPasteDelegator.pasteProvider
-      }
-      if (LangDataKeys.IDE_VIEW.`is`(dataId)) {
-        return object : IdeView {
-          override fun getOrChooseDirectory(): PsiDirectory? =
-            DirectoryChooserUtil.getOrChooseDirectory(this)
-          override fun getDirectories(): Array<PsiDirectory> {
+    if (CommonDataKeys.PSI_ELEMENT.`is`(dataId)) {
+      val elements = getSelectedPSIElements(myTree.selectionPaths)
+      return if (elements.size == 1) elements[0] else null
+    }
+    if (LangDataKeys.PSI_ELEMENT_ARRAY.`is`(dataId)) {
+      val elements = getSelectedPSIElements(myTree.selectionPaths)
+      return if (elements.isEmpty()) null else elements
+    }
+    if (PlatformDataKeys.CUT_PROVIDER.`is`(dataId)) {
+      return myCopyPasteDelegator.cutProvider
+    }
+    if (PlatformDataKeys.COPY_PROVIDER.`is`(dataId)) {
+      return myCopyPasteDelegator.copyProvider
+    }
+    if (PlatformDataKeys.PASTE_PROVIDER.`is`(dataId)) {
+      return myCopyPasteDelegator.pasteProvider
+    }
+    if (LangDataKeys.IDE_VIEW.`is`(dataId)) {
+      return object : IdeView {
+        override fun getOrChooseDirectory(): PsiDirectory? = DirectoryChooserUtil.getOrChooseDirectory(this)
+
+        override fun getDirectories(): Array<PsiDirectory> {
 //            val directories = ArrayList<PsiDirectory>()
 //            for (node in getSelectedNodes(PsiDirectoryNode2::class.java)) {
 //              val value = node.value
@@ -219,80 +218,60 @@ private fun _createUniFilesComponent(
 //            if (directories.isNotEmpty()) {
 //              return directories.toTypedArray()
 //            }
-            val elements: Array<PsiElement> = getSelectedPSIElements(myTree.selectionPaths)
-            if (elements.size == 1) {
-              val element = elements[0]
-              if (element is PsiDirectory) {
-                return arrayOf(element)
-              } else if (element is PsiDirectoryContainer) {
-                return element.directories
-              } else {
-                val containingFile = element.containingFile
-                if (containingFile != null) {
-                  val psiDirectory = containingFile.containingDirectory
-                  if (psiDirectory != null) {
-                    return arrayOf(psiDirectory)
-                  }
-                  return PsiDirectory.EMPTY_ARRAY
+          val elements: Array<PsiElement> = getSelectedPSIElements(myTree.selectionPaths)
+          if (elements.size == 1) {
+            val element = elements[0]
+            if (element is PsiDirectory) {
+              return arrayOf(element)
+            } else if (element is PsiDirectoryContainer) {
+              return element.directories
+            } else {
+              val containingFile = element.containingFile
+              if (containingFile != null) {
+                val psiDirectory = containingFile.containingDirectory
+                if (psiDirectory != null) {
+                  return arrayOf(psiDirectory)
                 }
+                return PsiDirectory.EMPTY_ARRAY
               }
             }
-            return emptyArray()
           }
-
-          override fun selectElement(element: PsiElement) {}
+          return emptyArray()
         }
-      }
-      if (PlatformDataKeys.DELETE_ELEMENT_PROVIDER.`is`(dataId)) {
-        return object : DeleteProvider {
-          override fun canDeleteElement(dataContext: DataContext): Boolean {
-            return true
-          }
 
-          override fun deleteElement(dataContext: DataContext) {
-            val validElements: MutableList<PsiElement> = ArrayList()
-            for (psiElement in getSelectedPSIElements(myTree.selectionPaths)) {
-              if (psiElement.isValid) {
-                validElements.add(psiElement)
-              }
-            }
-            val elements = PsiUtilCore.toPsiElementArray(validElements)
-            val a = LocalHistory.getInstance().startAction(IdeBundle.message("progress.deleting"))
-            try {
-              DeleteHandler2.deletePsiElement(elements)
-            } finally {
-              a.finish()
-            }
-          }
-        }
+        override fun selectElement(element: PsiElement) {}
       }
-      if (PlatformDataKeys.SELECTED_ITEMS.`is`(dataId)) {
-        return getSelectedElements()
-      }
-
-      return null
     }
+    if (PlatformDataKeys.DELETE_ELEMENT_PROVIDER.`is`(dataId)) {
+      return object : DeleteProvider {
+        override fun canDeleteElement(dataContext: DataContext): Boolean {
+          return true
+        }
+
+        override fun deleteElement(dataContext: DataContext) {
+          val validElements: MutableList<PsiElement> = ArrayList()
+          for (psiElement in getSelectedPSIElements(myTree.selectionPaths)) {
+            if (psiElement.isValid) {
+              validElements.add(psiElement)
+            }
+          }
+          val elements = PsiUtilCore.toPsiElementArray(validElements)
+          val a = LocalHistory.getInstance().startAction(IdeBundle.message("progress.deleting"))
+          try {
+            DeleteHandler2.deletePsiElement(elements)
+          } finally {
+            a.finish()
+          }
+        }
+      }
+    }
+    if (PlatformDataKeys.SELECTED_ITEMS.`is`(dataId)) {
+      return JavaHelpers.pathsToSelectedElements(myTree.selectionPaths)
+    }
+
+    return null
   }
 }
-
-fun uniFilesRootNodes(project: Project, rootDirs: List<VirtualFile>): Collection<AbstractTreeNod2<*>> =
-  rootDirs.map {
-    ProjectPsiDirectoryNode(it) { file->
-      // all navigation inside should be treated as a single operation, so that 'Back' action undoes it in one go
-      if (false) {
-        ProjectManager.getInstance().openProjects
-      }
-      val type = FileTypeManager.getInstance().getKnownFileTypeOrAssociate(file, Uni.todoDefaultProject)
-      if (type == null || !file.isValid) {
-        // If not associated IDEA file type, or external application
-      } else if (type is INativeFileType) {
-        // например *.pdf
-        type.openFileInAssociatedApplication(Uni.todoDefaultProject, file)
-      } else {
-        FileEditorManager.getInstance(project).openFile(file, true, true)
-      }
-    }
-  }
 
 fun getSelectedPSIElements(selectionPaths: Array<TreePath>?): Array<PsiElement> {
   val paths = selectionPaths ?: return emptyArray()
