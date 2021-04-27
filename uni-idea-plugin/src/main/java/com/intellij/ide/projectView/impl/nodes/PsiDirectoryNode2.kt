@@ -18,7 +18,6 @@ abstract class PsiDirectoryNode2(private val virtualDir:VirtualFile) : BasePsiNo
   override fun canNavigate(): Boolean = false
   override fun canNavigateToSource(): Boolean = false
   override fun navigate(requestFocus: Boolean) {}
-  override fun getNavigateActionText(focusEditor: Boolean): String? = "Nav"
 
   override fun getWeight(): Int {
     if (Uni.fileManagerConf2.isFoldersAlwaysOnTop) {

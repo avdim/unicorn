@@ -10,7 +10,7 @@ import com.intellij.util.AstLoadingFilter
 import com.intellij.util.IconUtil
 import com.unicorn.Uni
 
-abstract class BasePsiNode2(val virtualFile:VirtualFile) : AbstractTreeNod2<VirtualFile>(virtualFile), NavigatableWithText {
+abstract class BasePsiNode2(val virtualFile:VirtualFile) : AbstractTreeNod2<VirtualFile>(virtualFile) {
   override fun getFileStatus(): FileStatus =
     if (virtualFile.fileSystem is NonPhysicalFileSystem) {
       FileStatus.SUPPRESSED // do not leak light files via cache

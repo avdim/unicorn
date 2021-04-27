@@ -38,10 +38,6 @@ class PsiFileNode2(
     openFile(virtualFile)
   }
 
-  override fun getNavigateActionText(focusEditor: Boolean): String? {
-    return if (isNavigatableLibraryRoot) ActionsBundle.message("action.LibrarySettings.navigate") else null
-  }
-
   override fun getWeight(): Int = 20
 }
 
