@@ -50,8 +50,9 @@ val LAST_ULTIMATE = IdeaVersion.Download(LAST_IDEA_STR, "IU")
 val INTELLIJ_GRADLE = "0.7.3"
 // https://maven.pkg.jetbrains.space/public/p/compose/dev/org/jetbrains/compose/org.jetbrains.compose.gradle.plugin/
 //val DESKTOP_COMPOSE = "0.3.0-build152"
-val DESKTOP_COMPOSE = "0.3.2"
+//val DESKTOP_COMPOSE = "0.3.2"
 //val DESKTOP_COMPOSE = "0.4.0-build183"
+val DESKTOP_COMPOSE = "0.4.0-build185"
 val COMPOSE_WORKAROUND = true
 
 val as4_1_macos = "/Users/dim/Library/Application Support/JetBrains/Toolbox/apps/AndroidStudio/ch-2/201.6823847/Android Studio.app/Contents"
@@ -59,7 +60,6 @@ val as4_20202_3_mac = "/Users/dim/Library/Application Support/JetBrains/Toolbox/
 //val as4_2_linux = "/home/dim/Desktop/programs/android-studio-4.2/2020.3.1.8"
 //val as4_2_linux = "/home/dim/Desktop/android_studio/2020.3.1.1_canary10/"
 val as4_2_linux = "/home/dim/Desktop/android_studio/2020.3_alpha12/extracted"
-
 
 val Project.UNI_BUILD_TYPE: BuildType get() =
   when (safeArgument("uniBuildType")) {
