@@ -20,17 +20,13 @@ class PsiFileNode2(
   public override fun getChildrenImpl(): Collection<AbstractTreeNod2<*>> = emptyList()
 
   override fun updateImpl(data: PresentationData) {
-    val value = value
-    if (value != null) {
-      val file = getVirtualFile()
-      if (file.`is`(VFileProperty.SYMLINK)) {
-        val target = file.canonicalPath
-        if (target == null) {
-          data.setAttributesKey(CodeInsightColors.WRONG_REFERENCES_ATTRIBUTES)
-          data.tooltip = IdeBundle.message("node.project.view.bad.link")
-        } else {
-          data.tooltip = FileUtil.toSystemDependentName(target)
-        }
+    if (virtualFile.`is`(VFileProperty.SYMLINK)) {
+      val target = virtualFile.canonicalPath
+      if (target == null) {
+        data.setAttributesKey(CodeInsightColors.WRONG_REFERENCES_ATTRIBUTES)
+        data.tooltip = IdeBundle.message("node.project.view.bad.link")
+      } else {
+        data.tooltip = FileUtil.toSystemDependentName(target)
       }
     }
   }
@@ -40,7 +36,7 @@ class PsiFileNode2(
   override fun canNavigateToSource(): Boolean = true
 
   override fun navigate(requestFocus: Boolean, preserveState: Boolean) {
-    openFile(getVirtualFile())
+    openFile(virtualFile)
   }
 
   override fun getNavigateActionText(focusEditor: Boolean): String? {

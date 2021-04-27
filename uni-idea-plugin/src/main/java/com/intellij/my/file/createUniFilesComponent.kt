@@ -77,7 +77,7 @@ fun createUniFilesComponent(
   val treeStructure =
     object : AbstractProjectTreeStructure2(), ProjectViewSettings {
       override fun createRoot(): AbstractTreeNod2<*> =
-        object : AbstractTreeNod2<VirtualFile>(virtualFile("/tmp")/*todo redundant VirtualFile type*/) {
+        object : AbstractTreeNod2<Unit>(Unit) {
           override fun getChildren(): Collection<AbstractTreeNod2<*>> = rootPaths.map { virtualFile(it) }.map {
             ProjectPsiDirectoryNode(it) { file ->
               // all navigation inside should be treated as a single operation, so that 'Back' action undoes it in one go
@@ -100,6 +100,7 @@ fun createUniFilesComponent(
           }
 
           override fun canNavigateToSource(): Boolean = false
+          override fun getName(): String = "todo redundant name"
           override fun getWeight(): Int = 0
         }
 

@@ -8,10 +8,10 @@ import com.intellij.ui.SimpleTextAttributes
 import com.unicorn.Uni
 import com.unicorn.Uni.BOLD_DIRS
 
-abstract class PsiDirectoryNode2(val virtualDir:VirtualFile) : BasePsiNode2(virtualDir), NavigatableWithText {
+abstract class PsiDirectoryNode2(private val virtualDir:VirtualFile) : BasePsiNode2(virtualDir), NavigatableWithText {
   override fun updateImpl(data: PresentationData) {
     if (BOLD_DIRS) {
-      data.addText(virtualDir.name + " ", SimpleTextAttributes.REGULAR_BOLD_ATTRIBUTES)
+      data.addText(virtualFile.name + " ", SimpleTextAttributes.REGULAR_BOLD_ATTRIBUTES)
     }
   }
   val isFQNameShown: Boolean get() = false
@@ -28,6 +28,6 @@ abstract class PsiDirectoryNode2(val virtualDir:VirtualFile) : BasePsiNode2(virt
     return if (isFQNameShown) 70 else 0
   }
 
-  override val isAlwaysShowPlus get(): Boolean = getVirtualFile().children.isNotEmpty()
+  override val isAlwaysShowPlus get(): Boolean = virtualFile.children.isNotEmpty()
 
 }

@@ -6,11 +6,10 @@ import com.intellij.navigation.NavigationItem
 import com.intellij.openapi.ide.CopyPasteManager
 import com.intellij.openapi.ui.Queryable
 import com.intellij.openapi.vcs.FileStatus
-import com.intellij.openapi.vfs.VirtualFile
 import com.intellij.ui.tree.LeafState
 import com.unicorn.Uni
 
-abstract class AbstractTreeNod2<V : VirtualFile>(val value: V) : NavigationItem, Queryable.Contributor, LeafState.Supplier {
+abstract class AbstractTreeNod2<V : Any>(val value: V) : NavigationItem, Queryable.Contributor, LeafState.Supplier {
   private val myTemplatePresentation: PresentationData by lazy { PresentationData() }
   private val myUpdatedPresentation: PresentationData by lazy { PresentationData() }
   var index = -1
@@ -52,12 +51,11 @@ abstract class AbstractTreeNod2<V : VirtualFile>(val value: V) : NavigationItem,
   override fun hashCode(): Int = value.hashCode()
   override fun apply(info: Map<String, String>) {}
   abstract fun getFileStatus(): FileStatus
-  override fun getName(): String? = value.name
   override fun navigate(requestFocus: Boolean) {}
   override fun canNavigate(): Boolean = false
   fun canRepresent(element: Any): Boolean = Uni.todoCanRepresentAlwaysTrue()
   override fun getPresentation(): PresentationData = myUpdatedPresentation
-  override fun toString(): String = "AbstractTreeNod2, virtualFile=${value.name}"
+  override fun toString(): String = name ?: ""
   abstract fun getWeight(): Int
   protected abstract fun update(presentation: PresentationData)
 

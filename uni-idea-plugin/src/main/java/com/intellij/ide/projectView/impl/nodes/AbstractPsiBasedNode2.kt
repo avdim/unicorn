@@ -24,18 +24,17 @@ abstract class AbstractPsiBasedNode2<V : VirtualFile>(value: V) : AbstractTreeNo
   override fun getChildren(): Collection<AbstractTreeNod2<*>> {
     return AstLoadingFilter.disallowTreeLoading(ThrowableComputable<Collection<AbstractTreeNod2<*>?>, RuntimeException> { getChildrenImpl() }) as Collection<AbstractTreeNod2<*>>
   }
-
-  protected abstract fun getVirtualFile(): VirtualFile
+  protected abstract val virtualFile:VirtualFile
 
   override fun isValid(): Boolean = true
 
   public override fun update(presentation: PresentationData) {
     AstLoadingFilter.disallowTreeLoading<RuntimeException> {
       ApplicationManager.getApplication().runReadAction {
-        presentation.presentableText = getVirtualFile().name
-        presentation.setIcon(IconUtil.getIcon(getVirtualFile(), 0, Uni.todoDefaultProject))
+        presentation.presentableText = virtualFile.name
+        presentation.setIcon(IconUtil.getIcon(virtualFile, 0, Uni.todoDefaultProject))
         if (false) {
-          presentation.setIcon(patchIcon(presentation.getIcon(true), getVirtualFile()))
+          presentation.setIcon(patchIcon(presentation.getIcon(true), virtualFile))
         }
         presentation.locationString = "hint"
         updateImpl(presentation)

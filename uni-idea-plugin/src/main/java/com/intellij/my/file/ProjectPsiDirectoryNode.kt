@@ -8,12 +8,12 @@ import com.intellij.openapi.vfs.VirtualFile
 import com.intellij.ide.projectView.impl.nodes.AbstractTreeNod2
 
 class ProjectPsiDirectoryNode(
-  virtualDir2: VirtualFile,
+  virtualDir: VirtualFile,
   val openFile: (VirtualFile) -> Unit
-) : PsiDirectoryNode2(virtualDir2) {
+) : PsiDirectoryNode2(virtualDir) {
 
   override fun getChildrenImpl(): Collection<AbstractTreeNod2<*>> {
-    val baseDir = getVirtualFile()
+    val baseDir = virtualFile
     val nodes: MutableList<AbstractPsiBasedNode2<*>> = ArrayList()
     for (file in baseDir.children) {
       if (file.isDirectory) {
