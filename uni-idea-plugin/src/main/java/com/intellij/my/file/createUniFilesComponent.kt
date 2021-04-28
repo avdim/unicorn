@@ -92,9 +92,8 @@ fun createUniFilesComponent(
               }
             }
           }
-
-          override fun getFileStatus(): FileStatus = FileStatus.NOT_CHANGED
           override fun update(presentation: PresentationData) {}
+          override fun canNavigate(): Boolean = false
 
           override fun canNavigateToSource(): Boolean = false
           override fun getName(): String = "todo redundant name"

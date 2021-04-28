@@ -18,20 +18,6 @@ abstract class AbstractTreeNod2<V : Any>(val value: V) : NavigationItem, Queryab
   var isWasDeclaredAlwaysLeaf = false
 
   abstract fun getChildren(): Collection<AbstractTreeNod2<*>>
-  protected fun postprocess(presentation: PresentationData) {
-    setForcedForeground(presentation)
-  }
-
-  private fun setForcedForeground(presentation: PresentationData) {
-    val status = getFileStatus()
-    var fgColor = status.color
-    if (CopyPasteManager.getInstance().isCutElement(value)) {//todo not working
-      fgColor = CopyPasteManager.CUT_COLOR
-    }
-    if (presentation.forcedTextForeground == null) {
-      presentation.forcedTextForeground = fgColor
-    }
-  }
 
   override fun getLeafState(): LeafState = if (isAlwaysShowPlus) LeafState.NEVER else LeafState.DEFAULT
   open val isAlwaysShowPlus: Boolean get() = false
@@ -51,9 +37,7 @@ abstract class AbstractTreeNod2<V : Any>(val value: V) : NavigationItem, Queryab
   val sortedName: String get() = name ?: "empty"
   override fun hashCode(): Int = value.hashCode()
   override fun apply(info: Map<String, String>) {}
-  abstract fun getFileStatus(): FileStatus
   override fun navigate(requestFocus: Boolean) {}
-  override fun canNavigate(): Boolean = false
   fun canRepresent(element: Any): Boolean = Uni.todoCanRepresentAlwaysTrue()
   override fun getPresentation(): PresentationData = myUpdatedPresentation
   override fun toString(): String = name ?: ""
@@ -61,25 +45,22 @@ abstract class AbstractTreeNod2<V : Any>(val value: V) : NavigationItem, Queryab
 
   fun update(): Boolean {
     val before = presentation.clone()
-    val updated = updatedPresentation()
-    return apply(updated, before)
-  }
-
-  private fun apply(presentation: PresentationData, before: PresentationData): Boolean {
-    var result = presentation != before
-    myUpdatedPresentation.copyFrom(presentation)
+    myUpdatedPresentation.clear()
+    update(myUpdatedPresentation)
+    var fgColor = FileStatus.NOT_CHANGED.color
+    if (CopyPasteManager.getInstance().isCutElement(value)) {//todo not working
+      fgColor = CopyPasteManager.CUT_COLOR
+    }
+    if (myUpdatedPresentation.forcedTextForeground == null) {
+      myUpdatedPresentation.forcedTextForeground = fgColor
+    }
+    val updated = myUpdatedPresentation
+    var result = updated != before
+    myUpdatedPresentation.copyFrom(updated)
     myUpdatedPresentation.applyFrom(myTemplatePresentation)
     result = result or myUpdatedPresentation.isChanged
     myUpdatedPresentation.isChanged = false
     return result
-  }
-
-  private fun updatedPresentation(): PresentationData {
-    val p = myUpdatedPresentation
-    p.clear()
-    update(p)
-    postprocess(p)
-    return p
   }
 
 }

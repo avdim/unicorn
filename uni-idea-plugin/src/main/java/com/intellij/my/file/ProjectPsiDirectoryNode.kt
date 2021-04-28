@@ -32,10 +32,9 @@ class ProjectPsiDirectoryNode(
       data.addText(virtualFile.name + " ", SimpleTextAttributes.REGULAR_BOLD_ATTRIBUTES)
     }
   }
-  val isFQNameShown: Boolean get() = false
+
   override fun canNavigate(): Boolean = false
   override fun canNavigateToSource(): Boolean = false
-  override fun navigate(requestFocus: Boolean) {}
   override val isAlwaysShowPlus get(): Boolean = virtualFile.children.isNotEmpty()
 
 }
