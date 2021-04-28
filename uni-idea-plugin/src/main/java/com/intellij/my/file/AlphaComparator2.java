@@ -3,17 +3,18 @@ package com.intellij.my.file;
 
 import com.intellij.ide.util.treeView.FileNameComparator;
 import com.intellij.ide.projectView.impl.nodes.AbstractTreeNod2;
+import org.jetbrains.annotations.NotNull;
 
 public final class AlphaComparator2 {
 
-  public static int compare(AbstractTreeNod2 nodeDescriptor1, AbstractTreeNod2 AbstractTreeNod2) {
-    int weight1 = nodeDescriptor1.getWeight();
-    int weight2 = AbstractTreeNod2.getWeight();
+  public static int compare(@NotNull AbstractTreeNod2 a,@NotNull AbstractTreeNod2 b) {
+    int weight1 = a.getWeight();
+    int weight2 = b.getWeight();
     if (weight1 != weight2) {
       return weight1 - weight2;
     }
-    String s1 = nodeDescriptor1.toString();
-    String s2 = AbstractTreeNod2.toString();
+    @NotNull String s1 = a.toString();
+    @NotNull String s2 = b.toString();
     if (s1 == null) return s2 == null ? 0 : -1;
     if (s2 == null) return +1;
 
