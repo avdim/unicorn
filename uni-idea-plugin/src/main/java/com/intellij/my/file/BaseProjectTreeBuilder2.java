@@ -70,12 +70,12 @@ public abstract class BaseProjectTreeBuilder2 extends AbstractTreeBuilder2 {
   }
 
   @Override
-  protected boolean isAlwaysShowPlus(AbstractTreeNod2 nodeDescriptor) {
+  public boolean isAlwaysShowPlus(AbstractTreeNod2 nodeDescriptor) {
     return nodeDescriptor != null && nodeDescriptor.isAlwaysShowPlus();
   }
 
   @Override
-  protected final void expandNodeChildren(@NotNull final DefaultMutableTreeNode node) {
+  public final void expandNodeChildren(@NotNull final DefaultMutableTreeNode node) {
     final AbstractTreeNod2 userObject = (AbstractTreeNod2)node.getUserObject();
     if (userObject == null) return;
     Object element = userObject.getElement();
@@ -326,7 +326,7 @@ public abstract class BaseProjectTreeBuilder2 extends AbstractTreeBuilder2 {
   }
 
   @Override
-  protected boolean validateNode(@NotNull final Object child) {
+  public boolean validateNode(@NotNull final Object child) {
     if (child instanceof ProjectViewNode) {
       final ProjectViewNode projectViewNode = (ProjectViewNode)child;
       return projectViewNode.validate();
@@ -336,7 +336,7 @@ public abstract class BaseProjectTreeBuilder2 extends AbstractTreeBuilder2 {
 
   @Override
   @NotNull
-  protected ProgressIndicator createProgressIndicator() {
+  public ProgressIndicator createProgressIndicator() {
     return new StatusBarProgress();
   }
 }

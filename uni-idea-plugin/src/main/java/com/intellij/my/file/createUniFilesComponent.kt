@@ -117,7 +117,7 @@ fun createUniFilesComponent(
     }
 
   val treeBuilder = ProjectTreeBuilder2(myTree, treeModel, treeStructure)
-  treeBuilder.setNodeDescriptorComparator(GroupByTypeComparator2())
+  treeBuilder.setNodeDescriptorComparator(GroupByTypeComparator2())//todo inline comparator
   fun initTree() {
     myTree.selectionModel.selectionMode = TreeSelectionModel.DISCONTIGUOUS_TREE_SELECTION
     myTree.isRootVisible = false
