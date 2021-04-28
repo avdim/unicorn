@@ -78,9 +78,6 @@ public abstract class AbstractProjectTreeStructure2 extends AbstractTreeStructur
 
   @Override
   public boolean isAlwaysLeaf(@NotNull Object element) {
-    if (true) {
-      return false;
-    }
-    return super.isAlwaysLeaf(element);
+    return false;
   }
 }

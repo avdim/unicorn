@@ -94,10 +94,7 @@ fun createUniFilesComponent(
           }
 
           override fun getFileStatus(): FileStatus = FileStatus.NOT_CHANGED
-          override fun update(presentation: PresentationData) {
-            presentation.setIcon(PlatformIcons.PROJECT_ICON)
-            presentation.presentableText = "todo_presentable_text"
-          }
+          override fun update(presentation: PresentationData) {}
 
           override fun canNavigateToSource(): Boolean = false
           override fun getName(): String = "todo redundant name"
