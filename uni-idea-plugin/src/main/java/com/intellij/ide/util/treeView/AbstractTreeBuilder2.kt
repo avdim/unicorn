@@ -152,12 +152,7 @@ abstract class AbstractTreeBuilder2 protected constructor() : Disposable {
         val result = ActionCallback()
         ui.invokeLaterIfNeeded(false, object : TreeRunnable2("AbstractTreeBuilder.queueUpdateFrom") {
             public override fun perform() {
-                val ui = ui
-                if (ui == null) {
-                    result.reject("ui is null")
-                    return
-                }
-                if (updateStructure && forceResort) {
+              if (updateStructure && forceResort) {
                     ui.incComparatorStamp()
                 }
                 ui.queueUpdate(element, updateStructure).notify(result)
@@ -313,11 +308,5 @@ abstract class AbstractTreeBuilder2 protected constructor() : Disposable {
                 val app = ApplicationManager.getApplication()
                 return app != null && app.isUnitTestMode
             }
-
-        @JvmStatic
-        fun isToPaintSelection(tree: JTree): Boolean {
-            val builder = getBuilderFor(tree)
-            return builder == null || builder.ui == null || builder.ui!!.isToPaintSelection
-        }
     }
 }

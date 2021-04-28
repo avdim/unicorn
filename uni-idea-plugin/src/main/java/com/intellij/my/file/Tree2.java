@@ -168,24 +168,6 @@ public abstract class Tree2 extends JTree implements ComponentWithEmptyText, Com
   public void paint(Graphics g) {
     Rectangle visible = getVisibleRect();
 
-    if (!AbstractTreeBuilder2.isToPaintSelection(this)) {
-      boolean canHoldSelection = false;
-      TreePath[] paths = getSelectionModel().getSelectionPaths();
-      if (paths != null) {
-        for (TreePath each : paths) {
-          Rectangle selection = getPathBounds(each);
-          if (selection != null && (g.getClipBounds().intersects(selection) || g.getClipBounds().contains(selection))) {
-            canHoldSelection = true;
-            break;
-          }
-        }
-      }
-
-      if (canHoldSelection) {
-        mySelectionModel.holdSelection();
-      }
-    }
-
     try {
       super.paint(g);
 
