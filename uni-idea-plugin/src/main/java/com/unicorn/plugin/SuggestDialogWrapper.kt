@@ -16,7 +16,7 @@ class SuggestDialogWrapper(val title2: String, suggest: String) : DialogWrapper(
         label(title2)
       }
       row {
-        textField({ actualValue }, { actualValue = it })
+        textField({ actualValue }, { actualValue = it }).focused()
       }
     }
 //        val dialogPanel = JPanel(

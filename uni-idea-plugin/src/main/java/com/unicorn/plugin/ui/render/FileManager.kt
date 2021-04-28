@@ -7,11 +7,13 @@ import com.intellij.openapi.vfs.VirtualFile
 import com.intellij.ui.layout.LayoutBuilder
 import com.unicorn.plugin.performActionById
 import com.intellij.my.file.uniFiles
+import com.intellij.ui.layout.CellBuilder
 import com.unicorn.Uni
 import com.unicorn.plugin.mvi.Column
 import com.unicorn.plugin.mvi.UniWindowState
 import todo.mvi.Intent
 import java.io.File
+import javax.swing.JComponent
 
 val TODO_TEXT_FIELD_COMPLETION = true//todo
 
