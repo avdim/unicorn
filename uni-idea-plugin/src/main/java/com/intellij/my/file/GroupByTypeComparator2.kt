@@ -67,11 +67,7 @@ class GroupByTypeComparator2 : Comparator<AbstractTreeNod2<*>?> {
       if (b == null) {
         1
       } else {
-        if (a.weight != b.weight) {
-          a.weight - b.weight
-        } else {
-          FileNameComparator.INSTANCE.compare(a.sortedName, b.sortedName)
-        }
+        FileNameComparator.INSTANCE.compare(a.sortedName, b.sortedName)
       }
     }
   }

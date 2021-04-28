@@ -36,15 +36,6 @@ class ProjectPsiDirectoryNode(
   override fun canNavigate(): Boolean = false
   override fun canNavigateToSource(): Boolean = false
   override fun navigate(requestFocus: Boolean) {}
-
-  override val weight: Int
-    get() {
-      if (Uni.fileManagerConf2.isFoldersAlwaysOnTop) {
-        return 20
-      }
-      return if (isFQNameShown) 70 else 0
-    }
-
   override val isAlwaysShowPlus get(): Boolean = virtualFile.children.isNotEmpty()
 
 }
