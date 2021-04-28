@@ -298,12 +298,8 @@ abstract class AbstractTreeBuilder2 protected constructor() : Disposable {
         @NonNls
         private val TREE_BUILDER = "TreeBuilder"
         const val DEFAULT_UPDATE_INACTIVE = true
-        fun getBuilderFor(tree: JTree): AbstractTreeBuilder2? {
-            val ref: Reference<AbstractTreeBuilder2>? = tree.getClientProperty(TREE_BUILDER) as? Reference<AbstractTreeBuilder2>
-            return SoftReference.dereference(ref)
-        }
 
-        private val isUnitTestingMode: Boolean
+      private val isUnitTestingMode: Boolean
             private get() {
                 val app = ApplicationManager.getApplication()
                 return app != null && app.isUnitTestMode

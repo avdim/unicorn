@@ -154,7 +154,6 @@ public abstract class Tree2 extends JTree implements ComponentWithEmptyText, Com
   @Override
   public void doLayout() {
     super.doLayout();
-
     updateBusyIconLocation();
   }
 
@@ -167,14 +166,11 @@ public abstract class Tree2 extends JTree implements ComponentWithEmptyText, Com
   @Override
   public void paint(Graphics g) {
     Rectangle visible = getVisibleRect();
-
     try {
       super.paint(g);
-
       if (!visible.equals(myLastVisibleRec)) {
         updateBusyIconLocation();
       }
-
       myLastVisibleRec = visible;
     }
     finally {
@@ -201,10 +197,8 @@ public abstract class Tree2 extends JTree implements ComponentWithEmptyText, Com
     if (isFileColorsEnabled()) {
       g.setColor(getBackground());
       g.fillRect(0, 0, getWidth(), getHeight());
-
       paintFileColorGutter(g);
     }
-
     super.paintComponent(g);
     myEmptyText.paint(this, g);
   }
@@ -310,10 +304,6 @@ public abstract class Tree2 extends JTree implements ComponentWithEmptyText, Com
       if (myHeldSelection == null) {
         super.fireValueChanged(e);
       }
-    }
-
-    public void holdSelection() {
-      myHeldSelection = getSelectionPaths();
     }
 
     public void unholdSelection() {
