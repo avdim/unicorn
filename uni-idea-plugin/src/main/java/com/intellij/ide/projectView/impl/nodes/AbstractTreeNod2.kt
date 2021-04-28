@@ -10,11 +10,11 @@ import com.intellij.ui.tree.LeafState
 import com.unicorn.Uni
 
 abstract class AbstractTreeNod2<V : Any>(val value: V) : NavigationItem, Queryable.Contributor{
+
   private val myTemplatePresentation: PresentationData by lazy { PresentationData() }
   private val myUpdatedPresentation: PresentationData by lazy { PresentationData() }
   var index = -1
   var childrenSortingStamp: Long = -1
-  var updateCount: Long = 0
   var isWasDeclaredAlwaysLeaf = false
 
   abstract fun getChildren(): Collection<AbstractTreeNod2<*>>

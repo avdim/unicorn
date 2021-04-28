@@ -782,7 +782,6 @@ public class AbstractTreeUi2 {
         execute(new TreeRunnable2("AbstractTreeUi.update") {
           @Override
           public void perform() {
-            nodeDescriptor.setUpdateCount(nodeDescriptor.getUpdateCount() + 1);
             update.set(getBuilder().updateNodeDescriptor(nodeDescriptor));
           }
         });
