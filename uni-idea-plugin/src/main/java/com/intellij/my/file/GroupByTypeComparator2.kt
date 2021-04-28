@@ -4,6 +4,7 @@ package com.intellij.my.file
 import com.intellij.ide.projectView.ProjectViewNode
 import com.intellij.openapi.util.text.StringUtil
 import com.intellij.ide.projectView.impl.nodes.AbstractTreeNod2
+import com.intellij.ide.util.treeView.FileNameComparator
 import java.util.Comparator
 
 class GroupByTypeComparator2 : Comparator<AbstractTreeNod2<*>?> {
@@ -13,13 +14,13 @@ class GroupByTypeComparator2 : Comparator<AbstractTreeNod2<*>?> {
   private val _isFoldersAlwaysOnTop: Boolean = false
 
   override fun compare(descriptor1: AbstractTreeNod2<*>?, descriptor2: AbstractTreeNod2<*>?): Int {
-    var descriptor1 = descriptor1
-    var descriptor2 = descriptor2
-    descriptor1 = getNodeDescriptor(descriptor1)
-    descriptor2 = getNodeDescriptor(descriptor2)
-    if (descriptor1 is ProjectViewNode<*> && descriptor2 is ProjectViewNode<*>) {
-      val node1 = descriptor1
-      val node2 = descriptor2
+    var a = descriptor1
+    var b = descriptor2
+    a = getNodeDescriptor(a)
+    b = getNodeDescriptor(b)
+    if (a is ProjectViewNode<*> && b is ProjectViewNode<*>) {
+      val node1 = a
+      val node2 = b
       if (_isManualOrder) {
         val key1 = node1.manualOrderKey
         val key2 = node2.manualOrderKey
@@ -60,13 +61,17 @@ class GroupByTypeComparator2 : Comparator<AbstractTreeNod2<*>?> {
         }
       }
     }
-    return if (descriptor1 == null) {
+    return if (a == null) {
       -1
     } else {
-      if (descriptor2 == null) {
+      if (b == null) {
         1
       } else {
-        AlphaComparator2.compare(descriptor1, descriptor2)
+        if (a.weight != b.weight) {
+          a.weight - b.weight
+        } else {
+          FileNameComparator.INSTANCE.compare(a.sortedName, b.sortedName)
+        }
       }
     }
   }

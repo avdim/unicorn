@@ -57,7 +57,7 @@ abstract class AbstractTreeNod2<V : Any>(val value: V) : NavigationItem, Queryab
   fun canRepresent(element: Any): Boolean = Uni.todoCanRepresentAlwaysTrue()
   override fun getPresentation(): PresentationData = myUpdatedPresentation
   override fun toString(): String = name ?: ""
-  abstract fun getWeight(): Int
+  abstract val weight: Int
   protected abstract fun update(presentation: PresentationData)
 
   fun update(): Boolean {

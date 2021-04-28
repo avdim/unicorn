@@ -38,7 +38,8 @@ class PsiFileNode2(
     openFile(virtualFile)
   }
 
-  override fun getWeight(): Int = 20
+  override val weight: Int
+    get() = 20
 }
 
 fun patchIcon(original: Icon?, file: VirtualFile?): Icon? {

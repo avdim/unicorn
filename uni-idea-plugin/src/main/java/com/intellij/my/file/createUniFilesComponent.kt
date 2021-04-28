@@ -101,7 +101,8 @@ fun createUniFilesComponent(
 
           override fun canNavigateToSource(): Boolean = false
           override fun getName(): String = "todo redundant name"
-          override fun getWeight(): Int = 0
+          override val weight: Int
+            get() = 0
         }
 
       override fun getChildElements(element: Any): Array<Any> {
