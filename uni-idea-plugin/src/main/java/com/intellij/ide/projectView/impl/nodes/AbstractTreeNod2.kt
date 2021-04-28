@@ -10,9 +10,7 @@ import com.intellij.ui.tree.LeafState
 import com.unicorn.Uni
 
 abstract class AbstractTreeNod2<V : Any>(val value: V) : NavigationItem, Queryable.Contributor{
-
-  private val myTemplatePresentation: PresentationData by lazy { PresentationData() }
-  private val myUpdatedPresentation: PresentationData by lazy { PresentationData() }
+  private val myUpdatedPresentation = PresentationData()
   var index = -1
   var childrenSortingStamp: Long = -1
   var isWasDeclaredAlwaysLeaf = false
@@ -55,7 +53,7 @@ abstract class AbstractTreeNod2<V : Any>(val value: V) : NavigationItem, Queryab
     val updated = myUpdatedPresentation
     var result = updated != before
     myUpdatedPresentation.copyFrom(updated)
-    myUpdatedPresentation.applyFrom(myTemplatePresentation)
+    myUpdatedPresentation.applyFrom(PresentationData())
     result = result or myUpdatedPresentation.isChanged
     myUpdatedPresentation.isChanged = false
     return result
