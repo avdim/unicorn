@@ -9,7 +9,7 @@ import com.intellij.openapi.vcs.FileStatus
 import com.intellij.ui.tree.LeafState
 import com.unicorn.Uni
 
-abstract class AbstractTreeNod2<V : Any>(val value: V) : NavigationItem, Queryable.Contributor, LeafState.Supplier {
+abstract class AbstractTreeNod2<V : Any>(val value: V) : NavigationItem, Queryable.Contributor{
   private val myTemplatePresentation: PresentationData by lazy { PresentationData() }
   private val myUpdatedPresentation: PresentationData by lazy { PresentationData() }
   var index = -1
@@ -18,8 +18,6 @@ abstract class AbstractTreeNod2<V : Any>(val value: V) : NavigationItem, Queryab
   var isWasDeclaredAlwaysLeaf = false
 
   abstract fun getChildren(): Collection<AbstractTreeNod2<*>>
-
-  override fun getLeafState(): LeafState = if (isAlwaysShowPlus) LeafState.NEVER else LeafState.DEFAULT
   open val isAlwaysShowPlus: Boolean get() = false
   val element: AbstractTreeNod2<V> get() = this
 
