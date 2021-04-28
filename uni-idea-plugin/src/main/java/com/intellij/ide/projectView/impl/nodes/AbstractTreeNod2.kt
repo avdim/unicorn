@@ -48,6 +48,7 @@ abstract class AbstractTreeNod2<V : Any>(val value: V) : NavigationItem, Queryab
       false
     }
 
+  val sortedName: String get() = name ?: "empty"
   override fun hashCode(): Int = value.hashCode()
   override fun apply(info: Map<String, String>) {}
   abstract fun getFileStatus(): FileStatus

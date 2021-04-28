@@ -13,11 +13,8 @@ public final class AlphaComparator2 {
     if (weight1 != weight2) {
       return weight1 - weight2;
     }
-    @NotNull String s1 = a.toString();
-    @NotNull String s2 = b.toString();
-    if (s1 == null) return s2 == null ? 0 : -1;
-    if (s2 == null) return +1;
-
+    @NotNull String s1 = a.getSortedName();
+    @NotNull String s2 = b.getSortedName();
     return FileNameComparator.INSTANCE.compare(s1, s2);
   }
 }
