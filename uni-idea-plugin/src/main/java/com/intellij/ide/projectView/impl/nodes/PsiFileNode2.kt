@@ -16,7 +16,7 @@ class PsiFileNode2(
   virtualFile: VirtualFile,
   val openFile: (VirtualFile) -> Unit
 ) : BasePsiNode2(virtualFile) {
-  override fun getChildren(): Collection<AbstractTreeNod2<*>> = emptyList()
+  override fun getChildren(): Collection<BasePsiNode2> = emptyList()
 
   override fun updateImpl(data: PresentationData) {
     if (virtualFile.`is`(VFileProperty.SYMLINK)) {

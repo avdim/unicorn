@@ -24,6 +24,7 @@ import com.intellij.psi.PsiDirectory
 import com.intellij.psi.PsiDirectoryContainer
 import com.intellij.psi.PsiElement
 import com.intellij.ide.projectView.impl.nodes.AbstractTreeNod2
+import com.intellij.ide.projectView.impl.nodes.BasePsiNode2
 import com.intellij.psi.util.PsiUtilCore
 import com.intellij.ui.ScrollPaneFactory
 import com.intellij.ui.layout.Cell
@@ -78,7 +79,7 @@ fun createUniFilesComponent(
     object : AbstractProjectTreeStructure2(), ProjectViewSettings {
       override fun createRoot(): AbstractTreeNod2<*> =
         object : AbstractTreeNod2<Unit>(Unit) {
-          override fun getChildren(): Collection<AbstractTreeNod2<*>> = rootPaths.map { virtualFile(it) }.map {
+          override fun getChildren(): Collection<BasePsiNode2> = rootPaths.map { virtualFile(it) }.map {
             ProjectPsiDirectoryNode(it) { file ->
               // all navigation inside should be treated as a single operation, so that 'Back' action undoes it in one go
               val type = FileTypeManager.getInstance().getKnownFileTypeOrAssociate(file, Uni.todoDefaultProject)

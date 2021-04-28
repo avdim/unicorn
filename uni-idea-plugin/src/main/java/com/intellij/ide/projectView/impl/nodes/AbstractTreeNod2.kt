@@ -15,7 +15,7 @@ abstract class AbstractTreeNod2<V : Any>(val value: V) : NavigationItem, Queryab
   var childrenSortingStamp: Long = -1
   var isWasDeclaredAlwaysLeaf = false
 
-  abstract fun getChildren(): Collection<AbstractTreeNod2<*>>
+  abstract fun getChildren(): Collection<BasePsiNode2>
   open val isAlwaysShowPlus: Boolean get() = false
   val element: AbstractTreeNod2<V> get() = this
 

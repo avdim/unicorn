@@ -14,9 +14,9 @@ class ProjectPsiDirectoryNode(
   val openFile: (VirtualFile) -> Unit
 ) : BasePsiNode2(virtualDir) {
 
-  override fun getChildren(): Collection<AbstractTreeNod2<*>> {
+  override fun getChildren(): Collection<BasePsiNode2> {
     val baseDir = virtualFile
-    val nodes: MutableList<AbstractTreeNod2<*>> = ArrayList()
+    val nodes: MutableList<BasePsiNode2> = ArrayList()
     for (file in baseDir.children) {
       if (file.isDirectory) {
         nodes.add(ProjectPsiDirectoryNode(file, openFile))

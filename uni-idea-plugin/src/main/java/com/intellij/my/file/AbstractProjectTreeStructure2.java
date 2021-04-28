@@ -2,6 +2,7 @@
 
 package com.intellij.my.file;
 
+import com.intellij.ide.projectView.impl.nodes.BasePsiNode2;
 import com.intellij.ide.util.treeView.AbstractTreeStructure;
 import com.intellij.ide.util.treeView.NodeDescriptor;
 import com.intellij.openapi.util.ActionCallback;
@@ -30,7 +31,7 @@ public abstract class AbstractProjectTreeStructure2 extends AbstractTreeStructur
       Uni.getLog().error("!(element instanceof AbstractTreeNod2)");
     }
     AbstractTreeNod2<?> treeNode = (AbstractTreeNod2<?>)element;
-    Collection<? extends AbstractTreeNod2<?>> elements = treeNode.getChildren();
+    Collection<? extends BasePsiNode2> elements = treeNode.getChildren();
     if (elements.contains(null)) {
       Uni.getLog().error("node contains null child: " + treeNode + "; " + treeNode.getClass());
     }
