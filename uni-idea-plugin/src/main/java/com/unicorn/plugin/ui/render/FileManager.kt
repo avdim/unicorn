@@ -60,7 +60,7 @@ fun fileManager(
           send(Intent.AddPath(col))
         }
         if (state.renderFiles) {
-          uniFiles(project, rootPaths = column.paths)
+          uniFiles(project, rootPaths = column.paths)//.focused()
         }
       }
     }
