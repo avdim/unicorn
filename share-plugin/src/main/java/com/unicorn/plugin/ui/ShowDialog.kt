@@ -6,7 +6,7 @@ import com.intellij.openapi.util.Disposer
 import com.intellij.ui.layout.panel
 import javax.swing.JComponent
 
-fun showDialog(viewComponent: JComponent, parentDisposable: Disposable? = null, modal: Boolean = false): DialogWrapper {
+fun showDialog(viewComponent: JComponent, width:Int = 800, height:Int = 800, parentDisposable: Disposable? = null, modal: Boolean = false): DialogWrapper {
   //todo close      { dialog?.close(DialogWrapper.CLOSE_EXIT_CODE) }
   val dialog = object : DialogWrapper(
     null,
@@ -31,6 +31,7 @@ fun showDialog(viewComponent: JComponent, parentDisposable: Disposable? = null, 
   if (parentDisposable != null) {//todo not null
     Disposer.register(parentDisposable, dialog.disposable)
   }
+  dialog.setSize(width, height)
   return dialog
 }
 
@@ -40,7 +41,7 @@ fun showPanelDialog(parentDisposable: Disposable? = null, lambda: com.intellij.u
     panel {
       lambda()
     },
-    parentDisposable
+    parentDisposable = parentDisposable
   )
 }
 
