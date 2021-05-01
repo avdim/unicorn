@@ -14,6 +14,7 @@ pluginManagement {
     maven(url = "https://maven.pkg.jetbrains.space/public/p/compose/dev")
     maven { setUrl("https://dl.bintray.com/kotlin/kotlin-eap") }
     maven { setUrl("https://dl.bintray.com/kotlin/kotlin-dev") }
+    maven(url = "https://oss.sonatype.org/content/repositories/snapshots/") // plugin id("org.jetbrains.intellij") SNAPSHOT
   }
 
 //  resolutionStrategy {
