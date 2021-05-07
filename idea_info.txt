@@ -41,3 +41,4 @@ Alt+Shift+C Recent changes
 In Debugger "Quick Evaluate Expression" Ctrl+Alt+F8 (or Alt + mouse)
 
 https://www.jetbrains.com/idea/guide/
+IDE scripting console: https://www.jetbrains.com/help/idea/ide-scripting-console.html
