@@ -59,9 +59,11 @@ val COMPOSE_WORKAROUND = true
 
 val as4_1_macos = "/Users/dim/Library/Application Support/JetBrains/Toolbox/apps/AndroidStudio/ch-2/201.6823847/Android Studio.app/Contents"
 val as4_20202_3_mac = "/Users/dim/Library/Application Support/JetBrains/Toolbox/apps/AndroidStudio/ch-0/203.7185775/Android Studio Preview.app/Contents"
-//val as4_2_linux = "/home/dim/Desktop/programs/android-studio-4.2/2020.3.1.8"
-//val as4_2_linux = "/home/dim/Desktop/android_studio/2020.3.1.1_canary10/"
-val as4_2_linux = "/home/dim/Desktop/android_studio/2020.3_alpha12/extracted"
+//val asLinux = "/home/dim/Desktop/programs/android-studio-4.2/2020.3.1.8"
+//val asLinux = "/home/dim/Desktop/android_studio/2020.3.1.1_canary10/"
+//val asLinux = "/home/dim/Desktop/android_studio/2020.3_alpha12/extracted"
+//val asLinux = "/home/dim/Desktop/android_studio/2020.3_beta1/android-studio"
+val asLinux = "/home/dim/Desktop/android_studio/2021_alpha1/android-studio"
 
 val Project.UNI_BUILD_TYPE: BuildType get() =
   when (safeArgument("uniBuildType")) {
@@ -69,7 +71,7 @@ val Project.UNI_BUILD_TYPE: BuildType get() =
     "as" -> if (isMacOS) {
       BuildType.UseLocal(as4_20202_3_mac)
     } else {
-      BuildType.UseLocal(as4_2_linux)
+      BuildType.UseLocal(asLinux)
     }
     "integration-test" -> BuildType.IntegrationTest
     "hand-test" -> BuildType.HandTest
