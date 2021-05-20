@@ -57,8 +57,9 @@ val INTELLIJ_GRADLE = "0.7.3"
 val DESKTOP_COMPOSE = "0.4.0-build185"
 val COMPOSE_WORKAROUND = true
 
-val as4_1_macos = "/Users/dim/Library/Application Support/JetBrains/Toolbox/apps/AndroidStudio/ch-2/201.6823847/Android Studio.app/Contents"
-val as4_20202_3_mac = "/Users/dim/Library/Application Support/JetBrains/Toolbox/apps/AndroidStudio/ch-0/203.7185775/Android Studio Preview.app/Contents"
+//val asMac = "/Users/dim/Library/Application Support/JetBrains/Toolbox/apps/AndroidStudio/ch-0/203.7185775/Android Studio Preview.app/Contents"
+//val asMac = "/Users/dim/Library/Application Support/JetBrains/Toolbox/apps/AndroidStudio/ch-0/203.7360992/Android Studio Preview.app/Contents"
+val asMac = "/Users/dim/Library/Application Support/JetBrains/Toolbox/apps/AndroidStudio/ch-1/203.7717.56.2111.7361063/Android Studio Preview.app/Contents"
 //val asLinux = "/home/dim/Desktop/programs/android-studio-4.2/2020.3.1.8"
 //val asLinux = "/home/dim/Desktop/android_studio/2020.3.1.1_canary10/"
 //val asLinux = "/home/dim/Desktop/android_studio/2020.3_alpha12/extracted"
@@ -69,7 +70,7 @@ val Project.UNI_BUILD_TYPE: BuildType get() =
   when (safeArgument("uniBuildType")) {
     "release" -> BuildType.Release
     "as" -> if (isMacOS) {
-      BuildType.UseLocal(as4_20202_3_mac)
+      BuildType.UseLocal(asMac)
     } else {
       BuildType.UseLocal(asLinux)
     }
