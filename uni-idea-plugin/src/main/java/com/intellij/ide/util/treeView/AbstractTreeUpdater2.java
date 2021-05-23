@@ -327,28 +327,6 @@ public class AbstractTreeUpdater2 implements Disposable, Activatable {
     return false;
   }
 
-  final void queueSelection(final SelectionRequest2 request) {
-    queue(new Update("UserSelection", Update.LOW_PRIORITY) {
-      @Override
-      public void run() {
-        AbstractTreeUi2 ui = myTreeBuilder.getUi();
-        if (ui != null) {
-          request.execute(ui);
-        }
-      }
-
-      @Override
-      public boolean isExpired() {
-        return myTreeBuilder.isDisposed();
-      }
-
-      @Override
-      public void setRejected() {
-        request.reject();
-      }
-    });
-  }
-
   public void reset() {
     TreeUpdatePass2[] passes;
     synchronized (this) {

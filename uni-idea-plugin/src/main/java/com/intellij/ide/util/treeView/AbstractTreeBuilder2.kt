@@ -49,16 +49,6 @@ abstract class AbstractTreeBuilder2 protected constructor() : Disposable {
         )
     }
 
-    fun select(element: Any, onDone: Runnable?) {
-        val ui = ui
-        ui?.userSelect(
-            arrayOf(element),
-            UserRunnable(onDone),
-            false,
-            true
-        )
-    }
-
     fun expand(element: Any?, onDone: Runnable?) {
         val ui = ui
         ui?.expand(element, UserRunnable(onDone))

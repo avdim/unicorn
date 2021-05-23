@@ -48,27 +48,6 @@ public abstract class BaseProjectTreeBuilder2 extends AbstractTreeBuilder2 {
 //    myProject = project;
   }
 
-  @NotNull
-  @Override
-  public Promise<Object> revalidateElement(@NotNull Object element) {
-    if (!(element instanceof AbstractTreeNod2)) {
-      return Promises.rejectedPromise();
-    }
-
-    final AsyncPromise<Object> result = new AsyncPromise<>();
-    AbstractTreeNod2 node = (AbstractTreeNod2)element;
-    final Object value = node.getValue();
-    final VirtualFile virtualFile = PsiUtilCore.getVirtualFile(ObjectUtils.tryCast(value, PsiElement.class));
-    batch(indicator -> {
-      final Ref<Object> target = new Ref<>();
-      Promise<Object> callback = _select(element, virtualFile, Conditions.alwaysTrue());
-      callback
-        .onSuccess(it -> result.setResult(target.get()))
-        .onError(e -> result.setError(e));
-    });
-    return result;
-  }
-
   @Override
   public boolean isAlwaysShowPlus(AbstractTreeNod2 nodeDescriptor) {
     return nodeDescriptor != null && nodeDescriptor.isAlwaysShowPlus();
@@ -115,72 +94,6 @@ public abstract class BaseProjectTreeBuilder2 extends AbstractTreeBuilder2 {
       }
     }
     return result;
-  }
-
-  @NotNull
-  private Promise<Object> _select(Object element,
-                                  VirtualFile file,
-                                  Condition<? super AbstractTreeNod2<?>> nonStopCondition) {
-    AbstractTreeUpdater2 updater = getUpdater();
-    if (updater == null) {
-      return Promises.rejectedPromise();
-    }
-
-    final AsyncPromise<Object> result = new AsyncPromise<>();
-//    UiActivityMonitor.getInstance().addActivity(myProject, new UiActivity.AsyncBgOperation("projectViewSelect"), updater.getModalityState());
-    batch(indicator -> {
-      _select(element, file, true, nonStopCondition, result, indicator, null, false);
-//      UiActivityMonitor.getInstance().removeActivity(myProject, new UiActivity.AsyncBgOperation("projectViewSelect"));
-    });
-    return result;
-  }
-
-  private void _select(Object element,
-                       VirtualFile file,
-                       boolean requestFocus,
-                       Condition<? super AbstractTreeNod2<?>> nonStopCondition,
-                       AsyncPromise<Object> result,
-                       @NotNull final ProgressIndicator indicator,
-                       @Nullable final Ref<Object> virtualSelectTarget,
-                       boolean isSecondAttempt) {
-    AbstractTreeNod2<?> alreadySelected = alreadySelectedNode(element);
-
-    final Runnable onDone = () -> {
-      JTree tree = getTree();
-      if (tree != null && requestFocus && virtualSelectTarget == null && getUi().isReady()) {
-        tree.requestFocus();
-      }
-
-      result.setResult(null);
-    };
-
-    final Condition<AbstractTreeNod2<?>> condition = abstractTreeNode -> result.getState() == Promise.State.PENDING && nonStopCondition.value(abstractTreeNode);
-
-    if (alreadySelected == null) {
-      expandPathTo(file, (AbstractTreeNod2)getTreeStructure().getRootElement(), element, condition, indicator, virtualSelectTarget)
-        .onSuccess(node -> {
-          if (virtualSelectTarget == null) {
-            select(node, onDone);
-          }
-          else {
-            onDone.run();
-          }
-        })
-        .onError(error -> {
-          if (isSecondAttempt) {
-            result.cancel();
-          }
-          else {
-            _select(file, file, requestFocus, nonStopCondition, result, indicator, virtualSelectTarget, true);
-          }
-        });
-    }
-    else if (virtualSelectTarget == null) {
-      scrollTo(alreadySelected, onDone);
-    }
-    else {
-      onDone.run();
-    }
   }
 
   private AbstractTreeNod2 alreadySelectedNode(final Object element) {

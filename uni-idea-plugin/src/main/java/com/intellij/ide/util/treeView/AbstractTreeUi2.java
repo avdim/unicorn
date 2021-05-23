@@ -3329,7 +3329,7 @@ public class AbstractTreeUi2 {
   }
 
   public void select(final Object /*@NotNull*/ [] elements, @Nullable final Runnable onDone, boolean addToSelection, boolean deferred) {
-    _select(elements, onDone, addToSelection, true, false, true, deferred, false, false);
+    _select(elements, onDone, addToSelection, false, true, deferred);
   }
 
   void _select(final Object /*@NotNull*/ [] elements,
@@ -3337,39 +3337,23 @@ public class AbstractTreeUi2 {
                final boolean addToSelection,
                final boolean checkIfInStructure) {
 
-    _select(elements, onDone, addToSelection, true, checkIfInStructure, true, false, false, false);
+    _select(elements, onDone, addToSelection, checkIfInStructure, true, false);
   }
 
   void _select(final Object /*@NotNull*/ [] elements,
                @NotNull Runnable onDone) {
 
-    _select(elements, onDone, false, true, true, false, false, false, false);
+    _select(elements, onDone, false, true, false, false);
   }
 
-  public void userSelect(final Object /*@NotNull*/ [] elements, final Runnable onDone, final boolean addToSelection, boolean scroll) {
-    _select(elements, onDone, addToSelection, true, false, scroll, false, true, true);
-  }
-
-  void _select(final Object /*@NotNull*/ [] elements,
+  void _select(final Object /*@NotNull*/[] elements,
                final Runnable onDone,
                final boolean addToSelection,
-               final boolean checkCurrentSelection,
                final boolean checkIfInStructure,
                final boolean scrollToVisible,
-               final boolean deferred,
-               final boolean canSmartExpand,
-               final boolean mayQueue) {
+               final boolean deferred) {
 
     assertIsDispatchThread();
-
-    AbstractTreeUpdater2 updater = getUpdater();
-    if (mayQueue && updater != null) {
-      updater.queueSelection(
-        new SelectionRequest2(elements, onDone, addToSelection, checkCurrentSelection, checkIfInStructure, scrollToVisible, deferred,
-                             canSmartExpand));
-      return;
-    }
-
 
     boolean willAffectSelection = elements.length > 0 || addToSelection;
     if (!willAffectSelection) {
@@ -3406,7 +3390,7 @@ public class AbstractTreeUi2 {
 
           final Set<Object> currentElements = getSelectedElements();
 
-          if (checkCurrentSelection && !currentElements.isEmpty() && elements.length == currentElements.size()) {
+          if (!currentElements.isEmpty() && elements.length == currentElements.size()) {
             boolean runSelection = false;
             for (Object eachToSelect : elements) {
               if (!currentElements.contains(eachToSelect)) {
@@ -3439,20 +3423,6 @@ public class AbstractTreeUi2 {
             if (!addToSelection) {
               clearSelection();
             }
-            addNext(elementsToSelect, 0, new TreeRunnable2("AbstractTreeUi._select: addNext") {
-              @Override
-              public void perform() {
-                if (getTree().isSelectionEmpty()) {
-                  processInnerChange(new TreeRunnable2("AbstractTreeUi._select: addNext: processInnerChange") {
-                    @Override
-                    public void perform() {
-                      restoreSelection(currentElements);
-                    }
-                  });
-                }
-                runDone(onDone);
-              }
-            }, originalRows, deferred, scrollToVisible, canSmartExpand);
           }
           else {
             addToDeferred(elementsToSelect, onDone, addToSelection);
@@ -3468,16 +3438,6 @@ public class AbstractTreeUi2 {
   private void clearSelection() {
     myTree.clearSelection();
   }
-
-  private void restoreSelection(@NotNull Set<Object> selection) {
-    for (Object each : selection) {
-      DefaultMutableTreeNode node = getNodeForElement(each, false);
-      if (node != null && isValidForSelectionAdjusting(node)) {
-        addSelectionPath(getPathFor(node), false, null, null);
-      }
-    }
-  }
-
 
   private void addToDeferred(final Object /*@NotNull*/ [] elementsToSelect, final Runnable onDone, final boolean addToSelection) {
     if (!addToSelection) {
@@ -3521,83 +3481,9 @@ public class AbstractTreeUi2 {
     return result;
   }
 
-
-  private void addNext(final Object /*@NotNull*/ [] elements,
-                       final int i,
-                       @Nullable final Runnable onDone,
-                       final int[] originalRows,
-                       final boolean deferred,
-                       final boolean scrollToVisible,
-                       final boolean canSmartExpand) {
-    if (i >= elements.length) {
-      if (myTree.isSelectionEmpty()) {
-        myTree.setSelectionRows(originalRows);
-      }
-      runDone(onDone);
-    }
-    else {
-      if (!checkDeferred(deferred, onDone)) {
-        return;
-      }
-
-      doSelect(elements[i], new TreeRunnable2("AbstractTreeUi.addNext") {
-        @Override
-        public void perform() {
-          if (!checkDeferred(deferred, onDone)) return;
-
-          addNext(elements, i + 1, onDone, originalRows, deferred, scrollToVisible, canSmartExpand);
-        }
-      }, deferred, i == 0, scrollToVisible, canSmartExpand);
-    }
-  }
-
   public void select(@Nullable Object element, @Nullable final Runnable onDone, boolean addToSelection) {
      if (element == null) return;
     _select(new Object[]{element}, onDone, addToSelection, false);
-  }
-
-  private void doSelect(@NotNull final Object element,
-                        final Runnable onDone,
-                        final boolean deferred,
-                        final boolean canBeCentered,
-                        final boolean scrollToVisible,
-                        final boolean canSmartExpand) {
-    final Runnable _onDone = new TreeRunnable2("AbstractTreeUi.doSelect") {
-      @Override
-      public void perform() {
-        if (!checkDeferred(deferred, onDone)) return;
-
-        checkPathAndMaybeRevalidate(element, new TreeRunnable2("AbstractTreeUi.doSelect: checkPathAndMaybeRevalidate") {
-          @Override
-          public void perform() {
-            selectVisible(element, onDone, true, canBeCentered, scrollToVisible);
-          }
-        }, true, canSmartExpand);
-      }
-    };
-    _expand(element, _onDone, true, false, canSmartExpand);
-  }
-
-  private void checkPathAndMaybeRevalidate(@NotNull Object element,
-                                           @NotNull final Runnable onDone,
-                                           final boolean parentsOnly,
-                                           final boolean canSmartExpand) {
-    boolean toRevalidate = isValid(element) && !myRevalidatedObjects.contains(element) && getNodeForElement(element, false) == null && isInStructure(element);
-    if (!toRevalidate) {
-      runDone(onDone);
-      return;
-    }
-
-    myRevalidatedObjects.add(element);
-    getBuilder()
-      .revalidateElement(element)
-      .onSuccess(o -> invokeLaterIfNeeded(false, new TreeRunnable2("AbstractTreeUi.checkPathAndMaybeRevalidate: on done revalidateElement") {
-        @Override
-        public void perform() {
-          _expand(o, onDone, parentsOnly, false, canSmartExpand);
-        }
-      }))
-      .onError(throwable -> wrapDone(onDone, "AbstractTreeUi.checkPathAndMaybeRevalidate: on rejected revalidateElement").run());
   }
 
   private void selectVisible(@NotNull Object element, final Runnable onDone, boolean addToSelection, boolean canBeCentered, final boolean scroll) {
@@ -3935,14 +3821,6 @@ public class AbstractTreeUi2 {
         runDone(onDone);
         return;
       }
-
-      checkPathAndMaybeRevalidate(kidsToExpand.get(expandIndex - 1), new TreeRunnable2("AbstractTreeUi.processExpand") {
-        @Override
-        public void perform() {
-          final DefaultMutableTreeNode nextNode = getNodeForElement(kidsToExpand.get(expandIndex - 1), false);
-          processExpand(nextNode, kidsToExpand, expandIndex - 1, onDone, canSmartExpand);
-        }
-      }, false, canSmartExpand);
     });
 
 
