@@ -4,26 +4,21 @@ package com.intellij.my.file;
 
 import com.intellij.ide.favoritesTreeView.FavoriteTreeNodeDescriptor;
 import com.intellij.ide.projectView.ProjectViewNode;
-import com.intellij.ide.util.treeView.*;
+import com.intellij.ide.projectView.impl.nodes.AbstractTreeNod2;
+import com.intellij.ide.util.treeView.AbstractTreeBuilder2;
 import com.intellij.openapi.progress.ProgressIndicator;
 import com.intellij.openapi.progress.util.StatusBarProgress;
 import com.intellij.openapi.util.Condition;
-import com.intellij.openapi.util.Conditions;
 import com.intellij.openapi.util.Ref;
 import com.intellij.openapi.util.registry.Registry;
 import com.intellij.openapi.vfs.VirtualFile;
 import com.intellij.psi.PsiDirectory;
-import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiFile;
-import com.intellij.ide.projectView.impl.nodes.AbstractTreeNod2;
-import com.intellij.psi.util.PsiUtilCore;
-import com.intellij.util.ObjectUtils;
 import com.unicorn.Uni;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.jetbrains.concurrency.AsyncPromise;
 import org.jetbrains.concurrency.Promise;
-import org.jetbrains.concurrency.Promises;
 
 import javax.swing.*;
 import javax.swing.tree.DefaultMutableTreeNode;
@@ -94,32 +89,6 @@ public abstract class BaseProjectTreeBuilder2 extends AbstractTreeBuilder2 {
       }
     }
     return result;
-  }
-
-  private AbstractTreeNod2 alreadySelectedNode(final Object element) {
-    final TreePath[] selectionPaths = getTree().getSelectionPaths();
-    if (selectionPaths == null || selectionPaths.length == 0) {
-      return null;
-    }
-    for (TreePath selectionPath : selectionPaths) {
-      Object selected = selectionPath.getLastPathComponent();
-      if (selected instanceof DefaultMutableTreeNode && elementIsEqualTo(selected, element)) {
-        Object userObject = ((DefaultMutableTreeNode)selected).getUserObject();
-        if (userObject instanceof AbstractTreeNod2) return (AbstractTreeNod2)userObject;
-      }
-    }
-    return null;
-  }
-
-  private static boolean elementIsEqualTo(final Object node, final Object element) {
-    if (node instanceof DefaultMutableTreeNode) {
-      final Object userObject = ((DefaultMutableTreeNode)node).getUserObject();
-      if (userObject instanceof AbstractTreeNod2) {
-        final AbstractTreeNod2 projectViewNode = (AbstractTreeNod2)userObject;
-        return projectViewNode.canRepresent(element);
-      }
-    }
-    return false;
   }
 
   @NotNull

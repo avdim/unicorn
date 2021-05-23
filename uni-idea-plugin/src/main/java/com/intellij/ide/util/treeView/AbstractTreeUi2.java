@@ -113,8 +113,6 @@ public class AbstractTreeUi2 {
   private final Set<Runnable> myDeferredSelections = new HashSet<>();
   private final Set<Runnable> myDeferredExpansions = new HashSet<>();
 
-  private boolean myCanProcessDeferredSelections;
-
   private UpdaterTreeState2 myUpdaterState;
   private AbstractTreeBuilder2 myBuilder;
 
@@ -369,7 +367,7 @@ public class AbstractTreeUi2 {
   public void activate(boolean byShowing) {
     cancelCurrentCleanupTask();
 
-    myCanProcessDeferredSelections = true;
+    boolean myCanProcessDeferredSelections = true;
     ourUi2Countdown = 0;
 
     if (!myWasEverShown || myUpdateFromRootRequested || myUpdateIfInactive) {
@@ -1865,7 +1863,6 @@ public class AbstractTreeUi2 {
 
     if (canInitiateNewActivity()) {
       if (myUpdaterState != null && !myUpdaterState.isProcessingNow()) {
-        UpdaterTreeState2 oldState = myUpdaterState;
         if (!isReady(true)) return;
       }
     }
@@ -2694,8 +2691,7 @@ public class AbstractTreeUi2 {
 
     update.onSuccess(isChanged -> {
         final AtomicBoolean changes = new AtomicBoolean(isChanged);
-        final AtomicBoolean forceRemapping = new AtomicBoolean();
-        final Ref<Object> newElement = new Ref<>(getElementFromDescriptor(childDesc.get()));
+      final Ref<Object> newElement = new Ref<>(getElementFromDescriptor(childDesc.get()));
 
         final Integer index = newElement.get() == null ? null : elementToIndexMap.getValue(getElementFromDescriptor(childDesc.get()));
         Promise<Boolean> promise;
@@ -3338,22 +3334,9 @@ public class AbstractTreeUi2 {
     return result;
   }
 
-  public void select(@Nullable Object element, @Nullable final Runnable onDone, boolean addToSelection) {
+  public void select(@Nullable Object element) {
      if (element == null) return;
     _select();
-  }
-
-  private void selectVisible(@NotNull Object element, final Runnable onDone, boolean addToSelection, boolean canBeCentered, final boolean scroll) {
-    DefaultMutableTreeNode toSelect = getNodeToScroll(element);
-    if (toSelect == null) {
-      runDone(onDone);
-      return;
-    }
-    if (myUpdaterState != null) {
-      myUpdaterState.addSelection(element);
-    }
-    setHoldSize(false);
-    runDone(wrapScrollTo(onDone, element, toSelect, addToSelection, canBeCentered, scroll));
   }
 
   void userScrollTo(Object element, Runnable onDone) {

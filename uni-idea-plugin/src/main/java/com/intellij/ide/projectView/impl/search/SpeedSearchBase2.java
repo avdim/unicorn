@@ -369,10 +369,6 @@ public abstract class SpeedSearchBase2<Comp extends JComponent> extends SpeedSea
     return new SearchPopup(s);
   }
 
-  public Comp getComponent() {
-    return myComponent;
-  }
-
   protected boolean isSpeedSearchEnabled() {
     return true;
   }

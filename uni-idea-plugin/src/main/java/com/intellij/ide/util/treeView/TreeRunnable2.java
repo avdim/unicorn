@@ -4,8 +4,6 @@ package com.intellij.ide.util.treeView;
 import com.intellij.openapi.util.NamedRunnable;
 import org.jetbrains.annotations.NotNull;
 
-import java.util.function.Consumer;
-
 abstract class TreeRunnable2 extends NamedRunnable {
   TreeRunnable2(@NotNull String name) {
     super(name);
