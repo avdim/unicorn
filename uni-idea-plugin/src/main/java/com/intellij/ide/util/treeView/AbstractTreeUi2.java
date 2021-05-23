@@ -3328,137 +3328,23 @@ public class AbstractTreeUi2 {
     return myRootNodeWasQueuedToInitialize && myRootNodeInitialized;
   }
 
-  public void select(final Object /*@NotNull*/ [] elements, @Nullable final Runnable onDone, boolean addToSelection, boolean deferred) {
-    _select(elements, onDone, addToSelection, false, true, deferred);
-  }
-
   void _select(final Object /*@NotNull*/ [] elements,
                final Runnable onDone,
                final boolean addToSelection,
                final boolean checkIfInStructure) {
-
-    _select(elements, onDone, addToSelection, checkIfInStructure, true, false);
+    //do nothing
   }
 
-  void _select(final Object /*@NotNull*/ [] elements,
-               @NotNull Runnable onDone) {
-
-    _select(elements, onDone, false, true, false, false);
-  }
-
-  void _select(final Object /*@NotNull*/[] elements,
-               final Runnable onDone,
-               final boolean addToSelection,
-               final boolean checkIfInStructure,
-               final boolean scrollToVisible,
-               final boolean deferred) {
-
+  void _select(final Object /*@NotNull*/ [] elements, @NotNull Runnable onDone) {
     assertIsDispatchThread();
-
-    boolean willAffectSelection = elements.length > 0 || addToSelection;
-    if (!willAffectSelection) {
+    if (elements.length == 0) {
       runDone(onDone);
       maybeReady();
-      return;
     }
-
-    final boolean oldCanProcessDeferredSelection = myCanProcessDeferredSelections;
-
-    if (!deferred && wasRootNodeInitialized()) {
-      _getReady().doWhenDone(new TreeRunnable2("AbstractTreeUi._select: on done getReady") {
-        @Override
-        public void perform() {
-          myCanProcessDeferredSelections = false;
-        }
-      });
-    }
-
-    if (!checkDeferred(deferred, onDone)) return;
-
-    if (!deferred && oldCanProcessDeferredSelection && !myCanProcessDeferredSelections) {
-      if (!addToSelection) {
-        getTree().clearSelection();
-      }
-    }
-
-
-    runDone(new TreeRunnable2("AbstractTreeUi._select") {
-      @Override
-      public void perform() {
-        try {
-          if (!checkDeferred(deferred, onDone)) return;
-
-          final Set<Object> currentElements = getSelectedElements();
-
-          if (!currentElements.isEmpty() && elements.length == currentElements.size()) {
-            boolean runSelection = false;
-            for (Object eachToSelect : elements) {
-              if (!currentElements.contains(eachToSelect)) {
-                runSelection = true;
-                break;
-              }
-            }
-
-            if (!runSelection) {
-              selectVisible(elements[0], onDone, false, false, scrollToVisible);
-              return;
-            }
-          }
-
-          clearSelection();
-          Set<Object> toSelect = new THashSet<>();
-          ContainerUtil.addAllNotNull(toSelect, elements);
-          if (addToSelection) {
-            ContainerUtil.addAllNotNull(toSelect, currentElements);
-          }
-
-          if (checkIfInStructure) {
-            toSelect.removeIf(each -> !isInStructure(each));
-          }
-
-          final Object[] elementsToSelect = ArrayUtil.toObjectArray(toSelect);
-
-          if (wasRootNodeInitialized()) {
-            final int[] originalRows = myTree.getSelectionRows();
-            if (!addToSelection) {
-              clearSelection();
-            }
-          }
-          else {
-            addToDeferred(elementsToSelect, onDone, addToSelection);
-          }
-        }
-        finally {
-          maybeReady();
-        }
-      }
-    });
   }
 
   private void clearSelection() {
     myTree.clearSelection();
-  }
-
-  private void addToDeferred(final Object /*@NotNull*/ [] elementsToSelect, final Runnable onDone, final boolean addToSelection) {
-    if (!addToSelection) {
-      myDeferredSelections.clear();
-    }
-    myDeferredSelections.add(new TreeRunnable2("AbstractTreeUi.addToDeferred") {
-      @Override
-      public void perform() {
-        select(elementsToSelect, onDone, addToSelection, true);
-      }
-    });
-  }
-
-  private boolean checkDeferred(boolean isDeferred, @Nullable Runnable onDone) {
-    if (!isDeferred || myCanProcessDeferredSelections || !wasRootNodeInitialized()) {
-      return true;
-    }
-    else {
-      runDone(onDone);
-      return false;
-    }
   }
 
   @NotNull
