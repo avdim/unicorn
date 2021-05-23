@@ -17,7 +17,7 @@ import java.util.*;
 public class UpdaterTreeState2 {
   private final AbstractTreeUi2 myUi;
   private final Map<Object, Object> myToSelect = new WeakHashMap<>();
-  private Map<Object, Condition> myAdjustedSelection = new WeakHashMap<>();
+  private final Map<Object, Condition> myAdjustedSelection = new WeakHashMap<>();
   private final Map<Object, Object> myToExpand = new WeakHashMap<>();
   private int myProcessingCount;
 

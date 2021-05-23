@@ -1133,7 +1133,7 @@ public class AbstractTreeUi2 {
         }
 
         if (isSelectionInside(node)) {
-          addSelectionPath(getPathFor(node), true, Conditions.alwaysTrue(), null);
+          addSelectionPath(getPathFor(node), Conditions.alwaysTrue(), null);
         }
 
         processInnerChange(new TreeRunnable2("AbstractTreeUi.processAlwaysLeaf") {
@@ -2773,7 +2773,7 @@ public class AbstractTreeUi2 {
     DefaultMutableTreeNode node = disposedElement == null ? null : getNodeForElement(disposedElement, false);
     if (node != null && isValidForSelectionAdjusting(node)) {
       Object newElement = getElementFor(node);
-      addSelectionPath(getPathFor(node), true, getExpiredElementCondition(newElement), disposedElement);
+      addSelectionPath(getPathFor(node), getExpiredElementCondition(newElement), disposedElement);
       return;
     }
 
@@ -2783,20 +2783,20 @@ public class AbstractTreeUi2 {
         if (parentNode.getChildCount() > selectedIndex) {
           TreeNode newChildNode = parentNode.getChildAt(selectedIndex);
           if (isValidForSelectionAdjusting(newChildNode)) {
-            addSelectionPath(new TreePath(myTreeModel.getPathToRoot(newChildNode)), true, getExpiredElementCondition(disposedElement),
+            addSelectionPath(new TreePath(myTreeModel.getPathToRoot(newChildNode)), getExpiredElementCondition(disposedElement),
                              disposedElement);
           }
         }
         else {
           TreeNode newChild = parentNode.getChildAt(parentNode.getChildCount() - 1);
           if (isValidForSelectionAdjusting(newChild)) {
-            addSelectionPath(new TreePath(myTreeModel.getPathToRoot(newChild)), true, getExpiredElementCondition(disposedElement),
+            addSelectionPath(new TreePath(myTreeModel.getPathToRoot(newChild)), getExpiredElementCondition(disposedElement),
                              disposedElement);
           }
         }
       }
       else {
-        addSelectionPath(new TreePath(myTreeModel.getPathToRoot(parentNode)), true, getExpiredElementCondition(disposedElement),
+        addSelectionPath(new TreePath(myTreeModel.getPathToRoot(parentNode)), getExpiredElementCondition(disposedElement),
                          disposedElement);
       }
     }
@@ -2825,7 +2825,6 @@ public class AbstractTreeUi2 {
   }
 
   private void addSelectionPath(@NotNull final TreePath path,
-                                final boolean isAdjustedSelection,
                                 final Condition isExpiredAdjustment,
                                 @Nullable final Object adjustmentCause) {
     processInnerChange(new TreeRunnable2("AbstractTreeUi.addSelectionPath") {
@@ -2844,11 +2843,11 @@ public class AbstractTreeUi2 {
         }
 
         if (toSelect != null) {
-          mySelectionIsAdjusted = isAdjustedSelection;
+          mySelectionIsAdjusted = true;
 
           myTree.addSelectionPath(toSelect);
 
-          if (isAdjustedSelection && myUpdaterState != null) {
+          if (true && myUpdaterState != null) {
             final Object toSelectElement = getElementFor(toSelect.getLastPathComponent());
             myUpdaterState.addAdjustedSelection(toSelectElement, isExpiredAdjustment, adjustmentCause);
           }
@@ -3276,7 +3275,7 @@ public class AbstractTreeUi2 {
     if (descriptor == null) return;
     final Object element = getElementFromDescriptor(descriptor);
     if (!isNodeNull(element)) {
-      removeMapping(element, node, null);
+      removeMapping(element, node);
     }
     node.setUserObject(null);
     node.removeAllChildren();
@@ -3311,19 +3310,8 @@ public class AbstractTreeUi2 {
     return myRootNodeWasQueuedToInitialize && myRootNodeInitialized;
   }
 
-  void _select(final Object /*@NotNull*/ [] elements,
-               final Runnable onDone,
-               final boolean addToSelection,
-               final boolean checkIfInStructure) {
+  void _select() {
     //do nothing
-  }
-
-  void _select(final Object /*@NotNull*/ [] elements, @NotNull Runnable onDone) {
-    assertIsDispatchThread();
-    if (elements.length == 0) {
-      runDone(onDone);
-      maybeReady();
-    }
   }
 
   private void clearSelection() {
@@ -3352,7 +3340,7 @@ public class AbstractTreeUi2 {
 
   public void select(@Nullable Object element, @Nullable final Runnable onDone, boolean addToSelection) {
      if (element == null) return;
-    _select(new Object[]{element}, onDone, addToSelection, false);
+    _select();
   }
 
   private void selectVisible(@NotNull Object element, final Runnable onDone, boolean addToSelection, boolean canBeCentered, final boolean scroll) {
@@ -3462,13 +3450,9 @@ public class AbstractTreeUi2 {
     expand(new Object[]{element}, onDone);
   }
 
-  public void expand(final Object /*@NotNull*/ [] element, @Nullable final Runnable onDone) {
-    expand(element, onDone, false);
-  }
 
-
-  void expand(final Object /*@NotNull*/ [] element, @Nullable final Runnable onDone, boolean checkIfInStructure) {
-    _expand(element, onDone == null ? new EmptyRunnable() : onDone, checkIfInStructure);
+  void expand(final Object /*@NotNull*/[] element, @Nullable final Runnable onDone) {
+    _expand(element, onDone == null ? new EmptyRunnable() : onDone, false);
   }
 
   private void _expand(final Object /*@NotNull*/ [] elements,
@@ -3652,7 +3636,7 @@ public class AbstractTreeUi2 {
         runDone(onDone);
       }
       else {
-        processExpand(firstVisible, kidsToExpand, kidsToExpand.size() - 1, onDone, canSmartExpand);
+        processExpand(firstVisible, kidsToExpand.size() - 1, onDone, canSmartExpand);
       }
     }
     else {
@@ -3670,7 +3654,6 @@ public class AbstractTreeUi2 {
   }
 
   private void processExpand(final DefaultMutableTreeNode toExpand,
-                             @NotNull final List<Object> kidsToExpand,
                              final int expandIndex,
                              @NotNull final Runnable onDone,
                              final boolean canSmartExpand) {
@@ -3805,7 +3788,7 @@ public class AbstractTreeUi2 {
     }
   }
 
-  private void removeMapping(@NotNull Object element, DefaultMutableTreeNode node, @Nullable Object elementToPutNodeActionsFor) {
+  private void removeMapping(@NotNull Object element, DefaultMutableTreeNode node) {
     element = TreeAnchorizer.getService().createAnchor(element);
     warnMap("myElementToNodeMap: removeMapping: ", myElementToNodeMap);
     final Object value = myElementToNodeMap.get(element);
@@ -3826,7 +3809,7 @@ public class AbstractTreeUi2 {
       }
     }
 
-    remapNodeActions(element, elementToPutNodeActionsFor);
+    remapNodeActions(element, null);
     TreeAnchorizer.getService().freeAnchor(element);
   }
 
@@ -3912,8 +3895,6 @@ public class AbstractTreeUi2 {
 
   private void cleanUpNow() {
     if (!canInitiateNewActivity()) return;
-
-    final UpdaterTreeState2 state = new UpdaterTreeState2(this);
 
     myTree.collapsePath(new TreePath(myTree.getModel().getRoot()));
     clearSelection();
@@ -4010,32 +3991,31 @@ public class AbstractTreeUi2 {
         pathToSelect = new TreePath(node.getPath());
       }
 
-      if (true) {//isDisposeOnCollapsing
-        runDone(new TreeRunnable2("AbstractTreeUi.MyExpansionListener.treeCollapsed") {
-          @Override
-          public void perform() {
-            if (isDisposed(node)) return;
+      //isDisposeOnCollapsing
+      runDone(new TreeRunnable2("AbstractTreeUi.MyExpansionListener.treeCollapsed") {
+        @Override
+        public void perform() {
+          if (isDisposed(node)) return;
 
-            TreePath nodePath = new TreePath(node.getPath());
-            if (myTree.isExpanded(nodePath)) return;
+          TreePath nodePath = new TreePath(node.getPath());
+          if (myTree.isExpanded(nodePath)) return;
 
-            removeChildren(node);
-            makeLoadingOrLeafIfNoChildren(node);
-          }
-        });
-        if (node.equals(getRootNode())) {
-          if (myTree.isRootVisible()) {
-            //todo kirillk to investigate -- should be done by standard selction move
-            //addSelectionPath(new TreePath(getRootNode().getPath()), true, Condition.FALSE);
-          }
+          removeChildren(node);
+          makeLoadingOrLeafIfNoChildren(node);
         }
-        else {
-          myTreeModel.reload(node);
+      });
+      if (node.equals(getRootNode())) {
+        if (myTree.isRootVisible()) {
+          //todo kirillk to investigate -- should be done by standard selction move
+          //addSelectionPath(new TreePath(getRootNode().getPath()), true, Condition.FALSE);
         }
+      }
+      else {
+        myTreeModel.reload(node);
       }
 
       if (pathToSelect != null && myTree.isSelectionEmpty()) {
-        addSelectionPath(pathToSelect, true, Conditions.alwaysFalse(), null);
+        addSelectionPath(pathToSelect, Conditions.alwaysFalse(), null);
       }
     }
   }
@@ -4116,9 +4096,7 @@ public class AbstractTreeUi2 {
     }
 
     void putDescriptor(Object element, AbstractTreeNod2 descriptor, boolean isChanged) {
-      if (isUnitTestingMode()) {
-        assert myElements.contains(element);
-      }
+      assert !isUnitTestingMode() || myElements.contains(element);
       myDescriptors.put(element, descriptor);
       myChanges.put(descriptor, isChanged);
     }

@@ -73,7 +73,7 @@ public abstract class SpeedSearchBase2<Comp extends JComponent> extends SpeedSea
   };
   private final PropertyChangeSupport myChangeSupport = new PropertyChangeSupport(this);
   private String myRecentEnteredPrefix;
-  private SpeedSearchComparator myComparator = new SpeedSearchComparator(false);
+  private final SpeedSearchComparator myComparator = new SpeedSearchComparator(false);
 
   private Disposable myListenerDisposable;
 

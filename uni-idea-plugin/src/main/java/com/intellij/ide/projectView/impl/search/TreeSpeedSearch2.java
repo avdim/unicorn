@@ -27,7 +27,7 @@ import static com.intellij.ui.tree.TreePathUtil.toTreePathArray;
 import static javax.swing.tree.TreeSelectionModel.DISCONTIGUOUS_TREE_SELECTION;
 
 public class TreeSpeedSearch2 extends SpeedSearchBase<JTree> {
-  protected boolean myCanExpand;
+  protected final boolean myCanExpand;
 
   private static final Convertor<TreePath, String> TO_STRING = path -> path.getLastPathComponent().toString();
   private final Convertor<? super TreePath, String> myToStringConvertor;
