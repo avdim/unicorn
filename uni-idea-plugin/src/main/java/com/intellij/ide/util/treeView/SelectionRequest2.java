@@ -16,7 +16,7 @@
 package com.intellij.ide.util.treeView;
 
 import org.jetbrains.annotations.NotNull;
-
+//todo не используется. Надо удалить
 class SelectionRequest2 {
   private final Object /*@NotNull*/ [] myElements;
   private final Runnable myOnDone;
