@@ -1866,10 +1866,6 @@ public class AbstractTreeUi2 {
     if (canInitiateNewActivity()) {
       if (myUpdaterState != null && !myUpdaterState.isProcessingNow()) {
         UpdaterTreeState2 oldState = myUpdaterState;
-        if (!myUpdaterState.restore(null)) {
-          setUpdaterState(oldState);
-        }
-
         if (!isReady(true)) return;
       }
     }
@@ -2524,7 +2520,6 @@ public class AbstractTreeUi2 {
     AbstractTreeNod2 descriptor = getDescriptorFrom(node);
     if (descriptor == null) return;
 
-
     if (isYeildingNow()) {
       myPendingNodeActions.add(node);
       return;
@@ -2540,18 +2535,6 @@ public class AbstractTreeUi2 {
     }
     warnMap("myNodeActions: processNodeActionsIfReady: ", myNodeActions);
     warnMap("myNodeChildrenActions: processNodeActionsIfReady: ", myNodeChildrenActions);
-
-    if (!isUpdatingParent(node) && !isWorkerBusy()) {
-      final UpdaterTreeState2 state = myUpdaterState;
-      if (myNodeActions.isEmpty() && state != null && !state.isProcessingNow()) {
-        if (canInitiateNewActivity()) {
-          if (!state.restore(childrenReady ? node : null)) {
-            setUpdaterState(state);
-          }
-        }
-      }
-    }
-
     maybeReady();
   }
 
@@ -3948,8 +3931,6 @@ public class AbstractTreeUi2 {
 
     myWorker.clear();
     myTree.invalidate();
-
-    state.restore(null);
   }
 
   public void setClearOnHideDelay(final long clearOnHideDelay) {

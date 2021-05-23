@@ -110,10 +110,6 @@ public class UpdaterTreeState2 {
     myCanRunRestore = state.myCanRunRestore;
   }
 
-  public boolean restore(@Nullable DefaultMutableTreeNode actionNode) {
-    return true;
-  }
-
   void beforeSubtreeUpdate() {
     myCanRunRestore = true;
   }
