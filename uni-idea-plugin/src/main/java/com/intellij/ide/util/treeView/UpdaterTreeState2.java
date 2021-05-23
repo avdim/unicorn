@@ -1,12 +1,9 @@
 // Copyright 2000-2018 JetBrains s.r.o. Use of this source code is governed by the Apache 2.0 license that can be found in the LICENSE file.
 package com.intellij.ide.util.treeView;
 
-import com.intellij.openapi.util.ActionCallback;
 import com.intellij.openapi.util.Condition;
-import com.intellij.openapi.util.Conditions;
 import com.intellij.ide.projectView.impl.nodes.AbstractTreeNod2;
 import com.intellij.util.ArrayUtil;
-import com.intellij.util.Function;
 import com.intellij.util.containers.ContainerUtil;
 import org.jetbrains.annotations.NonNls;
 import org.jetbrains.annotations.NotNull;
@@ -86,10 +83,6 @@ public class UpdaterTreeState2 {
     return ArrayUtil.toObjectArray(myToSelect.keySet());
   }
 
-  public Object /*@NotNull*/ [] getToExpand() {
-    return ArrayUtil.toObjectArray(myToExpand.keySet());
-  }
-
   public void process(@NotNull Runnable runnable) {
     try {
       setProcessingNow(true);
@@ -118,203 +111,15 @@ public class UpdaterTreeState2 {
   }
 
   public boolean restore(@Nullable DefaultMutableTreeNode actionNode) {
-    if (isProcessingNow() || !myCanRunRestore || myUi.hasNodesToUpdate()) {
-      return false;
-    }
-
-    invalidateToSelectWithRefsToParent(actionNode);
-
-    setProcessingNow(true);
-
-    final Object[] toSelect = getToSelect();
-    final Object[] toExpand = getToExpand();
-
-
-    final Map<Object, Condition> adjusted = new WeakHashMap<>(myAdjustedSelection);
-
-    clearSelection();
-    clearExpansion();
-
-    final Set<Object> originallySelected = myUi.getSelectedElements();
-
-    myUi._select(toSelect, new TreeRunnable2("UpdaterTreeState.restore") {
-      @Override
-      public void perform() {
-        processUnsuccessfulSelections(toSelect, o -> {
-          if (myUi.getTree().isRootVisible() || !myUi.getTreeStructure().getRootElement().equals(o)) {
-            addSelection(o);
-          }
-          return o;
-        }, originallySelected);
-
-        processAdjusted(adjusted, originallySelected).doWhenDone(new TreeRunnable2("UpdaterTreeState.restore: on done") {
-          @Override
-          public void perform() {
-            myUi.expand(toExpand, new TreeRunnable2("UpdaterTreeState.restore: after on done") {
-              @Override
-              public void perform() {
-                myUi.clearUpdaterState();
-                setProcessingNow(false);
-              }
-            }, true);
-          }
-        });
-      }
-    });
-
     return true;
-  }
-
-  private void invalidateToSelectWithRefsToParent(DefaultMutableTreeNode actionNode) {
-    if (actionNode != null) {
-      Object readyElement = myUi.getElementFor(actionNode);
-      if (readyElement != null) {
-        Iterator<Object> toSelect = myToSelect.keySet().iterator();
-        while (toSelect.hasNext()) {
-          Object eachToSelect = toSelect.next();
-          if (readyElement.equals(myUi.getTreeStructure().getParentElement(eachToSelect))) {
-            List<Object> children = myUi.getLoadedChildrenFor(readyElement);
-            if (!children.contains(eachToSelect)) {
-              toSelect.remove();
-              if (!myToSelect.containsKey(readyElement) && !myUi.getSelectedElements().contains(eachToSelect)) {
-                addAdjustedSelection(eachToSelect, Conditions.alwaysFalse(), null);
-              }
-            }
-          }
-        }
-      }
-    }
   }
 
   void beforeSubtreeUpdate() {
     myCanRunRestore = true;
   }
 
-  private void processUnsuccessfulSelections(final Object[] toSelect, Function<Object, Object> restore, Set<Object> originallySelected) {
-    final Set<Object> selected = myUi.getSelectedElements();
-
-    boolean wasFullyRejected = false;
-    if (toSelect.length > 0 && !selected.isEmpty() && !originallySelected.containsAll(selected)) {
-      final Set<Object> successfulSelections = new HashSet<>();
-      ContainerUtil.addAll(successfulSelections, toSelect);
-
-      successfulSelections.retainAll(selected);
-      wasFullyRejected = successfulSelections.isEmpty();
-    } else if (selected.isEmpty() && originallySelected.isEmpty()) {
-      wasFullyRejected = true;
-    }
-
-    if (wasFullyRejected && !selected.isEmpty()) return;
-
-    for (Object eachToSelect : toSelect) {
-      if (!selected.contains(eachToSelect)) {
-        restore.fun(eachToSelect);
-      }
-    }
-  }
-
-  private ActionCallback processAdjusted(final Map<Object, Condition> adjusted, final Set<Object> originallySelected) {
-    final ActionCallback result = new ActionCallback();
-
-    final Set<Object> allSelected = myUi.getSelectedElements();
-
-    Set<Object> toSelect = new HashSet<>();
-    for (Map.Entry<Object, Condition> entry : adjusted.entrySet()) {
-      Condition condition = entry.getValue();
-      Object key = entry.getKey();
-      if (condition.value(key)) continue;
-
-      for (final Object eachSelected : allSelected) {
-        if (isParentOrSame(key, eachSelected)) continue;
-        toSelect.add(key);
-      }
-      if (allSelected.isEmpty()) {
-        toSelect.add(key);
-      }
-    }
-
-    final Object[] newSelection = ArrayUtil.toObjectArray(toSelect);
-
-    if (newSelection.length > 0) {
-      myUi._select(newSelection, new TreeRunnable2("UpdaterTreeState.processAjusted") {
-        @Override
-        public void perform() {
-          final Set<Object> hangByParent = new HashSet<>();
-          processUnsuccessfulSelections(newSelection, o -> {
-            if (myUi.isInStructure(o) && !adjusted.get(o).value(o)) {
-              hangByParent.add(o);
-            } else {
-              addAdjustedSelection(o, adjusted.get(o), null);
-            }
-            return null;
-          }, originallySelected);
-
-          processHangByParent(hangByParent).notify(result);
-        }
-      }, false, true);
-    } else {
-      result.setDone();
-    }
-
-    return result;
-  }
-
-  private ActionCallback processHangByParent(Set<Object> elements) {
-    if (elements.isEmpty()) return ActionCallback.DONE;
-
-    ActionCallback result = new ActionCallback(elements.size());
-    for (Object hangElement : elements) {
-      if (!myAdjustmentCause2Adjustment.containsKey(hangElement)) {
-        processHangByParent(hangElement).notify(result);
-      }
-      else {
-        result.setDone();
-      }
-    }
-    return result;
-  }
-
-  private ActionCallback processHangByParent(Object each) {
-    ActionCallback result = new ActionCallback();
-    processNextHang(each, result);
-    return result;
-  }
-
-  private void processNextHang(Object element, final ActionCallback callback) {
-    if (element == null || myUi.getSelectedElements().contains(element)) {
-      callback.setDone();
-    } else {
-      final Object nextElement = myUi.getTreeStructure().getParentElement(element);
-      if (nextElement == null) {
-        callback.setDone();
-      } else {
-       myUi.select(nextElement, new TreeRunnable2("UpdaterTreeState.processNextHang") {
-          @Override
-          public void perform() {
-            processNextHang(nextElement, callback);
-          }
-        }, true);
-      }
-    }
-  }
-
-  private boolean isParentOrSame(Object parent, Object child) {
-    Object eachParent = child;
-    while (eachParent != null) {
-      if (parent.equals(eachParent)) return true;
-      eachParent = myUi.getTreeStructure().getParentElement(eachParent);
-    }
-
-    return false;
-  }
-
   void clearExpansion() {
     myToExpand.clear();
-  }
-
-  public void clearSelection() {
-    myToSelect.clear();
-    myAdjustedSelection = new WeakHashMap<>();
   }
 
   public void addSelection(final Object element) {
