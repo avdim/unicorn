@@ -12,7 +12,7 @@ class OpenProjectAction : UniAction(), DumbAware {
     val file = com.unicorn.Uni.selectedFile
     val path: String? = suggestString("open project?", file?.path ?: "missing directory!!!")
     if (path != null) {
-      com.intellij.ide.impl.ProjectUtil.openOrImport(path, ProjectManager.getInstance().defaultProject, false)
+      com.intellij.ide.impl.ProjectUtil.openOrImport(path, ProjectManager.getInstance().defaultProject, true)
     }
   }
 
