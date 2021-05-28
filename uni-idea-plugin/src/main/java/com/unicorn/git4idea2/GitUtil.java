@@ -32,7 +32,6 @@ import com.intellij.util.ObjectUtils;
 import com.intellij.util.ThrowableRunnable;
 import com.intellij.util.containers.ContainerUtil;
 import com.intellij.util.containers.Convertor;
-import com.intellij.util.containers.OpenTHashSet;
 import com.intellij.util.ui.UIUtil;
 import com.intellij.vcs.log.Hash;
 import com.intellij.vcs.log.impl.HashImpl;
@@ -539,20 +538,6 @@ public class GitUtil {
     return rc;
   }
 
-  /**
-   * @throws VcsException if the path is invalid
-   * @see VcsFileUtil#unescapeGitPath(String, String)
-   */
-  @NotNull
-  public static String unescapePath(@NotNull String path) throws VcsException {
-    try {
-      return VcsFileUtil.unescapeGitPath(path, GitConfigUtil.getFileNameEncoding());
-    }
-    catch (IllegalStateException e) {
-      throw new VcsException(e);
-    }
-  }
-
   public static boolean justOneGitRepository(Project project) {
     if (project.isDisposed()) {
       return true;
@@ -608,35 +593,6 @@ public class GitUtil {
       }
     }
     return repositories;
-  }
-
-  /**
-   * Returns absolute paths which have changed remotely comparing to the current branch, i.e. performs
-   * {@code git diff --name-only master..origin/master}
-   * <p/>
-   * Paths are absolute, Git-formatted (i.e. with forward slashes).
-   */
-  @NotNull
-  public static Collection<String> getPathsDiffBetweenRefs(@NotNull Git git, @NotNull GitRepository repository,
-                                                           @NotNull String beforeRef, @NotNull String afterRef) throws VcsException {
-    List<String> parameters = Arrays.asList("--name-only", "--pretty=format:");
-    String range = beforeRef + ".." + afterRef;
-    GitCommandResult result = git.diff(repository, parameters, range);
-    if (!result.success()) {
-      LOG.info(String.format("Couldn't get diff in range [%s] for repository [%s]", range, repository.toLogString()));
-      return Collections.emptyList();
-    }
-
-    final Collection<String> remoteChanges = new HashSet<>();
-    for (StringScanner s = new StringScanner(result.getOutputAsJoinedString()); s.hasMoreData(); ) {
-      final String relative = s.line();
-      if (StringUtil.isEmptyOrSpaces(relative)) {
-        continue;
-      }
-      final String path = repository.getRoot().getPath() + "/" + unescapePath(relative);
-      remoteChanges.add(path);
-    }
-    return remoteChanges;
   }
 
   @NotNull

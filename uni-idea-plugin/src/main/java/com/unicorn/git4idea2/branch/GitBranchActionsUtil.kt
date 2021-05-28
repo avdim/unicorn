@@ -164,7 +164,7 @@ internal fun updateBranches(project: Project, repositories: List<GitRepository>,
 
     override fun onSuccess() {
       if (successFetches > 0) {
-        VcsNotifier.getInstance(myProject).notifySuccess(GitBundle.message("branches.selected.branches.updated.title",
+        VcsNotifier.getInstance(myProject!!).notifySuccess(GitBundle.message("branches.selected.branches.updated.title",
                                                                            localBranchNames.size))
       }
     }
