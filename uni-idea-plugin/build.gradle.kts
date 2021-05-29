@@ -108,7 +108,8 @@ intellij {
       "terminal",
       "github",
       "git4idea",
-      "android"
+      "android",
+      "org.jetbrains.plugins.ruby:212.3116.29"
 //    "Kotlin", "java"
       /*, "org.jetbrains.kotlin:1.3.72-release-IJ2020.1-1"*/
     )
