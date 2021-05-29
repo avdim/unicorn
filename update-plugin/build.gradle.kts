@@ -63,23 +63,23 @@ intellij {
   val ideaVersion = IDEA_VERSION
   when(ideaVersion) {
     is IdeaVersion.Download -> {
-      version = ideaVersion.version
+      version.set(ideaVersion.version)
     }
     is IdeaVersion.Local -> {
-      localPath = ideaVersion.localPath
+      localPath.set(ideaVersion.localPath)
     }
   }
   ideaVersion.type?.let {
-    type = it
+    type.set(it)
   }
-  sandboxDirectory = myIdeaSandboxDir
+  sandboxDir.set(myIdeaSandboxDir)
 
-  pluginName = "unicorn-update"
-  updateSinceUntilBuild = false
-  sameSinceUntilBuild = true
-  downloadSources = true
-  instrumentCode = true
-//    setPlugins("org.jetbrains.kotlin:1.3.11-release-IJ2018.3-1")
+  pluginName.set("unicorn-update")
+  updateSinceUntilBuild.set(false)
+  sameSinceUntilBuild.set(true)
+  downloadSources.set(true)
+  instrumentCode.set(true)
+//    plugins.set(listOf("org.jetbrains.kotlin:1.3.11-release-IJ2018.3-1"))
 }
 
 tasks.withType<org.jetbrains.intellij.tasks.PatchPluginXmlTask>() {
@@ -92,7 +92,7 @@ tasks.withType<org.jetbrains.intellij.tasks.PatchPluginXmlTask>() {
 tasks.withType<org.jetbrains.intellij.tasks.RunIdeTask> {
   systemProperties["ide.browser.jcef.enabled"] = true
   jvmArgs("-Xmx2000m", "-Xms128m")
-  autoReloadPlugins = true
+  autoReloadPlugins.set(true)
 }
 
 tasks.withType<org.jetbrains.kotlin.gradle.tasks.KotlinCompile> {

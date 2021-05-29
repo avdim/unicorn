@@ -49,22 +49,22 @@ intellij {
   val ideaVersion = IDEA_VERSION
   when(ideaVersion) {
     is IdeaVersion.Download -> {
-      version = ideaVersion.version
+      version.set(ideaVersion.version)
     }
     is IdeaVersion.Local -> {
-      localPath = ideaVersion.localPath
+      localPath.set(ideaVersion.localPath)
     }
   }
   ideaVersion.type?.let {
-    type = it
+    type.set(it)
   }
-  sandboxDirectory = myIdeaSandboxDir
+  sandboxDir.set(myIdeaSandboxDir)
 
-  pluginName = "unicorn-update"
-  updateSinceUntilBuild = false
-  sameSinceUntilBuild = true
-  downloadSources = true
-  instrumentCode = true
+  pluginName.set("unicorn-update")
+  updateSinceUntilBuild.set(false)
+  sameSinceUntilBuild.set(true)
+  downloadSources.set(true)
+  instrumentCode.set(true)
 //    setPlugins("org.jetbrains.kotlin:1.3.11-release-IJ2018.3-1")
 }
 
@@ -77,7 +77,7 @@ tasks.withType<org.jetbrains.intellij.tasks.PatchPluginXmlTask>() {
 
 tasks.withType<org.jetbrains.intellij.tasks.RunIdeTask> {
   jvmArgs("-Xmx2000m", "-Xms128m")
-  autoReloadPlugins = true
+  autoReloadPlugins.set(true)
 }
 
 tasks.withType<org.jetbrains.kotlin.gradle.tasks.KotlinCompile> {
@@ -87,6 +87,6 @@ tasks.withType<org.jetbrains.kotlin.gradle.tasks.KotlinCompile> {
 
 tasks {
   publishPlugin {
-    token(System.getenv("PUBLISH_TOKEN"))
+    token.set(System.getenv("PUBLISH_TOKEN"))
   }
 }

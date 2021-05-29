@@ -86,30 +86,32 @@ intellij {
   val ideaVersion = IDEA_VERSION
   when (ideaVersion) {
     is IdeaVersion.Download -> {
-      version = ideaVersion.version
+      version.set(ideaVersion.version)
     }
     is IdeaVersion.Local -> {
-      localPath = ideaVersion.localPath
+      localPath.set(ideaVersion.localPath)
     }
   }
   ideaVersion.type?.let {
-    type = it
+    type.set(it)
   }
-  sandboxDirectory = myIdeaSandboxDir
+  sandboxDir.set(myIdeaSandboxDir)
 
-  pluginName = "unicorn"
-  updateSinceUntilBuild = false
-  sameSinceUntilBuild = true
-  downloadSources = true//todo check debug
-  instrumentCode = true//todo if value is false - NPE в KeyPromoter plugin
+  pluginName.set("unicorn")
+  updateSinceUntilBuild.set(false)
+  sameSinceUntilBuild.set(true)
+  downloadSources.set(true)//todo check debug
+  instrumentCode.set(true)//todo if value is false - NPE в KeyPromoter plugin
 //    setPlugins("org.jetbrains.kotlin:1.3.11-release-IJ2018.3-1")
-  setPlugins(
-    "terminal",
-    "github",
-    "git4idea",
-    "android"
+  plugins.set(
+    listOf(
+      "terminal",
+      "github",
+      "git4idea",
+      "android"
 //    "Kotlin", "java"
-    /*, "org.jetbrains.kotlin:1.3.72-release-IJ2020.1-1"*/
+      /*, "org.jetbrains.kotlin:1.3.72-release-IJ2020.1-1"*/
+    )
   )
 }
 
@@ -136,7 +138,7 @@ tasks.withType<org.jetbrains.intellij.tasks.RunIdeTask> {
   systemProperties["ide.browser.jcef.enabled"] = true
 //  systemProperties["pdf.viewer.debug"] = true
   jvmArgs("-Xmx2048m", "-Xms128m")
-  autoReloadPlugins = true
+  autoReloadPlugins.set(true)
 }
 
 tasks.withType<org.jetbrains.kotlin.gradle.tasks.KotlinCompile> {
@@ -146,7 +148,7 @@ tasks.withType<org.jetbrains.kotlin.gradle.tasks.KotlinCompile> {
 
 tasks {
   publishPlugin {
-    token(System.getenv("PUBLISH_TOKEN"))
+    token.set(System.getenv("PUBLISH_TOKEN"))
   }
 }
 
