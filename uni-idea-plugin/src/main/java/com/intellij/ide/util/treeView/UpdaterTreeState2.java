@@ -118,10 +118,6 @@ public class UpdaterTreeState2 {
     myToExpand.clear();
   }
 
-  public void addSelection(final Object element) {
-    myToSelect.put(element, element);
-  }
-
   void addAdjustedSelection(final Object element, Condition isExpired, @Nullable Object adjustmentCause) {
     myAdjustedSelection.put(element, isExpired);
     if (adjustmentCause != null) {

@@ -24,7 +24,7 @@ public class DnDAwareTree2 extends Tree2 implements DnDAware {
   }
 
   @Override
-  public Color getFileColorFor(Object object) {
+  public Color getFileColorFor() {
     return JBColor.RED;
   }
 

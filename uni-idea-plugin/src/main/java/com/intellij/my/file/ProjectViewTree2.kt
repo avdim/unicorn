@@ -30,6 +30,6 @@ open class ProjectViewTree2(model: TreeModel?) : DnDAwareTree2(null as TreeModel
   }
 
   @DirtyUI
-  override fun getFileColorFor(obj: Any?): Color = JBColor.WHITE
+  override fun getFileColorFor(): Color = JBColor.WHITE
 
 }

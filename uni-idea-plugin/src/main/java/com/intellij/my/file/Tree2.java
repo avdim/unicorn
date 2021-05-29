@@ -235,10 +235,10 @@ public abstract class Tree2 extends JTree implements ComponentWithEmptyText, Com
         component = pathObjects[pathObjects.length - 2];
       }
     }
-    return getFileColorFor(TreeUtil.getUserObject(component));
+    return getFileColorFor(/*TreeUtil.getUserObject(component)*/);
   }
 
-  abstract public Color getFileColorFor(Object object);
+  abstract public Color getFileColorFor();
 
   @Override
   protected void processKeyEvent(KeyEvent e) {

@@ -367,7 +367,6 @@ public class AbstractTreeUi2 {
   public void activate(boolean byShowing) {
     cancelCurrentCleanupTask();
 
-    boolean myCanProcessDeferredSelections = true;
     ourUi2Countdown = 0;
 
     if (!myWasEverShown || myUpdateFromRootRequested || myUpdateIfInactive) {
@@ -2084,23 +2083,6 @@ public class AbstractTreeUi2 {
     }
   }
 
-  @NotNull
-  List<Object> getLoadedChildrenFor(@NotNull Object element) {
-    List<Object> result = new ArrayList<>();
-
-    DefaultMutableTreeNode node = getNodeForElement(element, false);
-    if (node != null) {
-      for (int i = 0; i < node.getChildCount(); i++) {
-        TreeNode each = node.getChildAt(i);
-        if (isLoadingNode(each)) continue;
-
-        result.add(getElementFor(each));
-      }
-    }
-
-    return result;
-  }
-
   boolean hasNodesToUpdate() {
     return getUpdater().hasNodesToUpdate();
   }
@@ -2213,10 +2195,6 @@ public class AbstractTreeUi2 {
 
   boolean isCancelProcessed() {
     return myCancelRequest.get() || myResettingToReadyNow.get();
-  }
-
-  boolean isToPaintSelection() {
-    return isReady(true) || !mySelectionIsAdjusted;
   }
 
   boolean isReleaseRequested() {
