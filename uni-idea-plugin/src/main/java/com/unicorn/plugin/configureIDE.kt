@@ -69,12 +69,11 @@ suspend fun configureIDE() {
   Registry.get("ide.plugins.unload.timeout").setValue(8_000)
 
   val terminalLinesSize = 100_000
-  if (false) { //todo old IDEA 2021.1
+  try { //todo old IDEA 2021.1
     // Terminal settings
     val previousTerminalLines: Int = Registry.intValue("terminal.buffer.max.lines.count")
     Registry.get("terminal.buffer.max.lines.count").setValue(terminalLinesSize)
-  }
-  if (true) { // IDEA 2021.2
+  } catch (t: Throwable) {// IDEA 2021.2
     val previousTerminalLines: Int = AdvancedSettings.getInt("terminal.buffer.max.lines.count")
     AdvancedSettings.setInt("terminal.buffer.max.lines.count", terminalLinesSize)
   }
