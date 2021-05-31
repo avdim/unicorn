@@ -109,7 +109,7 @@ intellij {
       "github",
       "git4idea",
       "android",
-      "org.jetbrains.plugins.ruby:212.3116.29"
+      "org.jetbrains.plugins.ruby:212.3116.29"//https://plugins.jetbrains.com/plugin/1293-ruby/versions/stable
 //    "Kotlin", "java"
       /*, "org.jetbrains.kotlin:1.3.72-release-IJ2020.1-1"*/
     )

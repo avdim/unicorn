@@ -66,9 +66,11 @@ suspend fun configureIDE() {
   Actions.register()
   // Upload plugin timeout
   Registry.get("ide.plugins.unload.timeout").setValue(8_000)
-  // Terminal settings
-  val previousTerminalLines: Int = Registry.intValue("terminal.buffer.max.lines.count")
-  Registry.get("terminal.buffer.max.lines.count").setValue(100_000)
+  if (false) { //todo
+    // Terminal settings
+    val previousTerminalLines: Int = Registry.intValue("terminal.buffer.max.lines.count")
+    Registry.get("terminal.buffer.max.lines.count").setValue(100_000)
+  }
   TerminalOptionsProvider.instance.setOverrideIdeShortcuts(false)//enable Alt+F2 in terminal
   TerminalOptionsProvider.instance.shellPath = "/bin/bash"
 
