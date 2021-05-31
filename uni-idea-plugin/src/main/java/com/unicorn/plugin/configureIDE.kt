@@ -14,6 +14,7 @@ import com.intellij.openapi.application.ApplicationManager
 import com.intellij.openapi.editor.EditorFactory
 import com.intellij.openapi.editor.ex.EditorSettingsExternalizable
 import com.intellij.openapi.keymap.ex.KeymapManagerEx
+import com.intellij.openapi.options.advanced.AdvancedSettings
 import com.intellij.openapi.util.registry.Registry
 import com.intellij.openapi.wm.impl.IdeBackgroundUtil
 import com.intellij.psi.search.UseScopeEnlarger
@@ -66,10 +67,16 @@ suspend fun configureIDE() {
   Actions.register()
   // Upload plugin timeout
   Registry.get("ide.plugins.unload.timeout").setValue(8_000)
-  if (false) { //todo
+
+  val terminalLinesSize = 100_000
+  if (false) { //todo old IDEA 2021.1
     // Terminal settings
     val previousTerminalLines: Int = Registry.intValue("terminal.buffer.max.lines.count")
-    Registry.get("terminal.buffer.max.lines.count").setValue(100_000)
+    Registry.get("terminal.buffer.max.lines.count").setValue(terminalLinesSize)
+  }
+  if (true) { // IDEA 2021.2
+    val previousTerminalLines: Int = AdvancedSettings.getInt("terminal.buffer.max.lines.count")
+    AdvancedSettings.setInt("terminal.buffer.max.lines.count", terminalLinesSize)
   }
   TerminalOptionsProvider.instance.setOverrideIdeShortcuts(false)//enable Alt+F2 in terminal
   TerminalOptionsProvider.instance.shellPath = "/bin/bash"
