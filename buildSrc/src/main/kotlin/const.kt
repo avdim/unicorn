@@ -44,8 +44,9 @@ val COMPILER_ARGS = listOf<String>()
 //val LAST_IDEA_STR = "211.7142.13-EAP-SNAPSHOT"
 //val LAST_IDEA_STR = "2021.1.1"
 //val LAST_IDEA_STR = "211.7442.9-EAP-SNAPSHOT"
-val LAST_IDEA_STR = "212.3116.29-EAP-SNAPSHOT"
-//val LAST_IDEA_STR = "212.3116-EAP-CANDIDATE-SNAPSHOT"
+val LAST_IDEA_STR = "211.7442-EAP-CANDIDATE-SNAPSHOT"
+//val LAST_IDEA_STR = "212.3116.29-EAP-SNAPSHOT"
+//val LAST_IDEA_STR = "212.3724-EAP-CANDIDATE-SNAPSHOT"
 
 val LAST_COMMUNITY = IdeaVersion.Download(LAST_IDEA_STR, "IC")
 val LAST_ULTIMATE = IdeaVersion.Download(LAST_IDEA_STR, "IU")
@@ -59,6 +60,7 @@ val INTELLIJ_GRADLE = "1.0"
 //val DESKTOP_COMPOSE = "0.3.2"
 //val DESKTOP_COMPOSE = "0.4.0-build183"
 val DESKTOP_COMPOSE = "0.4.0-build185"
+//val DESKTOP_COMPOSE = "0.4.0"
 val COMPOSE_WORKAROUND = true
 
 //val asMac = "/Users/dim/Library/Application Support/JetBrains/Toolbox/apps/AndroidStudio/ch-0/203.7185775/Android Studio Preview.app/Contents"
