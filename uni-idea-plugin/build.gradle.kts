@@ -11,6 +11,8 @@ plugins {
   java
   kotlin("jvm")
   id("org.jetbrains.intellij") version INTELLIJ_GRADLE
+
+  //todo https://github.com/yshrsmz/BuildKonfig
   id("com.github.kukuhyoniatmoko.buildconfigkotlin") version "1.0.5"
   id("org.jetbrains.compose") version DESKTOP_COMPOSE
   idea
