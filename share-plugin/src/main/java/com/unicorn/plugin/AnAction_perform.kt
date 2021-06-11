@@ -5,7 +5,7 @@ import com.intellij.openapi.actionSystem.AnAction
 import com.intellij.openapi.actionSystem.AnActionEvent
 import com.intellij.openapi.actionSystem.DataContext
 import com.intellij.openapi.actionSystem.ex.ActionUtil
-import com.intellij.testFramework.TestActionEvent
+//import com.intellij.testFramework.TestActionEvent
 
 fun AnAction.perform(
   context: DataContext = DataContext.EMPTY_CONTEXT,
