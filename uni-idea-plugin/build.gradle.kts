@@ -111,6 +111,7 @@ intellij {
       "android",
       "org.jetbrains.plugins.ruby:211.7442.9"//https://plugins.jetbrains.com/plugin/1293-ruby/versions/stable
 //      "org.jetbrains.plugins.ruby:212.3116.29"//https://plugins.jetbrains.com/plugin/1293-ruby/versions/stable
+//      "org.jetbrains.plugins.ruby:212.4037.9"//https://plugins.jetbrains.com/plugin/1293-ruby/versions/stable
 //      "io.intellij-sdk-thread-access:1.0.2"//https://plugins.jetbrains.com/plugin/16815-thread-access-info/
 //    "Kotlin", "java"
       /*, "org.jetbrains.kotlin:1.3.72-release-IJ2020.1-1"*/
