@@ -37,8 +37,8 @@
 <!--    <treeStructureProvider implementation="todo.MyTreeStructureProvider"/>-->
   </extensions>
 
-  <depends>org.jetbrains.kotlin</depends>
-  <depends>org.jetbrains.android</depends>
+<!--  <depends>org.jetbrains.kotlin</depends>-->
+<!--  <depends>org.jetbrains.android</depends>-->
 
 <!--  <actions>-->
 <!--    <group id="UniCorn.action-group" text="UniCorn">-->
