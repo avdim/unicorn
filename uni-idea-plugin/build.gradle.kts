@@ -115,6 +115,7 @@ intellij {
       "org.jetbrains.plugins.ruby:211.7442.9"//https://plugins.jetbrains.com/plugin/1293-ruby/versions/stable
 //      "org.jetbrains.plugins.ruby:212.3116.29"//https://plugins.jetbrains.com/plugin/1293-ruby/versions/stable
 //      "org.jetbrains.plugins.ruby:212.4037.9"//https://plugins.jetbrains.com/plugin/1293-ruby/versions/stable
+//      "org.jetbrains.plugins.ruby:212.4321.30"//https://plugins.jetbrains.com/plugin/1293-ruby/versions/stable
 //      "io.intellij-sdk-thread-access:1.0.2"//https://plugins.jetbrains.com/plugin/16815-thread-access-info/
 //    "Kotlin", "java"
       /*, "org.jetbrains.kotlin:1.3.72-release-IJ2020.1-1"*/
@@ -144,7 +145,7 @@ tasks.withType<org.jetbrains.intellij.tasks.RunIdeTask> {
 //  jbrVersion("jbr_dcevm-11_0_10-linux-x64-b1341.35")
   systemProperties["ide.browser.jcef.enabled"] = true
 //  systemProperties["pdf.viewer.debug"] = true
-  jvmArgs("-Xmx2048m", "-Xms128m")
+  jvmArgs("-Xmx2548m", "-Xms128m")
   autoReloadPlugins.set(true)
 }
 
