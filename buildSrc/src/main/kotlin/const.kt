@@ -64,8 +64,8 @@ val INTELLIJ_GRADLE = "1.0"
 //val DESKTOP_COMPOSE = "0.3.2"
 //val DESKTOP_COMPOSE = "0.4.0-build183"
 //val DESKTOP_COMPOSE = "0.4.0-build185"
-val DESKTOP_COMPOSE = "0.4.0"
-//val DESKTOP_COMPOSE = "0.5.0-build228"
+//val DESKTOP_COMPOSE = "0.4.0"
+val DESKTOP_COMPOSE = "0.5.0-build228"
 val COMPOSE_WORKAROUND = true
 
 //val asMac = "/Users/dim/Library/Application Support/JetBrains/Toolbox/apps/AndroidStudio/ch-0/203.7185775/Android Studio Preview.app/Contents"
