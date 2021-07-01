@@ -12,10 +12,8 @@ val BUILD_TIME_STR = SimpleDateFormat("yyyy-MM-dd_HH:mm", Locale("ru", "RU")).fo
  */
 val DEBUG_JVM = true//todo false
 
-/**
- * Минимальная версия JDK. В production использую 11. А для целей отладки подойдёт и 8-ая.
- */
-val MIN_JDK_VERSION: JdkVersion = if (false/*DEBUG_JVM*/) JdkVersion.JDK8 else JdkVersion.JDK11
+val MIN_JDK_VERSION: JdkVersion = JdkVersion.JDK11
+val JVM_TARGET = MIN_JDK_VERSION.kotlinTarget
 
 /**
  * Если хочется потестировать EAP или DEV версии kotlin.
@@ -23,8 +21,8 @@ val MIN_JDK_VERSION: JdkVersion = if (false/*DEBUG_JVM*/) JdkVersion.JDK8 else J
  */
 val USE_KOTLIN_DEV_REPOSITORY = true
 
-val KOTLIN_VERSION = "1.4.32"
-//val KOTLIN_VERSION = "1.5.20"
+//val KOTLIN_VERSION = "1.4.32"
+val KOTLIN_VERSION = "1.5.10"
 val SERIALIZATION_VERSION = "1.0.1"
 val COROUTINE_VERSION = "1.4.2"
 val KTOR_VERSION = "1.5.0"
@@ -65,8 +63,9 @@ val INTELLIJ_GRADLE = "1.0"
 //val DESKTOP_COMPOSE = "0.3.0-build152"
 //val DESKTOP_COMPOSE = "0.3.2"
 //val DESKTOP_COMPOSE = "0.4.0-build183"
-val DESKTOP_COMPOSE = "0.4.0-build185"
-//val DESKTOP_COMPOSE = "0.4.0"
+//val DESKTOP_COMPOSE = "0.4.0-build185"
+val DESKTOP_COMPOSE = "0.4.0"
+//val DESKTOP_COMPOSE = "0.5.0-build228"
 val COMPOSE_WORKAROUND = true
 
 //val asMac = "/Users/dim/Library/Application Support/JetBrains/Toolbox/apps/AndroidStudio/ch-0/203.7185775/Android Studio Preview.app/Contents"

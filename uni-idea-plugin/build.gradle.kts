@@ -69,6 +69,7 @@ repositories {
 }
 
 dependencies {
+//  implementation(kotlin("stdlib"))
   implementation(LOG_MAVEN_ARTIFACT)
   implementation("org.jgroups:jgroups:4.0.0.Final")//todo
   implementation("io.ktor:ktor-server-netty:$KTOR_VERSION")
@@ -159,7 +160,7 @@ tasks.withType<org.jetbrains.intellij.tasks.RunIdeTask> {
 }
 
 tasks.withType<org.jetbrains.kotlin.gradle.tasks.KotlinCompile> {
-  kotlinOptions.jvmTarget = "1.8"
+  kotlinOptions.jvmTarget = JVM_TARGET
   kotlinOptions.freeCompilerArgs += listOf("-Xjvm-default=enable")
 }
 

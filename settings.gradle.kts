@@ -28,7 +28,7 @@ pluginManagement {
 //  }
 }
 rootProject.name = "unicorn"
-enableFeaturePreview("GRADLE_METADATA")
+//enableFeaturePreview("GRADLE_METADATA")
 
 include("uni-idea-plugin")
 include("update-plugin")
