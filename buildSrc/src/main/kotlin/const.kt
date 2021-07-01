@@ -23,12 +23,13 @@ val MIN_JDK_VERSION: JdkVersion = if (false/*DEBUG_JVM*/) JdkVersion.JDK8 else J
  */
 val USE_KOTLIN_DEV_REPOSITORY = true
 
-//val KOTLIN_VERSION = "1.4.21-2"
 val KOTLIN_VERSION = "1.4.32"
+//val KOTLIN_VERSION = "1.5.20"
 val SERIALIZATION_VERSION = "1.0.1"
 val COROUTINE_VERSION = "1.4.2"
 val KTOR_VERSION = "1.5.0"
 val LOG_MAVEN_ARTIFACT = if (DEBUG_JVM) "ch.qos.logback:logback-classic:1.2.3" else "org.slf4j:slf4j-simple:1.7.28"
+val GMAZZO_BUILDCONFIG_VERSION = "3.0.1"
 
 //https://github.com/Kotlin/kotlinx.coroutines/commit/e37aec4edd09bfb7f622e113553aa88a0a5bd27c
 val COMPILER_ARGS = listOf<String>()
@@ -51,6 +52,7 @@ val LAST_IDEA_STR = "2021.1.3"
 //val LAST_IDEA_STR = "212.3724-EAP-CANDIDATE-SNAPSHOT"
 //val LAST_IDEA_STR = "212.4037.50-EAP-SNAPSHOT"
 //val LAST_IDEA_STR = "212.4321.30-EAP-SNAPSHOT"//2021.2-eap4
+//val LAST_IDEA_STR = "212.4535.15-EAP-SNAPSHOT"
 
 val LAST_COMMUNITY = IdeaVersion.Download(LAST_IDEA_STR, "IC")
 val LAST_ULTIMATE = IdeaVersion.Download(LAST_IDEA_STR, "IU")

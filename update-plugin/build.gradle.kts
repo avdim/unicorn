@@ -8,7 +8,7 @@ plugins {
   java
   kotlin("jvm")
   id("org.jetbrains.intellij") version INTELLIJ_GRADLE
-  id("com.github.kukuhyoniatmoko.buildconfigkotlin") version "1.0.5"
+  id("com.github.gmazzo.buildconfig") version GMAZZO_BUILDCONFIG_VERSION
   idea
 }
 
@@ -18,15 +18,11 @@ idea {
   }
 }
 
-buildConfigKotlin {
-  sourceSet("main") {
-    packageName = "com.unicorn.update"
-    buildConfig(
-      name = "UNI_ZIP_BUILD_DIST",
-      value = rootProject.file("uni-idea-plugin/build/distributions").absolutePath
-    )
-    buildConfig(name = "INTEGRATION_TEST", value = UNI_BUILD_TYPE is BuildType.IntegrationTest)
-  }
+buildConfig {
+  className("BuildConfig")   // forces the class name. Defaults to 'BuildConfig'
+  packageName("com.unicorn.update")  // forces the package. Defaults to '${project.group}'
+  useKotlinOutput()                               // forces the outputType to 'kotlin', generating an `object`
+  buildConfigField("String", "UNI_ZIP_BUILD_DIST", "\"${rootProject.file("uni-idea-plugin/build/distributions").absolutePath}\"")
 }
 
 java {

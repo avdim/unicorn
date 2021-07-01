@@ -12,8 +12,8 @@ plugins {
   kotlin("jvm")
   id("org.jetbrains.intellij") version INTELLIJ_GRADLE
 
-  //todo https://github.com/yshrsmz/BuildKonfig
-  id("com.github.kukuhyoniatmoko.buildconfigkotlin") version "1.0.5"
+//  id("com.codingfeline.buildkonfig") version "0.8.0" // https://github.com/yshrsmz/BuildKonfig
+  id("com.github.gmazzo.buildconfig") version GMAZZO_BUILDCONFIG_VERSION
   id("org.jetbrains.compose") version DESKTOP_COMPOSE
   idea
 }
@@ -25,13 +25,22 @@ idea {
   }
 }
 
-buildConfigKotlin {
-  sourceSet("main") {
-    packageName = "com.unicorn"
-    buildConfig(name = "BUILD_TIME", value = BUILD_TIME_STR)
-    buildConfig(name = "INTEGRATION_TEST", value = UNI_BUILD_TYPE == BuildType.IntegrationTest)
-    buildConfig(name = "HAND_TEST", value = UNI_BUILD_TYPE == BuildType.HandTest)
-    buildConfig(name = "HAND_TEST_EMPTY_PROJECT", value = rootDir.resolve("hand-test-empty-project").absolutePath)
+buildConfig {
+  className("BuildConfig")   // forces the class name. Defaults to 'BuildConfig'
+  packageName("com.unicorn")  // forces the package. Defaults to '${project.group}'
+//  useJavaOutput()                                 // forces the outputType to 'java'
+  useKotlinOutput()                               // forces the outputType to 'kotlin', generating an `object`
+//  useKotlinOutput { topLevelConstants = true }    // forces the outputType to 'kotlin', generating top-level declarations
+//  useKotlinOutput { internalVisibility = true }   // adds `internal` modifier to all declarations
+  buildConfigField("long", "BUILD_TIME_LONG", "${System.currentTimeMillis()}L")
+  buildConfigField("String", "BUILD_TIME", "\"$BUILD_TIME_STR\"")
+  buildConfigField("String", "HAND_TEST_EMPTY_PROJECT", "\"${rootDir.resolve("hand-test-empty-project").absolutePath}\"")
+  buildConfigField("boolean", "INTEGRATION_TEST", "${UNI_BUILD_TYPE == BuildType.IntegrationTest}")
+  buildConfigField("boolean", "HAND_TEST", "${UNI_BUILD_TYPE == BuildType.HandTest}")
+//  buildConfigField("IntArray", "MAGIC_NUMBERS", "intArrayOf(1, 2, 3, 4)")
+//  buildConfigField("com.github.gmazzo.SomeData", "MY_DATA", "new SomeData(\"a\",1)")
+  sourceSets.getByName("test") {
+    buildConfigField("String", "TEST_CONSTANT", "\"aTestValue\"")
   }
 }
 

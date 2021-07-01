@@ -2,7 +2,7 @@ plugins {
   kotlin("jvm")
   application
   id("ru.tutu.github.token") version ("1.2.0")
-  id("com.github.kukuhyoniatmoko.buildconfigkotlin") version "1.0.5"
+  id("com.github.gmazzo.buildconfig") version GMAZZO_BUILDCONFIG_VERSION
 }
 
 gitHubToken {
@@ -12,11 +12,11 @@ gitHubToken {
   storeTokenAtLocalProperties()
 }
 
-buildConfigKotlin {
-  sourceSet("main") {
-    packageName = "org.sample.github"
-    buildConfig(name = "SECRET_GITHUB_TOKEN", value = gitHubToken.getToken(project))
-  }
+buildConfig {
+  className("BuildConfig")   // forces the class name. Defaults to 'BuildConfig'
+  packageName("org.sample.github")  // forces the package. Defaults to '${project.group}'
+  useKotlinOutput()                               // forces the outputType to 'kotlin', generating an `object`
+  buildConfigField("String", "SECRET_GITHUB_TOKEN", "\"${gitHubToken.getToken(project)}\"")
 }
 
 java {
