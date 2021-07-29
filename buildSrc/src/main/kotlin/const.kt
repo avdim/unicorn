@@ -51,6 +51,7 @@ val LAST_IDEA_STR = "2021.1.3"
 //val LAST_IDEA_STR = "212.4037.50-EAP-SNAPSHOT"
 //val LAST_IDEA_STR = "212.4321.30-EAP-SNAPSHOT"//2021.2-eap4
 //val LAST_IDEA_STR = "212.4535.15-EAP-SNAPSHOT"
+//val LAST_IDEA_STR = "2021.2"
 
 val LAST_COMMUNITY = IdeaVersion.Download(LAST_IDEA_STR, "IC")
 val LAST_ULTIMATE = IdeaVersion.Download(LAST_IDEA_STR, "IU")
@@ -75,7 +76,9 @@ val asMac = "/Users/dim/Library/Application Support/JetBrains/Toolbox/apps/Andro
 //val asLinux = "/home/dim/Desktop/android_studio/2020.3.1.1_canary10/"
 //val asLinux = "/home/dim/Desktop/android_studio/2020.3_alpha12/extracted"
 //val asLinux = "/home/dim/Desktop/android_studio/2020.3_beta1/android-studio"
-val asLinux = "/home/dim/Desktop/android_studio/2021_alpha1/android-studio"
+//val asLinux = "/home/dim/Desktop/android_studio/2020.3.1/android-studio"
+//val asLinux = "/home/dim/Desktop/android_studio/2021_alpha1/android-studio"
+val asLinux = "/home/dim/Desktop/android_studio/2021_canary5/android-studio/"
 
 val Project.UNI_BUILD_TYPE: BuildType get() =
   when (safeArgument("uniBuildType")) {
