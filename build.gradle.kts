@@ -19,6 +19,10 @@ allprojects {//todo allprojects bad?
 //  buildDir = File("/dev/shm/$name")
 //  version = "1.0"
   repositories {
+    mavenLocal {
+      url = uri("${rootProject.projectDir}/save_dependencies")
+      // com/jetbrains/intellij/java/java-compiler-ant-tasks/211.7628.21.2111.7579519/java-compiler-ant-tasks-211.7628.21.2111.7579519.pom
+    }
     mavenCentral()
     maven { setUrl("https://dl.bintray.com/kotlin/kotlinx") }
     //maven { setUrl("https://dl.bintray.com/kotlin/exposed") }

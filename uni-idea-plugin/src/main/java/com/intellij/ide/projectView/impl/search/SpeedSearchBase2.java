@@ -172,7 +172,7 @@ public abstract class SpeedSearchBase2<Comp extends JComponent> extends SpeedSea
 
   /** @deprecated Please implement {@link #getElementCount()} and {@link #getElementAt()} instead. */
   @Deprecated
-  protected Object @NotNull [] getAllElements() {
+  protected Object /*@NotNull*/ [] getAllElements() {
     throw new UnsupportedOperationException("See `SpeedSearchBase.getElementIterator(int)` javadoc");
   }
 
