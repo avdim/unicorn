@@ -138,7 +138,7 @@
 
   &lt;!&ndash;    IntelliJ-Key-Promoter-X&ndash;&gt;
   <application-components>
-    <component>
+    <component> component - OLD https://plugins.jetbrains.com/docs/intellij/plugin-components.html
       <implementation-class>de.halirutan.keypromoterx2.KeyPromoter</implementation-class>
     </component>
   </application-components>
@@ -167,13 +167,13 @@
 &lt;!&ndash;  FrameSwitcher https://github.com/krasa/FrameSwitcher &ndash;&gt;
   <application-components>
     &lt;!&ndash; Add your application components here &ndash;&gt;
-    <component>
+    <component> component - OLD https://plugins.jetbrains.com/docs/intellij/plugin-components.html
       <implementation-class>krasa.frameswitcher.FrameSwitcherApplicationComponent</implementation-class>
     </component>
   </application-components>
   <project-components>
     &lt;!&ndash; Add your project components here &ndash;&gt;
-    <component>
+    <component> component - OLD https://plugins.jetbrains.com/docs/intellij/plugin-components.html
       <implementation-class>krasa.frameswitcher.FrameSwitcherProjectComponent</implementation-class>
     </component>
   </project-components>
