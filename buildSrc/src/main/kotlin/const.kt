@@ -19,10 +19,11 @@ val JVM_TARGET = MIN_JDK_VERSION.kotlinTarget
  * Если хочется потестировать EAP или DEV версии kotlin.
  * Dev релизы на свой страх и риск: https://dl.bintray.com/kotlin/kotlin-dev/org/jetbrains/kotlin/kotlin-gradle-plugin/
  */
-val USE_KOTLIN_DEV_REPOSITORY = true
+val USE_KOTLIN_DEV_REPOSITORY = false
 
 //val KOTLIN_VERSION = "1.4.32"
-val KOTLIN_VERSION = "1.5.10"
+//val KOTLIN_VERSION = "1.5.10"
+val KOTLIN_VERSION = "1.5.21"
 val SERIALIZATION_VERSION = "1.0.1"
 val COROUTINE_VERSION = "1.4.2"
 val KTOR_VERSION = "1.5.0"
@@ -68,7 +69,8 @@ val INTELLIJ_GRADLE = "1.1.4"
 //val DESKTOP_COMPOSE = "0.4.0-build183"
 //val DESKTOP_COMPOSE = "0.4.0-build185"
 //val DESKTOP_COMPOSE = "0.4.0"
-val DESKTOP_COMPOSE = "0.5.0-build228"
+//val DESKTOP_COMPOSE = "0.5.0-build228"
+val DESKTOP_COMPOSE = "1.0.0-alpha3"
 val COMPOSE_WORKAROUND = true
 
 //val asMac = "/Users/dim/Library/Application Support/JetBrains/Toolbox/apps/AndroidStudio/ch-0/203.7185775/Android Studio Preview.app/Contents"

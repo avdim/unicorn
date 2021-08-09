@@ -10,11 +10,11 @@ pluginManagement {
   repositories {
     gradlePluginPortal()//todo alternative?: maven { setUrl("https://plugins.gradle.org/m2/") }
     mavenCentral()
-    maven { setUrl("https://dl.bintray.com/kotlin/kotlinx") }
+//    maven { setUrl("https://dl.bintray.com/kotlin/kotlinx") }
     maven(url = "https://maven.pkg.jetbrains.space/public/p/compose/dev")
-    maven { setUrl("https://dl.bintray.com/kotlin/kotlin-eap") }
-    maven { setUrl("https://dl.bintray.com/kotlin/kotlin-dev") }
-    maven(url = "https://oss.sonatype.org/content/repositories/snapshots/") // plugin id("org.jetbrains.intellij") SNAPSHOT
+//    maven { setUrl("https://dl.bintray.com/kotlin/kotlin-eap") }
+//    maven { setUrl("https://dl.bintray.com/kotlin/kotlin-dev") }
+//    maven(url = "https://oss.sonatype.org/content/repositories/snapshots/") // plugin id("org.jetbrains.intellij") SNAPSHOT
   }
 
 //  resolutionStrategy {
