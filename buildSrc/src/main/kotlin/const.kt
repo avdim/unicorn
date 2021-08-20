@@ -82,7 +82,8 @@ val asMac = "/Users/dim/Library/Application Support/JetBrains/Toolbox/apps/Andro
 //val asLinux = "/home/dim/Desktop/android_studio/2020.3_beta1/android-studio"
 //val asLinux = "/home/dim/Desktop/android_studio/2020.3.1/android-studio"
 //val asLinux = "/home/dim/Desktop/android_studio/2021_alpha1/android-studio"
-val asLinux = "/home/dim/Desktop/android_studio/2021_canary5/android-studio/"
+//val asLinux = "/home/dim/Desktop/android_studio/2021_canary5/android-studio/"
+val asLinux = "/home/dim/Desktop/android_studio/2021_canary8/android-studio/"
 
 val Project.UNI_BUILD_TYPE: BuildType get() =
   when (safeArgument("uniBuildType")) {
