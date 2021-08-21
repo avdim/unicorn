@@ -4,6 +4,7 @@
 
 Ctrl+Shift+I - Quick Definition
 Ctrl+Shift+P - Type info
+Alt+Alt - Show panels
 
 Ctrl+F12 - быстрая навигация по текущему файлу + Ctrl Q
 
