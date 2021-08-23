@@ -8,7 +8,9 @@ echo "blacklist pcspkr" | tee /etc/modprobe.d/nobeep.conf
 rmmod pcspkr
 (https://wiki.archlinux.org/index.php/PC_speaker)
 ```
-- chromium (setup no password, reopen previous, default browser)
+- turn on snap in Software, and `ln -s /var/lib/snapd/snap /snap`
+- chromium (setup no password, On startup: 
+Continue where you left off, default browser)
 - manjaro settings, kernel
 - On Lenovo-Flex (or amd cpu graphics)
 ```bash
@@ -28,7 +30,7 @@ sudo mkinitcpio -P
 ![img.png](windows_manager_2.png)  
 - Keyboard  
 xfce4-screenshooter  [Print]
-xfce4-popup-whiskermenu [Win Key]  
+xfce4-popup-whiskermenu [Win + S]  
 ![img.png](keyboard1.png)  
 ![img.png](keyboard2.png)  
 - Panel  
