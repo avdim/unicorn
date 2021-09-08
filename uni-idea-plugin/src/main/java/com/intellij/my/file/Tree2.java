@@ -26,6 +26,8 @@ import static com.intellij.ide.dnd.SmoothAutoScroller.installDropTargetAsNecessa
 public abstract class Tree2 extends JTree implements ComponentWithEmptyText, ComponentWithExpandableItems<Integer>,
                                            ComponentWithFileColors, TreePathBackgroundSupplier {
 
+  public static final boolean COLLAPSE_RECURSIVLY = true;
+
   private final StatusText myEmptyText;
   private final ExpandableItemsHandler<Integer> myExpandableItemsHandler;
 
@@ -274,7 +276,7 @@ public abstract class Tree2 extends JTree implements ComponentWithEmptyText, Com
 
   @Override
   public void collapsePath(TreePath path) {
-    int row = Registry.is("ide.tree.collapse.recursively") ? getRowForPath(path) : -1;
+    int row = COLLAPSE_RECURSIVLY ? getRowForPath(path) : -1;
     if (row < 0) {
       super.collapsePath(path);
     }
