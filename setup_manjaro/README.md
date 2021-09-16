@@ -35,6 +35,8 @@ xfce4-popup-whiskermenu [Win + S]
 ![img.png](keyboard2.png)  
 - Panel  
 ![img.png](panel.png)
+- In Window Buttons submenu
+![img.png](window_buttons.png)
 - Power Manager   
 - Docker  
   https://manjaro.site/how-to-install-docker-on-manjaro-18-0/  
