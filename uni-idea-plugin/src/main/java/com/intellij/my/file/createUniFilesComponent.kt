@@ -17,20 +17,17 @@ import com.intellij.openapi.fileTypes.FileTypeManager
 import com.intellij.openapi.fileTypes.INativeFileType
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.project.ProjectManager
-import com.intellij.openapi.vcs.FileStatus
 import com.intellij.openapi.vfs.VirtualFile
 import com.intellij.pom.Navigatable
-import com.intellij.psi.PsiDirectory
-import com.intellij.psi.PsiDirectoryContainer
-import com.intellij.psi.PsiElement
 import com.intellij.ide.projectView.impl.nodes.AbstractTreeNod2
 import com.intellij.ide.projectView.impl.nodes.BasePsiNode2
+import com.intellij.ide.util.treeView.AbstractTreeUi2
+import com.intellij.psi.*
 import com.intellij.psi.util.PsiUtilCore
 import com.intellij.ui.ScrollPaneFactory
 import com.intellij.ui.layout.Cell
 import com.intellij.util.EditSourceOnDoubleClickHandler
 import com.intellij.util.EditSourceOnEnterKeyHandler
-import com.intellij.util.PlatformIcons
 import com.intellij.util.ui.tree.TreeUtil
 import com.unicorn.Uni
 import com.unicorn.plugin.virtualFile
@@ -135,12 +132,13 @@ fun createUniFilesComponent(
   myTree.addSelectionListener {
     selectionListener2(it)
   }
-  return filesJPanel(viewComponent, myTree)
+  return filesJPanel(viewComponent, myTree, project)
 }
 
 private fun filesJPanel(
   viewComponent: JComponent,
-  myTree: ProjectViewTree2
+  myTree: ProjectViewTree2,
+  project: Project
 ) = object : JPanel(), DataProvider {
   private val myCopyPasteDelegator = CopyPasteDelegator(ProjectManager.getInstance().defaultProject, viewComponent)
 
@@ -152,6 +150,28 @@ private fun filesJPanel(
   }
 
   override fun getData(dataId: String): Any? {
+
+    fun getPsiDirectories():Array<PsiDirectory> {
+      val elements: Array<PsiElement> = getSelectedPSIElements(myTree.selectionPaths)
+      if (elements.size == 1) {
+        val element = elements[0]
+        if (element is PsiDirectory) {
+          return arrayOf(element)
+        } else if (element is PsiDirectoryContainer) {
+          return element.directories
+        } else {
+          val containingFile = element.containingFile
+          if (containingFile != null) {
+            val psiDirectory = containingFile.containingDirectory
+            if (psiDirectory != null) {
+              return arrayOf(psiDirectory)
+            }
+            return PsiDirectory.EMPTY_ARRAY
+          }
+        }
+      }
+      return emptyArray()
+    }
 
     if (PlatformDataKeys.PROJECT_CONTEXT.`is`(dataId)) {
       Uni.log.breakPoint("PROJECT_CONTEXT")
@@ -183,9 +203,36 @@ private fun filesJPanel(
       return if (navigatables.isEmpty()) null else navigatables.toTypedArray()
     }
 
+    if (false) {
+      if (CommonDataKeys.VIRTUAL_FILE.`is`(dataId)) {
+        Uni.log.debug { "CommonDataKeys.CommonDataKeys.VIRTUAL_FILE" }
+        val selectionPaths = myTree.selectionPaths
+        if (selectionPaths != null) {
+          Uni.log.debug { "myTree.selectionPaths: ${myTree.selectionPaths}" }
+          val virtualFile =
+            (((selectionPaths[0] as? TreePath)?.lastPathComponent as? AbstractTreeUi2.ElementNode)?.userObject as? ProjectPsiDirectoryNode)?.virtualFile
+          if (virtualFile != null) {
+            Uni.log.debug { "virtualFile: ${virtualFile}" }
+            return virtualFile
+          }
+        }
+      }
+    }
+
+    if (false) {
+      if (LangDataKeys.TARGET_PSI_ELEMENT.`is`(dataId)) {
+        Uni.log.debug { "LangDataKeys.TARGET_PSI_ELEMENT" }
+        val directories = getPsiDirectories()
+        if (directories.isNotEmpty()) {
+          return directories[0]
+        }
+      }
+    }
+
     if (CommonDataKeys.PSI_ELEMENT.`is`(dataId)) {
       val elements = getSelectedPSIElements(myTree.selectionPaths)
-      return if (elements.size == 1) elements[0] else null
+      Uni.log.debug { "CommonDataKeys.PSI_ELEMENT, elements: $elements" }
+      return if (elements.size == 1) createPsiElementWrapper(elements[0], project) else null
     }
     if (LangDataKeys.PSI_ELEMENT_ARRAY.`is`(dataId)) {
       val elements = getSelectedPSIElements(myTree.selectionPaths)
@@ -215,25 +262,7 @@ private fun filesJPanel(
 //            if (directories.isNotEmpty()) {
 //              return directories.toTypedArray()
 //            }
-          val elements: Array<PsiElement> = getSelectedPSIElements(myTree.selectionPaths)
-          if (elements.size == 1) {
-            val element = elements[0]
-            if (element is PsiDirectory) {
-              return arrayOf(element)
-            } else if (element is PsiDirectoryContainer) {
-              return element.directories
-            } else {
-              val containingFile = element.containingFile
-              if (containingFile != null) {
-                val psiDirectory = containingFile.containingDirectory
-                if (psiDirectory != null) {
-                  return arrayOf(psiDirectory)
-                }
-                return PsiDirectory.EMPTY_ARRAY
-              }
-            }
-          }
-          return emptyArray()
+          return getPsiDirectories()
         }
 
         override fun selectElement(element: PsiElement) {}
@@ -263,6 +292,7 @@ private fun filesJPanel(
       }
     }
     if (PlatformDataKeys.SELECTED_ITEMS.`is`(dataId)) {
+      Uni.log.info { "PlatformDataKeys.SELECTED_ITEMS, dataId: $dataId, myTree.selectionPaths: ${myTree.selectionPaths}" }
       return JavaHelpers.pathsToSelectedElements(myTree.selectionPaths)
     }
 
@@ -277,4 +307,18 @@ fun getSelectedPSIElements(selectionPaths: Array<TreePath>?): Array<PsiElement> 
     result.addAll(JavaHelpers.getElementsFromNode(ProjectManager.getInstance().defaultProject, path.lastPathComponent))
   }
   return PsiUtilCore.toPsiElementArray(result)
+}
+
+fun createPsiElementWrapper(psiElement: PsiElement, project: Project) =
+  if (psiElement is PsiDirectory) {
+    PsiDirectoryWrapper(psiElement, project)
+  } else {
+    psiElement
+  }
+
+class PsiDirectoryWrapper(val psiDirectory: PsiDirectory, val project2: Project) : PsiDirectory by psiDirectory {
+  override fun getProject(): Project {
+    return project2
+//    return psiDirectory.getProject()
+  }
 }

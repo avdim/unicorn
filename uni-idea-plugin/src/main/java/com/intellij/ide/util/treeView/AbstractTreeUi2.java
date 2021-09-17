@@ -2211,7 +2211,7 @@ public class AbstractTreeUi2 {
     }
   }
 
-  static class ElementNode extends DefaultMutableTreeNode {
+  public static class ElementNode extends DefaultMutableTreeNode {
 
     final Set<Object> myElements = new HashSet<>();
     final AbstractTreeUi2 myUi;

@@ -73,9 +73,10 @@ suspend fun configureIDE() {
     // Terminal settings
     val previousTerminalLines: Int = Registry.intValue("terminal.buffer.max.lines.count")
     Registry.get("terminal.buffer.max.lines.count").setValue(terminalLinesSize)
-  } catch (t: Throwable) {//todo IDEA 2021.2
-//    val previousTerminalLines: Int = com.intellij.openapi.options.advanced.AdvancedSettings.getInt("terminal.buffer.max.lines.count")
-//    com.intellij.openapi.options.advanced.AdvancedSettings.setInt("terminal.buffer.max.lines.count", terminalLinesSize)
+  } catch (t: Throwable) {//IDEA 2021.2
+    val previousTerminalLines: Int = com.intellij.openapi.options.advanced.AdvancedSettings.getInt("terminal.buffer.max.lines.count")
+    Uni.log.debug { "terminal.buffer.max.lines.count: $previousTerminalLines" }
+    com.intellij.openapi.options.advanced.AdvancedSettings.setInt("terminal.buffer.max.lines.count", terminalLinesSize)
   }
   TerminalOptionsProvider.instance.setOverrideIdeShortcuts(false)//enable Alt+F2 in terminal
   TerminalOptionsProvider.instance.shellPath = "/bin/bash"
@@ -99,7 +100,7 @@ suspend fun configureIDE() {
 
   UISettings.instance.smoothScrolling//=false todo val //UI: smooth scrolling
   UISettings.instance.showTreeIndentGuides = true
-  UISettings.instance.showMemoryIndicator = true
+//  UISettings.instance.showMemoryIndicator = true//TODO!!!
   UISettings.instance.recentLocationsLimit// = 50 todo val
   UISettings.instance.wideScreenSupport = true
   UISettings.instance.compactTreeIndents = true

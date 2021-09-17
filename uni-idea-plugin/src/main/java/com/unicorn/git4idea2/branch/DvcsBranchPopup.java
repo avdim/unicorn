@@ -58,7 +58,7 @@ public abstract class DvcsBranchPopup<Repo extends Repository> {
                    DvcsBundle.message("branch.popup.vcs.name.branches", myVcs.getDisplayName()) :
                    DvcsBundle.message("branch.popup.vcs.name.branches.in.repo", myVcs.getDisplayName(),
                                       DvcsUtil.getShortRepositoryName(currentRepository));
-    myPopup = new BranchActionGroupPopup(title, myProject, preselectActionCondition, createActions(), dimensionKey/*, dataContext*/);
+    myPopup = new BranchActionGroupPopup(title, myProject, preselectActionCondition, createActions(), dimensionKey, dataContext/**/);
     initBranchSyncPolicyIfNotInitialized();
     warnThatBranchesDivergedIfNeeded();
     if (myRepositoryManager.moreThanOneRoot()) {
