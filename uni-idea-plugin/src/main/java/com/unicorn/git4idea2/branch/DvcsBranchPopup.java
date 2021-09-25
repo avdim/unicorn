@@ -149,11 +149,6 @@ public abstract class DvcsBranchPopup<Repo extends Repository> {
   protected abstract void fillPopupWithCurrentRepositoryActions(@NotNull LightActionGroup popupGroup,
                                                                 @Nullable LightActionGroup actions);
 
-  public static final class MyMoreIndex {
-    public static final int MAX_NUM = 8;
-    public static final int DEFAULT_NUM = 5;
-  }
-
   private static class TrackReposSynchronouslyAction extends ToggleAction implements DumbAware {
     private final DvcsSyncSettings myVcsSettings;
 
