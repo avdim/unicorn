@@ -15,8 +15,13 @@ import com.intellij.openapi.application.invokeLater
 import com.intellij.openapi.editor.EditorFactory
 import com.intellij.openapi.editor.ex.EditorSettingsExternalizable
 import com.intellij.openapi.keymap.ex.KeymapManagerEx
+import com.intellij.openapi.project.ProjectManager
 import com.intellij.openapi.util.registry.Registry
+import com.intellij.openapi.wm.StatusBarWidgetFactory
 import com.intellij.openapi.wm.impl.IdeBackgroundUtil
+import com.intellij.openapi.wm.impl.status.MemoryIndicatorWidgetFactory
+import com.intellij.openapi.wm.impl.status.widget.StatusBarWidgetSettings
+import com.intellij.openapi.wm.impl.status.widget.StatusBarWidgetsManager
 import com.intellij.psi.search.UseScopeEnlarger
 import com.unicorn.BuildConfig
 import com.unicorn.Uni
@@ -100,7 +105,12 @@ suspend fun configureIDE() {
 
   UISettings.instance.smoothScrolling//=false todo val //UI: smooth scrolling
   UISettings.instance.showTreeIndentGuides = true
-//  UISettings.instance.showMemoryIndicator = true//TODO!!!
+//  UISettings.instance.showMemoryIndicator = true
+  val memoryWidgetFactory = StatusBarWidgetFactory.EP_NAME.iterable.mapNotNull { it as? MemoryIndicatorWidgetFactory }.firstOrNull()
+  if (memoryWidgetFactory != null) {
+    //можно упростить до state.widgets[ID]
+    ApplicationManager.getApplication().getService(StatusBarWidgetSettings::class.java).setEnabled(memoryWidgetFactory, true)
+  }
   UISettings.instance.recentLocationsLimit// = 50 todo val
   UISettings.instance.wideScreenSupport = true
   UISettings.instance.compactTreeIndents = true
