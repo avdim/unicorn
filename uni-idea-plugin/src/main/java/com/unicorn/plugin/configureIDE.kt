@@ -100,7 +100,7 @@ suspend fun configureIDE() {
   UISettings.instance.state.showCloseButton = false
   UISettings.instance.state.showFileIconInTabs = true
   UISettings.instance.state.showPinnedTabsInASeparateRow = true
-
+  UISettings.instance.state.hideToolStripes = true
   UISettings.instance.state.showToolWindowsNumbers = true
 
   UISettings.instance.smoothScrolling//=false todo val //UI: smooth scrolling
