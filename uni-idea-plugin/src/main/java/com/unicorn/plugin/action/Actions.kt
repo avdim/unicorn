@@ -71,6 +71,7 @@ object Actions {
           ActionData("com.unicorn.plugin.action.id.SelectInAction", SelectInAction()),
           ActionData("com.unicorn.plugin.action.id.QuickPreviewAction2", QuickPreviewAction2()),
           ActionData("com.unicorn.plugin.action.id.AesAction", AesAction()),
+          ActionData("com.unicorn.plugin.action.id.CloneGithubAction", CloneGithubAction()),
           ActionGroupData(
             id = "UniCorn.action-group.misc",
             name = "misc",

@@ -3,4 +3,4 @@
 директория
 копирование из операционной системы
 speed search
-rename withoud search for reference
+rename without search for reference
