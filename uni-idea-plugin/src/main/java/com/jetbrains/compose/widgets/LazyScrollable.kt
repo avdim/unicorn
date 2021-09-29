@@ -47,8 +47,8 @@ fun LazyScrollable() {
                     modifier = Modifier.align(Alignment.CenterEnd).fillMaxHeight(),
                     adapter = rememberScrollbarAdapter(
                         scrollState = state,
-                        itemCount = itemCount,
-                        averageItemSize = 37.dp // TextBox height + Spacer height
+//                        itemCount = itemCount,
+//                        averageItemSize = 37.dp // TextBox height + Spacer height
                     )
                 )
             }

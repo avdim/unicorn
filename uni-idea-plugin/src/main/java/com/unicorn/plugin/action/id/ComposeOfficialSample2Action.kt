@@ -1,10 +1,9 @@
 package com.unicorn.plugin.action.id
 
-import androidx.compose.desktop.AppManager
-import androidx.compose.desktop.ComposePanel
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.Surface
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.awt.ComposePanel
 import androidx.compose.ui.unit.IntSize
 import com.intellij.openapi.actionSystem.AnActionEvent
 import com.intellij.openapi.project.DumbAware
@@ -21,11 +20,11 @@ class ComposeOfficialSample2Action : UniAction(), DumbAware {
 
   override fun actionPerformed(event: AnActionEvent) {
     // explicitly clear the application events
-    AppManager.setEvents(
-      onAppStart = null,
-      onAppExit = null,
-      onWindowsEmpty = null
-    )
+//    AppManager.setEvents(
+//      onAppStart = null,
+//      onAppExit = null,
+//      onWindowsEmpty = null
+//    )
     DemoDialog(event.project).show()
   }
 
