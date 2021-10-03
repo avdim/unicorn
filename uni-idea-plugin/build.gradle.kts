@@ -122,6 +122,9 @@ intellij {
       "github",
       "git4idea",
       "android",
+//      "com.jetbrains.edu:2021.9-2021.1-1254",//2021.1
+//      "com.jetbrains.edu:2021.8-2021.2-298",//2021.2
+      "com.jetbrains.edu:2021.9-2021.2-512",//2021.2 //https://plugins.jetbrains.com/plugin/10081-edutools/versions/stable
 //      "org.jetbrains.plugins.ruby:211.7142.36"//https://plugins.jetbrains.com/plugin/1293-ruby/versions/stable
 //      "org.jetbrains.plugins.ruby:211.7442.9"//https://plugins.jetbrains.com/plugin/1293-ruby/versions/stable
 //      "org.jetbrains.plugins.ruby:211.7628.1"//https://plugins.jetbrains.com/plugin/1293-ruby/versions/stable
