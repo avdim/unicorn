@@ -46,3 +46,5 @@ IDE scripting console: https://www.jetbrains.com/help/idea/ide-scripting-console
 
 Ctrl+Shift+T - new terminal tab
 Ctrl+Shift+W - close terminal tab
+
+https://blog.jetbrains.com/idea/2021/10/unfreeze-your-apps/
