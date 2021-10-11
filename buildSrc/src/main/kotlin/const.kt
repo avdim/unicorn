@@ -69,14 +69,8 @@ val LAST_ULTIMATE = IdeaVersion.Download(LAST_IDEA_STR, "IU")
 //val INTELLIJ_GRADLE = "1.1.6"
 val INTELLIJ_GRADLE = "1.2.0"
 // https://maven.pkg.jetbrains.space/public/p/compose/dev/org/jetbrains/compose/org.jetbrains.compose.gradle.plugin/
-//val DESKTOP_COMPOSE = "0.3.0-build152"
-//val DESKTOP_COMPOSE = "0.3.2"
-//val DESKTOP_COMPOSE = "0.4.0-build183"
-//val DESKTOP_COMPOSE = "0.4.0-build185"
-//val DESKTOP_COMPOSE = "0.4.0"
-//val DESKTOP_COMPOSE = "0.5.0-build228"
-//val DESKTOP_COMPOSE = "1.0.0-alpha3"
-val DESKTOP_COMPOSE = "1.0.0-alpha4-build362"
+//val DESKTOP_COMPOSE = "1.0.0-alpha4-build362"
+val DESKTOP_COMPOSE = "1.0.0-alpha4-build396"
 val COMPOSE_WORKAROUND = true
 
 //val asMac = "/Users/dim/Library/Application Support/JetBrains/Toolbox/apps/AndroidStudio/ch-0/203.7185775/Android Studio Preview.app/Contents"
