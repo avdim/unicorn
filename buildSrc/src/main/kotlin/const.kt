@@ -66,12 +66,8 @@ val LAST_COMMUNITY = IdeaVersion.Download(LAST_IDEA_STR, "IC")
 val LAST_ULTIMATE = IdeaVersion.Download(LAST_IDEA_STR, "IU")
 
 // https://github.com/JetBrains/gradle-intellij-plugin
-//val INTELLIJ_GRADLE = "0.7.2"
-//val INTELLIJ_GRADLE = "0.7.3"
-//val INTELLIJ_GRADLE = "1.0"
-//val INTELLIJ_GRADLE = "1.1.2"
-//val INTELLIJ_GRADLE = "1.1.4"
-val INTELLIJ_GRADLE = "1.1.6"
+//val INTELLIJ_GRADLE = "1.1.6"
+val INTELLIJ_GRADLE = "1.2.0"
 // https://maven.pkg.jetbrains.space/public/p/compose/dev/org/jetbrains/compose/org.jetbrains.compose.gradle.plugin/
 //val DESKTOP_COMPOSE = "0.3.0-build152"
 //val DESKTOP_COMPOSE = "0.3.2"
