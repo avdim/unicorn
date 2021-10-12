@@ -2,8 +2,10 @@ package com.unicorn.plugin.ui
 
 import com.intellij.ui.ColoredTreeCellRenderer
 import com.intellij.ui.SimpleTextAttributes
+import com.intellij.ui.TreeSpeedSearch
 import com.intellij.ui.components.JBList
 import com.intellij.ui.treeStructure.Tree
+import com.intellij.util.containers.Convertor
 import com.unicorn.Uni
 import com.unicorn.plugin.TreeAction
 import com.unicorn.plugin.TreeState
@@ -12,6 +14,7 @@ import ru.avdim.mvi.createStore
 import java.util.*
 import javax.swing.JTree
 import javax.swing.tree.TreeNode
+import javax.swing.tree.TreePath
 
 fun showTreeDialog() {
   val store = createStore(TreeState(0)) { s, a: TreeAction -> s.copy(s.i + 1) }
@@ -27,17 +30,9 @@ fun showTreeDialog() {
       }
       row {
         label("Tree view")
-        val tree = Tree(object: TreeNode {
-          override fun getChildAt(childIndex: Int): TreeNode = TODO()
-          override fun getChildCount(): Int = 0
-          override fun getParent(): TreeNode = this
-          override fun getIndex(node: TreeNode?): Int = -1
-          override fun getAllowsChildren(): Boolean = false
-          override fun isLeaf(): Boolean = true
-          override fun children(): Enumeration<out TreeNode> =
-            Collections.enumeration(emptyList())
-          override fun toString(): String = "I am root"
-        })
+        val tree = Tree(
+          ListTreeNode("root", listOf("aaab", "aab", "abcaaf", "dfg44"))
+        )
         tree.setCellRenderer(object : ColoredTreeCellRenderer() {
           override fun customizeCellRenderer(
             tree: JTree,
@@ -53,8 +48,40 @@ fun showTreeDialog() {
           }
 
         })
+        TreeSpeedSearch(tree) { it?.lastPathComponent?.toString() ?: "empty" }
         tree()
       }
     }
+  }
+}
+
+fun Leaf(parent:TreeNode, text:String):TreeNode {
+  return object: TreeNode {
+    override fun getChildAt(childIndex: Int): TreeNode = TODO()
+    override fun getChildCount(): Int = 0
+    override fun getParent(): TreeNode = parent
+    override fun getIndex(node: TreeNode?): Int = -1
+    override fun getAllowsChildren(): Boolean = false
+    override fun isLeaf(): Boolean = true
+    override fun children(): Enumeration<out TreeNode> =
+      Collections.enumeration(emptyList())
+    override fun toString(): String = text
+  }
+}
+
+fun ListTreeNode(text:String, items:List<String>):TreeNode {
+  return object: TreeNode {
+    val childs:List<TreeNode> = items.map{
+      Leaf(this, it)
+    }
+    override fun getChildAt(childIndex: Int): TreeNode = childs[childIndex]
+    override fun getChildCount(): Int = childs.size
+    override fun getParent(): TreeNode = this
+    override fun getIndex(node: TreeNode?): Int = node?.let { childs.indexOf(it) } ?: -1
+    override fun getAllowsChildren(): Boolean = true
+    override fun isLeaf(): Boolean = false
+    override fun children(): Enumeration<out TreeNode> =
+      Collections.enumeration(childs)
+    override fun toString(): String = text
   }
 }
