@@ -34,7 +34,7 @@ fun showTreeDialog() {
           ListTreeNode(
             "root",
             Leaf("aaa"),
-            ListTreeNode(
+            ListTreeNode2(
               "2",
               Leaf("2aaa"),
               Leaf("2bbb"),
@@ -97,6 +97,28 @@ fun ListTreeNode(text: String, vararg items: TreeNode): TreeNode {
     override fun isLeaf(): Boolean = false
     override fun children(): Enumeration<out TreeNode> =
       Collections.enumeration(childs)
+
+    override fun toString(): String = text
+  }
+}
+
+fun ListTreeNode2(text: String, vararg items: TreeNode): TreeNode {
+  return object : TreeNode {
+    val listParent = this
+    val childs: List<TreeNode> = items.map {
+      object : TreeNode by it {
+        override fun getParent(): TreeNode = listParent
+        override fun toString(): String = it.toString()
+      }
+    }
+
+    override fun getChildAt(childIndex: Int): TreeNode = childs[childIndex]
+    override fun getChildCount(): Int = childs.size
+    override fun getParent(): TreeNode = this
+    override fun getIndex(node: TreeNode?): Int = node?.let { childs.indexOf(it) } ?: -1
+    override fun getAllowsChildren(): Boolean = true
+    override fun isLeaf(): Boolean = false
+    override fun children(): Enumeration<out TreeNode> = Collections.enumeration(childs)
 
     override fun toString(): String = text
   }
