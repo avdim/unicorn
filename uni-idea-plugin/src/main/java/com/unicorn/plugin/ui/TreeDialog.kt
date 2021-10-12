@@ -5,6 +5,7 @@ import com.intellij.ui.SimpleTextAttributes
 import com.intellij.ui.TreeSpeedSearch
 import com.intellij.ui.components.JBList
 import com.intellij.ui.treeStructure.Tree
+import com.intellij.util.PlatformIcons
 import com.unicorn.Uni
 import com.unicorn.plugin.TreeAction
 import com.unicorn.plugin.TreeState
@@ -64,7 +65,11 @@ fun showTreeDialog() {
             hasFocus: Boolean
           ) {
             append(value.toString(), SimpleTextAttributes.GRAYED_SMALL_ATTRIBUTES)
-            setIcon(com.android.tools.idea.ui.wizard.DIR_ICON)
+            if (leaf) {
+              setIcon(PlatformIcons.FILE_ICON)
+            } else {
+              setIcon(PlatformIcons.FOLDER_ICON)
+            }
           }
 
         })
