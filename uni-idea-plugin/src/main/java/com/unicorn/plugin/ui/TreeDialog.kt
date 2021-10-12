@@ -1,5 +1,6 @@
 package com.unicorn.plugin.ui
 
+import com.intellij.icons.AllIcons
 import com.intellij.ui.ColoredTreeCellRenderer
 import com.intellij.ui.SimpleTextAttributes
 import com.intellij.ui.TreeSpeedSearch
@@ -66,9 +67,10 @@ fun showTreeDialog() {
           ) {
             append(value.toString(), SimpleTextAttributes.GRAYED_SMALL_ATTRIBUTES)
             if (leaf) {
-              setIcon(PlatformIcons.FILE_ICON)
+              //AllIcons.Nodes.Symlink
+              setIcon(AllIcons.FileTypes.Text)
             } else {
-              setIcon(PlatformIcons.FOLDER_ICON)
+              setIcon(AllIcons.Nodes.Folder)
             }
           }
 
