@@ -31,7 +31,16 @@ fun showTreeDialog() {
       row {
         label("Tree view")
         val tree = Tree(
-          ListTreeNode("root", listOf("aaab", "aab", "abcaaf", "dfg44"))
+          ListTreeNode(
+            "root",
+            Leaf("aaa"),
+            ListTreeNode(
+              "2",
+              Leaf("2aaa"),
+              Leaf("2bbb"),
+            ),
+            Leaf("bbb"),
+          )
         )
         tree.setCellRenderer(object : ColoredTreeCellRenderer() {
           override fun customizeCellRenderer(
@@ -55,25 +64,31 @@ fun showTreeDialog() {
   }
 }
 
-fun Leaf(parent:TreeNode, text:String):TreeNode {
-  return object: TreeNode {
+fun Leaf(content: String): TreeNode {
+  return object : TreeNode {
     override fun getChildAt(childIndex: Int): TreeNode = TODO()
     override fun getChildCount(): Int = 0
-    override fun getParent(): TreeNode = parent
+    override fun getParent(): TreeNode = this
     override fun getIndex(node: TreeNode?): Int = -1
     override fun getAllowsChildren(): Boolean = false
     override fun isLeaf(): Boolean = true
     override fun children(): Enumeration<out TreeNode> =
       Collections.enumeration(emptyList())
-    override fun toString(): String = text
+
+    override fun toString(): String = content
   }
 }
 
-fun ListTreeNode(text:String, items:List<String>):TreeNode {
-  return object: TreeNode {
-    val childs:List<TreeNode> = items.map{
-      Leaf(this, it)
+fun ListTreeNode(text: String, vararg items: TreeNode): TreeNode {
+  return object : TreeNode {
+    val listParent = this
+    val childs: List<TreeNode> = items.map {
+      object : TreeNode by it {
+        override fun getParent(): TreeNode = listParent
+        override fun toString(): String = it.toString()
+      }
     }
+
     override fun getChildAt(childIndex: Int): TreeNode = childs[childIndex]
     override fun getChildCount(): Int = childs.size
     override fun getParent(): TreeNode = this
@@ -82,6 +97,7 @@ fun ListTreeNode(text:String, items:List<String>):TreeNode {
     override fun isLeaf(): Boolean = false
     override fun children(): Enumeration<out TreeNode> =
       Collections.enumeration(childs)
+
     override fun toString(): String = text
   }
 }
