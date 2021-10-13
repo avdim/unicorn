@@ -71,8 +71,9 @@ fun showFileTreeDialog() {
             expandedNode.expand(defaultTreeModel)
           }
           override fun treeWillCollapse(event: TreeExpansionEvent) {
-            val expandedNode = event.lastNode
-            val path = expandedNode.userObject as Path
+            val collapsedNode = event.lastNode
+            val path = collapsedNode.userObject as Path
+            collapsedNode.collapse()
           }
         })
       }
@@ -106,14 +107,3 @@ private fun DefaultMutableTreeNode.collapse() {
 val TreeExpansionEvent.lastNode get():DefaultMutableTreeNode =
   path.lastPathComponent as DefaultMutableTreeNode
 
-private fun Leaf(content: String): MutableTreeNode {
-  return DefaultMutableTreeNode(content, false)
-}
-
-private fun MutableListTreeNode(text: String, vararg items: MutableTreeNode): MutableTreeNode {
-  val node = DefaultMutableTreeNode(text, true)
-  items.forEach {
-    node.add(it)
-  }
-  return node
-}
