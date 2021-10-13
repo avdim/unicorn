@@ -4,6 +4,9 @@ import com.intellij.openapi.Disposable
 import com.intellij.openapi.ui.DialogWrapper
 import com.intellij.openapi.util.Disposer
 import com.intellij.ui.layout.panel
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.cancel
 import javax.swing.JComponent
 
 fun showDialog(viewComponent: JComponent, width:Int = 800, height:Int = 800, parentDisposable: Disposable? = null, modal: Boolean = false): DialogWrapper {
@@ -36,12 +39,16 @@ fun showDialog(viewComponent: JComponent, width:Int = 800, height:Int = 800, par
 }
 
 //todo coroutine scope life when dialog is open. Сделать уничтожение scope при закрытии диалога
-fun showPanelDialog(parentDisposable: Disposable? = null, lambda: com.intellij.ui.layout.LayoutBuilder.() -> kotlin.Unit): DialogWrapper {
+fun showPanelDialog(parentDisposable: Disposable? = null, lambda: com.intellij.ui.layout.LayoutBuilder.(CoroutineScope) -> kotlin.Unit): DialogWrapper {
+  val dialogJob = Job()
   return showDialog(
     panel {
-      lambda()
+      lambda(CoroutineScope(dialogJob))
     },
-    parentDisposable = parentDisposable
+    parentDisposable = Disposable {
+      parentDisposable?.dispose()
+      dialogJob.cancel()
+    }
   )
 }
 
