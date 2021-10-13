@@ -6,92 +6,89 @@ import com.intellij.ui.SimpleTextAttributes
 import com.intellij.ui.TreeSpeedSearch
 import com.intellij.ui.treeStructure.Tree
 import com.unicorn.Uni
-import com.unicorn.plugin.TreeAction
-import com.unicorn.plugin.TreeState
-import com.unicorn.plugin.ui.render.stateFlowView
-import ru.avdim.mvi.createStore
 import java.util.*
 import javax.swing.JTree
 import javax.swing.event.TreeExpansionEvent
 import javax.swing.event.TreeWillExpandListener
-import javax.swing.tree.*
+import javax.swing.tree.DefaultMutableTreeNode
+import javax.swing.tree.DefaultTreeModel
+import javax.swing.tree.MutableTreeNode
+import javax.swing.tree.TreeNode
 
 fun showTreeDialog() {
-  val store = createStore(TreeState(0)) { s, a: TreeAction -> s.copy(s.i + 1) }
   showPanelDialog(Uni) {
-    Uni.scope.stateFlowView(this, store.stateFlow) {
 
-      val mutableListTreeNode = MutableListTreeNode(
-        "root",
-        Leaf("aaa"),
-        MutableListTreeNode(
-          "2",
-          Leaf("2aaa"),
-          Leaf("2bbb"),
-        ),
-        Leaf("bbb"),
-      )
-      val defaultTreeModel: DefaultTreeModel = DefaultTreeModel(mutableListTreeNode)
+    val mutableListTreeNode = MutableListTreeNode(
+      "root",
+      Leaf("aaa"),
+      MutableListTreeNode(
+        "2",
+        Leaf("2aaa"),
+        Leaf("2bbb"),
+      ),
+      Leaf("bbb"),
+    )
+    val defaultTreeModel: DefaultTreeModel = DefaultTreeModel(mutableListTreeNode)
 
-      row {
-        button("add new") {
+    row {
+      button("add new") {
+        defaultTreeModel.insertNodeInto(
+          Leaf("new"),
+          mutableListTreeNode,
+          0
+        )
+        mutableListTreeNode.remove(0)
+      }
+    }
+
+    row {
+      label("Tree view")
+      val tree = Tree(defaultTreeModel)
+      tree.setCellRenderer(object : ColoredTreeCellRenderer() {
+        override fun customizeCellRenderer(
+          tree: JTree,
+          value: Any?,
+          selected: Boolean,
+          expanded: Boolean,
+          leaf: Boolean,
+          row: Int,
+          hasFocus: Boolean
+        ) {
+          append(value.toString(), SimpleTextAttributes.GRAYED_SMALL_ATTRIBUTES)
+          if (leaf) {
+            //AllIcons.Nodes.Symlink
+            setIcon(AllIcons.FileTypes.Text)
+          } else {
+            setIcon(AllIcons.Nodes.Folder)
+          }
+        }
+
+      })
+      TreeSpeedSearch(tree) { it?.lastPathComponent?.toString() ?: "empty" }
+      tree()
+      tree.addTreeWillExpandListener(object : TreeWillExpandListener {
+        override fun treeWillExpand(event: TreeExpansionEvent) {
+          val expandedNode = event.path.lastPathComponent as MutableTreeNode
           defaultTreeModel.insertNodeInto(
-            Leaf("new"),
-            mutableListTreeNode,
+            Leaf("will expand"),
+            expandedNode,
             0
           )
-          mutableListTreeNode.remove(0)
         }
-      }
 
-      row {
-        label("Tree view")
-        val tree = Tree(defaultTreeModel)
-        tree.setCellRenderer(object : ColoredTreeCellRenderer() {
-          override fun customizeCellRenderer(
-            tree: JTree,
-            value: Any?,
-            selected: Boolean,
-            expanded: Boolean,
-            leaf: Boolean,
-            row: Int,
-            hasFocus: Boolean
-          ) {
-            append(value.toString(), SimpleTextAttributes.GRAYED_SMALL_ATTRIBUTES)
-            if (leaf) {
-              //AllIcons.Nodes.Symlink
-              setIcon(AllIcons.FileTypes.Text)
-            } else {
-              setIcon(AllIcons.Nodes.Folder)
-            }
-          }
+        override fun treeWillCollapse(event: TreeExpansionEvent) {
 
-        })
-        TreeSpeedSearch(tree) { it?.lastPathComponent?.toString() ?: "empty" }
-        tree()
-        tree.addTreeWillExpandListener(object : TreeWillExpandListener {
-          override fun treeWillExpand(event: TreeExpansionEvent) {
-            val expandedNode = event.path.lastPathComponent as MutableTreeNode
-            defaultTreeModel.insertNodeInto(
-              Leaf("will expand"),
-              expandedNode,
-              0
-            )
-          }
-          override fun treeWillCollapse(event: TreeExpansionEvent) {
-
-          }
-        })
-      }
+        }
+      })
     }
   }
 }
 
-fun Leaf(content: String): MutableTreeNode {
+private fun Leaf(content: String): MutableTreeNode {
   return DefaultMutableTreeNode(content, false)
 }
 
-fun MutableListTreeNode(text: String, vararg items: MutableTreeNode): MutableTreeNode {
+private fun MutableListTreeNode(text: String, vararg items: MutableTreeNode): MutableTreeNode {
   val node = DefaultMutableTreeNode(text, true)
   items.forEach {
     node.add(it)
@@ -99,7 +96,7 @@ fun MutableListTreeNode(text: String, vararg items: MutableTreeNode): MutableTre
   return node
 }
 
-fun ListTreeNode(text: String, vararg items: TreeNode): TreeNode {
+private fun ListTreeNode(text: String, vararg items: TreeNode): TreeNode {
   return object : TreeNode {
     val listParent = this
     val childs: List<TreeNode> = items.map {
