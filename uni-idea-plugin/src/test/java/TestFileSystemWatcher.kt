@@ -4,8 +4,12 @@ import java.util.concurrent.TimeUnit
 import java.util.stream.Stream
 
 class TestFileSystemWatcher {
-//  @Test
+  //  @Test
   fun testTmpDir() {
+    //https://github.com/vishna/watchservice-ktx/blob/master/src/main/kotlin/dev/vishna/watchservice/watchservice.kt
+    //https://proandroiddev.com/kotlin-watchservice-a-better-file-watcher-using-channels-coroutines-and-sealed-classes-7ab5c9df3ada
+    //http://www.quizful.net/post/java-nio-tutorial
+
     val path = Paths.get("/tmp")
     Files.createDirectories(path)
     val list: Stream<Path> = Files.list(path)
