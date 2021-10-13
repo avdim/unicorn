@@ -4,9 +4,7 @@ import com.intellij.icons.AllIcons
 import com.intellij.ui.ColoredTreeCellRenderer
 import com.intellij.ui.SimpleTextAttributes
 import com.intellij.ui.TreeSpeedSearch
-import com.intellij.ui.components.JBList
 import com.intellij.ui.treeStructure.Tree
-import com.intellij.util.PlatformIcons
 import com.unicorn.Uni
 import com.unicorn.plugin.TreeAction
 import com.unicorn.plugin.TreeState
@@ -14,6 +12,8 @@ import com.unicorn.plugin.ui.render.stateFlowView
 import ru.avdim.mvi.createStore
 import java.util.*
 import javax.swing.JTree
+import javax.swing.event.TreeExpansionEvent
+import javax.swing.event.TreeWillExpandListener
 import javax.swing.tree.*
 
 fun showTreeDialog() {
@@ -31,7 +31,7 @@ fun showTreeDialog() {
         ),
         Leaf("bbb"),
       )
-      val defaultTreeModel = DefaultTreeModel(mutableListTreeNode)
+      val defaultTreeModel: DefaultTreeModel = DefaultTreeModel(mutableListTreeNode)
 
       row {
         button("add new") {
@@ -44,14 +44,6 @@ fun showTreeDialog() {
         }
       }
 
-      row {
-        val list = JBList<String>()
-//        list.setDataProvider(DataProvider { listOf("a", "b") })
-        list.setListData(
-          arrayOf("a", "b")
-        )
-        list()
-      }
       row {
         label("Tree view")
         val tree = Tree(defaultTreeModel)
@@ -77,7 +69,19 @@ fun showTreeDialog() {
         })
         TreeSpeedSearch(tree) { it?.lastPathComponent?.toString() ?: "empty" }
         tree()
-        tree.model
+        tree.addTreeWillExpandListener(object : TreeWillExpandListener {
+          override fun treeWillExpand(event: TreeExpansionEvent) {
+            val expandedNode = event.path.lastPathComponent as MutableTreeNode
+            defaultTreeModel.insertNodeInto(
+              Leaf("will expand"),
+              expandedNode,
+              0
+            )
+          }
+          override fun treeWillCollapse(event: TreeExpansionEvent) {
+
+          }
+        })
       }
     }
   }
