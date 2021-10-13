@@ -18,7 +18,7 @@ import javax.swing.event.TreeWillExpandListener
 import javax.swing.tree.*
 
 private sealed class Action{
-  object DoNothing:Action()
+  object Increment:Action()
 }
 private data class State(
   val i:Int
@@ -27,15 +27,21 @@ private data class State(
 fun showFileTreeDialog() {
   val store = createStore(State(0)) { s, a: Action -> s.copy(s.i + 1) }
   showPanelDialog(Uni) {
-    Uni.scope.stateFlowView(this, store.stateFlow) {
+    Uni.scope.stateFlowView(this, store.stateFlow) { s: State ->
 
       val root = DefaultMutableTreeNode(Paths.get("/"), true)
       val defaultTreeModel: DefaultTreeModel = DefaultTreeModel(root)
       root.expand(defaultTreeModel)
 
-
+      row {
+        button("update mvi") {
+          store.send(Action.Increment)
+        }
+        label("counter: ${s.i}")
+      }
       row {
         val tree = Tree(defaultTreeModel)
+        tree.autoscrolls = true
         tree.setCellRenderer(object : ColoredTreeCellRenderer() {
           override fun customizeCellRenderer(
             tree: JTree,
@@ -56,7 +62,8 @@ fun showFileTreeDialog() {
           }
         })
         TreeSpeedSearch(tree) { it?.lastPathComponent?.toString() ?: "empty" }
-        tree()
+        scrollPane(tree)
+
         tree.addTreeWillExpandListener(object : TreeWillExpandListener {
           override fun treeWillExpand(event: TreeExpansionEvent) {
             val expandedNode = event.lastNode
