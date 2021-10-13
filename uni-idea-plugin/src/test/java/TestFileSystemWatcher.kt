@@ -3,7 +3,7 @@ import java.nio.file.*
 import java.util.concurrent.TimeUnit
 import java.util.stream.Stream
 
-class TestFiles {
+class TestFileSystemWatcher {
 //  @Test
   fun testTmpDir() {
     val path = Paths.get("/tmp")
