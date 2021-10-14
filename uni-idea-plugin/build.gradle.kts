@@ -121,10 +121,10 @@ intellij {
       "terminal",
       "github",
       "git4idea",
-      "android",
+//      "android",
 //      "com.jetbrains.edu:2021.9-2021.1-1254",//2021.1
 //      "com.jetbrains.edu:2021.8-2021.2-298",//2021.2
-      "com.jetbrains.edu:2021.9.1-2021.2-583",//2021.2 //https://plugins.jetbrains.com/plugin/10081-edutools/versions/stable
+//      "com.jetbrains.edu:2021.9.1-2021.2-583",//2021.2 //https://plugins.jetbrains.com/plugin/10081-edutools/versions/stable
 //      "org.jetbrains.plugins.ruby:211.7142.36"//https://plugins.jetbrains.com/plugin/1293-ruby/versions/stable
 //      "org.jetbrains.plugins.ruby:211.7442.9"//https://plugins.jetbrains.com/plugin/1293-ruby/versions/stable
 //      "org.jetbrains.plugins.ruby:211.7628.1"//https://plugins.jetbrains.com/plugin/1293-ruby/versions/stable
@@ -162,7 +162,7 @@ tasks.withType<org.jetbrains.intellij.tasks.RunIdeTask> {
 //  jbrVersion("jbr_dcevm-11_0_10-linux-x64-b1341.35")
   systemProperties["ide.browser.jcef.enabled"] = true
 //  systemProperties["pdf.viewer.debug"] = true
-  jvmArgs("-Xmx2548m", "-Xms128m")
+  jvmArgs("-Xmx5400m", "-Xms128m")
   autoReloadPlugins.set(true)
 }
 
