@@ -162,7 +162,7 @@ tasks.withType<org.jetbrains.intellij.tasks.RunIdeTask> {
 //  jbrVersion("jbr_dcevm-11_0_10-linux-x64-b1341.35")
   systemProperties["ide.browser.jcef.enabled"] = true
 //  systemProperties["pdf.viewer.debug"] = true
-  jvmArgs("-Xmx5400m", "-Xms128m")
+  jvmArgs("-Xmx6000m", "-Xms128m")
   autoReloadPlugins.set(true)
 }
 
