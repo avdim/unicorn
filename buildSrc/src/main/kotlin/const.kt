@@ -77,7 +77,6 @@ val COMPOSE_WORKAROUND = true
 //val asMac = "/Users/dim/Library/Application Support/JetBrains/Toolbox/apps/AndroidStudio/ch-0/203.7185775/Android Studio Preview.app/Contents"
 //val asMac = "/Users/dim/Library/Application Support/JetBrains/Toolbox/apps/AndroidStudio/ch-0/203.7360992/Android Studio Preview.app/Contents"
 val asMac = "/Users/dim/Library/Application Support/JetBrains/Toolbox/apps/AndroidStudio/ch-1/203.7717.56.2111.7361063/Android Studio Preview.app/Contents"
-val acMac = "/Users/dim/Library/Application Support/JetBrains/Toolbox/apps/AppCode/ch-3/213.4631.15/AppCode 2021.3 EAP.app/Contents"
 //val asLinux = "/home/dim/Desktop/programs/android-studio-4.2/2020.3.1.8"
 //val asLinux = "/home/dim/Desktop/android_studio/2020.3.1.1_canary10/"
 //val asLinux = "/home/dim/Desktop/android_studio/2020.3_alpha12/extracted"
@@ -87,6 +86,7 @@ val acMac = "/Users/dim/Library/Application Support/JetBrains/Toolbox/apps/AppCo
 //val asLinux = "/home/dim/Desktop/android_studio/2021_canary5/android-studio/"
 //val asLinux = "/home/dim/Desktop/android_studio/2021_canary8/android-studio/"
 val asLinux = "/home/dim/Desktop/android_studio/2021_canary9/android-studio/"
+val asMac = "/Users/dim/Desktop/android-studio/2021.2/android-studio-2021.2.1.1-mac-canary1/Contents"
 
 val Project.UNI_BUILD_TYPE: BuildType get() =
   when (safeArgument("uniBuildType")) {
