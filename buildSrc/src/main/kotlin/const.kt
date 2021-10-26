@@ -57,10 +57,10 @@ val COMPILER_ARGS = listOf<String>()
 //val LAST_IDEA_STR = "212.5284.31-EAP-SNAPSHOT"
 //val LAST_IDEA_STR = "2021.2"
 //val LAST_IDEA_STR = "2021.2.1"
-//val LAST_IDEA_STR = "2021.2.2"
+val LAST_IDEA_STR = "2021.2.2"
 //val LAST_IDEA_STR = "213.3714.440-EAP-SNAPSHOT"
 //val LAST_IDEA_STR = "213.4293.20-EAP-SNAPSHOT"
-val LAST_IDEA_STR = "213.4631.20-EAP-SNAPSHOT"//2021.3-eap3
+//val LAST_IDEA_STR = "213.4631.20-EAP-SNAPSHOT"//2021.3-eap3
 //val LAST_IDEA_STR = "213.4928-EAP-CANDIDATE-SNAPSHOT"
 
 val LAST_COMMUNITY = IdeaVersion.Download(LAST_IDEA_STR, "IC")
@@ -87,7 +87,8 @@ val asMac = "/Users/dim/Desktop/android-studio/2021.2/android-studio-2021.2.1.1-
 //val asLinux = "/home/dim/Desktop/android_studio/2021_alpha1/android-studio"
 //val asLinux = "/home/dim/Desktop/android_studio/2021_canary5/android-studio/"
 //val asLinux = "/home/dim/Desktop/android_studio/2021_canary8/android-studio/"
-val asLinux = "/home/dim/Desktop/android_studio/2021_canary9/android-studio/"
+//val asLinux = "/home/dim/Desktop/android_studio/2021_canary9/android-studio/"
+val asLinux = "/home/dim/Desktop/android_studio/2021.2_canary2/android-studio/"
 
 val Project.UNI_BUILD_TYPE: BuildType get() =
   when (safeArgument("uniBuildType")) {

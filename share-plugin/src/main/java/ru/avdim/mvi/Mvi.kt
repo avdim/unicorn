@@ -7,7 +7,7 @@ import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.consumeAsFlow
 import kotlinx.coroutines.launch
 
-typealias Reducer<S, A> = (S, A) -> S
+typealias Reducer<S, A> = suspend (S, A) -> S
 
 interface Store<S, A> {
     fun send(action: A)
@@ -41,7 +41,7 @@ fun <S, A> createStore(init: S, reducer: Reducer<S, A>): Store<S, A> {
     }
 }
 
-typealias ReducerSE<S, A, SE> = (S, A) -> ReducerResult<S, SE>
+typealias ReducerSE<S, A, SE> = suspend (S, A) -> ReducerResult<S, SE>
 
 class ReducerResult<S, SE>(val state: S, val sideEffects: List<SE> = emptyList())
 

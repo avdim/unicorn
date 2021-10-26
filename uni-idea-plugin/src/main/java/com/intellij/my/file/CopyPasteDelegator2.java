@@ -44,15 +44,15 @@ public class CopyPasteDelegator2 implements CopyPasteSupport {
    * {@code LangDataKeys.PSI_ELEMENT_ARRAY.getData(dataContext)} is used instead. */
   @Deprecated
   @ApiStatus.ScheduledForRemoval(inVersion = "2021.3")
-  protected PsiElement @NotNull [] getSelectedElements() {
+  protected PsiElement /*@NotNull*/ [] getSelectedElements() {
     return PsiElement.EMPTY_ARRAY;
   }
 
-  protected PsiElement @NotNull [] getSelectedElements(@NotNull DataContext dataContext) {
+  protected PsiElement /*@NotNull*/ [] getSelectedElements(@NotNull DataContext dataContext) {
     return ObjectUtils.notNull(LangDataKeys.PSI_ELEMENT_ARRAY.getData(dataContext), getSelectedElements());
   }
 
-  private static PsiElement @NotNull [] validate(PsiElement @Nullable [] selectedElements) {
+  private static PsiElement /*@NotNull*/ [] validate(PsiElement /*@Nullable*/ [] selectedElements) {
     if (selectedElements == null) return PsiElement.EMPTY_ARRAY;
     for (PsiElement element : selectedElements) {
       if (element == null || !element.isValid()) {
@@ -143,7 +143,8 @@ public class CopyPasteDelegator2 implements CopyPasteSupport {
 
       return DumbService.getInstance(myProject).computeWithAlternativeResolveEnabled(() -> {
         try {
-          final Module module = PlatformCoreDataKeys.MODULE.getData(dataContext);
+          final Module module = null; //TODO раскоментировать PlatformCoreDataKeys.MODULE.getData(dataContext);
+          module.getModuleContentScope();//todo лишняя строка
           PsiElement target = getPasteTarget(dataContext, module);
           if (isCopied[0]) {
             pasteAfterCopy(elements, module, target, true);

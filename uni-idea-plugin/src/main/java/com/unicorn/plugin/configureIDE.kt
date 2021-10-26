@@ -185,6 +185,7 @@ suspend fun configureIDE() {
       showWelcomeDialog()
     }
   }
+//  showFileTreeDialog()
 
   Uni.log.debug { "configureIDE end" }
 }
