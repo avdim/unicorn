@@ -115,6 +115,7 @@ intellij {
   sameSinceUntilBuild.set(true)
   downloadSources.set(true)//todo check debug
   instrumentCode.set(true)//todo if value is false - NPE в KeyPromoter plugin
+  ideaDependencyCachePath.set(myIdeaDependencyCachePath)
 //    setPlugins("org.jetbrains.kotlin:1.3.11-release-IJ2018.3-1")
   plugins.set(
     listOf(

@@ -75,6 +75,7 @@ intellij {
   sameSinceUntilBuild.set(true)
   downloadSources.set(true)
   instrumentCode.set(true)
+  ideaDependencyCachePath.set(myIdeaDependencyCachePath)
 //    plugins.set(listOf("org.jetbrains.kotlin:1.3.11-release-IJ2018.3-1"))
 }
 

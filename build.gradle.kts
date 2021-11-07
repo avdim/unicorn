@@ -4,6 +4,13 @@ plugins {
 //  kotlin("multiplatform") version KOTLIN_VERSION apply false
 //  id("kotlin-dce-js") version KOTLIN_VERSION apply false
 //  id("kotlinx-serialization") version KOTLIN_VERSION apply false
+  idea
+}
+
+idea {
+  module {
+    excludeDirs = excludeDirs + listOf(file("${project.projectDir}/.exclude"))
+  }
 }
 
 buildscript {
