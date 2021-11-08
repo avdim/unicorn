@@ -49,7 +49,7 @@ fun helloComposePanel() = ComposePanel().apply {
           Offset(100f, 0f),
           Offset(0f, 0f),
         )
-        rotate(0f, /*pivot = Offset(50f, 50f)*/) {//todo rotate 45f
+        rotate(20f, pivot = Offset(50f, 50f)) {
           drawPath(
             path = Path().apply {
               val start = dots[0]
