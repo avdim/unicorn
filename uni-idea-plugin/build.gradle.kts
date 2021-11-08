@@ -14,7 +14,7 @@ plugins {
 
 //  id("com.codingfeline.buildkonfig") version "0.8.0" // https://github.com/yshrsmz/BuildKonfig
   id("com.github.gmazzo.buildconfig") version GMAZZO_BUILDCONFIG_VERSION
-  id("org.jetbrains.compose") version DESKTOP_COMPOSE
+  id("org.jetbrains.compose")
   idea
 }
 
