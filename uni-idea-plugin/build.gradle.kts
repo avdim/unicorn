@@ -79,6 +79,8 @@ dependencies {
   implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:$COROUTINE_VERSION")
   implementation("org.jetbrains.kotlinx:kotlinx-coroutines-debug:$COROUTINE_VERSION")
   implementation("org.jetbrains.kotlinx:kotlinx-coroutines-swing:$COROUTINE_VERSION")
+  implementation("org.pushing-pixels:radiance-animation:${RADIANCE_VERSION}")
+  implementation("org.pushing-pixels:radiance-animation-ktx:${RADIANCE_VERSION}")
   implementation(project(":lib-github"))
   implementation(project(":share-plugin"))
   implementation(project(":repo"))
