@@ -58,6 +58,7 @@ val INTELLIJ_GRADLE = "1.2.1"
 // https://maven.pkg.jetbrains.space/public/p/compose/dev/org/jetbrains/compose/org.jetbrains.compose.gradle.plugin/
 //val DESKTOP_COMPOSE = "1.0.0-alpha4-build362"
 val DESKTOP_COMPOSE = "1.0.0-alpha4-build396"
+//val DESKTOP_COMPOSE = "1.0.0-beta5"
 val COMPOSE_WORKAROUND = true
 
 //val asMac = "/Users/dim/Library/Application Support/JetBrains/Toolbox/apps/AndroidStudio/ch-0/203.7185775/Android Studio Preview.app/Contents"
