@@ -1,10 +1,10 @@
 package com.unicorn.file
 
+import com.unicorn.Uni
 import kotlinx.coroutines.*
 import java.nio.file.Path
 import java.nio.file.StandardWatchEventKinds
 import java.nio.file.WatchKey
-import kotlin.concurrent.thread
 
 class PathListenerEvent(val type: Type, val path: Path) {
   sealed class Type {
@@ -13,7 +13,7 @@ class PathListenerEvent(val type: Type, val path: Path) {
   }
 }
 
-fun Path.addListener(scope:CoroutineScope, listener: (PathListenerEvent) -> Unit):Job {
+fun Path.addListener(scope: CoroutineScope, listener: (PathListenerEvent) -> Unit): Job {
   val dir = this
 
   val job = scope.launch(context = Dispatchers.IO) {
@@ -26,14 +26,13 @@ fun Path.addListener(scope:CoroutineScope, listener: (PathListenerEvent) -> Unit
 //      StandardWatchEventKinds.ENTRY_MODIFY
     )
 
-    while (true) {
-      val key: WatchKey = try {
-        ws.take()
-      } catch (t: Throwable) {
-        println("catch")
-        continue
-      }
-      try {
+    val key: WatchKey = try {
+      ws.take()
+    } catch (t: Throwable) {
+      Uni.log.fatalError(t) { "WatchKey take() fail" }
+    }
+    try {
+      while (isActive) {
         val events = key.pollEvents()
         events.forEach {
           val kind = it.kind()
@@ -41,7 +40,7 @@ fun Path.addListener(scope:CoroutineScope, listener: (PathListenerEvent) -> Unit
           val p = (context as? Path)?.let {
             dir.resolve(it)
           }
-          println("kind: $kind, context: $context")
+          Uni.log.info { "kind: $kind, context: $context" }
           when (kind) {
             StandardWatchEventKinds.ENTRY_CREATE -> {
               if (p != null) {
@@ -59,12 +58,12 @@ fun Path.addListener(scope:CoroutineScope, listener: (PathListenerEvent) -> Unit
             }
           }
         }
-      } finally {
-        key.reset()
+        yield()
       }
-      yield()
+    } finally {
+      key.reset()
+      Uni.log.info { "path listener finally, dir: $dir" }
     }
   }
-
   return job
 }

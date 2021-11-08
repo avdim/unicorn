@@ -1,7 +1,7 @@
 package com.unicorn.log.lib
 
 inline fun DEBUG_LEVEL_ENABLE(lambda: () -> Unit) {
-  lambda()
+//  lambda()
 }
 
 inline fun TODO_LEVEL_ENABLE(lambda: () -> Unit) {

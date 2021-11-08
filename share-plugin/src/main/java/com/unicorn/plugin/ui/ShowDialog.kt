@@ -44,6 +44,11 @@ fun showPanelDialog(parentDisposable: Disposable? = null, lambda: com.intellij.u
   return showDialog(
     panel {
       lambda(CoroutineScope(dialogJob))
+      row {
+        button("cancel dialogJob") {
+          dialogJob.cancel()
+        }
+      }
     },
     parentDisposable = Disposable {
       parentDisposable?.dispose()
