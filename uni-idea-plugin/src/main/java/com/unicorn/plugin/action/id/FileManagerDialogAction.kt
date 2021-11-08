@@ -7,7 +7,6 @@ import com.intellij.ui.layout.panel
 import com.unicorn.Uni
 import com.unicorn.plugin.ui.render.fileManager
 import com.unicorn.plugin.ui.render.stateFlowView
-import com.unicorn.plugin.ui.showDialog
 import com.unicorn.plugin.ui.showPanelDialog
 import todo.mvi.createFileManagerMviStore
 
