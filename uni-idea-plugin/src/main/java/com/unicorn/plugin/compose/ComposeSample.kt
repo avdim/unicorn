@@ -15,6 +15,7 @@ import androidx.compose.ui.awt.ComposePanel
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.graphics.*
+import androidx.compose.ui.graphics.drawscope.rotate
 import androidx.compose.ui.unit.dp
 import java.awt.BorderLayout
 import java.awt.Container
@@ -40,6 +41,29 @@ fun helloComposePanel() = ComposePanel().apply {
         )
       }
       Text("after canvas")
+      Canvas(Modifier) {
+        val dots = listOf(
+          Offset(0f, 0f),
+          Offset(0f, 100f),
+          Offset(100f, 100f),
+          Offset(100f, 0f),
+          Offset(0f, 0f),
+        )
+        rotate(0f, /*pivot = Offset(50f, 50f)*/) {//todo rotate 45f
+          drawPath(
+            path = Path().apply {
+              val start = dots[0]
+              moveTo(start.x, start.y)
+              dots.drop(1).forEach {
+//                                        lineTo(it.x, it.y)
+                quadraticBezierTo(50f, 50f, it.x, it.y)
+              }
+              close()
+            },
+            Color.Red,
+          )
+        }
+      }
     }
   }
 }
