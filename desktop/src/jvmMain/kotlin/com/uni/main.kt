@@ -1,5 +1,6 @@
 package com.uni
 
+import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
@@ -13,7 +14,11 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.Path
+import androidx.compose.ui.graphics.drawscope.rotate
+import androidx.compose.ui.graphics.drawscope.scale
 import androidx.compose.ui.input.pointer.PointerEventType
 import androidx.compose.ui.input.pointer.isPrimaryPressed
 import androidx.compose.ui.input.pointer.pointerInput
@@ -33,9 +38,10 @@ fun main() = application {
     state = rememberWindowState(width = 800.dp, height = 800.dp)
   ) {
     var color by remember { mutableStateOf(Color(0, 0, 0)) }
-    Box(
-      modifier = Modifier
-        .wrapContentSize(Alignment.Center)
+    var mousePos by remember { mutableStateOf(Offset(100f, 100f)) }
+
+    Canvas(
+      Modifier.wrapContentSize(Alignment.Center)
         .fillMaxSize()
         .background(color = color)
         .pointerInput(Unit) {
@@ -45,19 +51,41 @@ fun main() = application {
 
             if (event.buttons.isPrimaryPressed) {
               val point = awtEvent?.point
-              println("pressed point: $point")
+              if (point != null) {
+                mousePos = Offset(point.x.toFloat(), point.y.toFloat())
+              }
             }
             if (event.type == PointerEventType.Press) {
 
             }
           }
-        }
-        .pointerMoveFilter(
+        }.pointerMoveFilter(
           onMove = {
-            color = Color(it.x.toInt() % 256, it.y.toInt() % 256, 0)
+//            mousePos = it
+//            color = Color(it.x.toInt() % 256, it.y.toInt() % 256, 0)
             false
           }
         )
-    )
+    ) {
+      val dots = listOf(
+        Offset(0f, 0f),
+        Offset(0f, 100f),
+        mousePos,
+        Offset(100f, 0f),
+        Offset(0f, 0f),
+      )
+      drawPath(
+        path = Path().apply {
+          val start = dots[0]
+          moveTo(start.x, start.y)
+          dots.drop(1).forEach {
+//                                        lineTo(it.x, it.y)
+            quadraticBezierTo(50f, 50f, it.x, it.y)
+          }
+          close()
+        },
+        Color.Red,
+      )
+    }
   }
 }
