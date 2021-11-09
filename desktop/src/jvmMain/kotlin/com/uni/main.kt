@@ -72,13 +72,12 @@ fun main() = application {
         Offset(0f, 100f),
         mousePos,
         Offset(100f, 0f),
-        Offset(0f, 0f),
       )
       drawPath(
         path = Path().apply {
           val start = dots[0]
           moveTo(start.x, start.y)
-          dots.drop(1).forEach {
+          (dots.drop(1) + dots[0]).forEach {
 //                                        lineTo(it.x, it.y)
             quadraticBezierTo(50f, 50f, it.x, it.y)
           }
