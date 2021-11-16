@@ -21,10 +21,8 @@ val JVM_TARGET = MIN_JDK_VERSION.kotlinTarget
  */
 val USE_KOTLIN_DEV_REPOSITORY = false
 
-//val KOTLIN_VERSION = "1.4.32"
-//val KOTLIN_VERSION = "1.5.10"
-//val KOTLIN_VERSION = "1.5.21"
 val KOTLIN_VERSION = "1.5.31"
+//val KOTLIN_VERSION = "1.6.0"
 val SERIALIZATION_VERSION = "1.0.1"
 val COROUTINE_VERSION = "1.4.2"
 val KTOR_VERSION = "1.5.0"
@@ -54,8 +52,8 @@ val LAST_COMMUNITY = IdeaVersion.Download(LAST_IDEA_STR, "IC")
 val LAST_ULTIMATE = IdeaVersion.Download(LAST_IDEA_STR, "IU")
 
 // https://github.com/JetBrains/gradle-intellij-plugin
-//val INTELLIJ_GRADLE = "1.2.0"
-val INTELLIJ_GRADLE = "1.2.1"
+//val INTELLIJ_GRADLE = "1.2.1"
+val INTELLIJ_GRADLE = "1.3.0"
 // https://maven.pkg.jetbrains.space/public/p/compose/dev/org/jetbrains/compose/org.jetbrains.compose.gradle.plugin/
 //val DESKTOP_COMPOSE = "1.0.0-alpha4-build362"
 //val DESKTOP_COMPOSE = "1.0.0-alpha4-build396"
