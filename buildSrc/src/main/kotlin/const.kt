@@ -52,8 +52,8 @@ val LAST_COMMUNITY = IdeaVersion.Download(LAST_IDEA_STR, "IC")
 val LAST_ULTIMATE = IdeaVersion.Download(LAST_IDEA_STR, "IU")
 
 // https://github.com/JetBrains/gradle-intellij-plugin
-//val INTELLIJ_GRADLE = "1.2.1"
-val INTELLIJ_GRADLE = "1.3.0"
+val INTELLIJ_GRADLE = "1.2.1"
+//val INTELLIJ_GRADLE = "1.3.0"
 // https://maven.pkg.jetbrains.space/public/p/compose/dev/org/jetbrains/compose/org.jetbrains.compose.gradle.plugin/
 //val DESKTOP_COMPOSE = "1.0.0-alpha4-build362"
 //val DESKTOP_COMPOSE = "1.0.0-alpha4-build396"
@@ -76,7 +76,8 @@ val asMac = "/Users/dim/Desktop/android-studio/2021.2/android-studio-2021.2.1.1-
 //val asLinux = "/home/dim/Desktop/android_studio/2021_canary9/android-studio/"
 //val asLinux = "/home/dim/Desktop/android_studio/2021.2_canary2/android-studio/"
 //val asLinux = "/home/dim/Desktop/android_studio/2021.2_canary3/android-studio/"
-val asLinux = "/home/dim/Desktop/android_studio/2021.2_canary4/android-studio/"
+//val asLinux = "/home/dim/Desktop/android_studio/2021.2_canary4/android-studio/"
+val asLinux = "/home/dim/Desktop/android_studio/2021.2_canary5/android-studio/"
 
 val Project.UNI_BUILD_TYPE: BuildType get() =
   when (safeArgument("uniBuildType")) {
@@ -126,7 +127,7 @@ val Project.IDEA_VERSION: IdeaVersion get() = UNI_BUILD_TYPE.let {buildType->
       LAST_COMMUNITY
     }
     is BuildType.UseLocal -> {
-      IdeaVersion.Local(buildType.path)
+      IdeaVersion.Local(buildType.path, null /*LAST_IDEA_STR*/)
     }
   }
 }

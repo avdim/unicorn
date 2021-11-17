@@ -104,6 +104,9 @@ intellij {
       version.set(ideaVersion.version)
     }
     is IdeaVersion.Local -> {
+      ideaVersion.version?.let {
+        version.set(it)
+      }
       localPath.set(ideaVersion.localPath)
     }
   }
