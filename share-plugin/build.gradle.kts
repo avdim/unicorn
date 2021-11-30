@@ -25,15 +25,6 @@ java {
 group = "ru.avdim.idea-plugin-update"
 version = "0.1"
 
-repositories {
-  mavenCentral()
-  maven("https://www.jetbrains.com/intellij-repository/snapshots")
-//  maven("https://jetbrains.bintray.com/intellij-plugin-service")
-  maven("https://cache-redirector.jetbrains.com/intellij-dependencies")
-//  maven { setUrl("https://oss.sonatype.org/content/repositories/snapshots/") }
-//  maven { setUrl("https://dl.bintray.com/jetbrains/intellij-plugin-service") }
-}
-
 dependencies {
   implementation(LOG_MAVEN_ARTIFACT)
   implementation("io.ktor:ktor-server-netty:$KTOR_VERSION")

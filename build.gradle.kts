@@ -32,18 +32,11 @@ allprojects {//todo allprojects bad?
       // com/jetbrains/intellij/java/java-compiler-ant-tasks/211.7628.21.2111.7579519/java-compiler-ant-tasks-211.7628.21.2111.7579519.pom
     }
     mavenCentral()
-    maven { setUrl("https://dl.bintray.com/kotlin/kotlinx") }
-    //maven { setUrl("https://dl.bintray.com/kotlin/exposed") }
-    maven { setUrl("https://kotlin.bintray.com/ktor") }
     maven(url = "https://maven.pkg.jetbrains.space/public/p/compose/dev")
     google()
-
-    if (USE_KOTLIN_DEV_REPOSITORY) {
-      maven { setUrl("https://dl.bintray.com/kotlin/kotlin-dev") }
-      maven { setUrl("https://dl.bintray.com/kotlin/kotlin-eap") }
-      maven { setUrl("https://dl.bintray.com/kotlin/kotlinx") }
-      maven { setUrl("https://dl.bintray.com/kotlin/kotlin-js-wrappers") }
-    }
+    maven("https://www.jetbrains.com/intellij-repository/releases")
+    maven("https://www.jetbrains.com/intellij-repository/snapshots")
+    maven("https://cache-redirector.jetbrains.com/intellij-dependencies")
   }
   tasks.withType(AbstractTestTask::class) {
     testLogging {

@@ -39,6 +39,7 @@ val COMPILER_ARGS = listOf<String>()
 //or in gradle.properties: kotlin.js.compiler=ir
 
 // https://www.jetbrains.com/intellij-repository/snapshots/
+// https://www.jetbrains.com/intellij-repository/releases/
 //val LAST_IDEA_STR = "2021.1.3"
 //val LAST_IDEA_STR = "2021.2.2"
 //val LAST_IDEA_STR = "213.3714.440-EAP-SNAPSHOT"
@@ -48,6 +49,7 @@ val COMPILER_ARGS = listOf<String>()
 //val LAST_IDEA_STR = "213.5449-EAP-CANDIDATE-SNAPSHOT"
 //val LAST_IDEA_STR = "213.5744-EAP-CANDIDATE-SNAPSHOT"
 //val LAST_IDEA_STR = "213.5744.202-EAP-SNAPSHOT"
+//val LAST_IDEA_STR = "213.5744.223"
 val LAST_IDEA_STR = "2021.3"
 
 val LAST_COMMUNITY = IdeaVersion.Download(LAST_IDEA_STR, "IC")
