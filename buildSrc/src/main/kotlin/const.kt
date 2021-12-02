@@ -40,16 +40,12 @@ val COMPILER_ARGS = listOf<String>()
 
 // https://www.jetbrains.com/intellij-repository/snapshots/
 // https://www.jetbrains.com/intellij-repository/releases/
-//val LAST_IDEA_STR = "2021.1.3"
-//val LAST_IDEA_STR = "2021.2.2"
-//val LAST_IDEA_STR = "213.3714.440-EAP-SNAPSHOT"
-//val LAST_IDEA_STR = "213.4293.20-EAP-SNAPSHOT"
-//val LAST_IDEA_STR = "213.4631.20-EAP-SNAPSHOT"//2021.3-eap3
-//val LAST_IDEA_STR = "213.4928-EAP-CANDIDATE-SNAPSHOT"
-//val LAST_IDEA_STR = "213.5449-EAP-CANDIDATE-SNAPSHOT"
 //val LAST_IDEA_STR = "213.5744-EAP-CANDIDATE-SNAPSHOT"
 //val LAST_IDEA_STR = "213.5744.202-EAP-SNAPSHOT"
 //val LAST_IDEA_STR = "213.5744.223"
+//val LAST_IDEA_STR = "2021.1.3"
+//val LAST_IDEA_STR = "2021.2.2"
+//val LAST_IDEA_STR = "212.5457.46"
 val LAST_IDEA_STR = "2021.3"
 
 val LAST_COMMUNITY = IdeaVersion.Download(LAST_IDEA_STR, "IC")
