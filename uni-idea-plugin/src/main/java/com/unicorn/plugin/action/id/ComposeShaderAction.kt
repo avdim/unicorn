@@ -41,7 +41,7 @@ private fun renderBox() {
             uniform float time;
             
             float f(vec3 p) {
-                p.z -= 10. + time;
+                p.z += 10. + time;
                 float a = p.z * .1;
                 p.xy *= mat2(cos(a), sin(a), -sin(a), cos(a));
                 return .1 - length(cos(p.xy) + sin(p.yz));
