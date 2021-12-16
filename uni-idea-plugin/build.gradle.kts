@@ -122,7 +122,7 @@ intellij {
 //      "com.jetbrains.edu:2021.9-2021.1-1254",//2021.1
 //      "com.jetbrains.edu:2021.8-2021.2-298",//2021.2
 //      "com.jetbrains.edu:2021.9.1-2021.2-583",//2021.2 //https://plugins.jetbrains.com/plugin/10081-edutools/versions/stable
-//      "com.jetbrains.edu:2021.11-2021.3-271",//2021.3 //https://plugins.jetbrains.com/plugin/10081-edutools/versions/stable
+      "com.jetbrains.edu:2021.11-2021.3-271",//2021.3 //https://plugins.jetbrains.com/plugin/10081-edutools/versions/stable
 //      "org.jetbrains.plugins.ruby:211.7142.36"//https://plugins.jetbrains.com/plugin/1293-ruby/versions/stable
 //      "org.jetbrains.plugins.ruby:211.7442.9"//https://plugins.jetbrains.com/plugin/1293-ruby/versions/stable
 //      "org.jetbrains.plugins.ruby:211.7628.1"//https://plugins.jetbrains.com/plugin/1293-ruby/versions/stable
@@ -135,7 +135,7 @@ intellij {
 //      "org.jetbrains.kotlin:211-1.5.31-release-551-AS7442.40",
 //      "org.jetbrains.kotlin:212-1.5.31-release-546-IJ4638.7",
 //      "org.jetbrains.kotlin:212-1.6.0-release-799-IJ5457.46",
-//      "org.jetbrains.kotlin:213-1.6.10-release-923-IJ5744.223",
+      "org.jetbrains.kotlin:213-1.6.10-release-923-IJ5744.223",
     "org.jetbrains.compose.desktop.ide:1.0.0",
     )
   )
