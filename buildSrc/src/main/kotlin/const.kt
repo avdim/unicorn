@@ -46,7 +46,8 @@ val COMPILER_ARGS = listOf<String>()
 //val LAST_IDEA_STR = "2021.1.3"
 //val LAST_IDEA_STR = "2021.2.2"
 //val LAST_IDEA_STR = "212.5457.46"
-val LAST_IDEA_STR = "2021.3"
+//val LAST_IDEA_STR = "2021.3"
+val LAST_IDEA_STR = "2021.3.1"
 
 val LAST_COMMUNITY = IdeaVersion.Download(LAST_IDEA_STR, "IC")
 val LAST_ULTIMATE = IdeaVersion.Download(LAST_IDEA_STR, "IU")
