@@ -17,16 +17,16 @@ pluginManagement {
 //    maven(url = "https://oss.sonatype.org/content/repositories/snapshots/") // plugin id("org.jetbrains.intellij") SNAPSHOT
   }
 
-//  resolutionStrategy {
-//    eachPlugin {
-//      when (requested.id.id) {
+  resolutionStrategy {
+    eachPlugin {
+      when (requested.id.id) {
 //        "org.jetbrains.compose" -> useModule("org.jetbrains.compose:compose-gradle-plugin:${requested.version}")
-////        "kotlin-dce-js" -> useModule("org.jetbrains.kotlin:kotlin-gradle-plugin:${requested.version}")
-////        "kotlinx-serialization" -> useModule("org.jetbrains.kotlin:kotlin-serialization:${requested.version}")
-////        "org.jetbrains.kotlin.multiplatform" -> useModule("org.jetbrains.kotlin:kotlin-gradle-plugin:${target.version}")
-//      }
-//    }
-//  }
+//        "kotlin-dce-js" -> useModule("org.jetbrains.kotlin:kotlin-gradle-plugin:${requested.version}")
+//        "kotlinx-serialization" -> useModule("org.jetbrains.kotlin:kotlin-serialization:${requested.version}")
+//        "org.jetbrains.kotlin.multiplatform" -> useModule("org.jetbrains.kotlin:kotlin-gradle-plugin:${target.version}")
+      }
+    }
+  }
 }
 rootProject.name = "unicorn"
 //enableFeaturePreview("GRADLE_METADATA")
