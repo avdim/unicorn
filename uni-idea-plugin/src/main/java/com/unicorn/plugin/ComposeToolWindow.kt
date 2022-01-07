@@ -37,7 +37,8 @@ class ComposeToolWindow : ToolWindowFactory, DumbAware {
                     awaitPointerEvent()
                   }
                   val nativeEvent = (event.mouseEvent as MouseEvent)
-                  if (true) {
+                  val isAnyPressed = nativeEvent.modifiersEx and AnyButtonMask != 0
+                  if (isAnyPressed) {
                     cursorPos = event.changes.first().position
                   }
                 }
@@ -54,3 +55,5 @@ class ComposeToolWindow : ToolWindowFactory, DumbAware {
   }
 }
 
+private const val AnyButtonMask =
+  InputEvent.BUTTON1_DOWN_MASK or InputEvent.BUTTON2_DOWN_MASK or InputEvent.BUTTON3_DOWN_MASK
