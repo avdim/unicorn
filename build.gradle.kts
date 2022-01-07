@@ -1,7 +1,7 @@
 plugins {
   kotlin("multiplatform") version KOTLIN_VERSION apply false
   kotlin("plugin.serialization") version KOTLIN_VERSION apply false
-  id("org.jetbrains.compose") version DESKTOP_COMPOSE apply false
+  id("org.jetbrains.compose") version COMPOSE_VERSION apply false
 //  kotlin("multiplatform") version KOTLIN_VERSION apply false
 //  id("kotlin-dce-js") version KOTLIN_VERSION apply false
 //  id("kotlinx-serialization") version KOTLIN_VERSION apply false

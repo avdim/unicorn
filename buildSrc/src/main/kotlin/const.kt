@@ -22,7 +22,8 @@ val JVM_TARGET = MIN_JDK_VERSION.kotlinTarget
 val USE_KOTLIN_DEV_REPOSITORY = false
 
 val KOTLIN_VERSION = "1.6.10"
-//val KOTLIN_VERSION = "1.6.0"
+val COMPOSE_VERSION = "1.0.1"
+val COMPOSE_WORKAROUND = true
 val SERIALIZATION_VERSION = "1.0.1"
 val COROUTINE_VERSION = "1.4.2"
 val KTOR_VERSION = "1.5.0"
@@ -55,11 +56,6 @@ val LAST_ULTIMATE = IdeaVersion.Download(LAST_IDEA_STR, "IU")
 // https://github.com/JetBrains/gradle-intellij-plugin
 val INTELLIJ_GRADLE = "1.2.1"
 //val INTELLIJ_GRADLE = "1.3.0"
-// https://maven.pkg.jetbrains.space/public/p/compose/dev/org/jetbrains/compose/org.jetbrains.compose.gradle.plugin/
-//val DESKTOP_COMPOSE = "1.0.0-alpha4-build362"
-//val DESKTOP_COMPOSE = "1.0.0-alpha4-build396"
-val DESKTOP_COMPOSE = "1.0.1" //todo поправить resolution strategy в settings.gradle.kts
-val COMPOSE_WORKAROUND = true
 
 //val asMac = "/Users/dim/Library/Application Support/JetBrains/Toolbox/apps/AndroidStudio/ch-0/203.7185775/Android Studio Preview.app/Contents"
 //val asMac = "/Users/dim/Library/Application Support/JetBrains/Toolbox/apps/AndroidStudio/ch-0/203.7360992/Android Studio Preview.app/Contents"
