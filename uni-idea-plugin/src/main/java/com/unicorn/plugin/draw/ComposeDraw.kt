@@ -3,11 +3,17 @@
 package com.unicorn.plugin.draw
 
 import androidx.compose.foundation.Canvas
-import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.*
+import androidx.compose.material.Button
+import androidx.compose.material.Divider
+import androidx.compose.material.Text
 import androidx.compose.runtime.*
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.geometry.Offset
+import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.Path
 import androidx.compose.ui.graphics.drawscope.Stroke
@@ -15,72 +21,97 @@ import androidx.compose.ui.input.pointer.PointerEventType
 import androidx.compose.ui.input.pointer.isCtrlPressed
 import androidx.compose.ui.input.pointer.isShiftPressed
 import androidx.compose.ui.input.pointer.pointerInput
+import androidx.compose.ui.unit.dp
 import java.awt.event.InputEvent
 import java.awt.event.MouseEvent
 
+val DRAW_COLORS = listOf(Color.Black, Color.Gray, Color.LightGray, Color.Red, Color(0xff00aa00), Color.Blue, Color.Yellow, Color.Magenta)
+
 @Composable
 fun ComposeDraw(curvesState: MutableState<List<Curve>>) {
-  var color by remember { mutableStateOf(0xff00aa00.toInt()) }
+  var drawColor by remember { mutableStateOf(DRAW_COLORS.first()) }
   var curves: List<Curve> by remember { curvesState }
   var currentPoints: List<Pt> by remember { mutableStateOf(listOf()) }
   var cursorPos by remember { mutableStateOf(Offset(40f, 40f)) }
-  Canvas(Modifier.fillMaxSize().pointerInput(Unit) {
-    while (true) {
-      val event = awaitPointerEventScope {
-        awaitPointerEvent()
-      }
-      val nativeEvent = (event.mouseEvent as MouseEvent)
-      val isAnyPressed = nativeEvent.modifiersEx and AnyButtonMask != 0
-      if (isAnyPressed) {
-        val position = event.changes.first().position
-        cursorPos = position
-        currentPoints = currentPoints + Pt(position.x, position.y)
-      } else {
-        if (currentPoints.isNotEmpty()) {
-          curves = curves + Curve(color, currentPoints)
-          currentPoints = listOf()
+  Box(Modifier.fillMaxSize()) {
+    Canvas(Modifier.fillMaxSize().pointerInput(Unit) {
+      while (true) {
+        val event = awaitPointerEventScope {
+          awaitPointerEvent()
         }
-        if (event.type == PointerEventType.Scroll) {
-          val SCROLL_POWER = -30f
-          val scrollX = event.changes.first().scrollDelta.x
-          val scrollY = event.changes.first().scrollDelta.y
+        val nativeEvent = (event.mouseEvent as MouseEvent)
+        val isAnyPressed = nativeEvent.modifiersEx and AnyButtonMask != 0
+        if (isAnyPressed) {
+          val position = event.changes.first().position
+          cursorPos = position
+          currentPoints = currentPoints + Pt(position.x, position.y)
+        } else {
+          if (currentPoints.isNotEmpty()) {
+            curves = curves + Curve(drawColor, currentPoints)
+            currentPoints = listOf()
+          }
+          if (event.type == PointerEventType.Scroll) {
+            val SCROLL_POWER = -30f
+            val scrollX = event.changes.first().scrollDelta.x
+            val scrollY = event.changes.first().scrollDelta.y
 
-          val scrollOffset = Pt(scrollX, scrollY) * SCROLL_POWER
-          curves = curves.map { it.copy(points = it.points.map { it + scrollOffset }) }
+            val scrollOffset = Pt(scrollX, scrollY) * SCROLL_POWER
+            curves = curves.map { it.copy(points = it.points.map { it + scrollOffset }) }
 
-          event.keyboardModifiers.isShiftPressed//right
-          event.keyboardModifiers.isCtrlPressed//zoom
+            event.keyboardModifiers.isShiftPressed//right
+            event.keyboardModifiers.isCtrlPressed//zoom
+          }
+        }
+      }
+    }) {
+      (curves + Curve(drawColor, currentPoints)).forEach {
+        if(it.points.size == 1) {
+          drawCircle(it.color, radius = 2f, center = it.points.first().toOffset())
+        } else if(it.points.size > 1) {
+          drawPath(
+            path = Path().apply {
+              val first = it.points.first()
+              moveTo(first.x, first.y)
+              for(pt in it.points.drop(1)) {
+                lineTo(pt.x, pt.y)
+              }
+            },
+            color = it.color,
+            style = Stroke(width = 2f)
+          )
+
         }
       }
     }
-  }) {
-    (curves + Curve(color, currentPoints)).forEach {
-      if(it.points.size == 1) {
-        drawCircle(Color(it.color), radius = 2f, center = it.points.first().toOffset())
-      } else if(it.points.size > 1) {
-        drawPath(
-          path = Path().apply {
-            val first = it.points.first()
-            moveTo(first.x, first.y)
-            for(pt in it.points.drop(1)) {
-              lineTo(pt.x, pt.y)
-            }
-          },
-          color = Color(it.color),
-          style = Stroke(width = 2f)
-        )
-
+    Column (Modifier.align(Alignment.TopEnd), horizontalAlignment = Alignment.End) {
+      TxtButton("Clear all") { curves = emptyList() }
+      Divider(Modifier.size(5.dp))
+      TxtButton("Erase tool") {}
+      Divider(Modifier.size(5.dp))
+      DRAW_COLORS.forEachIndexed { i, color ->
+        val SIZE = 50f
+        Canvas(Modifier.size(SIZE.dp).clickable {
+          drawColor = color
+        }) {
+          drawRect(color, topLeft = Offset(0f,0f), size = Size(SIZE, SIZE))
+        }
       }
     }
-    drawCircle(Color.Red.copy(alpha = 0.5f), radius = 5f, cursorPos)
   }
 }
 
 data class Pt(val x: Float=0f, val y: Float=0f)
-data class Curve(val color: Int, val points: List<Pt>, val scroll:Pt = Pt())
+data class Curve(val color: Color, val points: List<Pt>, val scroll:Pt = Pt())
 private const val AnyButtonMask =
   InputEvent.BUTTON1_DOWN_MASK or InputEvent.BUTTON2_DOWN_MASK or InputEvent.BUTTON3_DOWN_MASK
 
 operator fun Pt.plus(other:Pt):Pt = Pt(x + other.x, y + other.y)
 operator fun Pt.times(scale: Float): Pt = Pt(x * scale, y * scale)
 fun Pt.toOffset() = Offset(x, y)
+
+@Composable
+fun TxtButton(txt:String, onClick:()->Unit) {
+  Button(onClick = onClick) {
+    Text(txt)
+  }
+}
