@@ -2,8 +2,9 @@
 
 package com.unicorn.plugin.draw
 
-import androidx.compose.foundation.Canvas
-import androidx.compose.foundation.clickable
+import androidx.compose.foundation.*
+import androidx.compose.foundation.interaction.MutableInteractionSource
+import androidx.compose.foundation.interaction.collectIsFocusedAsState
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.Button
 import androidx.compose.material.Divider
@@ -17,11 +18,14 @@ import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.Path
 import androidx.compose.ui.graphics.drawscope.Stroke
+import androidx.compose.ui.input.key.*
 import androidx.compose.ui.input.pointer.PointerEventType
 import androidx.compose.ui.input.pointer.isCtrlPressed
 import androidx.compose.ui.input.pointer.isShiftPressed
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.window.Window
+import androidx.compose.ui.window.application
 import java.awt.event.InputEvent
 import java.awt.event.MouseEvent
 
@@ -33,6 +37,10 @@ fun ComposeDraw(curvesState: MutableState<List<Curve>>) {
   var curves: List<Curve> by remember { curvesState }
   var currentPoints: List<Pt> by remember { mutableStateOf(listOf()) }
   var cursorPos by remember { mutableStateOf(Offset(40f, 40f)) }
+  fun undo() {
+    println("undo")
+    curves = curves.dropLast(1)
+  }
   Box(Modifier.fillMaxSize()) {
     Canvas(Modifier.fillMaxSize().pointerInput(Unit) {
       while (true) {
@@ -87,6 +95,7 @@ fun ComposeDraw(curvesState: MutableState<List<Curve>>) {
       TxtButton("Clear all") { curves = emptyList() }
       Divider(Modifier.size(5.dp))
       TxtButton("Erase tool") {}
+      TxtButton("Undo") {undo()}
       Divider(Modifier.size(5.dp))
       DRAW_COLORS.forEachIndexed { i, color ->
         val SIZE = 50f
@@ -113,5 +122,13 @@ fun Pt.toOffset() = Offset(x, y)
 fun TxtButton(txt:String, onClick:()->Unit) {
   Button(onClick = onClick) {
     Text(txt)
+  }
+}
+
+fun main() {
+  application {
+    Window(onCloseRequest = ::exitApplication) {
+      ComposeDraw(mutableStateOf(emptyList()))
+    }
   }
 }
