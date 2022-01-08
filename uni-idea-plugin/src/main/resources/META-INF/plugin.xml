@@ -33,7 +33,7 @@
     <!--suppress PluginXmlValidity todo remove -->
     <toolWindow id="logs" anchor="right" secondary="false" factoryClass="com.unicorn.plugin.log.LogWindow"
                 icon="/icons/unicorn.svg"/>
-    <toolWindow id="compose" anchor="right" secondary="false" factoryClass="com.unicorn.plugin.ComposeToolWindow"
+    <toolWindow id="Compose" anchor="right" secondary="false" factoryClass="com.unicorn.plugin.ComposeToolWindow"
                 icon="/icons/unicorn.svg"/>
     <bundledKeymap file="Unicorn.xml"/>
 <!--    <treeStructureProvider implementation="todo.MyTreeStructureProvider"/>-->

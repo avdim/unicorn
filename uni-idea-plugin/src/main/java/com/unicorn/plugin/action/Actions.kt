@@ -57,6 +57,7 @@ object Actions {
         name = "uni group",
         actions = listOf(
           ActionData("com.unicorn.plugin.action.id.FileManagerToolWindowAction", FileManagerToolWindowAction()),
+          ActionData("com.unicorn.plugin.action.id.ComposeToolWindowAction", ComposeToolWindowAction()),
           ActionData("com.unicorn.plugin.action.id.WelcomeAction", WelcomeAction()),
           ActionData("com.unicorn.plugin.action.id.FileManagerDialogAction", FileManagerDialogAction()),
           ActionData("com.unicorn.plugin.action.id.FileTreeAction", FileTreeAction()),
