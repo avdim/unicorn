@@ -40,7 +40,6 @@ fun ComposeDraw(curvesState: MutableState<List<Curve>>) {
   var currentPoints: List<Pt> by remember { mutableStateOf(listOf()) }
   var cursorPos by remember { mutableStateOf(Offset(40f, 40f)) }
   fun undo() {
-    println("undo")
     if (currentPoints.isNotEmpty()) {
       currentPoints = emptyList()
     } else {
@@ -49,7 +48,6 @@ fun ComposeDraw(curvesState: MutableState<List<Curve>>) {
   }
 
   val boxFocusRequester = remember { FocusRequester() }
-  val interactionSource = remember { MutableInteractionSource() }
   Box(
     Modifier.fillMaxSize()
       .onPreviewKeyEvent {
@@ -64,7 +62,7 @@ fun ComposeDraw(curvesState: MutableState<List<Curve>>) {
         false
       }
       .focusRequester(boxFocusRequester)
-      .focusable(interactionSource = interactionSource)
+      .focusable()
   ) {
     Canvas(Modifier.fillMaxSize().pointerInput(Unit) {
       while (true) {
