@@ -32,7 +32,21 @@ import androidx.compose.ui.window.application
 import java.awt.event.InputEvent
 import java.awt.event.MouseEvent
 
-val DRAW_COLORS = listOf(Color.Black, Color.Gray, Color.LightGray, Color.Red, Color(0xff00aa00), Color.Blue, Color.Yellow, Color.Magenta)
+val DRAW_COLORS:List<Pair<Color, Float?>> = listOf(
+  Color.Black to null,
+  Color.Gray to null,
+  Color.LightGray to null,
+  Color.Red to null,
+  Color(0xff00aa00) to null,
+  Color.Blue to null,
+  Color(0x66FF0000) to 20f,
+  Color(0x6600FF00) to 20f,
+  Color(0x660000FF) to 20f,
+  Color(0x88FFFF00) to 20f,
+  Color(0x66FF00FF) to 20f,
+  Color(0x66000000) to 20f,
+  Color(0xFFffFFff) to 20f,
+)
 
 @Composable
 fun ComposeDraw(curvesState: MutableState<List<Curve>>, textsState: MutableState<List<TextData>>) {
@@ -64,7 +78,7 @@ fun ComposeDraw(curvesState: MutableState<List<Curve>>, textsState: MutableState
             }
           }
           it.key == Key.T && selectedTextIndex == null -> {
-            texts = texts + TextData(drawColor, "todo", cursorPos)
+            texts = texts + TextData(drawColor.first, "todo", cursorPos)
             selectedTextIndex = texts.lastIndex
           }
           selectedTextIndex != null && (it.key == Key.Escape /*|| it.key == Key.Enter*/) -> {
@@ -91,7 +105,7 @@ fun ComposeDraw(curvesState: MutableState<List<Curve>>, textsState: MutableState
           currentPoints = currentPoints + pt
         } else {
           if (currentPoints.isNotEmpty()) {
-            curves = curves + Curve(drawColor, currentPoints)
+            curves = curves + Curve(drawColor.first, currentPoints, width = drawColor.second)
             currentPoints = listOf()
           }
           if (event.type == PointerEventType.Scroll) {
@@ -103,7 +117,8 @@ fun ComposeDraw(curvesState: MutableState<List<Curve>>, textsState: MutableState
               val center = cursorPos
               curves = curves.map {
                 it.copy(
-                  points = it.points.map { a -> center + (a - center) * scale }
+                  points = it.points.map { a -> center + (a - center) * scale },
+                  width = it.width?.let { it * scale }
                 )
               }
               texts = texts.map {
@@ -123,20 +138,20 @@ fun ComposeDraw(curvesState: MutableState<List<Curve>>, textsState: MutableState
         }
       }
     }) {
-      (curves + Curve(drawColor, currentPoints)).forEach {
-        if (it.points.size == 1) {
-          drawCircle(it.color, radius = 4f, center = it.points.first().toOffset())
-        } else if (it.points.size > 1) {
+      (curves + Curve(drawColor.first, currentPoints, width = drawColor.second)).forEach { c->
+        if (c.points.size == 1) {
+          drawCircle(c.color, radius = c.width ?: 4f, center = c.points.first().toOffset())
+        } else if (c.points.size > 1) {
           drawPath(
             path = Path().apply {
-              val first = it.points.first()
+              val first = c.points.first()
               moveTo(first.x, first.y)
-              for (pt in it.points.drop(1)) {
+              for (pt in c.points.drop(1)) {
                 lineTo(pt.x, pt.y)
               }
             },
-            color = it.color,
-            style = Stroke(width = 3f)
+            color = c.color,
+            style = Stroke(width = c.width ?: 3f)
           )
         }
       }
@@ -195,11 +210,17 @@ fun ComposeDraw(curvesState: MutableState<List<Curve>>, textsState: MutableState
           val textIndex = selectedTextIndex
           if(textIndex != null) {
             texts = texts.toMutableList().apply {
-              set(textIndex, texts[textIndex].copy(color = drawColor))
+              set(textIndex, texts[textIndex].copy(color = drawColor.first))
             }
           }
         }) {
-          drawRect(color, topLeft = Offset(0f, 0f), size = Size(SIZE, SIZE))
+          if(color.second != null) {
+            drawCircle(color = Color.Black, radius = SIZE/2, center = Offset(SIZE / 2, SIZE / 2))
+            drawCircle(color = Color.White, radius = SIZE/2/1.1f, center = Offset(SIZE / 2, SIZE / 2))
+            drawCircle(color = color.first, radius = SIZE/2/1.1f, center = Offset(SIZE / 2, SIZE / 2))
+          } else {
+            drawRect(color.first, topLeft = Offset(0f, 0f), size = Size(SIZE, SIZE))
+          }
         }
       }
     }
@@ -207,7 +228,7 @@ fun ComposeDraw(curvesState: MutableState<List<Curve>>, textsState: MutableState
 }
 
 data class Pt(val x: Float = 0f, val y: Float = 0f)
-data class Curve(val color: Color, val points: List<Pt>, val scroll: Pt = Pt())
+data class Curve(val color: Color, val points: List<Pt>, val scroll: Pt = Pt(), val width: Float? = null)
 
 private const val AnyButtonMask =
   InputEvent.BUTTON1_DOWN_MASK or InputEvent.BUTTON2_DOWN_MASK or InputEvent.BUTTON3_DOWN_MASK
