@@ -38,7 +38,7 @@ fun ComposeDraw(curvesState: MutableState<List<Curve>>) {
   var drawColor by remember { mutableStateOf(DRAW_COLORS.first()) }
   var curves: List<Curve> by remember { curvesState }
   var currentPoints: List<Pt> by remember { mutableStateOf(listOf()) }
-  var cursorPos by remember { mutableStateOf(Offset(40f, 40f)) }
+  var cursorPos by remember { mutableStateOf(Pt(0f,0f)) }
   fun undo() {
     if (currentPoints.isNotEmpty()) {
       currentPoints = emptyList()
@@ -71,33 +71,42 @@ fun ComposeDraw(curvesState: MutableState<List<Curve>>) {
         }
         val nativeEvent = (event.mouseEvent as MouseEvent)
         val isAnyPressed = nativeEvent.modifiersEx and AnyButtonMask != 0
+        val position = event.changes.first().position
+        val pt = Pt(position.x, position.y)
+        cursorPos = pt
         if (isAnyPressed) {
           boxFocusRequester.requestFocus()
-          val position = event.changes.first().position
-          cursorPos = position
-          currentPoints = currentPoints + Pt(position.x, position.y)
+          currentPoints = currentPoints + pt
         } else {
           if (currentPoints.isNotEmpty()) {
             curves = curves + Curve(drawColor, currentPoints)
             currentPoints = listOf()
           }
           if (event.type == PointerEventType.Scroll) {
-            val SCROLL_POWER = -30f
             val scrollX = event.changes.first().scrollDelta.x
             val scrollY = event.changes.first().scrollDelta.y
 
-            val scrollOffset = Pt(scrollX, scrollY) * SCROLL_POWER
-            curves = curves.map { it.copy(points = it.points.map { it + scrollOffset }) }
-
-            event.keyboardModifiers.isShiftPressed//right
-            event.keyboardModifiers.isCtrlPressed//zoom
+            if (event.keyboardModifiers.isCtrlPressed) {//zoom
+              val scale = 1 + (scrollY + scrollX) * 0.10f
+              val center = cursorPos
+              curves = curves.map {
+                it.copy(
+                  points = it.points.map { a -> center + (a - center) * scale }
+                )
+              }
+            } else {
+              event.keyboardModifiers.isShiftPressed//right
+              val SCROLL_POWER = -30f
+              val scrollOffset = Pt(scrollX, scrollY) * SCROLL_POWER
+              curves = curves.map { it.copy(points = it.points.map { it + scrollOffset }) }
+            }
           }
         }
       }
     }) {
       (curves + Curve(drawColor, currentPoints)).forEach {
         if(it.points.size == 1) {
-          drawCircle(it.color, radius = 2f, center = it.points.first().toOffset())
+          drawCircle(it.color, radius = 4f, center = it.points.first().toOffset())
         } else if(it.points.size > 1) {
           drawPath(
             path = Path().apply {
@@ -108,9 +117,8 @@ fun ComposeDraw(curvesState: MutableState<List<Curve>>) {
               }
             },
             color = it.color,
-            style = Stroke(width = 2f)
+            style = Stroke(width = 3f)
           )
-
         }
       }
     }
@@ -138,6 +146,7 @@ private const val AnyButtonMask =
   InputEvent.BUTTON1_DOWN_MASK or InputEvent.BUTTON2_DOWN_MASK or InputEvent.BUTTON3_DOWN_MASK
 
 operator fun Pt.plus(other:Pt):Pt = Pt(x + other.x, y + other.y)
+operator fun Pt.minus(other:Pt):Pt = Pt(x - other.x, y - other.y)
 operator fun Pt.times(scale: Float): Pt = Pt(x * scale, y * scale)
 fun Pt.toOffset() = Offset(x, y)
 
