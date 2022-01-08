@@ -8,21 +8,23 @@ import androidx.compose.foundation.interaction.collectIsFocusedAsState
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.Button
 import androidx.compose.material.Divider
+import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.focus.FocusRequester
+import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.Path
 import androidx.compose.ui.graphics.drawscope.Stroke
+import androidx.compose.ui.graphics.lerp
 import androidx.compose.ui.input.key.*
-import androidx.compose.ui.input.pointer.PointerEventType
-import androidx.compose.ui.input.pointer.isCtrlPressed
-import androidx.compose.ui.input.pointer.isShiftPressed
-import androidx.compose.ui.input.pointer.pointerInput
+import androidx.compose.ui.input.pointer.*
+import androidx.compose.ui.unit.IntSize
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Window
 import androidx.compose.ui.window.application
@@ -39,9 +41,31 @@ fun ComposeDraw(curvesState: MutableState<List<Curve>>) {
   var cursorPos by remember { mutableStateOf(Offset(40f, 40f)) }
   fun undo() {
     println("undo")
-    curves = curves.dropLast(1)
+    if (currentPoints.isNotEmpty()) {
+      currentPoints = emptyList()
+    } else {
+      curves = curves.dropLast(1)
+    }
   }
-  Box(Modifier.fillMaxSize()) {
+
+  val boxFocusRequester = remember { FocusRequester() }
+  val interactionSource = remember { MutableInteractionSource() }
+  Box(
+    Modifier.fillMaxSize()
+      .onPreviewKeyEvent {
+        if (it.isCtrlPressed && it.key == Key.Z) {
+          when (it.type) {
+            KeyEventType.KeyDown -> {}
+            KeyEventType.KeyUp -> {
+              undo()
+            }
+          }
+        }
+        false
+      }
+      .focusRequester(boxFocusRequester)
+      .focusable(interactionSource = interactionSource)
+  ) {
     Canvas(Modifier.fillMaxSize().pointerInput(Unit) {
       while (true) {
         val event = awaitPointerEventScope {
@@ -50,6 +74,7 @@ fun ComposeDraw(curvesState: MutableState<List<Curve>>) {
         val nativeEvent = (event.mouseEvent as MouseEvent)
         val isAnyPressed = nativeEvent.modifiersEx and AnyButtonMask != 0
         if (isAnyPressed) {
+          boxFocusRequester.requestFocus()
           val position = event.changes.first().position
           cursorPos = position
           currentPoints = currentPoints + Pt(position.x, position.y)
