@@ -3,6 +3,7 @@
 package com.unicorn.plugin.draw
 
 import androidx.compose.foundation.*
+import androidx.compose.foundation.gestures.draggable
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.interaction.collectIsFocusedAsState
 import androidx.compose.foundation.layout.*
@@ -11,6 +12,7 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.awt.awtEvent
 import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.geometry.Offset
@@ -21,8 +23,10 @@ import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.graphics.lerp
 import androidx.compose.ui.input.key.*
 import androidx.compose.ui.input.pointer.*
+import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.unit.IntSize
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.Window
 import androidx.compose.ui.window.application
 import java.awt.event.InputEvent
@@ -31,7 +35,7 @@ import java.awt.event.MouseEvent
 val DRAW_COLORS = listOf(Color.Black, Color.Gray, Color.LightGray, Color.Red, Color(0xff00aa00), Color.Blue, Color.Yellow, Color.Magenta)
 
 @Composable
-fun ComposeDraw(curvesState: MutableState<List<Curve>>) {
+fun ComposeDraw(curvesState: MutableState<List<Curve>>, textsState: MutableState<List<TextData>>) {
   var drawColor by remember { mutableStateOf(DRAW_COLORS.first()) }
   var curves: List<Curve> by remember { curvesState }
   var currentPoints: List<Pt> by remember { mutableStateOf(listOf()) }
@@ -104,7 +108,8 @@ fun ComposeDraw(curvesState: MutableState<List<Curve>>) {
               }
               texts = texts.map {
                 it.copy(
-                  pos = center + (it.pos - center) * scale
+                  pos = center + (it.pos - center) * scale,
+                  scale = it.scale * scale
                 )
               }
             } else {
@@ -139,16 +144,40 @@ fun ComposeDraw(curvesState: MutableState<List<Curve>>) {
     for (i in texts.indices) {
       val t = texts[i]
       if (selectedTextIndex == i) {
-        TextField(t.text, { txt ->
-          texts = texts.toMutableList().apply {
-            set(i, t.copy(text = txt))
-          }
-        }, Modifier.offset(t.pos.x.dp, t.pos.y.dp))
+        TextField(
+          value = t.text,
+          onValueChange = { txt ->
+            texts = texts.toMutableList().apply {
+              set(i, t.copy(text = txt))
+            }
+          },
+          textStyle = TextStyle(color = t.color, fontSize = t.fontSize),
+          modifier = Modifier.offset(t.pos.x.dp, t.pos.y.dp)
+        )
       } else {
+        var downPos: Pt? by remember(t) { mutableStateOf(null) }
         Text(
-          t.text,
-          Modifier.offset(t.pos.x.dp, t.pos.y.dp).clickable {
+          text = t.text,
+          fontSize = t.fontSize,
+          color = t.color,
+          modifier = Modifier.offset(t.pos.x.dp, t.pos.y.dp).clickable {
             selectedTextIndex = i
+          }.pointerInput(t) {
+            while(true) {
+              val event = awaitPointerEventScope {
+                awaitPointerEvent()
+              }
+              if (event.buttons.isPrimaryPressed) {
+                if (downPos == null) {
+                  downPos = event.awtEvent.toPt()
+                }
+                texts = texts.toMutableList().apply {
+                  set(i, t.copy(pos = t.pos + event.awtEvent.toPt() - downPos!!))
+                }
+              } else {
+                downPos = null
+              }
+            }
           }
         )
       }
@@ -163,6 +192,12 @@ fun ComposeDraw(curvesState: MutableState<List<Curve>>) {
         val SIZE = 50f
         Canvas(Modifier.size(SIZE.dp).clickable {
           drawColor = color
+          val textIndex = selectedTextIndex
+          if(textIndex != null) {
+            texts = texts.toMutableList().apply {
+              set(textIndex, texts[textIndex].copy(color = drawColor))
+            }
+          }
         }) {
           drawRect(color, topLeft = Offset(0f, 0f), size = Size(SIZE, SIZE))
         }
@@ -180,7 +215,9 @@ private const val AnyButtonMask =
 operator fun Pt.plus(other: Pt): Pt = Pt(x + other.x, y + other.y)
 operator fun Pt.minus(other: Pt): Pt = Pt(x - other.x, y - other.y)
 operator fun Pt.times(scale: Float): Pt = Pt(x * scale, y * scale)
+fun Offset.toPt() = Pt(x, y)
 fun Pt.toOffset() = Offset(x, y)
+fun MouseEvent.toPt(): Pt = Pt(x.toFloat(),  y.toFloat())
 
 @Composable
 fun TxtButton(txt: String, onClick: () -> Unit) {
@@ -192,9 +229,10 @@ fun TxtButton(txt: String, onClick: () -> Unit) {
 fun main() {
   application {
     Window(onCloseRequest = ::exitApplication) {
-      ComposeDraw(mutableStateOf(emptyList()))
+      ComposeDraw(mutableStateOf(emptyList()), mutableStateOf(emptyList()))
     }
   }
 }
 
-data class TextData(val color: Color, val text: String, val pos: Pt, val scale: Float = 1f)
+data class TextData(val color: Color, val text: String, val pos: Pt, val scale: Double = 1.0)
+val TextData.fontSize get() = (18 * Math.sqrt(scale)).sp
