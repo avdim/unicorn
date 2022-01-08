@@ -31,6 +31,7 @@ class ComposeToolWindow : ToolWindowFactory, DumbAware {
   companion object {
     val stateCurves = mutableStateOf(emptyList<Curve>())
     val stateTexts = mutableStateOf(emptyList<TextData>())
+
     val composePanel: ComposePanel by lazy {
       val panel = ComposePanel()
       panel.apply {

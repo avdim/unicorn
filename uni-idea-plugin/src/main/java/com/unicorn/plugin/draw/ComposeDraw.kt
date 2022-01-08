@@ -40,7 +40,7 @@ fun ComposeDraw(curvesState: MutableState<List<Curve>>, textsState: MutableState
   var curves: List<Curve> by remember { curvesState }
   var currentPoints: List<Pt> by remember { mutableStateOf(listOf()) }
   var cursorPos by remember { mutableStateOf(Pt(0f, 0f)) }
-  var texts: List<TextData> by remember { mutableStateOf(listOf()) }
+  var texts: List<TextData> by remember { textsState }
   var selectedTextIndex: Int? by remember { mutableStateOf(null) }
   fun undo() {
     if (currentPoints.isNotEmpty()) {
