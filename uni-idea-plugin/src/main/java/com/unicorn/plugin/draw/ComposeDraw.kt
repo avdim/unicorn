@@ -19,9 +19,9 @@ import java.awt.event.InputEvent
 import java.awt.event.MouseEvent
 
 @Composable
-fun ComposeDraw() {
+fun ComposeDraw(curvesState: MutableState<List<Curve>>) {
   var color by remember { mutableStateOf(0xff00aa00.toInt()) }
-  var curves: List<Curve> by remember { mutableStateOf(emptyList()) }
+  var curves: List<Curve> by remember { curvesState }
   var currentPoints: List<Pt> by remember { mutableStateOf(listOf()) }
   var cursorPos by remember { mutableStateOf(Offset(40f, 40f)) }
   Canvas(Modifier.fillMaxSize().pointerInput(Unit) {
@@ -77,7 +77,7 @@ fun ComposeDraw() {
 }
 
 data class Pt(val x: Float=0f, val y: Float=0f)
-private data class Curve(val color: Int, val points: List<Pt>, val scroll:Pt = Pt())
+data class Curve(val color: Int, val points: List<Pt>, val scroll:Pt = Pt())
 private const val AnyButtonMask =
   InputEvent.BUTTON1_DOWN_MASK or InputEvent.BUTTON2_DOWN_MASK or InputEvent.BUTTON3_DOWN_MASK
 

@@ -1,5 +1,6 @@
 package com.unicorn.plugin
 
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.awt.ComposePanel
 import com.intellij.openapi.application.ApplicationManager
@@ -9,6 +10,7 @@ import com.intellij.openapi.wm.ToolWindow
 import com.intellij.openapi.wm.ToolWindowFactory
 import com.intellij.ui.content.ContentFactory
 import com.unicorn.plugin.draw.ComposeDraw
+import com.unicorn.plugin.draw.Curve
 import java.awt.Dimension
 
 class ComposeToolWindow : ToolWindowFactory, DumbAware {
@@ -17,16 +19,26 @@ class ComposeToolWindow : ToolWindowFactory, DumbAware {
     ApplicationManager.getApplication().invokeLater {
       toolWindow.contentManager.addContent(
         ContentFactory.SERVICE.getInstance().createContent(
-          ComposePanel().apply {
-            this.size = Dimension(300, 300)
-            setContent {
-              ComposeDraw()
-            }
-          },
+          composePanel,
           "",
           false
         )
       )
     }
   }
+
+  companion object {
+    val state = mutableStateOf(emptyList<Curve>())
+    val composePanel: ComposePanel by lazy {
+      val panel = ComposePanel()
+      panel.apply {
+        this.size = Dimension(300, 300)
+        setContent {
+          ComposeDraw(state)
+        }
+      }
+      panel
+    }
+  }
+
 }
