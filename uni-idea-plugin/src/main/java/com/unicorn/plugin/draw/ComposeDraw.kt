@@ -39,13 +39,13 @@ val DRAW_COLORS:List<Pair<Color, Float?>> = listOf(
   Color.Red to null,
   Color(0xff00aa00) to null,
   Color.Blue to null,
-  Color(0x66FF0000) to 20f,
-  Color(0x6600FF00) to 20f,
-  Color(0x660000FF) to 20f,
-  Color(0x88FFFF00) to 20f,
-  Color(0x66FF00FF) to 20f,
-  Color(0x66000000) to 20f,
-  Color(0xFFffFFff) to 20f,
+  Color(0x66FF0000) to 25f,
+  Color(0x6600FF00) to 25f,
+  Color(0x660000FF) to 25f,
+  Color(0x88FFFF00) to 25f,
+  Color(0x66FF00FF) to 25f,
+  Color(0x66000000) to 25f,
+  Color(0xFFffFFff) to 25f,
 )
 
 @Composable
