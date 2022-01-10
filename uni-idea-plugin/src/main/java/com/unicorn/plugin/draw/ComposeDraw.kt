@@ -198,7 +198,10 @@ fun ComposeDraw(curvesState: MutableState<List<Curve>>, textsState: MutableState
       }
     }
     Column(Modifier.align(Alignment.TopEnd), horizontalAlignment = Alignment.End) {
-      TxtButton("Clear all") { curves = emptyList() }
+      TxtButton("Clear all") {
+        curves = emptyList()
+        texts = emptyList()
+      }
       Divider(Modifier.size(5.dp))
       TxtButton("Erase tool") {}
       TxtButton("Undo") { undo() }
