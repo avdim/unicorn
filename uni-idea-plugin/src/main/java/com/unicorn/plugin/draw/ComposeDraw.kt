@@ -201,6 +201,7 @@ fun ComposeDraw(curvesState: MutableState<List<Curve>>, textsState: MutableState
       TxtButton("Clear all") {
         curves = emptyList()
         texts = emptyList()
+        selectedTextIndex = null
       }
       Divider(Modifier.size(5.dp))
       TxtButton("Erase tool") {}
