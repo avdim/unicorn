@@ -10,22 +10,29 @@ import com.intellij.openapi.wm.ToolWindow
 import com.intellij.openapi.wm.ToolWindowFactory
 import com.intellij.ui.content.ContentFactory
 import com.intellij.ui.jcef.JBCefBrowser
+import com.unicorn.Uni
 import com.unicorn.plugin.draw.ComposeDraw
 import com.unicorn.plugin.draw.Curve
 import com.unicorn.plugin.draw.TextData
 import java.awt.Dimension
 
+private const val USE_JCEF_WEB_WHITEBOARD = false
+
 class JcefToolWindow : ToolWindowFactory, DumbAware {
   @OptIn(ExperimentalComposeUiApi::class)
   override fun createToolWindowContent(project: Project, toolWindow: ToolWindow) {
-    ApplicationManager.getApplication().invokeLater {
-      toolWindow.contentManager.addContent(
-        ContentFactory.SERVICE.getInstance().createContent(
-          component,
-          "",
-          false
+    if (USE_JCEF_WEB_WHITEBOARD) {
+      ApplicationManager.getApplication().invokeLater {
+        toolWindow.contentManager.addContent(
+          ContentFactory.SERVICE.getInstance().createContent(
+            component,
+            "",
+            false
+          )
         )
-      )
+      }
+    } else {
+      Uni.log.error { "change USE_JCEF_WEB_WHITEBOARD" }
     }
   }
 
