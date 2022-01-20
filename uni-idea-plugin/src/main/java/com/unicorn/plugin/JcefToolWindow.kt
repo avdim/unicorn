@@ -16,7 +16,7 @@ import com.unicorn.plugin.draw.Curve
 import com.unicorn.plugin.draw.TextData
 import java.awt.Dimension
 
-private const val USE_JCEF_WEB_WHITEBOARD = false
+private const val USE_JCEF_WEB_WHITEBOARD = true
 
 class JcefToolWindow : ToolWindowFactory, DumbAware {
   @OptIn(ExperimentalComposeUiApi::class)
