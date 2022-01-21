@@ -251,7 +251,7 @@ public class GitBranchPopupActions {
       return myBranchName;
     }
 
-    @Nls(capitalization = Nls.Capitalization.Sentence)
+    @Nls(/*capitalization = Nls.Capitalization.Sentence*/)
     @Nullable
     private String constructTooltip() {
       boolean incoming = hasIncomingCommits();

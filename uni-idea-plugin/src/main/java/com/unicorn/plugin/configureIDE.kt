@@ -185,6 +185,5 @@ suspend fun configureIDE() {
       showWelcomeDialog()
     }
   }
-
   Uni.log.debug { "configureIDE end" }
 }

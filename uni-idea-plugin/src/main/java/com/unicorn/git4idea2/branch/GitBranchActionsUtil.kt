@@ -125,7 +125,7 @@ internal fun createNewBranch(project: Project, repositories: List<GitRepository>
 internal fun createOrCheckoutNewBranch(project: Project,
                                        repositories: List<GitRepository>,
                                        startPoint: String,
-                                       @Nls(capitalization = Nls.Capitalization.Title)
+                                       @Nls(/*capitalization = Nls.Capitalization.Title*/)
                                        title: String = GitBundle.message("branches.create.new.branch.dialog.title"),
                                        initialName: String? = null) {
   val options = GitNewBranchDialog(project, repositories, title, initialName, true, true, false, true).showAndGetOptions() ?: return

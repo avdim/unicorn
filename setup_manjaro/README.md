@@ -47,8 +47,10 @@ https://developer.android.com/studio/archive
 ```bash
 archlinux-java status
 sudo archlinux-java set java-8-openjdk
+export JAVA_HOME="/usr/lib/jvm/java-8-openjdk"
 yes | ~/Android/Sdk/tools/bin/sdkmanager --licenses
-sudo archlinux-java set java-11-openjdk
+sudo archlinux-java set liberica-jdk-11-full 
+#sudo archlinux-java set java-11-openjdk
 ```
 - [Optional] increase swapfile (https://www.linuxsecrets.com/manjaro-wiki/index.php%3Ftitle=Add_a_%252Fswapfile.html)
 ```bash

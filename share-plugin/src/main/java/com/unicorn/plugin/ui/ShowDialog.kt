@@ -38,18 +38,18 @@ fun showDialog(viewComponent: JComponent, width:Int = 800, height:Int = 800, par
   return dialog
 }
 
-//todo coroutine scope life when dialog is open. Сделать уничтожение scope при закрытии диалога
 fun showPanelDialog(parentDisposable: Disposable? = null, lambda: com.intellij.ui.layout.LayoutBuilder.(CoroutineScope) -> kotlin.Unit): DialogWrapper {
   val dialogJob = Job()
-  return showDialog(
+  val dialog = showDialog(
     panel {
       lambda(CoroutineScope(dialogJob))
     },
-    parentDisposable = Disposable {
-      parentDisposable?.dispose()
-      dialogJob.cancel()
-    }
+    parentDisposable = parentDisposable
   )
+  Disposer.register(dialog.disposable, Disposable {
+    dialogJob.cancel()
+  })
+  return dialog
 }
 
 fun showModalDialog(viewComponent: JComponent): Boolean {

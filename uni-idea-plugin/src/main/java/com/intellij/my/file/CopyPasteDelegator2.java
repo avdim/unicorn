@@ -143,7 +143,8 @@ public class CopyPasteDelegator2 implements CopyPasteSupport {
 
       return DumbService.getInstance(myProject).computeWithAlternativeResolveEnabled(() -> {
         try {
-          final Module module = PlatformCoreDataKeys.MODULE.getData(dataContext);
+          final Module module = null; //TODO раскоментировать PlatformCoreDataKeys.MODULE.getData(dataContext);
+          module.getModuleContentScope();//todo лишняя строка
           PsiElement target = getPasteTarget(dataContext, module);
           if (isCopied[0]) {
             pasteAfterCopy(elements, module, target, true);

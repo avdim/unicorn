@@ -14,7 +14,7 @@ plugins {
 
 //  id("com.codingfeline.buildkonfig") version "0.8.0" // https://github.com/yshrsmz/BuildKonfig
   id("com.github.gmazzo.buildconfig") version GMAZZO_BUILDCONFIG_VERSION
-  id("org.jetbrains.compose") version DESKTOP_COMPOSE
+  id("org.jetbrains.compose")
   idea
 }
 
@@ -59,15 +59,6 @@ java {
   }
 }
 
-repositories {
-  mavenCentral()
-  maven("https://www.jetbrains.com/intellij-repository/snapshots")
-//  maven("https://jetbrains.bintray.com/intellij-plugin-service")
-  maven("https://cache-redirector.jetbrains.com/intellij-dependencies")
-//  maven { setUrl("https://oss.sonatype.org/content/repositories/snapshots/") }
-//  maven { setUrl("https://dl.bintray.com/jetbrains/intellij-plugin-service") }
-}
-
 dependencies {
 //  implementation(kotlin("stdlib"))
   implementation(LOG_MAVEN_ARTIFACT)
@@ -79,6 +70,8 @@ dependencies {
   implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:$COROUTINE_VERSION")
   implementation("org.jetbrains.kotlinx:kotlinx-coroutines-debug:$COROUTINE_VERSION")
   implementation("org.jetbrains.kotlinx:kotlinx-coroutines-swing:$COROUTINE_VERSION")
+  implementation("org.pushing-pixels:radiance-animation:${RADIANCE_VERSION}")
+  implementation("org.pushing-pixels:radiance-animation-ktx:${RADIANCE_VERSION}")
   implementation(project(":lib-github"))
   implementation(project(":share-plugin"))
   implementation(project(":repo"))
@@ -102,6 +95,9 @@ intellij {
       version.set(ideaVersion.version)
     }
     is IdeaVersion.Local -> {
+      ideaVersion.version?.let {
+        version.set(it)
+      }
       localPath.set(ideaVersion.localPath)
     }
   }
@@ -115,6 +111,7 @@ intellij {
   sameSinceUntilBuild.set(true)
   downloadSources.set(true)//todo check debug
   instrumentCode.set(true)//todo if value is false - NPE в KeyPromoter plugin
+  ideaDependencyCachePath.set(myIdeaDependencyCachePath)
 //    setPlugins("org.jetbrains.kotlin:1.3.11-release-IJ2018.3-1")
   plugins.set(
     listOf(
@@ -125,6 +122,7 @@ intellij {
 //      "com.jetbrains.edu:2021.9-2021.1-1254",//2021.1
 //      "com.jetbrains.edu:2021.8-2021.2-298",//2021.2
 //      "com.jetbrains.edu:2021.9.1-2021.2-583",//2021.2 //https://plugins.jetbrains.com/plugin/10081-edutools/versions/stable
+//      "com.jetbrains.edu:2021.11-2021.3-271",//2021.3 //https://plugins.jetbrains.com/plugin/10081-edutools/versions/stable
 //      "org.jetbrains.plugins.ruby:211.7142.36"//https://plugins.jetbrains.com/plugin/1293-ruby/versions/stable
 //      "org.jetbrains.plugins.ruby:211.7442.9"//https://plugins.jetbrains.com/plugin/1293-ruby/versions/stable
 //      "org.jetbrains.plugins.ruby:211.7628.1"//https://plugins.jetbrains.com/plugin/1293-ruby/versions/stable
@@ -136,6 +134,9 @@ intellij {
       //https://plugins.jetbrains.com/plugin/6954-kotlin/versions/stable
 //      "org.jetbrains.kotlin:211-1.5.31-release-551-AS7442.40",
 //      "org.jetbrains.kotlin:212-1.5.31-release-546-IJ4638.7",
+//      "org.jetbrains.kotlin:212-1.6.0-release-799-IJ5457.46",
+      "org.jetbrains.kotlin:213-1.6.10-release-923-IJ5744.223",
+    "org.jetbrains.compose.desktop.ide:1.0.0",
     )
   )
 }
@@ -162,7 +163,7 @@ tasks.withType<org.jetbrains.intellij.tasks.RunIdeTask> {
 //  jbrVersion("jbr_dcevm-11_0_10-linux-x64-b1341.35")
   systemProperties["ide.browser.jcef.enabled"] = true
 //  systemProperties["pdf.viewer.debug"] = true
-  jvmArgs("-Xmx7000m", "-Xms128m")
+  jvmArgs("-Xmx5000m", "-Xms128m")
   autoReloadPlugins.set(true)
 }
 

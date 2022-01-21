@@ -48,4 +48,6 @@ check gradle wrapper md5 and paste own
 
 git remove parse github, and switch to https
 git remote add ssh-link
+toggle full screen
+open recent projects
 

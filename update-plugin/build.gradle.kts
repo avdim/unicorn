@@ -33,15 +33,6 @@ java {
 group = "ru.avdim.idea-plugin-update"
 version = "0.1"
 
-repositories {
-  mavenCentral()
-  maven("https://www.jetbrains.com/intellij-repository/snapshots")
-//  maven("https://jetbrains.bintray.com/intellij-plugin-service")
-  maven("https://cache-redirector.jetbrains.com/intellij-dependencies")
-//  maven { setUrl("https://oss.sonatype.org/content/repositories/snapshots/") }
-//  maven { setUrl("https://dl.bintray.com/jetbrains/intellij-plugin-service") }
-}
-
 dependencies {
   implementation(LOG_MAVEN_ARTIFACT)
   implementation("io.ktor:ktor-server-netty:$KTOR_VERSION")
@@ -62,6 +53,9 @@ intellij {
       version.set(ideaVersion.version)
     }
     is IdeaVersion.Local -> {
+      ideaVersion.version?.let {
+        version.set(it)
+      }
       localPath.set(ideaVersion.localPath)
     }
   }
@@ -75,6 +69,7 @@ intellij {
   sameSinceUntilBuild.set(true)
   downloadSources.set(true)
   instrumentCode.set(true)
+  ideaDependencyCachePath.set(myIdeaDependencyCachePath)
 //    plugins.set(listOf("org.jetbrains.kotlin:1.3.11-release-IJ2018.3-1"))
 }
 

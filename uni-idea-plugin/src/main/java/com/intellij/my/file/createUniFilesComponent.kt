@@ -183,7 +183,7 @@ private fun filesJPanel(
       Uni.log.breakPoint("EDITOR")
     }
     if (PlatformDataKeys.TREE_EXPANDER.`is`(dataId)) {
-      Uni.log.error { "PlatformDataKeys.TREE_EXPANDER" }
+      Uni.log.debug { "PlatformDataKeys.TREE_EXPANDER" }
 //        return createTreeExpander(myTree)//todo lazy cache
     }
 
@@ -292,7 +292,7 @@ private fun filesJPanel(
       }
     }
     if (PlatformDataKeys.SELECTED_ITEMS.`is`(dataId)) {
-      Uni.log.info { "PlatformDataKeys.SELECTED_ITEMS, dataId: $dataId, myTree.selectionPaths: ${myTree.selectionPaths}" }
+      Uni.log.debug { "PlatformDataKeys.SELECTED_ITEMS, dataId: $dataId, myTree.selectionPaths: ${myTree.selectionPaths}" }
       return JavaHelpers.pathsToSelectedElements(myTree.selectionPaths)
     }
 
