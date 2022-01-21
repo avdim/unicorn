@@ -88,6 +88,8 @@ val Project.UNI_BUILD_TYPE: BuildType get() =
     else -> BuildType.Debug
   }
 
+val Project.isAppCode: Boolean get() = safeArgument("uniBuildType") == "appcode"
+
 val Project.myIdeaSandboxDir: String
   get() = UNI_BUILD_TYPE.let { buildType ->
     when (buildType) {
