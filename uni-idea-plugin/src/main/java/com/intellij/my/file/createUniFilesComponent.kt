@@ -58,6 +58,9 @@ fun createUniFilesComponent(
   rootPaths: List<String>,
   selectionListener: (VirtualFile) -> Unit = {}
 ): JComponent {
+  if(!Uni.ENABLE_FILE_MANAGER) {
+    return JPanel()
+  }
   val selectionListener2: (VirtualFile) -> Unit = {
     Uni.selectedFile = it
     Uni.log.debug { arrayOf("select file", it) }

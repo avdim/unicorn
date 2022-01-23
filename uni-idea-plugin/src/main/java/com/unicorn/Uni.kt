@@ -19,6 +19,7 @@ import com.intellij.openapi.project.Project
 import com.intellij.openapi.util.registry.Registry
 
 object Uni : Disposable {
+  val ENABLE_FILE_MANAGER = false
   val BOLD_DIRS = true
   @JvmStatic
   val log = Log

@@ -139,10 +139,10 @@ intellij {
 //      "org.jetbrains.kotlin:213-1.6.10-release-944-IJ6461.79",
 //    "org.jetbrains.compose.desktop.ide:1.0.0",
     //https://plugins.jetbrains.com/plugin/17098-kotlin-multiplatform-mobile-for-appcode/versions
-    "com.intellij.appcode.kmm:213-1.5.10-release-949-AC5744.274",//2021.3
-    "com.intellij.kotlinNative.platformDeps:213.5744.144",//2021.3
-//    "com.intellij.appcode.kmm:213-1.5.10-release-949-AC6461.84",//2021.3.1
-//    "com.intellij.kotlinNative.platformDeps:213.6461.84",//2021.3.1
+//    "com.intellij.appcode.kmm:213-1.5.10-release-949-AC5744.274",//2021.3
+//    "com.intellij.kotlinNative.platformDeps:213.5744.144",//2021.3
+    "com.intellij.appcode.kmm:213-1.5.10-release-949-AC6461.84",//2021.3.1
+    "com.intellij.kotlinNative.platformDeps:213.6461.84",//2021.3.1
     )
   )
 }
