@@ -3,14 +3,28 @@ package com.unicorn.plugin.action.id
 import aes.Base64Str
 import aes.aesDecrypt
 import aes.aesEncryptToBase64
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.material.Checkbox
+import androidx.compose.material.Text
+import androidx.compose.material.TextField
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.awt.ComposePanel
 import com.intellij.openapi.actionSystem.AnActionEvent
 import com.intellij.openapi.project.DumbAware
 import com.intellij.ui.components.JBCheckBox
 import com.unicorn.Uni
+import com.unicorn.plugin.compose.helloComposePanel
+import com.unicorn.plugin.draw.TxtButton
 import com.unicorn.plugin.ui.render.myCheckBox
 import com.unicorn.plugin.ui.render.myTextArea
 import com.unicorn.plugin.ui.render.myTextField
 import com.unicorn.plugin.ui.render.stateFlowView
+import com.unicorn.plugin.ui.showDialog
 import com.unicorn.plugin.ui.showPanelDialog
 import ru.avdim.mvi.createStore
 
@@ -76,54 +90,75 @@ class AesAction : UniAction(), DumbAware {
         }
       }
     }
-    showPanelDialog(Uni) {
-      Uni.scope.stateFlowView(this, store.stateFlow) { s ->
-        row {
-          label("AES")
-        }
-        row {
-          label("secretKey:")
-          myTextField(s.secretKey, s.hidden) {
-            store.send(Action.SetSecretKey(it))
+    val dialog = showDialog(ComposePanel().apply {
+      setContent {
+        val s by store.stateFlow.collectAsState()
+        Column {
+          Text("AES")
+          Row {
+            Text("secretKey:")
+            MyTextField(s.secretKey, s.hidden) {
+              store.send(Action.SetSecretKey(it))
+            }
           }
-        }
-        row {
-          label("check secretKey:")
-          myTextField(s.secretKeyCheck, s.hidden) {
-            store.send(Action.SetSecretKeyCheck(it))
+          Row {
+            Text("check secretKey:")
+            MyTextField(s.secretKeyCheck, s.hidden) {
+              store.send(Action.SetSecretKeyCheck(it))
+            }
           }
-        }
-        row {
-          button("decrypt") {
-            store.send(Action.DoDecrypt)
+          Row {
+            TxtButton("decrypt") {
+              store.send(Action.DoDecrypt)
+            }
+            Text("decryptMe:")
+            MyTextField(s.decryptMe.str, false) {
+              store.send(Action.SetDecryptMe(it))
+            }
           }
-          label("decryptMe:")
-          myTextField(s.decryptMe.str) {
-            store.send(Action.SetDecryptMe(it))
+          Row {
+            TxtButton("encrypt") {
+              store.send(Action.DoEncrypt)
+            }
+            Text("secret:")
+            MyTextArea(s.secretValue, s.hidden) {
+              store.send(Action.SetSecretValue(it))
+            }
           }
-        }
-        row {
-          button("encrypt") {
-            store.send(Action.DoEncrypt)
-          }
-          label("secret:")
-          myTextArea(s.secretValue, s.hidden) {
-            store.send(Action.SetSecretValue(it))
-          }
-        }
-        row {
-          label("encryptedResult:")
-          myTextField("u" + "n" + "i" + "-" + "cry" + "pt" + ":" + s.encryptedResult.str) {
+          Row {
+            Text("encryptedResult:")
+            MyTextField("u" + "n" + "i" + "-" + "cry" + "pt" + ":" + s.encryptedResult.str) {
 
+            }
           }
-        }
-        row {
-          myCheckBox("hidden",  s.hidden) {
-            store.send(Action.ChangeHidden)
+          Row {
+            MyCheckBox("hidden", s.hidden) {
+              store.send(Action.ChangeHidden)
+            }
           }
         }
       }
-    }
+    })
+    dialog.setSize(800, 600)
   }
 
+}
+
+@Composable
+fun MyTextField(value: String, hidden: Boolean = false, onChange: (String)->Unit) {
+  //todo hidden
+  TextField(value, onValueChange = { onChange(it) })
+}
+
+@Composable
+fun MyTextArea(value: String, hidden: Boolean, onChange: (String)->Unit) {
+  //todo TextArea
+  //todo hidden
+  TextField(value, onValueChange = { onChange(it) })
+}
+
+@Composable
+fun MyCheckBox(label:String, checked:Boolean, onChange:()->Unit) {
+  Checkbox(checked = checked, onCheckedChange = { onChange() })
+  Text(text = label, modifier = Modifier.clickable { onChange() })
 }
