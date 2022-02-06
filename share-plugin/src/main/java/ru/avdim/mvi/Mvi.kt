@@ -34,7 +34,9 @@ fun <S, A> createStore(init: S, reducer: Reducer<S, A>): Store<S, A> {
         }
 
         override fun send(action: A) {
-            channel.offer(action)//mutableStateFlow.value = reducer(mutableStateFlow.value, action)
+          APP_SCOPE.launch {
+            channel.trySend(action)//mutableStateFlow.value = reducer(mutableStateFlow.value, action)
+          }
         }
 
         override val stateFlow: StateFlow<S> = mutableStateFlow

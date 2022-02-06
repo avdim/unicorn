@@ -27,9 +27,9 @@ class LifeListener : com.intellij.ide.AppLifecycleListener {
     Uni.log.debug { "LifeListener.projectFrameClosed()" }
   }
 
-  override fun appStarting(projectFromCommandLine: Project?) {
-    Uni.log.debug { "LifeListener.appStarting($projectFromCommandLine)" }
-  }
+//  override fun appStarting(projectFromCommandLine: Project?) {
+//    Uni.log.debug { "LifeListener.appStarting($projectFromCommandLine)" }
+//  }
 
   override fun appClosing() {
     Uni.log.debug { "1 LifeListener.appClosing()" }

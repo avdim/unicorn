@@ -8,7 +8,6 @@ import com.intellij.openapi.project.Project;
 import com.intellij.openapi.util.SystemInfo;
 import com.intellij.openapi.util.io.FileUtil;
 import com.intellij.openapi.util.text.NaturalComparator;
-import com.intellij.openapi.util.text.StringUtil;
 import com.intellij.openapi.util.text.StringUtilRt;
 import com.intellij.openapi.vcs.VcsException;
 import com.intellij.openapi.vfs.VirtualFile;
@@ -23,7 +22,6 @@ import git4idea.ui.branch.GitMultiRootBranchConfig;
 import git4idea.branch.GitNewBranchOptions;
 import gnu.trove.THashSet;
 import gnu.trove.TObjectHashingStrategy;
-import one.util.streamex.StreamEx;
 import org.jetbrains.annotations.CalledInAwt;
 import org.jetbrains.annotations.CalledInBackground;
 import org.jetbrains.annotations.NotNull;
@@ -95,14 +93,6 @@ public class GitBranchUtil {
     result.throwOnError();
 
     return tags;
-  }
-
-  /**
-   * Convert {@link GitRemoteBranch GitRemoteBranches} to their names, and remove remote HEAD pointers: origin/HEAD.
-   */
-  @NotNull
-  public static Collection<String> getBranchNamesWithoutRemoteHead(@NotNull Collection<? extends GitRemoteBranch> remoteBranches) {
-    return ContainerUtil.filter(convertBranchesToNames(remoteBranches), input -> !input.equals("HEAD")); //NON-NLS
   }
 
   @NotNull
@@ -225,34 +215,6 @@ public class GitBranchUtil {
     if (project.isDisposed()) return null;
     return DvcsUtil.guessRepositoryForFile(project, GitUtil.getRepositoryManager(project), file,
                                            GitVcsSettings.getInstance(project).getRecentRootPath());
-  }
-
-  @NotNull
-  public static Collection<String> getCommonBranches(Collection<? extends GitRepository> repositories,
-                                                     boolean local) {
-    Collection<String> names;
-    if (local) {
-      names = convertBranchesToNames(getCommonLocalBranches(repositories));
-    }
-    else {
-      names = getBranchNamesWithoutRemoteHead(getCommonRemoteBranches(repositories));
-    }
-    return StreamEx.of(names).sorted(StringUtil::naturalCompare).toList();
-  }
-
-  @NotNull
-  public static List<GitLocalBranch> getCommonLocalBranches(@NotNull Collection<? extends GitRepository> repositories) {
-    return collectCommon(repositories.stream().map(repository -> repository.getBranches().getLocalBranches()));
-  }
-
-  @NotNull
-  public static List<GitRemoteBranch> getCommonRemoteBranches(@NotNull Collection<? extends GitRepository> repositories) {
-    return collectCommon(repositories.stream().map(repository -> repository.getBranches().getRemoteBranches()));
-  }
-
-  @NotNull
-  public static <T> List<T> collectCommon(@NotNull Stream<? extends Collection<T>> groups) {
-    return collectCommon(groups, ContainerUtil.canonicalStrategy());
   }
 
   @NotNull
