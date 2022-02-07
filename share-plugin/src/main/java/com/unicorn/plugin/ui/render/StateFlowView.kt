@@ -10,6 +10,7 @@ import com.unicorn.plugin.onTextChange
 import kotlinx.coroutines.*
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.swing.Swing
 import java.awt.BorderLayout
 import java.awt.Component
 import javax.swing.JPanel
@@ -26,7 +27,7 @@ fun <T> CoroutineScope.stateFlowView(
   launch {
     stateFlow.collectLatest { state ->
 
-      withContext(Dispatchers.Main) {
+      withContext(Dispatchers.Swing) {
         parentPanel.removeAll()
         parentPanel.add(
           panel {

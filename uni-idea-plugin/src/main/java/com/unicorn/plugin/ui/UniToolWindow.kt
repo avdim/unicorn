@@ -14,7 +14,7 @@ import todo.mvi.createFileManagerMviStore
 
 class UniToolWindow : ToolWindowFactory, DumbAware {
   override fun createToolWindowContent(project: Project, toolWindow: ToolWindow) {
-    Uni.scope.launch {
+    Uni.swingScope.launch {
       val mviStore = createFileManagerMviStore()
       toolWindow.contentManager.removeAllContents(true)
       toolWindow.contentManager.addContent(

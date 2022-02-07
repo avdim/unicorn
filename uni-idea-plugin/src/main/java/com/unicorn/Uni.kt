@@ -17,54 +17,78 @@ import kotlinx.coroutines.*
 import com.intellij.my.file.ConfUniFiles
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.util.registry.Registry
+import kotlinx.coroutines.swing.Swing
 
 object Uni : Disposable {
   val BOLD_DIRS = true
+
   @JvmStatic
   val log = Log
+
   @JvmStatic
   val todoDefaultProject by lazy { ProjectManager.getInstance().defaultProject }//todo
+
   @JvmStatic
   fun todoUseOpenedProject(project: Project) = project
   val buildConfig = BuildConfig
   var selectedFile: VirtualFile? = null
   val job = Job()
-  val scope: CoroutineScope = MainScope() + job + CoroutineExceptionHandler { coroutineContext, throwable ->
-    throwable.printStackTrace()
-    Uni.log.error { "coroutine exception in coroutineContext: $coroutineContext, throwable: $throwable" }
-  }
+  val swingScope: CoroutineScope =
+    if (true) {
+      CoroutineScope(SupervisorJob() + Dispatchers.Swing)
+    } else {
+      MainScope()
+    } +
+      job +
+      CoroutineExceptionHandler { coroutineContext, throwable ->
+        throwable.printStackTrace()
+        Uni.log.error { "coroutine exception in coroutineContext: $coroutineContext, throwable: $throwable" }
+      }
   val PLUGIN_NAME = "UniCorn"
-  
+
   object fileManagerConf2 {
     @JvmField
     val ensureSelectionOnFocusGained: Boolean = Registry.`is`("ide.tree.ensureSelectionOnFocusGained").also {
       println("ensureSelectionOnFocusGained: $it")
     }
+
     @JvmField
     val isFlattenPackages = false
+
     @JvmField
     val isShowMembers = false
+
     @JvmField
     val isHideEmptyMiddlePackages = false
+
     @JvmField
     val isCompactDirectories = false
+
     @JvmField
     val isAbbreviatePackageNames = false
+
     @JvmField
     val isShowLibraryContents = true
+
     @JvmField
     val isShowModules = false
+
     @JvmField
     val isFlattenModules = false
+
     @JvmField
     val isShowURL = true
+
     @JvmField
     val isFoldersAlwaysOnTop = true
+
     @JvmField
     val skipDirInPsiDirectoryNode = true//todo inline
+
     @JvmField
     val isShowVisibilityIcons = true//default false
   }
+
   @JvmStatic
   val fileManagerConf = object : ViewSettings {
     override fun isFlattenPackages(): Boolean = fileManagerConf2.isFlattenPackages
@@ -82,7 +106,7 @@ object Uni : Disposable {
     RecentLog.start()
     ConsoleLog.start()
     TmpFileLog.start()
-    scope.launch {
+    swingScope.launch {
       launch {
         configureIDE()
       }

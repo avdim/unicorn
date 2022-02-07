@@ -2,6 +2,7 @@ package com.unicorn.file
 
 import com.unicorn.Uni
 import kotlinx.coroutines.*
+import kotlinx.coroutines.swing.Swing
 import java.nio.file.Path
 import java.nio.file.StandardWatchEventKinds
 import java.nio.file.WatchKey
@@ -44,14 +45,14 @@ fun Path.addListener(scope: CoroutineScope, listener: (PathListenerEvent) -> Uni
           when (kind) {
             StandardWatchEventKinds.ENTRY_CREATE -> {
               if (p != null) {
-                withContext(Dispatchers.Main) {//todo Main?
+                withContext(Dispatchers.Swing) {
                   listener(PathListenerEvent(PathListenerEvent.Type.New, p))
                 }
               }
             }
             StandardWatchEventKinds.ENTRY_DELETE -> {
               if (p != null) {
-                withContext(Dispatchers.Main) {//todo Main?
+                withContext(Dispatchers.Swing) {
                   listener(PathListenerEvent(PathListenerEvent.Type.Delete, p))
                 }
               }

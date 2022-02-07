@@ -6,7 +6,6 @@ import com.intellij.ide.ui.LafManager
 import com.intellij.openapi.observable.properties.GraphPropertyImpl.Companion.graphProperty
 import com.intellij.openapi.observable.properties.PropertyGraph
 import com.intellij.openapi.project.ProjectManager
-import com.intellij.ui.layout.LayoutBuilder
 import com.unicorn.BuildConfig
 import com.unicorn.Uni
 import com.unicorn.plugin.ui.showPanelDialog
@@ -100,7 +99,7 @@ fun showWelcomeDialog() {
   }
 
   showPanelDialog(Uni) {
-    Uni.scope.stateFlowView(this, store.stateFlow) { state: WelcomeDialogState ->
+    Uni.swingScope.stateFlowView(this, store.stateFlow) { state: WelcomeDialogState ->
       row {
         label("welcome dialog")
       }

@@ -15,20 +15,17 @@ import com.intellij.openapi.application.invokeLater
 import com.intellij.openapi.editor.EditorFactory
 import com.intellij.openapi.editor.ex.EditorSettingsExternalizable
 import com.intellij.openapi.keymap.ex.KeymapManagerEx
-import com.intellij.openapi.project.ProjectManager
 import com.intellij.openapi.util.registry.Registry
 import com.intellij.openapi.wm.StatusBarWidgetFactory
 import com.intellij.openapi.wm.impl.IdeBackgroundUtil
 import com.intellij.openapi.wm.impl.status.MemoryIndicatorWidgetFactory
 import com.intellij.openapi.wm.impl.status.widget.StatusBarWidgetSettings
-import com.intellij.openapi.wm.impl.status.widget.StatusBarWidgetsManager
 import com.intellij.psi.search.UseScopeEnlarger
 import com.unicorn.BuildConfig
 import com.unicorn.Uni
 import com.unicorn.myDispose
 import com.unicorn.plugin.action.Actions
 import com.unicorn.plugin.ui.render.showWelcomeDialog
-import kotlinx.coroutines.MainScope
 import kotlinx.coroutines.launch
 import org.jetbrains.plugins.terminal.TerminalOptionsProvider
 import java.nio.file.Path
@@ -83,7 +80,10 @@ suspend fun configureIDE() {
     Uni.log.debug { "terminal.buffer.max.lines.count: $previousTerminalLines" }
     com.intellij.openapi.options.advanced.AdvancedSettings.setInt("terminal.buffer.max.lines.count", terminalLinesSize)
   }
-  TerminalOptionsProvider.instance.setOverrideIdeShortcuts(false)//enable Alt+F2 in terminal
+
+  TerminalOptionsProvider.instance.overrideIdeShortcuts = false//enable Alt+F2 in terminal
+//  TerminalOptionsProvider.instance.setOverrideIdeShortcuts(false)//enable Alt+F2 in terminal
+
   TerminalOptionsProvider.instance.shellPath = "/bin/bash"
 
   FindSettings.getInstance().isShowResultsInSeparateView = true
@@ -145,7 +145,7 @@ suspend fun configureIDE() {
     UISettings.instance.showInplaceComments = true
 //            ViewInplaceCommentsAction.updateAllTreesCellsWidth()
 
-//    withContext(Dispatchers.Main) {
+//    withContext(Dispatchers.Swing) {
     if (false /*TODO*/) IdeBackgroundUtil.repaintAllWindows()
 //    }
   }
@@ -176,7 +176,7 @@ suspend fun configureIDE() {
 
   UseScopeEnlarger.EP_NAME.point.unregisterExtension(RoomUseScopeEnlarger::class.java)//todo иначе падает при rename in fileManager
 
-  MainScope().launch {
+  Uni.swingScope.launch {
     if (BuildConfig.HAND_TEST) {
       invokeLater {
         com.intellij.ide.impl.ProjectUtil.openOrImport(Path.of(BuildConfig.HAND_TEST_EMPTY_PROJECT))

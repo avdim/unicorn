@@ -12,7 +12,6 @@ import com.unicorn.file.addListener
 import com.unicorn.plugin.ui.render.stateFlowView
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Job
-import kotlinx.coroutines.supervisorScope
 import ru.avdim.mvi.createStore
 import java.nio.file.*
 import java.util.concurrent.ConcurrentHashMap
@@ -33,7 +32,7 @@ private data class State(
 fun showFileTreeDialog() {
   val store = createStore(State(0)) { s, a: Action -> s.copy(s.i + 1) }
   showPanelDialog(Uni) { dialogScope: CoroutineScope ->
-    Uni.scope.stateFlowView(this, store.stateFlow) { s: State ->
+    Uni.swingScope.stateFlowView(this, store.stateFlow) { s: State ->
 
       val root = DefaultMutableTreeNode(Paths.get("/"), true)
       val defaultTreeModel: DefaultTreeModel = DefaultTreeModel(root)
