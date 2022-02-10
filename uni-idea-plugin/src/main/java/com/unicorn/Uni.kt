@@ -35,6 +35,7 @@ object Uni : Disposable {
   val job = Job()
   val swingScope: CoroutineScope =
     if (true) {
+      //https://github.com/Kotlin/kotlinx.coroutines/pull/3101
       CoroutineScope(SupervisorJob() + Dispatchers.Swing)
     } else {
       MainScope()
