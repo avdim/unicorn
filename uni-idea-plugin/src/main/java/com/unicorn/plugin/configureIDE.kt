@@ -81,8 +81,8 @@ suspend fun configureIDE() {
     com.intellij.openapi.options.advanced.AdvancedSettings.setInt("terminal.buffer.max.lines.count", terminalLinesSize)
   }
 
-  TerminalOptionsProvider.instance.overrideIdeShortcuts = false//enable Alt+F2 in terminal
-//  TerminalOptionsProvider.instance.setOverrideIdeShortcuts(false)//enable Alt+F2 in terminal
+//  TerminalOptionsProvider.instance.overrideIdeShortcuts = false//enable Alt+F2 in terminal
+  TerminalOptionsProvider.instance.setOverrideIdeShortcuts(false)//enable Alt+F2 in terminal
 
   TerminalOptionsProvider.instance.shellPath = "/bin/bash"
 
