@@ -54,8 +54,9 @@ val LAST_COMMUNITY = IdeaVersion.Download(LAST_IDEA_STR, "IC")
 val LAST_ULTIMATE = IdeaVersion.Download(LAST_IDEA_STR, "IU")
 
 // https://github.com/JetBrains/gradle-intellij-plugin
-val INTELLIJ_GRADLE = "1.2.1"
+//val INTELLIJ_GRADLE = "1.2.1"
 //val INTELLIJ_GRADLE = "1.3.0"
+val INTELLIJ_GRADLE = "1.4.0"
 
 //val asMac = "/Users/dim/Library/Application Support/JetBrains/Toolbox/apps/AndroidStudio/ch-0/203.7185775/Android Studio Preview.app/Contents"
 //val asMac = "/Users/dim/Library/Application Support/JetBrains/Toolbox/apps/AndroidStudio/ch-0/203.7360992/Android Studio Preview.app/Contents"
