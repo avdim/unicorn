@@ -4,22 +4,9 @@ import java.util.*
 
 val UNI_VERSION = "0.13.0"
 val BUILD_TIME_STR = SimpleDateFormat("yyyy-MM-dd_HH:mm", Locale("ru", "RU")).format(Date())
-//val BUILD_TIME_STR = Date().toString()
-
-/**
- * Отладочная версия JVM схожа с JS. Можно выставлять не зависимо от JS.
- * Но если игровая логика содержит проверки IS_DEBUG, или DEBUG{...}, то возможна рассинхронизация стейта итгры.
- */
-val DEBUG_JVM = true//todo false
-
+val DEBUG_JVM = true
 val MIN_JDK_VERSION: JdkVersion = JdkVersion.JDK11
 val JVM_TARGET = MIN_JDK_VERSION.kotlinTarget
-
-/**
- * Если хочется потестировать EAP или DEV версии kotlin.
- * Dev релизы на свой страх и риск: https://dl.bintray.com/kotlin/kotlin-dev/org/jetbrains/kotlin/kotlin-gradle-plugin/
- */
-val USE_KOTLIN_DEV_REPOSITORY = false
 
 val KOTLIN_VERSION = "1.6.10"
 val COMPOSE_VERSION = "1.0.1"
@@ -73,7 +60,9 @@ val asMac = "/Users/dim/Desktop/android-studio/2021.2/2021.2-canary6/unzipped/Co
 //val asLinux = "/home/dim/Desktop/android_studio/2021.2_canary4/android-studio/"
 //val asLinux = "/home/dim/Desktop/android_studio/2021.2_canary5/android-studio/"
 //val asLinux = "/home/dim/Desktop/android_studio/2021.2_canary6/android-studio/"
-val asLinux = "/home/dim/Desktop/android_studio/2021.2_canary7/android-studio/"
+//val asLinux = "/home/dim/Desktop/android_studio/2021.2_canary7/android-studio/"
+//val asLinux = "/home/dim/Desktop/android_studio/2021.2.1_beta2/android-studio/"
+val asLinux = "/home/dim/Desktop/android_studio/2021.3.1_canary2/android-studio/"
 
 val Project.UNI_BUILD_TYPE: BuildType get() =
   when (safeArgument("uniBuildType")) {
