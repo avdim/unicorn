@@ -51,3 +51,4 @@ git remote add ssh-link
 toggle full screen
 open recent projects
 
+[x] Restore workspace on branch switching
