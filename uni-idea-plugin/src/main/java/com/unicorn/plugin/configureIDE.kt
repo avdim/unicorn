@@ -84,7 +84,9 @@ suspend fun configureIDE() {
 //  TerminalOptionsProvider.instance.overrideIdeShortcuts = false//enable Alt+F2 in terminal
   TerminalOptionsProvider.instance.setOverrideIdeShortcuts(false)//enable Alt+F2 in terminal
 
-  TerminalOptionsProvider.instance.shellPath = "/bin/bash"
+  if (false) {
+    TerminalOptionsProvider.instance.shellPath = "/bin/bash"
+  }
 
   FindSettings.getInstance().isShowResultsInSeparateView = true
 
