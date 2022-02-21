@@ -45,6 +45,7 @@ val LAST_ULTIMATE = IdeaVersion.Download(LAST_IDEA_STR, "IU")
 //val INTELLIJ_GRADLE = "1.3.0"
 val INTELLIJ_GRADLE = "1.4.0"
 
+val home = System.getProperty("user.home")
 //val asMac = "/Users/dim/Library/Application Support/JetBrains/Toolbox/apps/AndroidStudio/ch-0/203.7185775/Android Studio Preview.app/Contents"
 //val asMac = "/Users/dim/Library/Application Support/JetBrains/Toolbox/apps/AndroidStudio/ch-0/203.7360992/Android Studio Preview.app/Contents"
 //val asMac = "/Users/dim/Library/Application Support/JetBrains/Toolbox/apps/AndroidStudio/ch-1/203.7717.56.2111.7361063/Android Studio Preview.app/Contents"
@@ -52,7 +53,7 @@ val INTELLIJ_GRADLE = "1.4.0"
 //val asMac = "/Users/dim/Desktop/android-studio/2021.2/android-studio-2021.2.1.1-mac-canary1/Contents"
 //val asMac = "/Users/dim/Desktop/android-studio/2021.2/2021.2-canary5/Android Studio Preview.app/Contents"
 //val asMac = "/Users/dim/Desktop/android-studio/2021.2/2021.2-canary6/unzipped/Contents"
-val asMac = "/Users/dim/Desktop/android-studio/2021.2.1_beta2/Android Studio Preview.app/Contents"
+val asMac = "$home/Desktop/android-studio/2021.2.1_beta2/Android Studio Preview.app/Contents"
 //val asLinux = "/home/dim/Desktop/android_studio/2021.2_canary7/android-studio/"
 val asLinux = "/home/dim/Desktop/android_studio/2021.2.1_beta2/android-studio/"
 //val asLinux = "/home/dim/Desktop/android_studio/2021.3.1_canary2/android-studio/"
