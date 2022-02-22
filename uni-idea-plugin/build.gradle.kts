@@ -118,7 +118,7 @@ intellij {
       "terminal",
       "github",
       "git4idea",
-      "android",
+//      "android",
 //      "com.jetbrains.edu:2021.9-2021.1-1254",//2021.1
 //      "com.jetbrains.edu:2021.8-2021.2-298",//2021.2
 //      "com.jetbrains.edu:2021.9.1-2021.2-583",//2021.2 //https://plugins.jetbrains.com/plugin/10081-edutools/versions/stable
