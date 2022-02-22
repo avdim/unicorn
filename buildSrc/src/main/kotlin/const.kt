@@ -36,6 +36,8 @@ val COMPILER_ARGS = listOf<String>()
 //val LAST_IDEA_STR = "213.6777-EAP-CANDIDATE-SNAPSHOT"
 val LAST_IDEA_STR = "2021.3.2"
 //val LAST_IDEA_STR = "221.3427-EAP-CANDIDATE-SNAPSHOT"
+//val LAST_IDEA_STR = "221.4165-EAP-CANDIDATE-SNAPSHOT"
+//val LAST_IDEA_STR = "221.4501-EAP-CANDIDATE-SNAPSHOT"
 
 val LAST_COMMUNITY = IdeaVersion.Download(LAST_IDEA_STR, "IC")
 val LAST_ULTIMATE = IdeaVersion.Download(LAST_IDEA_STR, "IU")
@@ -54,6 +56,7 @@ val home = System.getProperty("user.home")
 //val asMac = "/Users/dim/Desktop/android-studio/2021.2/2021.2-canary5/Android Studio Preview.app/Contents"
 //val asMac = "/Users/dim/Desktop/android-studio/2021.2/2021.2-canary6/unzipped/Contents"
 val asMac = "$home/Desktop/android-studio/2021.2.1_beta2/Android Studio Preview.app/Contents"
+//val asMac = "$home/Desktop/android-studio/2021.1.1-canary8/Android Studio Preview.app/Contents"
 //val asLinux = "/home/dim/Desktop/android_studio/2021.2_canary7/android-studio/"
 val asLinux = "/home/dim/Desktop/android_studio/2021.2.1_beta2/android-studio/"
 //val asLinux = "/home/dim/Desktop/android_studio/2021.3.1_canary2/android-studio/"
