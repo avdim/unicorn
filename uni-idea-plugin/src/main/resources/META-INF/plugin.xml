@@ -41,7 +41,7 @@
 <!--    <treeStructureProvider implementation="todo.MyTreeStructureProvider"/>-->
   </extensions>
 
-  <depends>org.jetbrains.kotlin</depends>
+<!--  <depends>org.jetbrains.kotlin</depends>-->
 <!--  <depends>org.jetbrains.android</depends>-->
 
 <!--  <actions>-->
