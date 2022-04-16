@@ -126,6 +126,7 @@ intellij {
 //      "io.intellij-sdk-thread-access:1.0.2"//https://plugins.jetbrains.com/plugin/16815-thread-access-info/
 //    "Kotlin", "java"
       //https://plugins.jetbrains.com/plugin/6954-kotlin/versions/stable
+//      "org.jetbrains.kotlin",
 //      "org.jetbrains.kotlin:211-1.5.31-release-551-AS7442.40",
 //      "org.jetbrains.kotlin:212-1.5.31-release-546-IJ4638.7",
 //      "org.jetbrains.kotlin:212-1.6.0-release-799-IJ5457.46",
