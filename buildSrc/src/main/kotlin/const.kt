@@ -2,7 +2,7 @@ import org.gradle.api.Project
 import java.text.SimpleDateFormat
 import java.util.*
 
-val UNI_VERSION = "0.13.0"
+val UNI_VERSION = "0.14.0"
 val BUILD_TIME_STR = SimpleDateFormat("yyyy-MM-dd_HH:mm", Locale("ru", "RU")).format(Date())
 val DEBUG_JVM = true
 val MIN_JDK_VERSION: JdkVersion = JdkVersion.JDK11
