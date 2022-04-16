@@ -9,8 +9,8 @@ val MIN_JDK_VERSION: JdkVersion = JdkVersion.JDK11
 val JVM_TARGET = MIN_JDK_VERSION.kotlinTarget
 
 val KOTLIN_VERSION = "1.6.10"
-val COMPOSE_VERSION = "1.0.1"
-val COMPOSE_WORKAROUND = true
+val COMPOSE_VERSION = "1.1.0"
+val COMPOSE_WORKAROUND = false //todo delete
 val SERIALIZATION_VERSION = "1.0.1"
 //val COROUTINE_VERSION = "1.4.2"
 val COROUTINE_VERSION = "1.5.2"
