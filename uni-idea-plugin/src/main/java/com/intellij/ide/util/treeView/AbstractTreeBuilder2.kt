@@ -236,16 +236,6 @@ abstract class AbstractTreeBuilder2 protected constructor() : Disposable {
         ui?.batch(progressive)
     }
 
-    open fun revalidateElement(element: Any): Promise<Any?> {
-        val structure = treeStructure ?: return rejectedPromise()
-        val promise = AsyncPromise<Any?>()
-        structure
-            .revalidateElement(element)
-            .doWhenDone(Consumer { o: Any? -> promise.setResult(o) })
-            .doWhenRejected { s: String? -> promise.setError(s!!) }
-        return promise
-    }
-
     val ui: AbstractTreeUi2?
         get() {
             val ui = myUi

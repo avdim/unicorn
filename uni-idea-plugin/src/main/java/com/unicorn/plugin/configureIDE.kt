@@ -81,7 +81,7 @@ suspend fun configureIDE() {
   }
 
 //  TerminalOptionsProvider.instance.overrideIdeShortcuts = false//enable Alt+F2 in terminal
-  TerminalOptionsProvider.instance.setOverrideIdeShortcuts(false)//enable Alt+F2 in terminal
+  TerminalOptionsProvider.instance.overrideIdeShortcuts = false//enable Alt+F2 in terminal
 
   if (false) {
     TerminalOptionsProvider.instance.shellPath = "/bin/bash"
@@ -90,31 +90,32 @@ suspend fun configureIDE() {
   FindSettings.getInstance().isShowResultsInSeparateView = true
 
   // Tab settings
-  UISettings.instance.editorTabPlacement = SwingConstants.LEFT
+  val uiSettings = UISettings.getInstance()
+  uiSettings.editorTabPlacement = SwingConstants.LEFT
   if (false) {
-    UISettings.instance.editorTabPlacement = SwingConstants.CENTER
+    uiSettings.editorTabPlacement = SwingConstants.CENTER
   }
-  UISettings.instance.editorTabLimit = 40
-  UISettings.instance.recentFilesLimit
-  UISettings.instance.recentLocationsLimit
-  UISettings.instance.state.openTabsAtTheEnd = true //option "open new tabs at the end"
-  UISettings.instance.state.showCloseButton = false
-  UISettings.instance.state.showFileIconInTabs = true
-  UISettings.instance.state.showPinnedTabsInASeparateRow = true
-  UISettings.instance.state.hideToolStripes = true
-  UISettings.instance.state.showToolWindowsNumbers = true
+  uiSettings.editorTabLimit = 40
+  uiSettings.recentFilesLimit
+  uiSettings.recentLocationsLimit
+  uiSettings.state.openTabsAtTheEnd = true //option "open new tabs at the end"
+  uiSettings.state.showCloseButton = false
+  uiSettings.state.showFileIconInTabs = true
+  uiSettings.state.showPinnedTabsInASeparateRow = true
+  uiSettings.state.hideToolStripes = true
+  uiSettings.state.showToolWindowsNumbers = true
 
-  UISettings.instance.smoothScrolling//=false todo val //UI: smooth scrolling
-  UISettings.instance.showTreeIndentGuides = true
-//  UISettings.instance.showMemoryIndicator = true
+  uiSettings.smoothScrolling//=false todo val //UI: smooth scrolling
+  uiSettings.showTreeIndentGuides = true
+//  uiSettings.showMemoryIndicator = true
   val memoryWidgetFactory = StatusBarWidgetFactory.EP_NAME.iterable.mapNotNull { it as? MemoryIndicatorWidgetFactory }.firstOrNull()
   if (memoryWidgetFactory != null) {
     //можно упростить до state.widgets[ID]
     ApplicationManager.getApplication().getService(StatusBarWidgetSettings::class.java).setEnabled(memoryWidgetFactory, true)
   }
-  UISettings.instance.recentLocationsLimit// = 50 todo val
-  UISettings.instance.wideScreenSupport = true
-  UISettings.instance.compactTreeIndents = true
+  uiSettings.recentLocationsLimit// = 50 todo val
+  uiSettings.wideScreenSupport = true
+  uiSettings.compactTreeIndents = true
 
   EditorSettingsExternalizable.getInstance().isCamelWords = true //option Use "CamelHumps" words
   EditorSettingsExternalizable.getInstance().isMouseClickSelectionHonorsCamelWords = false
@@ -143,7 +144,7 @@ suspend fun configureIDE() {
   if (true) {
     docReference<ViewInplaceCommentsAction>()
     if (false) performActionById("ViewInplaceComments")
-    UISettings.instance.showInplaceComments = true
+    uiSettings.showInplaceComments = true
 //            ViewInplaceCommentsAction.updateAllTreesCellsWidth()
 
 //    withContext(Dispatchers.Swing) {
@@ -172,7 +173,7 @@ suspend fun configureIDE() {
     QuickChangeLookAndFeel.switchLafAndUpdateUI(laf, newLaf, true)
   }
 
-  UISettings.instance.fireUISettingsChanged()
+  uiSettings.fireUISettingsChanged()
   EditorFactory.getInstance().refreshAllEditors()
 
   // import com.android.tools.idea.lang.androidSql.room.RoomUseScopeEnlarger

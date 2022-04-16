@@ -9,7 +9,7 @@ import com.intellij.openapi.actionSystem.DataContext
 import com.intellij.openapi.actionSystem.ex.AnActionListener
 import com.intellij.openapi.application.ApplicationManager
 import com.intellij.openapi.util.Disposer
-import com.intellij.openapi.wm.impl.StripeButton
+import com.intellij.toolWindow.StripeButton
 import com.unicorn.Uni
 import de.halirutan.keypromoterx2.KeyPromoterAction
 import org.nik.presentationAssistant2.ActionData

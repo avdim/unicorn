@@ -17,7 +17,7 @@ import com.intellij.openapi.actionSystem.AnActionEvent
 import com.intellij.openapi.actionSystem.impl.ActionButton
 import com.intellij.openapi.actionSystem.impl.ActionMenuItem
 import com.intellij.openapi.actionSystem.impl.actionholder.ActionRef
-import com.intellij.openapi.wm.impl.StripeButton
+import com.intellij.toolWindow.StripeButton
 import org.apache.commons.lang.StringUtils
 import java.awt.AWTEvent
 import java.lang.reflect.Field
