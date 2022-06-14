@@ -50,6 +50,7 @@ val LAST_ULTIMATE = IdeaVersion.Download(LAST_IDEA_STR, "IU")
 //val INTELLIJ_GRADLE = "1.4.0"
 val INTELLIJ_GRADLE = "1.5.2"
 //val INTELLIJ_GRADLE = "1.5.3"
+//val INTELLIJ_GRADLE = "1.6.0"
 
 val home = System.getProperty("user.home")
 //val asMac = "/Users/dim/Library/Application Support/JetBrains/Toolbox/apps/AndroidStudio/ch-0/203.7185775/Android Studio Preview.app/Contents"
