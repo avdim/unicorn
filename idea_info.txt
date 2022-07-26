@@ -51,3 +51,6 @@ https://blog.jetbrains.com/idea/2021/10/unfreeze-your-apps/
 
 Ctrl+J - Insert Live Template
 Option + Home (fn + left) - jump to nav bar
+
+window -> merge all project windows
+Alt+Shift + "<"  (or Alt+Shift + ">") - Font size
