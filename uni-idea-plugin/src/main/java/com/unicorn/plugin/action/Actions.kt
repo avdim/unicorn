@@ -88,7 +88,6 @@ object Actions {
               ActionData("com.unicorn.plugin.action.id.ComposeOfficialSample", ComposeOfficialSampleAction()),
               ActionData("com.unicorn.plugin.action.id.ComposeOfficialSample2", ComposeOfficialSample2Action()),
               ActionData("com.unicorn.plugin.action.id.ComposePanelAction", ComposePanelAction()),
-              ActionData("com.unicorn.plugin.action.id.ComposeShaderAction", ComposeShaderAction()),
               ActionData("com.unicorn.plugin.action.id.CloneAction", CloneAction()),
               ActionData("com.unicorn.plugin.action.id.ShowTreeAction", ShowTreeAction()),
               ActionData("com.unicorn.plugin.action.id.SwingScopeAction", SwingScopeAction()),

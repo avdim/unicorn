@@ -13,6 +13,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.awt.awtEvent
+import androidx.compose.ui.awt.awtEventOrNull
 import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.geometry.Offset
@@ -95,8 +96,8 @@ fun ComposeDraw(curvesState: MutableState<List<Curve>>, textsState: MutableState
         val event = awaitPointerEventScope {
           awaitPointerEvent()
         }
-        val nativeEvent = (event.mouseEvent as MouseEvent)
-        val isAnyPressed = nativeEvent.modifiersEx and AnyButtonMask != 0
+        val nativeEvent = (event.awtEventOrNull as? MouseEvent)
+        val isAnyPressed = (nativeEvent?.modifiersEx ?: 0) and AnyButtonMask != 0
         val position = event.changes.first().position
         val pt = Pt(position.x, position.y)
         cursorPos = pt
