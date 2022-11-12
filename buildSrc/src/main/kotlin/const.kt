@@ -2,7 +2,7 @@ import org.gradle.api.Project
 import java.text.SimpleDateFormat
 import java.util.*
 
-val UNI_VERSION = "0.14.0"
+val UNI_VERSION = "0.15.0"
 val BUILD_TIME_STR = SimpleDateFormat("yyyy-MM-dd_HH:mm", Locale("ru", "RU")).format(Date())
 val DEBUG_JVM = true
 val MIN_JDK_VERSION: JdkVersion = JdkVersion.JDK11
@@ -12,8 +12,6 @@ val KOTLIN_VERSION = "1.7.20"
 val COMPOSE_VERSION = "1.2.1"
 val COMPOSE_WORKAROUND = false //todo delete
 val SERIALIZATION_VERSION = "1.4.1"
-//val COROUTINE_VERSION = "1.4.2"
-//val COROUTINE_VERSION = "1.5.2"
 val COROUTINE_VERSION = "1.6.4"
 val KTOR_VERSION = "1.5.0"
 val LOG_MAVEN_ARTIFACT = if (DEBUG_JVM) "ch.qos.logback:logback-classic:1.2.3" else "org.slf4j:slf4j-simple:1.7.28"
@@ -30,12 +28,7 @@ val COMPILER_ARGS = listOf<String>()
 // https://www.jetbrains.com/intellij-repository/snapshots/
 // https://www.jetbrains.com/intellij-repository/releases/
 //val LAST_IDEA_STR = "213.5744.223"
-//val LAST_IDEA_STR = "212.5457.46"
-//val LAST_IDEA_STR = "2021.3.1"
-//val LAST_IDEA_STR = "213.6777-EAP-CANDIDATE-SNAPSHOT"
 //val LAST_IDEA_STR = "2021.3.2"
-//val LAST_IDEA_STR = "221.3427-EAP-CANDIDATE-SNAPSHOT"
-//val LAST_IDEA_STR = "221.4165-EAP-CANDIDATE-SNAPSHOT"
 //val LAST_IDEA_STR = "221.4501-EAP-CANDIDATE-SNAPSHOT"
 //val LAST_IDEA_STR = "2022.1"
 val LAST_IDEA_STR = "2022.2.3"

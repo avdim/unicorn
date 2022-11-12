@@ -4,7 +4,9 @@ import com.github.parseGithubUrl
 import com.github.toHttpsUrl
 import com.intellij.my.file.ConfUniFiles
 import com.intellij.openapi.actionSystem.AnActionEvent
+import com.intellij.openapi.application.ApplicationManager
 import com.intellij.openapi.project.DumbAware
+import com.unicorn.Uni
 import com.unicorn.plugin.suggestString
 
 @Suppress("ComponentNotRegistered", "unused")
@@ -17,7 +19,9 @@ class CloneGithubAction : UniAction(), DumbAware {
       val projectDir = ConfUniFiles.GITHUB_DIR.resolve(project.user).resolve(project.repo)
 
       fun open() {
-        suggestOpenProject(projectDir.absolutePath)
+        ApplicationManager.getApplication().invokeLater {
+          suggestOpenProject(projectDir.absolutePath)
+        }
       }
 
       if (projectDir.exists()) {

@@ -16,9 +16,7 @@ object ConfUniFiles {
       GITHUB_DIR,
       HOME_DIR,
       File("/tmp")
-    )
-      .filter { it.exists() }
-      .take(3)
+    ).filter { it.exists() }
 
   val DEFAULT_NEW_PATH = "/"
 }

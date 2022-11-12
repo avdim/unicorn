@@ -20,7 +20,7 @@ fun createFileManagerMviStore(): Store<UniWindowState, Intent> {
     UniWindowState(
       columns = listOf(
         Column(paths = ConfUniFiles.DEFAULT_PATHS.map { it.absolutePath }),
-        Column(paths = listOf("/"))
+        Column(paths = listOf(ConfUniFiles.HOME_DIR.absolutePath))
       )
     )
   ) { s, a:Intent->
