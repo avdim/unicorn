@@ -150,6 +150,9 @@ private fun filesJPanel(
   }
 
   override fun getData(dataId: String): Any? {
+    if (dataId == "psi.Element") {
+      println("break")
+    }
 
     fun getPsiDirectories():Array<PsiDirectory> {
       val elements: Array<PsiElement> = getSelectedPSIElements(myTree.selectionPaths)

@@ -185,7 +185,7 @@ suspend fun configureIDE() {
         com.intellij.ide.impl.ProjectUtil.openOrImport(Path.of(BuildConfig.HAND_TEST_EMPTY_PROJECT))
       }
     } else {
-      showWelcomeDialog()
+//      showWelcomeDialog()
     }
   }
   Uni.log.debug { "configureIDE end" }

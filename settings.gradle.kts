@@ -32,8 +32,8 @@ rootProject.name = "unicorn"
 //enableFeaturePreview("GRADLE_METADATA")
 
 include("uni-idea-plugin")
-include("update-plugin")
-include("share-plugin")
+//include("update-plugin")
+//include("share-plugin")
 include("repo")
 include("lib-github")
 include("aes")

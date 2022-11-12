@@ -60,7 +60,7 @@ java {
 }
 
 dependencies {
-//  implementation(kotlin("stdlib"))
+  implementation(kotlin("stdlib"))
   implementation(LOG_MAVEN_ARTIFACT)
   implementation("org.jgroups:jgroups:4.0.0.Final")//todo
   implementation("io.ktor:ktor-server-netty:$KTOR_VERSION")
@@ -73,7 +73,7 @@ dependencies {
   implementation("org.pushing-pixels:radiance-animation:${RADIANCE_VERSION}")
   implementation("org.pushing-pixels:radiance-animation-ktx:${RADIANCE_VERSION}")
   implementation(project(":lib-github"))
-  implementation(project(":share-plugin"))
+//  implementation(project(":share-plugin"))
   implementation(project(":repo"))
   implementation(project(":aes"))
   implementation(compose.desktop.currentOs)
@@ -173,10 +173,3 @@ tasks {
     token.set(System.getenv("PUBLISH_TOKEN"))
   }
 }
-
-//plugins {
-//    idea
-//}
-//configure<org.gradle.plugins.ide.idea.model.IdeaModel> {
-//    module.excludeDirs = module.excludeDirs + listOf(file("build/idea-sandbox"))
-//}

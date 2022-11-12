@@ -38,7 +38,9 @@ val COMPILER_ARGS = listOf<String>()
 //val LAST_IDEA_STR = "221.3427-EAP-CANDIDATE-SNAPSHOT"
 //val LAST_IDEA_STR = "221.4165-EAP-CANDIDATE-SNAPSHOT"
 //val LAST_IDEA_STR = "221.4501-EAP-CANDIDATE-SNAPSHOT"
-val LAST_IDEA_STR = "2022.1"
+//val LAST_IDEA_STR = "2022.1"
+val LAST_IDEA_STR = "2022.2.3"
+//val LAST_IDEA_STR = "223.7401-EAP-CANDIDATE-SNAPSHOT"
 
 val ideaCommunityMac = "/Users/dim/Library/Application Support/JetBrains/Toolbox/apps/IDEA-C/ch-1/221.5080.210/IntelliJ IDEA CE.app/Contents"
 
@@ -48,9 +50,11 @@ val LAST_ULTIMATE = IdeaVersion.Download(LAST_IDEA_STR, "IU")
 
 // https://github.com/JetBrains/gradle-intellij-plugin
 //val INTELLIJ_GRADLE = "1.4.0"
-val INTELLIJ_GRADLE = "1.5.2"
+//val INTELLIJ_GRADLE = "1.5.2"
 //val INTELLIJ_GRADLE = "1.5.3"
 //val INTELLIJ_GRADLE = "1.6.0"
+//val INTELLIJ_GRADLE = "1.8.0"
+val INTELLIJ_GRADLE = "1.9.0"
 
 val home = System.getProperty("user.home")
 //val asMac = "/Users/dim/Library/Application Support/JetBrains/Toolbox/apps/AndroidStudio/ch-0/203.7185775/Android Studio Preview.app/Contents"
