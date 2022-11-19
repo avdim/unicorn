@@ -8,7 +8,7 @@ object ConfUniFiles {
 
   val HOME_DIR: File = File(System.getProperty("user.home") ?: "/")
   val GITHUB_DIR: File = HOME_DIR.resolve("Desktop/github").also { it.mkdirs() } //todo move to config with Linux/MacOS
-  const val UNI_WINDOW_ID: String = "uni-tool-window"//synchronize with plugin.xml
+  const val UNI_WINDOW_ID: String = "uni"//synchronize with plugin.xml
   const val COMPOSE_WINDOW_ID: String = "Compose"//synchronize with plugin.xml
 
   val DEFAULT_PATHS: List<File> =

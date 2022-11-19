@@ -11,7 +11,7 @@ class TutuProjectViewToolWindowFactory : ToolWindowFactory, DumbAware {
   override fun createToolWindowContent(project: Project, toolWindow: ToolWindow) {
     val content = toolWindow.contentManager.factory.createContent(
       createUniFilesComponent(project, listOf("/")),
-      "uni-files",
+      "file",
       false
     )
 //  content.putUserData(ToolWindow.SHOW_CONTENT_ICON, java.lang.Boolean.TRUE)
