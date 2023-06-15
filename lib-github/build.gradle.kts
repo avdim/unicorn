@@ -30,3 +30,7 @@ tasks.withType<org.jetbrains.kotlin.gradle.tasks.KotlinCompile> {
   kotlinOptions.jvmTarget = JVM_TARGET
   kotlinOptions.freeCompilerArgs += listOf("-Xjvm-default=enable")
 }
+
+kotlin {
+  jvmToolchain(11)
+}
