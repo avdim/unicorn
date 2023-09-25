@@ -8,8 +8,8 @@ pluginManagement {
   }
 
   repositories {
-    gradlePluginPortal()//todo alternative?: maven { setUrl("https://plugins.gradle.org/m2/") }
     mavenCentral()
+    gradlePluginPortal()//todo alternative?: maven { setUrl("https://plugins.gradle.org/m2/") }
 //    maven { setUrl("https://dl.bintray.com/kotlin/kotlinx") }
     maven(url = "https://maven.pkg.jetbrains.space/public/p/compose/dev")
 //    maven { setUrl("https://dl.bintray.com/kotlin/kotlin-eap") }
@@ -33,7 +33,7 @@ rootProject.name = "unicorn"
 
 include("uni-idea-plugin")
 //include("update-plugin")
-include("repo")
+//include("repo")
 include("lib-github")
 include("aes")
 include("app-github-workflow")

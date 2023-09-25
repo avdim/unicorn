@@ -47,15 +47,15 @@ buildConfig {
 java {
   if (true) {
     toolchain {
-      languageVersion.set(JavaLanguageVersion.of(11))
+      languageVersion.set(JavaLanguageVersion.of(17))
       if (false) {
         vendor.set(JvmVendorSpec.BELLSOFT)
         implementation.set(JvmImplementation.VENDOR_SPECIFIC)
       }
     }
   } else {
-    sourceCompatibility = JavaVersion.VERSION_11
-    targetCompatibility = JavaVersion.VERSION_11
+    sourceCompatibility = JavaVersion.VERSION_17
+    targetCompatibility = JavaVersion.VERSION_17
   }
 }
 
@@ -72,7 +72,7 @@ dependencies {
   implementation("org.jetbrains.kotlinx:kotlinx-coroutines-swing:$COROUTINE_VERSION")
   implementation(project(":lib-github"))
 //  implementation(project(":share-plugin"))
-  implementation(project(":repo"))
+//  implementation(project(":repo"))
   implementation(project(":aes"))
   implementation(compose.desktop.currentOs)
 //  implementation(compose.desktop.all)//todo linux
@@ -114,8 +114,8 @@ intellij {
   plugins.set(
     listOf(
       "terminal",
-      "github",
-      "git4idea",
+//      "GitHub",
+      "Git4Idea",
 //      "android",
 //      "com.jetbrains.edu:2021.9-2021.1-1254",//2021.1
 //      "com.jetbrains.edu:2021.8-2021.2-298",//2021.2
@@ -163,7 +163,7 @@ tasks.withType<org.jetbrains.intellij.tasks.RunIdeTask> {
 
 tasks.withType<org.jetbrains.kotlin.gradle.tasks.KotlinCompile> {
   kotlinOptions.jvmTarget = JVM_TARGET
-  kotlinOptions.freeCompilerArgs += listOf("-Xjvm-default=enable")
+//  kotlinOptions.freeCompilerArgs += listOf("-Xjvm-default=enable")
 }
 
 tasks {

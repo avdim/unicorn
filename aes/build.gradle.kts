@@ -7,8 +7,8 @@ group = "ru.avdim.lib.aes"
 version = "0.1"
 
 java {
-  sourceCompatibility = JavaVersion.VERSION_11
-  targetCompatibility = JavaVersion.VERSION_11
+  sourceCompatibility = JavaVersion.VERSION_17
+  targetCompatibility = JavaVersion.VERSION_17
 }
 
 repositories {
@@ -23,5 +23,5 @@ dependencies {
 
 tasks.withType<org.jetbrains.kotlin.gradle.tasks.KotlinCompile> {
   kotlinOptions.jvmTarget = JVM_TARGET
-  kotlinOptions.freeCompilerArgs += listOf("-Xjvm-default=enable")
+//  kotlinOptions.freeCompilerArgs += listOf("-Xjvm-default=enable")
 }

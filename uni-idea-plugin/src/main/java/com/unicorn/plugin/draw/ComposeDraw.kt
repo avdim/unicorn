@@ -12,7 +12,6 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.awt.awtEvent
 import androidx.compose.ui.awt.awtEventOrNull
 import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.focus.focusRequester
@@ -185,10 +184,10 @@ fun ComposeDraw(curvesState: MutableState<List<Curve>>, textsState: MutableState
               }
               if (event.buttons.isPrimaryPressed) {
                 if (downPos == null) {
-                  downPos = event.awtEvent.toPt()
+                  downPos = event.awtEventOrNull?.toPt()
                 }
                 texts = texts.toMutableList().apply {
-                  set(i, t.copy(pos = t.pos + event.awtEvent.toPt() - downPos!!))
+                  set(i, t.copy(pos = t.pos + event.awtEventOrNull!!.toPt() - downPos!!))
                 }
               } else {
                 downPos = null

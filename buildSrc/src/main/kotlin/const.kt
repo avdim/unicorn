@@ -2,18 +2,18 @@ import org.gradle.api.Project
 import java.text.SimpleDateFormat
 import java.util.*
 
-val UNI_VERSION = "0.15.0"
+val UNI_VERSION = "0.16.0"
 val BUILD_TIME_STR = SimpleDateFormat("yyyy-MM-dd_HH:mm", Locale("ru", "RU")).format(Date())
 val DEBUG_JVM = true
-val MIN_JDK_VERSION: JdkVersion = JdkVersion.JDK11
+val MIN_JDK_VERSION: JdkVersion = JdkVersion.JDK17
 val JVM_TARGET = MIN_JDK_VERSION.kotlinTarget
 
-val KOTLIN_VERSION = "1.7.20"
-val COMPOSE_VERSION = "1.2.1"
+val KOTLIN_VERSION = "1.9.10"
+val COMPOSE_VERSION = "1.5.10-beta01"
 val COMPOSE_WORKAROUND = false //todo delete
 val SERIALIZATION_VERSION = "1.4.1"
 val COROUTINE_VERSION = "1.6.4"
-val KTOR_VERSION = "1.5.0"
+val KTOR_VERSION = "2.3.4"
 val LOG_MAVEN_ARTIFACT = if (DEBUG_JVM) "ch.qos.logback:logback-classic:1.2.3" else "org.slf4j:slf4j-simple:1.7.28"
 val GMAZZO_BUILDCONFIG_VERSION = "3.0.1"
 
@@ -31,11 +31,13 @@ val COMPILER_ARGS = listOf<String>()
 //val LAST_IDEA_STR = "2021.3.2"
 //val LAST_IDEA_STR = "221.4501-EAP-CANDIDATE-SNAPSHOT"
 //val LAST_IDEA_STR = "2022.1"
-val LAST_IDEA_STR = "2022.2.3"
+//val LAST_IDEA_STR = "2022.2.3"
 //val LAST_IDEA_STR = "223.7401-EAP-CANDIDATE-SNAPSHOT"
 //val LAST_IDEA_STR = "232.5150-EAP-CANDIDATE-SNAPSHOT"
 //val LAST_IDEA_STR = "2023.1.2"
 //val LAST_IDEA_STR = "232.7754-EAP-CANDIDATE-SNAPSHOT"
+val LAST_IDEA_STR = "2023.2.2"
+//val LAST_IDEA_STR = "233.6745-EAP-CANDIDATE-SNAPSHOT"
 
 val ideaCommunityMac = "/Users/dim/Library/Application Support/JetBrains/Toolbox/apps/IDEA-C/ch-1/221.5080.210/IntelliJ IDEA CE.app/Contents"
 

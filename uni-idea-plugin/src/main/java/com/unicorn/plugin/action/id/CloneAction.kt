@@ -1,3 +1,5 @@
+@file:Suppress("MissingRecentApi")
+
 package com.unicorn.plugin.action.id
 
 import com.intellij.openapi.actionSystem.AnActionEvent
@@ -12,9 +14,9 @@ import com.intellij.util.ui.cloneDialog.VcsCloneDialog
 import com.unicorn.Uni
 import git4idea.checkout.GitCheckoutProvider
 import git4idea.commands.Git
-import org.jetbrains.plugins.github.i18n.GithubBundle
-import org.jetbrains.plugins.github.util.GithubNotificationIdsHolder
-import org.jetbrains.plugins.github.util.GithubNotifications
+//import org.jetbrains.plugins.github.i18n.GithubBundle
+//import org.jetbrains.plugins.github.util.GithubNotificationIdsHolder
+//import org.jetbrains.plugins.github.util.GithubNotifications
 import java.io.File
 import java.nio.file.Files
 import java.nio.file.Path
@@ -50,12 +52,12 @@ fun doClone2(
   val destinationParent: VirtualFile? = parent.toVirtualFile()
   if (destinationParent == null) {
     //LOG.error("Clone Failed. Destination doesn't exist")
-    GithubNotifications.showError(
-      project1,
-      GithubNotificationIdsHolder.CLONE_UNABLE_TO_FIND_DESTINATION,
-      GithubBundle.message("clone.dialog.clone.failed"),
-      GithubBundle.message("clone.error.unable.to.find.dest")
-    )
+//    GithubNotifications.showError(
+//      project1,
+//      GithubNotificationIdsHolder.CLONE_UNABLE_TO_FIND_DESTINATION,
+//      GithubBundle.message("clone.dialog.clone.failed"),
+//      GithubBundle.message("clone.error.unable.to.find.dest")
+//    )
     return
   }
   val directoryName = dir.name //Paths.get(dirStr).fileName.toString()

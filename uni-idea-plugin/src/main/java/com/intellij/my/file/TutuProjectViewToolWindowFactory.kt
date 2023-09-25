@@ -22,7 +22,8 @@ class TutuProjectViewToolWindowFactory : ToolWindowFactory, DumbAware {
   }
 
   override fun init(window: ToolWindow) {
-    window.setIcon(IconLoader.getIcon(ApplicationInfoEx.getInstanceEx().toolWindowIconUrl))
+//    window.setIcon()
+//    window.setIcon(IconLoader.getIcon(ApplicationInfoEx.getInstanceEx().toolWindowIconUrl, ClassLoader.getPlatformClassLoader()))
     window.stripeTitle = "uni-files"
   }
 

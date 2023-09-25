@@ -28,10 +28,6 @@ import com.intellij.json.psi.JsonValue
 import com.intellij.psi.PsiDirectory
 import com.intellij.psi.PsiElement
 import com.intellij.psi.impl.source.tree.LeafPsiElement
-import ru.tutu.git.GitDir
-import ru.tutu.git.branches
-import ru.tutu.git.isGit
-import ru.tutu.git.tags
 
 
 class JsonRepoCompletion : CompletionContributor() {
@@ -59,28 +55,28 @@ class JsonRepoCompletion : CompletionContributor() {
     parameters: CompletionParameters,
     result: CompletionResultSet
   ) {
-    if (parameters.completionType != CompletionType.BASIC) return
-    println("property.name: ${jsonProp.name}")
-    val gitDirPath = jsonProp.parent.jsonGet("dir")?.strValue()
-    if (gitDirPath != null) {
-      val virtualFile: PsiDirectory? = parameters.originalFile.parent?.findSubdirectory(gitDirPath)
-      val gitDir = virtualFile?.let { GitDir(it.toJavaFile()) }
-      if (gitDir?.isGit() == true) {
-        val whiteListTags = gitDir.tags()
-        val whiteListBranches = gitDir.branches()
-        val value: JsonValue? = jsonProp.value
-        if (value != null && jsonProp.name == "ref") {
-          result.addAllElements(
-            (whiteListTags + whiteListBranches).map {
-              LookupElementBuilder.create(it).bold()
-            }
-          )
-        }
-      }
-    }
-//    val presentNamePart: String = ThemeJsonUtil.getParentNames(property)
-//    val shouldSurroundWithQuotes = !element.text.startsWith("\"")
-//    val lookupElements: Iterable<LookupElement> = getLookupElements(presentNamePart, shouldSurroundWithQuotes)
-//    result.addAllElements(lookupElements)
+//    if (parameters.completionType != CompletionType.BASIC) return
+//    println("property.name: ${jsonProp.name}")
+//    val gitDirPath = jsonProp.parent.jsonGet("dir")?.strValue()
+//    if (gitDirPath != null) {
+//      val virtualFile: PsiDirectory? = parameters.originalFile.parent?.findSubdirectory(gitDirPath)
+//      val gitDir = virtualFile?.let { GitDir(it.toJavaFile()) }
+//      if (gitDir?.isGit() == true) {
+//        val whiteListTags = gitDir.tags()
+//        val whiteListBranches = gitDir.branches()
+//        val value: JsonValue? = jsonProp.value
+//        if (value != null && jsonProp.name == "ref") {
+//          result.addAllElements(
+//            (whiteListTags + whiteListBranches).map {
+//              LookupElementBuilder.create(it).bold()
+//            }
+//          )
+//        }
+//      }
+//    }
+////    val presentNamePart: String = ThemeJsonUtil.getParentNames(property)
+////    val shouldSurroundWithQuotes = !element.text.startsWith("\"")
+////    val lookupElements: Iterable<LookupElement> = getLookupElements(presentNamePart, shouldSurroundWithQuotes)
+////    result.addAllElements(lookupElements)
   }
 }

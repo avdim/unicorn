@@ -1,4 +1,4 @@
-@file:Suppress("HardCodedStringLiteral")
+@file:Suppress("HardCodedStringLiteral", "UnstableApiUsage")
 package com.unicorn.plugin.action.cmd.misc.showcase
 
 import com.intellij.openapi.fileChooser.FileChooserDescriptorFactory
@@ -119,7 +119,7 @@ fun fieldWithGear(): JPanel {
   return panel {
     row("Database:") {
       JTextField()()
-      gearButton()
+//      gearButton()
     }
     row("Master Password:") {
       JBPasswordField()()
@@ -132,7 +132,7 @@ fun fieldWithGearWithIndent(): JPanel {
     row {
       row("Database:") {
         JTextField()()
-        gearButton()
+//        gearButton()
       }
       row("Master Password:") {
         JBPasswordField()()
@@ -143,18 +143,18 @@ fun fieldWithGearWithIndent(): JPanel {
 
 fun alignFieldsInTheNestedGrid(): JPanel {
   return panel {
-    buttonGroup {
-      row {
-        RadioButton("In KeePass")()
-        row("Database:") {
-          JTextField()()
-          gearButton()
-        }
-        row("Master Password:") {
-          JBPasswordField()(comment = "Stored using weak encryption.")
-        }
-      }
-    }
+//    buttonGroup {
+//      row {
+//        RadioButton("In KeePass")()
+//        row("Database:") {
+//          JTextField()()
+////          gearButton()
+//        }
+//        row("Master Password:") {
+//          JBPasswordField()(comment = "Stored using weak encryption.")
+//        }
+//      }
+//    }
   }
 }
 
@@ -204,30 +204,31 @@ fun commentAndPanel(): JPanel {
         checkBox("Auto Sync", comment = "Use File -> Settings Repository... to configure")
       }
     }
-    row {
-      panel("Foo", JScrollPane(JTextArea()))
-    }
+//    row {
+//      panel("Foo", JScrollPane(JTextArea()))
+//    }
   }
 }
 
 fun createLafTestPanel(): JPanel {
-  val spacing = createIntelliJSpacingConfiguration()
-  val panel = JPanel(GridLayout(0, 1, spacing.horizontalGap, spacing.verticalGap))
-  panel.add(JTextField("text"))
-  panel.add(JPasswordField("secret"))
-  panel.add(ComboBox<String>(arrayOf("one", "two")))
-
-  val field = ComboBox<String>(arrayOf("one", "two"))
-  field.isEditable = true
-  panel.add(field)
-
-  panel.add(JButton("label"))
-  panel.add(CheckBox("enabled"))
-  panel.add(JRadioButton("label"))
-  panel.add(JBIntSpinner(0, 0, 7))
-  panel.add(textFieldWithHistoryWithBrowseButton(null, "File", FileChooserDescriptorFactory.createSingleFileNoJarsDescriptor()))
-
-  return panel
+  TODO()
+//  val spacing = createIntelliJSpacingConfiguration()
+//  val panel = JPanel(GridLayout(0, 1, spacing.horizontalGap, spacing.verticalGap))
+//  panel.add(JTextField("text"))
+//  panel.add(JPasswordField("secret"))
+//  panel.add(ComboBox<String>(arrayOf("one", "two")))
+//
+//  val field = ComboBox<String>(arrayOf("one", "two"))
+//  field.isEditable = true
+//  panel.add(field)
+//
+//  panel.add(JButton("label"))
+//  panel.add(CheckBox("enabled"))
+//  panel.add(JRadioButton("label"))
+//  panel.add(JBIntSpinner(0, 0, 7))
+//  panel.add(textFieldWithHistoryWithBrowseButton(null, "File", FileChooserDescriptorFactory.createSingleFileNoJarsDescriptor()))
+//
+//  return panel
 }
 
 fun withVerticalButtons(): JPanel {
@@ -284,36 +285,36 @@ fun hideableRow(): JPanel {
     row("Foo") {
       textField(dummyTextBinding)
     }
-    hideableRow("Bar") {
-      textField(dummyTextBinding)
-    }
+//    hideableRow("Bar") {
+//      textField(dummyTextBinding)
+//    }
   }
 }
 
 fun spannedCheckbox(): JPanel {
   return panel {
-    buttonGroup {
-      row {
-        RadioButton("In KeePass")()
-        row("Database:") {
-          // comment can lead to broken layout, so, test it
-          JTextField("test")(comment = "Stored using weak encryption. It is recommended to store on encrypted volume for additional security.")
-        }
-
-        row {
-          cell {
-            checkBox("Protect master password using PGP key")
-            val comboBox = ComboBox(arrayOf("Foo", "Bar"))
-            comboBox.isVisible = false
-            comboBox(growPolicy = GrowPolicy.MEDIUM_TEXT)
-          }
-        }
-      }
-
-      row {
-        RadioButton("Do not save, forget passwords after restart")()
-      }
-    }
+//    buttonGroup {
+//      row {
+//        RadioButton("In KeePass")()
+//        row("Database:") {
+//          // comment can lead to broken layout, so, test it
+//          JTextField("test")(comment = "Stored using weak encryption. It is recommended to store on encrypted volume for additional security.")
+//        }
+//
+//        row {
+//          cell {
+//            checkBox("Protect master password using PGP key")
+//            val comboBox = ComboBox(arrayOf("Foo", "Bar"))
+//            comboBox.isVisible = false
+//            comboBox(growPolicy = GrowPolicy.MEDIUM_TEXT)
+//          }
+//        }
+//      }
+//
+//      row {
+//        RadioButton("Do not save, forget passwords after restart")()
+//      }
+//    }
   }
 }
 
@@ -358,7 +359,7 @@ fun checkboxRowsWithBigComponents(): JPanel {
     row {
       cell(isFullWidth = true) {
         CheckBox("Sample checkbox label")()
-        comment("commentary")
+//        comment("commentary")
       }
     }
   }
@@ -374,53 +375,9 @@ fun titledRow(): JPanel {
   }
 }
 
-fun sampleConfigurablePanel(): JPanel {
-  return panel {
-    titledRow("Settings") {
-      row { checkBox("Some test option") }
-      row { checkBox("Another test option") }
-    }
-    titledRow("Options") {
-      row { checkBox("Some test option") }
-      row {
-        buttonGroup("Radio group") {
-          row { radioButton("Option 1") }
-          row { radioButton("Option 2") }
-        }
-      }
-      row {
-        buttonGroup("Radio group") {
-          row { radioButton("Option 1", comment = "Comment for the Option 1") }
-          row { radioButton("Option 2") }
-        }
-      }
-    }
-    titledRow("Test") {
-      row("Header") { JTextField()() }
-      row("Longer Header") { checkBox("Some long description", comment = "Comment for the checkbox with longer header.") }
-      row("Header") { JPasswordField()() }
-      row("Header") { comboBox(DefaultComboBoxModel(arrayOf("Option 1", "Option 2")), { null }, {}) }
-    }
-  }
-}
 
 private data class TestOptions(var threadDumpDelay: Int, var enableLargeIndexing: Boolean, var largeIndexFilesCount: Int)
 
-fun checkBoxFollowedBySpinner(): JPanel {
-  val testOptions = TestOptions(50, true, 100)
-  return panel {
-    row(label = "Thread dump capture delay (ms):") {
-      spinner(testOptions::threadDumpDelay, 50, 5000, 50)
-    }
-    row {
-      val c = checkBox("Create", testOptions::enableLargeIndexing).actsAsLabel()
-      spinner(testOptions::largeIndexFilesCount, 100, 1_000_000, 1_000)
-        .enableIf(c.selected)
-      label("files to start background indexing")
-    }
-
-  }
-}
 
 fun separatorAndComment() : JPanel {
   return panel {

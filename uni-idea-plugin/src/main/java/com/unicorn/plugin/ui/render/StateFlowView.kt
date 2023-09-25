@@ -33,22 +33,22 @@ fun <T> CoroutineScope.stateFlowView(
           panel {
             renderState(state)
 
-            hideableRow("") {//todo workaround to mvi repaint good
-              cell {
-                TextFieldWithAutoCompletion(
-                  null,
-                  TextFieldWithAutoCompletion.StringsCompletionProvider(
-                    listOf(), null
-                  ),
-                  false,
-                  ""
-                ).invoke()
-
-//              parentPanel.revalidate()
-//              parentPanel.validate()
-//              parentPanel.repaint()
-              }
-            }//hideableRow
+//            hideableRow("") {//todo workaround to mvi repaint good
+//              cell {
+//                TextFieldWithAutoCompletion(
+//                  null,
+//                  TextFieldWithAutoCompletion.StringsCompletionProvider(
+//                    listOf(), null
+//                  ),
+//                  false,
+//                  ""
+//                ).invoke()
+//
+////              parentPanel.revalidate()
+////              parentPanel.validate()
+////              parentPanel.repaint()
+//              }
+//            }//hideableRow
 
           }
         )

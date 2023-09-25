@@ -59,24 +59,24 @@ suspend fun HttpClient.getGithubWorkflowRuns(
   repo: String,
   page: Int = 0,
   perPage: Int = 100,
-): Response<WorkflowRuns> =
-  // https://docs.github.com/en/rest/reference/actions#workflow-runs
-  tryStringRequest {
-    request<String>(
-      url = Url("https://api.github.com/repos/$owner/$repo/actions/runs")
-        .copy(
-          parameters = parametersOf(
-            "per_page" to listOf(perPage.toString()),
-            "page" to listOf(page.toString())
-          )
-        )
-    ) {
-      method = HttpMethod.Get
-      header("Authorization", "bearer ${token.tokenString}")
-      header("Accept", "*/*")
-//        contentType(/**/)
-    }
-  }.fromJson<WorkflowRuns>()
+): Response<WorkflowRuns> = TODO()
+//  // https://docs.github.com/en/rest/reference/actions#workflow-runs
+//  tryStringRequest {
+//    request<String>(
+//      url = Url("https://api.github.com/repos/$owner/$repo/actions/runs")
+//        .copy(
+//          parameters = parametersOf(
+//            "per_page" to listOf(perPage.toString()),
+//            "page" to listOf(page.toString())
+//          )
+//        )
+//    ) {
+//      method = HttpMethod.Get
+//      header("Authorization", "bearer ${token.tokenString}")
+//      header("Accept", "*/*")
+////        contentType(/**/)
+//    }
+//  }.fromJson<WorkflowRuns>()
 
 @Serializable
 class WorkflowRunJobs(
@@ -103,25 +103,25 @@ suspend fun HttpClient.getGithubWorkflowRunJobs(
   owner: String,
   repo: String,
   runId: Long
-): Response<WorkflowRunJobs> =
-  // https://docs.github.com/en/rest/reference/actions#list-jobs-for-a-workflow-run
-  tryStringRequest {
-    request<String>(
-      url = Url("https://api.github.com/repos/$owner/$repo/actions/runs/$runId/jobs")
-        .copy(
-          parameters = parametersOf(
-            "per_page" to listOf("100"),
-            "page" to listOf("0")
-          )
-        )
-    ) {
-      method = HttpMethod.Get
-      header("Authorization", "bearer ${token.tokenString}")
-      header("Accept", "*/*")
-//        contentType(/**/)
-    }
-  }
-    .fromJson<WorkflowRunJobs>()
+): Response<WorkflowRunJobs> = TODO()
+//  // https://docs.github.com/en/rest/reference/actions#list-jobs-for-a-workflow-run
+//  tryStringRequest {
+//    request<String>(
+//      url = Url("https://api.github.com/repos/$owner/$repo/actions/runs/$runId/jobs")
+//        .copy(
+//          parameters = parametersOf(
+//            "per_page" to listOf("100"),
+//            "page" to listOf("0")
+//          )
+//        )
+//    ) {
+//      method = HttpMethod.Get
+//      header("Authorization", "bearer ${token.tokenString}")
+//      header("Accept", "*/*")
+////        contentType(/**/)
+//    }
+//  }
+//    .fromJson<WorkflowRunJobs>()
 
 @Serializable
 data class WorkflowRunTiming(
@@ -158,22 +158,22 @@ suspend fun HttpClient.getGithubWorkflowRunTiming(
   owner: String,
   repo: String,
   runId: Long
-): Response<WorkflowRunTiming> =
-  // https://docs.github.com/en/rest/reference/actions#get-workflow-run-usage
-  tryStringRequest {
-    request<String>(
-      url = Url("https://api.github.com/repos/$owner/$repo/actions/runs/$runId/timing")
-    ) {
-      method = HttpMethod.Get
-      header("Authorization", "bearer ${token.tokenString}")
-      header("Accept", "*/*")
-//        contentType(/**/)
-    }
-  }
-    .fromJson<WorkflowRunTiming>()
-    .ifError {
-      println("error $it")
-    }
+): Response<WorkflowRunTiming> = TODO()
+//  // https://docs.github.com/en/rest/reference/actions#get-workflow-run-usage
+//  tryStringRequest {
+//    request<String>(
+//      url = Url("https://api.github.com/repos/$owner/$repo/actions/runs/$runId/timing")
+//    ) {
+//      method = HttpMethod.Get
+//      header("Authorization", "bearer ${token.tokenString}")
+//      header("Accept", "*/*")
+////        contentType(/**/)
+//    }
+//  }
+//    .fromJson<WorkflowRunTiming>()
+//    .ifError {
+//      println("error $it")
+//    }
 
 val WorkflowRunTiming.billMinutes
   get(): Int {

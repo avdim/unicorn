@@ -100,20 +100,18 @@
   <extensions defaultExtensionNs="com.intellij">
     <toolWindow id="uni-file-manager" anchor="right" secondary="false"
                 factoryClass="com.intellij.my.file.TutuProjectViewToolWindowFactory"/>
-    <appStarter implementation="todo.AppStarter"/>
+<!--    <appStarter implementation="todo.AppStarter"/>-->
   </extensions>
 
   <!--  repo-->
   <depends>com.intellij.modules.json</depends>
   <depends>Git4Idea</depends>
   <extensions defaultExtensionNs="com.intellij">
-    <codeInsight.lineMarkerProvider language="JSON" implementationClass="ru.tutu.repo.RepoGutter"/>
     <localInspection language="JSON" shortName="JsonDuplicatePropertyKeys2"
                      bundle="messages.JsonBundle" key="inspection.duplicate.keys.name" groupKey="json.inspection.group"
                      enabledByDefault="true" level="WARNING"
                      implementationClass="ru.tutu.repo.JsonRepoInspection"/>
 <!--    <fileEditorProvider implementation="ru.tutu.repo.RepoJsonEditorProvider"/>-->
-    <editorNotificationProvider implementation="ru.tutu.repo.RepoFileNotificationProvider"/>
 <!--    <completion.contributor language="JSON" id="JsonRepoCompletionContributor" order="last" implementationClass="ru.tutu.repo.JsonRepoCompletion"/>-->
     <completion.contributor language="JSON" implementationClass="ru.tutu.repo.JsonRepoCompletion"/>
   </extensions>

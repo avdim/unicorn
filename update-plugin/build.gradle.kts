@@ -26,8 +26,8 @@ buildConfig {
 }
 
 java {
-  sourceCompatibility = JavaVersion.VERSION_11
-  targetCompatibility = JavaVersion.VERSION_11
+  sourceCompatibility = JavaVersion.VERSION_17
+  targetCompatibility = JavaVersion.VERSION_17
 }
 
 group = "ru.avdim.idea-plugin-update"
@@ -88,7 +88,7 @@ tasks.withType<org.jetbrains.intellij.tasks.RunIdeTask> {
 
 tasks.withType<org.jetbrains.kotlin.gradle.tasks.KotlinCompile> {
   kotlinOptions.jvmTarget = JVM_TARGET
-  kotlinOptions.freeCompilerArgs += listOf("-Xjvm-default=enable")
+//  kotlinOptions.freeCompilerArgs += listOf("-Xjvm-default=enable")
 }
 
 tasks {

@@ -27,38 +27,40 @@ class GitHubMail(
 )
 
 suspend fun HttpClient.getGithubMail(token: Token<Permission.Mail>): String {
-  val result = tryStringRequest {
-    request<String>(
-      url = Url("https://api.github.com/user/emails")
-    ) {
-      method = HttpMethod.Get
-      header("Authorization", "bearer ${token.tokenString}")
-      header("Accept", "*/*")
-//        contentType(/**/)
-    }
-  }.fromJson<List<GitHubMail>>()
-
-  return when (result) {
-    is Response.Success -> {
-      result.data.firstOrNull()?.email ?: "no emails at account"
-    }
-    is Response.Error -> {
-      return "error: ${result.message}"
-    }
-  }
+  TODO()
+//  val result = tryStringRequest {
+//    request<String>(
+//      url = Url("https://api.github.com/user/emails")
+//    ) {
+//      method = HttpMethod.Get
+//      header("Authorization", "bearer ${token.tokenString}")
+//      header("Accept", "*/*")
+////        contentType(/**/)
+//    }
+//  }.fromJson<List<GitHubMail>>()
+//
+//  return when (result) {
+//    is Response.Success -> {
+//      result.data.firstOrNull()?.email ?: "no emails at account"
+//    }
+//    is Response.Error -> {
+//      return "error: ${result.message}"
+//    }
+//  }
 }
 
 suspend fun HttpClient.getGithubRepoReleases(owner: String, repo: String): List<Release> {
-  //https://docs.github.com/en/free-pro-team@latest/rest/reference/repos#list-releases
-  val jsonStr = request<String>(
-    url = Url("https://api.github.com/repos/$owner/$repo/releases")
-  ) {
-    method = HttpMethod.Get
-    header("Accept", "application/vnd.github.v3+json")
-//        contentType(/**/)
-  }
-  val result: List<Release> = jsonParser.decodeFromString(jsonStr)
-  return result
+  TODO()
+//  //https://docs.github.com/en/free-pro-team@latest/rest/reference/repos#list-releases
+//  val jsonStr = request<String>(
+//    url = Url("https://api.github.com/repos/$owner/$repo/releases")
+//  ) {
+//    method = HttpMethod.Get
+//    header("Accept", "application/vnd.github.v3+json")
+////        contentType(/**/)
+//  }
+//  val result: List<Release> = jsonParser.decodeFromString(jsonStr)
+//  return result
 }
 
 class Token<out T : Permission>(val tokenString: String)

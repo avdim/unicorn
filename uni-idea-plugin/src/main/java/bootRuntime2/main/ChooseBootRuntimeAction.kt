@@ -103,16 +103,7 @@ class ChooseBootRuntimeAction : UniAction(), DumbAware {
     /*combobox.editor = ComboBoxCompositeEditor.
       withComponents<Any,TextFieldWithAutoCompletion<Runtime>>(myRuntimeUrlField, repositoryUrlFieldSpinner)*/
 
-    combobox.editor = object : ComboBoxCompositeEditor<JLabel, TextFieldWithAutoCompletion<Runtime>>(myRuntimeUrlField, repositoryUrlFieldSpinner) {
-      override fun setItem(anObject: Any?) {
-        super.setItem(anObject)
-        if (installed == anObject) {
-          myRuntimeUrlField.font = combobox.font.deriveFont(Font.BOLD)
-        } else {
-          myRuntimeUrlField.font = combobox.font.deriveFont(Font.PLAIN)
-        }
-      }
-    }
+    combobox.editor = ComboBoxCompositeEditor<JLabel, TextFieldWithAutoCompletion<Runtime>>(myRuntimeUrlField, repositoryUrlFieldSpinner)
 
     combobox.renderer = object : EditorComboBoxRenderer(combobox.editor) {
       override fun getListCellRendererComponent(list: JList<*>?,

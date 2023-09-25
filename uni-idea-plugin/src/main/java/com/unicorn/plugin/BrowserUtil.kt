@@ -31,7 +31,7 @@ fun openBrowserJBCeffOrDefault(url: String): IClosable {
 
         if (safeJBCeffSupported()) {
             val bounds =
-                IdeFrameImpl.getActiveFrame()?.graphicsConfiguration?.bounds
+                IdeFrameImpl.activeFrame?.graphicsConfiguration?.bounds
                     ?: Rectangle(0, 0, 1000, 1000)
 
             val frame: JFrame = IdeFrameImpl()

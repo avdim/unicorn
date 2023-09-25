@@ -31,7 +31,8 @@ class ComboBoxWithAutoCompletion<E>(model: ComboBoxModel<E>,
   private val autoPopupController = AutoPopupController.getInstance(project)
 
   private val completionProvider = object : TextFieldWithAutoCompletionListProvider<E>(emptyList()) {
-    override fun getLookupString(item: E) = item.toString()
+//    override fun getLookupString(item: E) = item.toString()
+    override fun getLookupString(p0: E & Any)= item.toString()
   }
 
   private var myEditor: EditorEx? = null

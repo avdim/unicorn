@@ -17,7 +17,6 @@ import com.intellij.openapi.keymap.ex.KeymapManagerEx
 import com.intellij.openapi.util.registry.Registry
 import com.intellij.openapi.wm.StatusBarWidgetFactory
 import com.intellij.openapi.wm.impl.IdeBackgroundUtil
-import com.intellij.openapi.wm.impl.status.MemoryIndicatorWidgetFactory
 import com.intellij.openapi.wm.impl.status.widget.StatusBarWidgetSettings
 import com.intellij.psi.search.UseScopeEnlarger
 import com.unicorn.BuildConfig
@@ -70,15 +69,9 @@ suspend fun configureIDE() {
   Registry.get("ide.plugins.unload.timeout").setValue(8_000)
 
   val terminalLinesSize = 100_000
-  try { // old IDEA 2021.1
-    // Terminal settings
-    val previousTerminalLines: Int = Registry.intValue("terminal.buffer.max.lines.count")
-    Registry.get("terminal.buffer.max.lines.count").setValue(terminalLinesSize)
-  } catch (t: Throwable) {//IDEA 2021.2
-    val previousTerminalLines: Int = com.intellij.openapi.options.advanced.AdvancedSettings.getInt("terminal.buffer.max.lines.count")
-    Uni.log.debug { "terminal.buffer.max.lines.count: $previousTerminalLines" }
-    com.intellij.openapi.options.advanced.AdvancedSettings.setInt("terminal.buffer.max.lines.count", terminalLinesSize)
-  }
+  val previousTerminalLines: Int = com.intellij.openapi.options.advanced.AdvancedSettings.getInt("terminal.buffer.max.lines.count")
+  Uni.log.debug { "terminal.buffer.max.lines.count: $previousTerminalLines" }
+  com.intellij.openapi.options.advanced.AdvancedSettings.setInt("terminal.buffer.max.lines.count", terminalLinesSize)
 
 //  TerminalOptionsProvider.instance.overrideIdeShortcuts = false//enable Alt+F2 in terminal
   TerminalOptionsProvider.instance.overrideIdeShortcuts = false//enable Alt+F2 in terminal
@@ -108,11 +101,11 @@ suspend fun configureIDE() {
   uiSettings.smoothScrolling//=false todo val //UI: smooth scrolling
   uiSettings.showTreeIndentGuides = true
 //  uiSettings.showMemoryIndicator = true
-  val memoryWidgetFactory = StatusBarWidgetFactory.EP_NAME.iterable.mapNotNull { it as? MemoryIndicatorWidgetFactory }.firstOrNull()
-  if (memoryWidgetFactory != null) {
-    //можно упростить до state.widgets[ID]
-    ApplicationManager.getApplication().getService(StatusBarWidgetSettings::class.java).setEnabled(memoryWidgetFactory, true)
-  }
+//  val memoryWidgetFactory = StatusBarWidgetFactory.EP_NAME.iterable.mapNotNull { it as? MemoryIndicatorWidgetFactory }.firstOrNull()
+//  if (memoryWidgetFactory != null) {
+//    //можно упростить до state.widgets[ID]
+//    ApplicationManager.getApplication().getService(StatusBarWidgetSettings::class.java).setEnabled(memoryWidgetFactory, true)
+//  }
   uiSettings.recentLocationsLimit// = 50 todo val
   uiSettings.wideScreenSupport = true
   uiSettings.compactTreeIndents = true
