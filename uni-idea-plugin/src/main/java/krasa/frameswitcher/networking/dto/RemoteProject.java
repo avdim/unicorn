@@ -2,8 +2,6 @@ package krasa.frameswitcher.networking.dto;
 
 import com.intellij.ide.ReopenProjectAction;
 import com.intellij.openapi.project.Project;
-import org.apache.commons.lang.builder.ReflectionToStringBuilder;
-import org.apache.commons.lang.builder.ToStringStyle;
 
 import java.io.Serializable;
 
@@ -63,6 +61,6 @@ public class RemoteProject implements Serializable {
 
 	@Override
 	public String toString() {
-		return ReflectionToStringBuilder.toString(this, ToStringStyle.SHORT_PREFIX_STYLE);
+		return "RemoteProjest toString";
 	}
 }

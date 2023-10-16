@@ -36,8 +36,10 @@ val COMPILER_ARGS = listOf<String>()
 //val LAST_IDEA_STR = "232.5150-EAP-CANDIDATE-SNAPSHOT"
 //val LAST_IDEA_STR = "2023.1.2"
 //val LAST_IDEA_STR = "232.7754-EAP-CANDIDATE-SNAPSHOT"
-val LAST_IDEA_STR = "2023.2.2"
+//val LAST_IDEA_STR = "2023.2.2"
+val LAST_IDEA_STR = "2023.2.3"
 //val LAST_IDEA_STR = "233.6745-EAP-CANDIDATE-SNAPSHOT"
+//val LAST_IDEA_STR = "233.9802-EAP-CANDIDATE-SNAPSHOT"
 
 val ideaCommunityMac = "/Users/dim/Library/Application Support/JetBrains/Toolbox/apps/IDEA-C/ch-1/221.5080.210/IntelliJ IDEA CE.app/Contents"
 

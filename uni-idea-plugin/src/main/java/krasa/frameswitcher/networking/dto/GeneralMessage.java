@@ -1,8 +1,5 @@
 package krasa.frameswitcher.networking.dto;
 
-import org.apache.commons.lang.builder.ReflectionToStringBuilder;
-import org.apache.commons.lang.builder.ToStringStyle;
-
 import java.io.Serializable;
 import java.util.UUID;
 
@@ -27,6 +24,6 @@ public abstract class GeneralMessage implements Serializable {
 
 	@Override
 	public String toString() {
-		return ReflectionToStringBuilder.toString(this, ToStringStyle.SHORT_PREFIX_STYLE);
+		return "GeneralMessage toString()";
 	}
 }

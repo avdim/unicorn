@@ -82,39 +82,6 @@ fun visualPaddingsPanelOnlyTextField(): JPanel {
   }
 }
 
-fun visualPaddingsPanel(): JPanel {
-  // we use growX to test right border
-  return panel {
-    row("Text field:") { JTextField("text")() }
-    row("Password:") { JPasswordField("secret")() }
-    row("Combobox:") { JComboBox<String>(arrayOf("one", "two"))(growX) }
-    row("Combobox Editable:") {
-      val field = JComboBox<String>(arrayOf("one", "two"))
-      field.isEditable = true
-      field(growX)
-    }
-    row("Button:") { button("label") {}.constraints(growX) }
-    row("CheckBox:") { CheckBox("enabled")() }
-    row("RadioButton:") { JRadioButton("label")() }
-    row("Spinner:") { JBIntSpinner(0, 0, 7)() }
-    row("Text with browse:") { textFieldWithBrowseButton("File") }
-    // test text baseline alignment
-    row("All:") {
-      cell {
-        JTextField("t")()
-        JPasswordField("secret")()
-        JComboBox<String>(arrayOf("c1", "c2"))(growX)
-        button("b") {}
-        CheckBox("c")()
-        JRadioButton("rb")()
-      }
-    }
-    row("Scroll pane:") {
-      scrollPane(JTextArea("first line baseline equals to label"))
-    }
-  }
-}
-
 fun fieldWithGear(): JPanel {
   return panel {
     row("Database:") {
@@ -258,21 +225,6 @@ fun withSingleVerticalButton(): JPanel {
 
       cell(isVerticalFlow = true) {
         button("Merge ...") {}.constraints(growX)
-      }
-    }
-  }
-}
-
-fun titledRows(): JPanel {
-  return panel {
-    titledRow("Async Profiler") {
-      row { browserLink("Async profiler README.md", "https://github.com/jvm-profiling-tools/async-profiler") }
-      row("Agent path:") { textFieldWithBrowseButton("").comment("If field is empty bundled agent will be used") }
-      row("Agent options:") { textFieldWithBrowseButton("").comment("Don't add output format (collapsed is used) or output file options") }
-    }
-    titledRow("Java Flight Recorder") {
-      row("JRE home:") {
-        textFieldWithBrowseButton("").comment("At least OracleJRE 9 or OpenJRE 11 is required to import dump")
       }
     }
   }
